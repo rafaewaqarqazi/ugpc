@@ -1,6 +1,6 @@
 const express = require('express');
+const {userById} = require("../../controllers/users");
 const  {studentSignup,verifyEmail} = require('../../controllers/auth');
-const  {studentById} = require('../../controllers/students');
 // const {userSignUpValidator} = require('../../validator');
 const router = express.Router();
 
@@ -10,5 +10,5 @@ router.put('/verify-email',verifyEmail);
 // router.post('/signin', signin);
 // router.get('/signout', signout);
 
-router.param("userId", studentById);
+router.param("userId", userById);
 module.exports = router;
