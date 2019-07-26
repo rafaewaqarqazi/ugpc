@@ -20,13 +20,12 @@ exports.studentSignup = async (req, res)=>{
     const student = await user.save();
     if (student){
         const {email}=req.body;
-        console.log('Signup');
         const emailData = {
             from: "noreply@node-react.com",
             to: email,
             subject: "Email Verification Instructions",
             text: `Please use the following code for email verification ${emailVerCode}`,
-            html: `<p>Please use the following code for email verification</p> <h3 className="text-muted text-center">${emailVerCode}</h3>`
+            html: `<p>Please use the following code for email verification</p> <h3>${emailVerCode}</h3>`
         };
 
         sendEmail(emailData)
@@ -50,7 +49,7 @@ exports.verifyEmail = (req, res) => {
 
 
         const updatedFields = {
-            accountStatus:'Email Verified',
+            isEmailVerified:true,
             emailVerificationCode: undefined
         };
 
@@ -119,11 +118,6 @@ exports.forgotPassword = (req, res) => {
     });
 };
 
-// to allow user to reset password
-// first you will find the user in the database with user's resetPasswordLink
-// user model's resetPasswordLink's value must match the token
-// if the user's resetPasswordLink(token) matches the incoming req.body.resetPasswordLink(token)
-// then we got the right user
 
 exports.resetPassword = (req, res) => {
     const { resetPasswordLink, newPassword } = req.body;

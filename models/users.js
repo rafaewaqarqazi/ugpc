@@ -31,9 +31,9 @@ const userSchema = new mongoose.Schema({
         type:String,
         default: 'Student'
     },
-    accountStatus:{
-        type:String,
-        default:'email_verification_pending'
+    isEmailVerified:{
+        type:Boolean,
+        default:false
     },
     resetPasswordLink: {
         data: String,
