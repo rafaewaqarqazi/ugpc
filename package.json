@@ -23,6 +23,7 @@
     "express-jwt": "5.3.1",
     "express-validator": "6.1.1",
     "formidable": "1.2.1",
+    "generate-password": "1.4.2",
     "jsonwebtoken": "8.5.1",
     "mongoose": "5.6.5",
     "nodemailer": "6.3.0",

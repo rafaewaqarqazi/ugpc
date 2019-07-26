@@ -7,6 +7,7 @@ dotenv.config();
 
 const app = express();
 
+//MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{
         console.log('Connected to database');
@@ -15,10 +16,20 @@ mongoose.connect(process.env.MONGO_URI)
         console.log("Error: ", err.message);
     });
 
+
+//Middlewares
 app.use(express.json());
 
+//Routes
 app.use('/api/students',StudentsRouter);
 app.use('/api/auth',AuthRouter);
+
+//Unauthorized Handler
+app.use(function (err,req,res,next) {
+    if (err.name === 'UnauthorizedError'){
+        res.status(401).json({error:"You are not Authorized to perform this Action"})
+    }
+});
 
 app.listen(process.env.PORT, ()=>{
     console.log(`Server Running on PORT: ${process.env.PORT}`)

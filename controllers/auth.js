@@ -3,10 +3,11 @@ const expressjwt = require('express-jwt');
 require('dotenv').config();
 const User = require('../models/users');
 const {sendEmail} = require("../helpers");
+const generator = require('generate-password');
 
 
 exports.studentSignup = async (req, res)=>{
-    console.log(Math.floor(Math.random() * 100000000));
+
     const userExists = await User.findOne({email: req.body.email});
     if (userExists) return res.status(403).json({
         error: "Email Already Exists"
@@ -36,6 +37,90 @@ exports.studentSignup = async (req, res)=>{
             });
     }
 };
+
+exports.ugpcSignup = async (req, res)=>{
+
+    const userExists = await User.findOne({email: req.body.email});
+    if (userExists) return res.status(403).json({
+        error: "Email Already Exists"
+    });
+    const password = generator.generate({
+        length: 10,
+        numbers: true
+    });
+
+
+    const user = await new User({
+        ...req.body,
+        role:'UGPC_Member',
+        password,
+        isEmailVerified: undefined
+    });
+    const newUser = await user.save();
+    if (newUser){
+        const {email}=req.body;
+        const emailData = {
+            from: "noreply@node-react.com",
+            to: email,
+            subject: "Email Verification Instructions",
+            text: `Your Account has been created. Please use following email & password to login. Email: ${email}, Password:  ${password}`,
+            html: `<p>Your Account has been created. Please use following email & password to login</p> <h3>Email: ${email}</h3> <h3>Password: ${password}</h3>`
+        };
+
+        sendEmail(emailData)
+            .then(()=>{
+                return res.status(200).json({
+                    message: `Email has been sent to ${email}. Please check your email for verification`
+                });
+            });
+    }
+};
+
+exports.signin = (req, res) => {
+    const {email, password} = req.body;
+    User.findOne({email},(err, user) => {
+        if (err || !user){
+            return res.status(401).json({
+                error:"User does not exist"
+            })
+        }
+
+        if (!user.authenticate(password)){
+            return res.status(401).json({
+                error:"Email/Password does not match"
+            })
+        }
+        //Generating Key
+        const token = jwt.sign({ _id: user.id, role:user.role},process.env.JWT_SECRET);
+        res.cookie('t',token,{expire: new Date()+9999});
+
+        const {_id, name, email, role} = user;
+        return res.json({
+            token,
+            user:{_id,email,name, role}
+        });
+
+
+
+    })
+};
+
+
+exports.isChairman = (req, res, next) => {
+    let chairman = req.auth && req.auth.role === "Student";
+    if (!chairman){
+        return res.status(403).json({
+            error: "You are Not Authorized to perform this action"
+        })
+    }
+    next();
+};
+
+exports.requireSignin = expressjwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'auth'
+});
+
 
 exports.verifyEmail = (req, res) => {
     const { emailVerificationCode,email } = req.body;
