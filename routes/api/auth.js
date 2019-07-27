@@ -6,7 +6,8 @@ const  {
     verifyEmail,
     isChairman,
     signin,
-    requireSignin
+    requireSignin,
+    signout
 } = require('../../controllers/auth');
 const {
     userSignUpValidator
@@ -18,7 +19,7 @@ router.post('/student/signup',userSignUpValidator, studentSignup);
 router.post('/ugpc/signup',requireSignin,isChairman,userSignUpValidator, ugpcSignup);
 router.put('/verify-email',verifyEmail);
 router.post('/signin', signin);
-// router.get('/signout', signout);
+router.get('/signout', signout);
 
 router.param("userId", userById);
 module.exports = router;
