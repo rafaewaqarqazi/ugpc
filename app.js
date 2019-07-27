@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const StudentsRouter = require('./routes/api/students');
 const AuthRouter = require('./routes/api/auth');
+const morgan = require('morgan');
+const expressValidator = require('express-validator');
 dotenv.config();
 
 const app = express();
@@ -18,8 +20,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 //Middlewares
+app.use(morgan('dev'));
 app.use(express.json());
-
+app.use(expressValidator());
 //Routes
 app.use('/api/students',StudentsRouter);
 app.use('/api/auth',AuthRouter);
@@ -30,6 +33,7 @@ app.use(function (err,req,res,next) {
         res.status(401).json({error:"You are not Authorized to perform this Action"})
     }
 });
+
 
 app.listen(process.env.PORT, ()=>{
     console.log(`Server Running on PORT: ${process.env.PORT}`)
