@@ -107,7 +107,7 @@ exports.signin = (req, res) => {
 
 
 exports.isChairman = (req, res, next) => {
-    let chairman = req.auth && req.auth.role === "Student";
+    let chairman = req.auth && req.auth.role === "Chairman";
     if (!chairman){
         return res.status(403).json({
             error: "You are Not Authorized to perform this action"
@@ -115,6 +115,16 @@ exports.isChairman = (req, res, next) => {
     }
     next();
 };
+exports.isStudent = (req, res, next) => {
+    let student = req.auth && req.auth.role === "Student";
+    if (!student){
+        return res.status(403).json({
+            error: "You are Not Authorized to perform this action"
+        })
+    }
+    next();
+};
+
 
 exports.requireSignin = expressjwt({
     secret: process.env.JWT_SECRET,

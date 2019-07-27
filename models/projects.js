@@ -16,31 +16,18 @@ const userSchema = new mongoose.Schema({
     },
     documentation:{
         visionDocument:{
-            title:{
-                type:String,
-                required: true
-            },
-            abstract:{
-                type:String,
-                required: true
-            },
-            scope:{
-                type:String,
-                required: true
-            },
-            majorModules:[{ type:String, required: true}],
+            title:String,
+            abstract:String,
+            scope:String,
+            majorModules:[{ type:String}],
             status:String,
             docs:[{
-                type:String,
-                required: true
+                type:String
             }],
             comments:[
                 {
                     text:String,
-                    createdAt: {
-                        type:Date,
-                        default: Date.now()
-                    },
+                    createdAt: Date,
                     author:{type:ObjectId, ref:"Users"}
                 }
             ],
@@ -56,74 +43,41 @@ const userSchema = new mongoose.Schema({
         internal:{
             examiners:[{type:ObjectId, ref:"Users"}],
             date:{
-                type:Date,
-                default: Date.now()
+                type:Date
             },
             marks:String
         },
         external:{
             examiners:[{type:ObjectId, ref:"Users"}],
-            date:{
-                type:Date,
-                default: Date.now()
-            },
+            date:Date,
             marks:String
         },
         acceptanceLetter:{
             file:String,
-            issueDate:{
-                type:Date,
-                default: Date.now()
-            }
+            issueDate:Date
         },
         backlogs:[{
-            title: {
-                type:String,
-                required:true
-            },
-            description:{
-                type:String,
-                required:true
-            },
+            title: String,
+            description:String,
             assignee:[{
                 type:ObjectId,
                 ref:"Users"
             }],
             subTasks:[{
-                title:{
-                    type:String,
-                    required:true
-                },
-                description: {
-                    type: String,
-                    required: true
-                }
+                title:String,
+                description: String
             }],
-            priority:{
-                type:String,
-                required:true
-            },
-            createdAt:{
-                type:Date,
-                default:Date.now()
-            },
-            deadLine:{
-                type:Date
-            },
+            priority:String,
+            createdAt:Date,
+            deadLine: Date,
             attachments:[{
                 data:String
             }]
 
         }],
         sprints:[{
-            name:{
-                type:String,
-                required:true
-            },
-            startDate:{
-                type:Date,
-                default:Date.now()
-            },
+            name:String,
+            startDate:Date,
             endDate:Date,
             todos:[{}],
             inProgress:[{}],

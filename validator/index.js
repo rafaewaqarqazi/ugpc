@@ -1,29 +1,3 @@
-exports.createPostValidator = (req, res, next) => {
-    //title
-    req.check('title',"Write a title").notEmpty();
-    req.check('title', 'Title must be between 4-150 characters').isLength({
-        min: 4,
-        max: 150
-    });
-
-    //body
-    req.check('body',"Write a Body").notEmpty();
-    req.check('body', 'Body must be between 4-2000 characters').isLength({
-        min: 4,
-        max: 2000
-    });
-
-    //Check for errors
-    const errors = req.validationErrors();
-
-    if (errors){
-        const firstError = errors.map(error => error.msg)[0];
-        return res.status(400).json({error: firstError});
-    }
-
-    next();
-};
-
 exports.userSignUpValidator = (req, res, next) =>{
     //Name
     req.check('name',"Name is Required").notEmpty();
@@ -78,3 +52,30 @@ exports.passwordResetValidator = (req, res, next) => {
     next();
 };
 
+exports.createProjectValidator = (req, res, next) =>{
+    //title
+    req.check('title',"Title is Required").notEmpty();
+    req.check('title').isLength({
+        min:2,
+        max:150
+    })
+        .withMessage('Title must be between 2-150 characters');
+    //description
+    req.check('description',"description is Required").notEmpty();
+    req.check('description')
+        .isLength({
+            min:4,
+            max:300
+        })
+        .withMessage('Title must be between 4-300 characters');
+
+    //Check for errors
+    const errors = req.validationErrors();
+
+    if (errors){
+        const firstError = errors.map(error => error.msg)[0];
+        return res.status(400).json({error: firstError});
+    }
+
+    next();
+};

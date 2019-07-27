@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const StudentsRouter = require('./routes/api/students');
 const AuthRouter = require('./routes/api/auth');
+const ProjectsRouter = require('./routes/api/projects');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 dotenv.config();
@@ -26,7 +27,7 @@ app.use(expressValidator());
 //Routes
 app.use('/api/students',StudentsRouter);
 app.use('/api/auth',AuthRouter);
-
+app.use('/api/projects',ProjectsRouter);
 //Unauthorized Handler
 app.use(function (err,req,res,next) {
     if (err.name === 'UnauthorizedError'){
