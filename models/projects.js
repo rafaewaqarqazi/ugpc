@@ -56,7 +56,23 @@ const userSchema = new mongoose.Schema({
             file:String,
             issueDate:Date
         },
+        epic:[{
+            _id:{
+                type:ObjectId,
+                default: new mongoose.Types.ObjectId()
+            },
+            name:String,
+            associatedBacklogs:[{
+                type:ObjectId
+            }]
+
+        }]
+        ,
         backlogs:[{
+            _id:{
+                type:ObjectId,
+                default: new mongoose.Types.ObjectId()
+            },
             title: String,
             description:String,
             assignee:[{

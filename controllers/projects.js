@@ -3,6 +3,7 @@ const Projects = require('../models/projects');
 exports.getAllProjects = (req, res)=>{
     Projects.find()
         .populate('students','_id name')
+        .populate('details.epic.associatedBacklogs','details.backlogs.title')
         .then(projects => {
             res.json(projects);
         })

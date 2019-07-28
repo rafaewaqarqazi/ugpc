@@ -1,13 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {
-    getAllProjects,
-    createProject
-} = require('../../controllers/projects');
-const {requireSignin, isStudent} = require('../../controllers/auth');
+const {getAllProjects} = require('../../controllers/projects');
+const {requireSignin} = require('../../controllers/auth');
 
-const {createProjectValidator} = require('../../validator');
 
-router.get('/all',getAllProjects);
-router.post('/new-project',requireSignin,isStudent,createProjectValidator,createProject);
+router.get('/all',requireSignin,getAllProjects);
+
 module.exports = router;
