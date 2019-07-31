@@ -1,9 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const StudentsRouter = require('./routes/api/students');
-const AuthRouter = require('./routes/api/auth');
-const ProjectsRouter = require('./routes/api/projects');
+const StudentsRouter = require('./routes/students');
+const AuthRouter = require('./routes/auth');
+const ProjectsRouter = require('./routes/projects');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 dotenv.config();

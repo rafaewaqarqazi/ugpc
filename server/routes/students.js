@@ -1,16 +1,16 @@
 const express = require('express');
-const {createProject} = require("../../controllers/projects");
+const {createProject} = require("../controllers/projects");
 const {
     createProjectValidator,
     visionDocumentValidator
-} = require("../../validator");
+} = require("../validator");
 const {
     requireSignin,
     isStudent
-} = require("../../controllers/auth");
-const {userById} = require("../../controllers/users");
-const {makeEligible, uploadAvatar} = require('../../controllers/students');
-const upload = require('../../upload');
+} = require("../controllers/auth");
+const {userById} = require("../controllers/users");
+const {makeEligible, uploadAvatar} = require('../controllers/students');
+const upload = require('../upload');
 const router = express.Router();
 
 router.put('/eligible/:userId',makeEligible);

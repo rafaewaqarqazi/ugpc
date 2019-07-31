@@ -2,9 +2,9 @@
   "name": "ugpc-server",
   "version": "1.0.0",
   "description": "Final Year Project",
-  "main": "app.js",
+  "main": "server/app.js",
   "scripts": {
-    "server": "nodemon server.js"
+    "dev": "nodemon server/app.js"
   },
   "repository": {
     "type": "git",

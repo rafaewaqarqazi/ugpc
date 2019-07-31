@@ -1,5 +1,5 @@
 const express = require('express');
-const {userById} = require("../../controllers/users");
+const {userById} = require("../controllers/users");
 const  {
     studentSignup,
     ugpcSignup,
@@ -8,10 +8,10 @@ const  {
     signin,
     requireSignin,
     signout
-} = require('../../controllers/auth');
+} = require('../controllers/auth');
 const {
     userSignUpValidator
-} = require('../../validator');
+} = require('../validator');
 const router = express.Router();
 
 
