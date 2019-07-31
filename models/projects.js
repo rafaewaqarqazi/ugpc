@@ -15,15 +15,14 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     documentation:{
-        visionDocument:{
+        visionDocument:[
+            {
             title:String,
             abstract:String,
             scope:String,
             majorModules:[{ type:String}],
             status:String,
-            docs:[{
-                type:String
-            }],
+            docs:[{}],
             comments:[
                 {
                     text:String,
@@ -32,7 +31,7 @@ const userSchema = new mongoose.Schema({
                 }
             ],
             marks:String
-        }
+        }]
     },
     details:{
         createdAt:{

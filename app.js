@@ -21,6 +21,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 //Middlewares
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(expressValidator());

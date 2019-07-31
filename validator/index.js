@@ -79,3 +79,37 @@ exports.createProjectValidator = (req, res, next) =>{
 
     next();
 };
+
+exports.visionDocumentValidator = (req, res, next) =>{
+
+    //Title
+    req.check('title',"Title is Required").notEmpty();
+    req.check('title').isLength({
+        min:2,
+        max:150
+    }).withMessage('Title Should be between 2-150 Chars');
+
+    //Abstract
+    req.check('abstract',"Abstract is Required").notEmpty();
+    req.check('abstract').isLength({
+        min:50,
+        max:200
+    }).withMessage('Abstract Should be between 50-200 Chars');
+
+    //Scope
+    req.check('scope',"Scope is Required").notEmpty();
+    req.check('scope').isLength({
+        min:100,
+        max:500
+    }).withMessage('Scope Should be between 100-500 Chars');
+    req.check('majorModules',"Modules are Required").notEmpty();
+
+    //Check for errors
+    const errors = req.validationErrors();
+
+    if (errors){
+        const firstError = errors.map(error => error.msg)[0];
+        return res.status(400).json({error: firstError});
+    }
+    next();
+};
