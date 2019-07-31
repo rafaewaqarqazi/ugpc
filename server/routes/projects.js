@@ -4,6 +4,6 @@ const {getAllProjects} = require('../controllers/projects');
 const {requireSignin} = require('../controllers/auth');
 
 
-router.get('/all',requireSignin,getAllProjects);
+router.get('/all',getAllProjects);
 
 module.exports = router;
