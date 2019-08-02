@@ -14,10 +14,12 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    withStyles
+    Avatar
 } from '@material-ui/core';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MenuIcon from '@material-ui/icons/Menu';
+import Link from "next/link";
+import Container from "@material-ui/core/Container";
 
 
 const useStyles = makeStyles(theme => ({
@@ -28,15 +30,27 @@ const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(2),
     },
     title: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     toolbar: theme.mixins.toolbar,
     list: {
         width: 250,
+    },
+    button:{
+        margin:theme.spacing(1)
+    },
+    content:{
+        marginTop:10
+    },
+    link:{
+        textDecoration:'none'
+    },
+    avatar: {
+        margin: 10,
     }
 }));
 
-export default function LandingPageLayout (){
+export default function LandingPageLayout (props){
 
     const classes = useStyles();
     const [open,setOpen] = React.useState(false);
@@ -46,8 +60,8 @@ export default function LandingPageLayout (){
             <div className={classes.toolbar}/>
             <Divider />
             <List>
-                    <ListItem button>
-                        <ListItemIcon> <InboxIcon /></ListItemIcon>
+                    <ListItem button >
+                        <ListItemIcon > <InboxIcon /></ListItemIcon>
                         <ListItemText primary={'Login'} />
                     </ListItem>
 
@@ -55,7 +69,6 @@ export default function LandingPageLayout (){
         </div>
     );
     const handleDrawerToggle = ()=>event=>{
-        console.log('Triggered')
         setOpen(!open);
     };
 
@@ -66,16 +79,31 @@ export default function LandingPageLayout (){
                 <AppBar position="static" color="default">
                     <Toolbar>
                         <Hidden smUp>
-                            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleDrawerToggle()}>
+                            <IconButton edge="start" className={classes.menuButton} color="primary" aria-label="menu" onClick={handleDrawerToggle()}>
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-
-                        <Typography variant="h6" className={classes.title}>
-                            News
+                        <Link href='/'>
+                            <Avatar alt="IIUI-LOGO"
+                                    src="/static/images/avatar/iiui-logo.jpg"
+                                    className={classes.avatar}
+                            />
+                        </Link>
+                        <Typography variant='h5' color='primary' className={classes.title}>
+                            <Link href='/'>
+                                <a className={classes.link}>
+                                    UGPC Software
+                                </a>
+                            </Link>
                         </Typography>
+
                         <Hidden xsDown >
-                            <Button color="inherit" >Login</Button>
+                            <Link href='/sign-in'>
+                                <Button color="primary" variant='outlined' className={classes.button}>Login</Button>
+                            </Link>
+                            <Link href='/sign-up'>
+                                <Button color="primary" variant='outlined' className={classes.button}>Sign Up</Button>
+                            </Link>
                         </Hidden>
                     </Toolbar>
                 </AppBar>
@@ -94,6 +122,10 @@ export default function LandingPageLayout (){
                         </Drawer>
                     </Hidden>
                 </nav>
+                <Container className={classes.content}>
+                    {props.children}
+                </Container>
+
             </div>
         </Fragment>
     );
