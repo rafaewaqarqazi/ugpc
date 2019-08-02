@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/rafaewaqarqazi/ugpc-server#readme",
   "dependencies": {
+    "@material-ui/core": "4.3.0",
+    "@material-ui/icons": "4.2.1",
+    "@zeit/next-sass": "1.0.1",
     "cors": "2.8.5",
     "dotenv": "8.0.0",
     "express": "4.17.1",
@@ -30,6 +33,7 @@
     "morgan": "1.9.1",
     "multer": "1.4.2",
     "next": "9.0.2",
+    "node-sass": "4.12.0",
     "nodemailer": "6.3.0",
     "nodemon": "1.19.1",
     "react": "16.8.6",
