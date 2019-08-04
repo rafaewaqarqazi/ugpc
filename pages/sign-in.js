@@ -1,24 +1,18 @@
 import {Container} from '@material-ui/core';
 
-import LandingPageLayout from "../components/Layouts/LandingPageLayout";
 import SignInComponent from "../components/SignInComponent";
-import {isAuthenticated} from "../auth";
-import router from 'next/router';
+import LandingRouter from "../components/routers/LandingRouter";
+
 const SignIn = ()  => {
 
     return (
-        <LandingPageLayout>
+        <LandingRouter>
             <Container component="main" maxWidth="xs">
                 <SignInComponent/>
             </Container>
-        </LandingPageLayout>
+        </LandingRouter>
     );
 };
 
- SignIn.getInitialProps = async function(){
-     if (isAuthenticated() && isAuthenticated().user.role === 'Student'){
-         router.push('/student-panel')
-     }
-     return {}
- };
+
 export default SignIn;

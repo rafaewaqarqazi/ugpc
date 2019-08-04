@@ -44,7 +44,7 @@ const SignInComponent = () => {
                     })
                 }else {
                     authenticate(data,()=>{
-                        router.push('/student-panel')
+                        router.push('/student')
                     })
                 }
             }).catch (e=> {

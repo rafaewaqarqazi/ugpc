@@ -1,4 +1,4 @@
-import {Fragment, Component} from 'react';
+import {Fragment, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     AppBar,
@@ -20,7 +20,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from "next/link";
 import Container from "@material-ui/core/Container";
-
+import LandingRouter from "../routers/LandingRouter";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -50,10 +50,10 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function LandingPageLayout (props){
+ const LandingPageLayout =  props => {
 
     const classes = useStyles();
-    const [open,setOpen] = React.useState(false);
+    const [open,setOpen] = useState(false);
 
     const drawer = (
         <div className={classes.list}>
@@ -73,7 +73,7 @@ export default function LandingPageLayout (props){
     };
 
     return (
-        <Fragment>
+        <div>
             <CssBaseline/>
             <div className={classes.root}>
                 <AppBar position="static" color="default">
@@ -127,7 +127,9 @@ export default function LandingPageLayout (props){
                 </Container>
 
             </div>
-        </Fragment>
+        </div>
     );
 
-}
+};
+
+export default LandingPageLayout;

@@ -1,13 +1,13 @@
 import {Container} from '@material-ui/core';
-import LandingPageLayout from "../components/Layouts/LandingPageLayout";
 import SignUpComponent from "../components/SignUpComponent";
+import LandingRouter from "../components/routers/LandingRouter";
 
 export default function SignUp() {
     return (
-        <LandingPageLayout>
+        <LandingRouter>
             <Container component="main" maxWidth="xs">
                 <SignUpComponent/>
             </Container>
-        </LandingPageLayout>
+        </LandingRouter>
     );
 }
