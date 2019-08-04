@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
         margin:theme.spacing(1)
     },
     content:{
-        marginTop:10
+        marginTop:theme.spacing(3)
     },
     link:{
         textDecoration:'none'

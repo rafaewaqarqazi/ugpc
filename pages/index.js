@@ -1,33 +1,49 @@
 import fetch from 'isomorphic-unfetch';
 import LandingPageLayout from "../components/Layouts/LandingPageLayout";
 import {Typography} from "@material-ui/core";
+import {isAuthenticated,isAuthenticatedServer} from "../auth";
+import router from 'next/router';
+import nextCookie from 'next-cookies';
+import {serverUrl} from "../helpers/config";
+import {useEffect} from 'react';
 
 
-const Index = ({data}) => {
+const Index = ({role}) => {
+    useEffect(()=>{
+        if (role === 'Student'){
+            router.push('/student-panel')
+        }
+    },[]);
+
+
     return (
         <LandingPageLayout>
-            {data.map((project,index)=>(
-                    <div key={index}>
-                        <Typography variant='h4' >
-                        {`Project No.${index}: ${project.title}`}
-                        </Typography>
-
-                        <Typography paragraph>
-                            {project.description}
-                        </Typography>
-                    </div>
-                        )
-                )}
-
-
 
         </LandingPageLayout>
     );
 };
-Index.getInitialProps = async function(){
-    const res = await fetch('http://localhost:3000/api/projects/all');
-    const data = await res.json();
-    return {data}
+Index.getInitialProps = async ctx =>{
+    if (typeof window !== 'undefined'){
+        const role =await isAuthenticated() && isAuthenticated().user.role ==='Student';
+        console.log(role);
+        if (role){
+            router.push('/student-panel');
+        }
+        else{
+            return {role:''}
+        }
+    }
+    else {
+        const {token} = nextCookie(ctx);
+        console.log(token);
+       const data = await isAuthenticatedServer(token);
+        const auth = await data.json();
+        return {role:auth.role}
+    }
+
+
+
+
 };
 
 export default Index;

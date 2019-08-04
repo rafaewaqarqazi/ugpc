@@ -92,10 +92,12 @@ exports.signin = (req, res) => {
             })
         }
         //Generating Key
-        const token = jwt.sign({ _id: user.id, role:user.role},process.env.JWT_SECRET);
-        res.cookie('t',token,{expire: new Date()+9999});
-
         const {_id, name, email, role} = user;
+
+        const token = jwt.sign({ _id, role},process.env.JWT_SECRET);
+        res.cookie('token', token,{expires: new Date(Date.now() + 9999)});
+
+
         return res.json({
             token,
             user:{_id,email,name, role}
@@ -256,6 +258,10 @@ exports.requireSignin = expressjwt({
 });
 
 exports.signout = (req,res) => {
-    res.clearCookie('t');
+    res.clearCookie('token');
     return res.json({message: "Signed out Successfully"});
+};
+
+exports.checkAuth = (req,res) => {
+    res.json(req.auth);
 };

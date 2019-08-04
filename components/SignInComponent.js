@@ -3,17 +3,22 @@ import {Avatar, Box, Button, Grid, TextField, Typography,Snackbar,SnackbarConten
 import Link from "next/link";
 import CopyrightComponent from "./CopyrightComponent";
 import {useStyles} from "../src/material-styles/signin-styles";
-import fetch from 'isomorphic-unfetch';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
 import router from 'next/router';
+import {signin,authenticate} from "../auth";
+
 const SignInComponent = () => {
     const classes = useStyles();
     const [state,setState]=useState({
         email:'',
-        password:'',
-        error:false,
-        errorText:'',
+        password:''
+    });
+    const [error,setError] = useState({
+        emailError:false,
+        emailErrorText:'',
+        passwordError:false,
+        passwordErrorText:'',
         serverResError:false,
         serverResErrorText:'',
     });
@@ -25,27 +30,29 @@ const SignInComponent = () => {
     const handleSubmit = e =>{
         e.preventDefault();
         console.log(state);
-        fetch('http://localhost:3000/api/auth/signin',{
-            method:'POST',
-            headers:{
-                'Accept':'application/json',
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({email:state.email,password:state.password})
-        })
-            .then(response => {
-                return response.json()
-            }).
-            then(data => {
+        const user = {
+            email:state.email,
+            password:state.password
+        };
+
+        signin(user)
+            .then(data => {
                 if (data.error){
-                    setState({...state,serverResError: true, serverResErrorText:data.error})
+                    setError({...error,
+                        serverResError:true,
+                        serverResErrorText:data.error
+                    })
+                }else {
+                    authenticate(data,()=>{
+                        router.push('/student-panel')
+                    })
                 }
-                else{
-                console.log(JSON.stringify(data));
-            router.push('/');
-                }
-        })
-            .catch(err =>console.log(JSON.stringify(err)))
+            }).catch (e=> {
+                console.log(e.message)
+            })
+
+
+
     };
     const handleSnackBar = ()=>{
         setState({...state,serverResError:false,serverResErrorText: ''})
@@ -58,7 +65,7 @@ const SignInComponent = () => {
             </Typography>
             <Snackbar
                 anchorOrigin={{ vertical:'top', horizontal:'center' }}
-                open={state.serverResError}
+                open={error.serverResError}
                 ContentProps={{
                     'aria-describedby': 'message-id',
                 }}
@@ -71,7 +78,7 @@ const SignInComponent = () => {
                     message={
                         <span id="client-snackbar" className={classes.errorMessage}>
                             <ErrorIcon  className={classes.iconVariant}/>
-                            {state.serverResErrorText}
+                            {error.serverResErrorText}
                         </span>
                     }
                     action={[

@@ -7,7 +7,7 @@ const AuthRouter = require('./routes/auth');
 const ProjectsRouter = require('./routes/projects');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
-
+const cookieParser = require('cookie-parser');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -33,6 +33,7 @@ app.prepare()
 
         server.use(morgan('dev'));
         server.use(express.json());
+        server.use(cookieParser());
         server.use(expressValidator());
         //Routes
         server.use('/api/students',StudentsRouter);
