@@ -1,28 +1,16 @@
 import React, { useState} from 'react';
 
 import {
-    AppBar,
-    CssBaseline,
-    Divider,
-    Drawer,
-    Hidden,
-    IconButton,
-    List,
-    ListItemText,
-    ListItem,
-    ListItemIcon,
-    Toolbar,
-    Typography,
-    makeStyles,
-    Snackbar,
-    SnackbarContent
+    AppBar, CssBaseline, Divider, Drawer,
+    Hidden, IconButton, List, ListItemText,
+    ListItem, ListItemIcon, Toolbar, Typography,
+    makeStyles, Snackbar, SnackbarContent, Avatar
 } from '@material-ui/core';
 import {MoveToInbox,Menu,Input,CheckCircle,Close} from '@material-ui/icons';
 import Link from "next/link";
 import router from 'next/router';
 import { signout} from "../../auth";
 import { green } from '@material-ui/core/colors';
-import StudentRouter from "../routers/StudentRouter";
 const drawerWidth = 230;
 
 const useStyles = makeStyles(theme => ({
@@ -67,6 +55,14 @@ const useStyles = makeStyles(theme => ({
         opacity: 0.9,
         marginRight: theme.spacing(1),
     },
+    avatar: {
+        width: 100,
+        height: 100,
+        margin:'auto'
+    },
+    avatarMargin:{
+        margin: theme.spacing(2)
+    }
 }));
 
 const StudentPanelLayout = ({children})=> {
@@ -93,7 +89,9 @@ const StudentPanelLayout = ({children})=> {
     };
     const drawer = (
         <div>
-            <div className={classes.toolbar} />
+            <div className={classes.avatarMargin}>
+                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+            </div>
 
             <Divider />
             <List>
@@ -159,7 +157,7 @@ const StudentPanelLayout = ({children})=> {
                         ]}
                     />
                 </Snackbar>
-                <AppBar position="fixed" className={classes.appBar}>
+                <AppBar position="fixed" className={classes.appBar} color='secondary'>
                     <Toolbar>
                         <IconButton
                             color="inherit"

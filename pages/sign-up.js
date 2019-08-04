@@ -2,12 +2,13 @@ import {Container} from '@material-ui/core';
 import SignUpComponent from "../components/SignUpComponent";
 import LandingRouter from "../components/routers/LandingRouter";
 
-export default function SignUp() {
+const SignUp =()=> {
     return (
         <LandingRouter>
             <Container component="main" maxWidth="xs">
-                <SignUpComponent/>
+                <SignUpComponent />
             </Container>
         </LandingRouter>
     );
-}
+};
+export default SignUp

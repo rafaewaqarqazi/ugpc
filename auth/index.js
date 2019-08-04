@@ -1,19 +1,19 @@
 import fetch from 'isomorphic-unfetch';
 import {serverUrl} from "../helpers/config";
-// export const signup = user =>{
-//     return  fetch('/api/signup',{
-//         method:"POST",
-//         headers:{
-//             Accept:"application/json",
-//             "Content-Type":"application/json"
-//         },
-//         body:JSON.stringify(user)
-//     })
-//         .then(response => {
-//             return response.json();
-//         })
-//         .catch(err => console.log(err));
-// };
+export const signup = user =>{
+    return  fetch(`${serverUrl}/auth/student/signup`,{
+        method:"POST",
+        headers:{
+            Accept:"application/json",
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(user)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};
 
 export const signin = user =>{
     return  fetch(`${serverUrl}/auth/signin`,{

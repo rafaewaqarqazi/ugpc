@@ -2,7 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {isAuthenticated} from "../../auth";
 import router from "next/dist/client/router";
 import LandingPageLayout from "../Layouts/LandingPageLayout";
-import {LinearProgress, makeStyles} from '@material-ui/core'
+import {LinearProgress, Avatar, Container} from '@material-ui/core';
+import {useStyles} from "../../src/material-styles/page-loading";
+
 const redirectStudent = ()=>{
     router.push('/student')
 };
@@ -15,11 +17,7 @@ const redirectChairman = ()=>{
 const redirectCoordinator = ()=>{
     router.push('/coordinator');
 };
-const useStyles = makeStyles({
-    root: {
-        flexGrow: 1,
-    },
-});
+
 const LandingRouter = props =>{
     const classes = useStyles();
 
@@ -29,7 +27,6 @@ const LandingRouter = props =>{
         const supervisor = isAuthenticated() && isAuthenticated().user.role ==='Supervisor';
         const chairman = isAuthenticated() && isAuthenticated().user.role ==='Chairman';
         const coordinator = isAuthenticated() && isAuthenticated().user.role ==='Coordinator';
-        console.log(student);
         if (student){
             redirectStudent();
         } else if (supervisor){
@@ -47,9 +44,12 @@ const LandingRouter = props =>{
 
     if (loading){
         return (
-            <div className={classes.root}>
+            <Container  component="main" maxWidth="xs">
+                <div className={classes.paper}>
+                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                </div>
                 <LinearProgress color='secondary' />
-            </div>
+            </Container>
 
         )
     }

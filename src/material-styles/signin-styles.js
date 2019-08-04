@@ -35,4 +35,7 @@ export const useStyles = makeStyles(theme => ({
         opacity: 0.9,
         marginRight: theme.spacing(1),
     },
+    formControl: {
+        minWidth: 120,
+    }
 }));

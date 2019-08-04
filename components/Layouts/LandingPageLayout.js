@@ -16,11 +16,11 @@ import {
     ListItemText,
     Avatar
 } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import {Input} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from "next/link";
 import Container from "@material-ui/core/Container";
-import LandingRouter from "../routers/LandingRouter";
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -47,6 +47,14 @@ const useStyles = makeStyles(theme => ({
     },
     avatar: {
         margin: 10,
+    },
+    avatarDrawer: {
+        width: 100,
+        height: 100,
+        margin:'auto'
+    },
+    avatarMargin:{
+        margin: theme.spacing(2)
     }
 }));
 
@@ -57,14 +65,19 @@ const useStyles = makeStyles(theme => ({
 
     const drawer = (
         <div className={classes.list}>
-            <div className={classes.toolbar}/>
+            <div className={classes.avatarMargin}>
+                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarDrawer}/>
+            </div>
             <Divider />
             <List>
+                <Link href='/sign-in'>
                     <ListItem button >
-                        <ListItemIcon > <InboxIcon /></ListItemIcon>
+                        <ListItemIcon >
+                            <Input />
+                        </ListItemIcon>
                         <ListItemText primary={'Login'} />
                     </ListItem>
-
+                </Link>
             </List>
         </div>
     );
@@ -122,9 +135,9 @@ const useStyles = makeStyles(theme => ({
                         </Drawer>
                     </Hidden>
                 </nav>
-                <Container className={classes.content}>
+                <div>
                     {props.children}
-                </Container>
+                </div>
 
             </div>
         </div>
