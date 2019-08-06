@@ -30,9 +30,9 @@ export const signin = user =>{
         .catch(err => console.log(err));
 };
 
-export const authenticate = (jwt, next)=>{
+export const authenticate = (data, next)=>{
     if (typeof window !== 'undefined'){
-        localStorage.setItem("jwt", JSON.stringify(jwt));
+        localStorage.setItem("jwt", JSON.stringify(data));
         next();
     }
 };
@@ -63,8 +63,8 @@ export const isAuthenticated =()=>{
     }
 };
 
-export const isAuthenticatedServer =async (token)=>{
-   return await fetch(`${serverUrl}/auth/isAuthenticated`,{
+export const isEligible =async (token)=>{
+   return await fetch(`${serverUrl}/auth/isEligible`,{
         method:"GET",
         headers:{
             Accept: "application/json",

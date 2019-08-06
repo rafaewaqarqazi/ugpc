@@ -44,8 +44,8 @@ const userSchema = new mongoose.Schema({
     },
     student_details:{
         isEligible:{
-            type:Boolean,
-            default:false
+            type:String,
+            default:'Pending'
         }
         ,
         department:{

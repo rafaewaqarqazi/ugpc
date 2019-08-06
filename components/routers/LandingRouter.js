@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {isAuthenticated} from "../../auth";
 import router from "next/dist/client/router";
 import LandingPageLayout from "../Layouts/LandingPageLayout";
-import {LinearProgress, Avatar, Container} from '@material-ui/core';
-import {useStyles} from "../../src/material-styles/page-loading";
+import PageLoading from "../loading/PageLoading";
+
 
 const redirectStudent = ()=>{
-    router.push('/student')
+    router.push('/student/overview')
 };
 const redirectSupervisor = ()=>{
     router.push('/supervisor');
@@ -19,8 +19,6 @@ const redirectCoordinator = ()=>{
 };
 
 const LandingRouter = props =>{
-    const classes = useStyles();
-
     const[loading,setLoading] = useState(true);
     useEffect(()=>{
         const student = isAuthenticated() && isAuthenticated().user.role ==='Student';
@@ -44,13 +42,7 @@ const LandingRouter = props =>{
 
     if (loading){
         return (
-            <Container  component="main" maxWidth="xs">
-                <div className={classes.paper}>
-                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
-                </div>
-                <LinearProgress color='secondary' />
-            </Container>
-
+            <PageLoading/>
         )
     }
     else {

@@ -12,7 +12,7 @@ import {useStyles} from "../../../src/material-styles/page-loading";
 import CopyrightComponent from "../../../components/CopyrightComponent";
 import SuccessSnackBar from "../../../components/snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../../components/snakbars/ErrorSnackBar";
-import {verifyEmail} from "../../../auth";
+import {authenticate, isAuthenticated, verifyEmail} from "../../../auth";
 
 const VerifyEmail = () => {
     const classes = useStyles();
@@ -38,7 +38,6 @@ const VerifyEmail = () => {
             _id:id,
             emailVerificationCode:code
         };
-
         verifyEmail(data)
             .then(res => {
                 setLoading(false);
@@ -46,7 +45,21 @@ const VerifyEmail = () => {
                     setError({open:true,
                         message:res.error})
                 }else {
-                    setResMessage({open:true, message:res.message})
+
+                    if (isAuthenticated()){
+                        const jwt = {
+                            ...isAuthenticated(),
+                            user:{
+                                ...isAuthenticated().user,
+                                isEmailVerified:true
+                            }
+                        };
+                        authenticate(jwt,()=>{
+                            setResMessage({open:true, message:res.message});
+                        })
+                    }else {
+                        setResMessage({open:true, message:res.message});
+                    }
                 }
 
             })

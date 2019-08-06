@@ -13,7 +13,7 @@ const SuccessSnackBar = ({open, handleClose,message}) => {
                 'aria-describedby': 'message-id',
             }}
             onClose={handleClose}
-            autoHideDuration={3000}
+            autoHideDuration={2500}
         >
             <SnackbarContent
                 className={classes.success}

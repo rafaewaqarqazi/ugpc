@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import {
     Avatar,
     Box,
@@ -14,10 +14,10 @@ import {useSignInStyles} from "../src/material-styles/signin-styles";
 import router from 'next/router';
 import {signin,authenticate} from "../auth";
 import ErrorSnackBar from "./snakbars/ErrorSnackBar";
-
+import StudentContext from '../context/student/student-context';
 const SignInComponent = () => {
     const classes = useSignInStyles();
-
+    const context = useContext(StudentContext);
     const [state,setState]=useState({
         email:'',
         password:''
@@ -53,17 +53,16 @@ const SignInComponent = () => {
                         serverResErrorText:data.error
                     })
                 }else {
+                    context.setStudent(data.user);
+                    console.log(context)
                     authenticate(data,()=>{
-                        router.push('/student')
+                        router.push('/student/overview')
                     })
                 }
 
             }).catch (e=> {
                 console.log(e.message)
             })
-
-
-
     };
     const handleSnackBar = ()=>{
         setError({...error,serverResError:false,serverResErrorText: ''});

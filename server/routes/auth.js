@@ -8,7 +8,7 @@ const  {
     signin,
     requireSignin,
     signout,
-    checkAuth
+    checkEligibility
 } = require('../controllers/auth');
 const {
     userSignUpValidator
@@ -18,7 +18,7 @@ const router = express.Router();
 
 router.post('/student/signup',userSignUpValidator, studentSignup);
 router.post('/ugpc/signup',requireSignin,isChairman,userSignUpValidator, ugpcSignup);
-router.get('/isAuthenticated',requireSignin,checkAuth);
+router.get('/isEligible',requireSignin,checkEligibility);
 router.put('/verify-email',verifyEmail);
 router.post('/signin', signin);
 router.get('/signout', signout);

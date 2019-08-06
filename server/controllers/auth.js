@@ -93,15 +93,24 @@ exports.signin = (req, res) => {
             })
         }
         //Generating Key
-        const {_id, name, email, role} = user;
+        const {_id, name, email, role,isEmailVerified, student_details,ugpc_details,admin_details} = user;
 
         const token = jwt.sign({ _id, role},process.env.JWT_SECRET);
         res.cookie('token', token,{expires: new Date(Date.now() + 9999)});
 
-
+        const loggedInUser = {
+            _id,
+            email,
+            name,
+            role,
+            isEmailVerified,
+            student_details:role==='Student'? student_details :undefined,
+            ugpc_details: role==='UGPC_MEMEBER'? ugpc_details :undefined,
+            admin_details: role==='Chairman'? admin_details :undefined
+        };
         return res.json({
             token,
-            user:{_id,email,name, role}
+            user:loggedInUser
         });
 
 
@@ -263,6 +272,6 @@ exports.signout = (req,res) => {
     return res.json({message: "Signed out Successfully"});
 };
 
-exports.checkAuth = (req,res) => {
+exports.checkEligibility = (req,res) => {
     res.json(req.auth);
 };

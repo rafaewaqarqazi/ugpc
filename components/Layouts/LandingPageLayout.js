@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react';
+import { useState, useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     AppBar,
@@ -19,7 +19,7 @@ import {
 import {Input} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from "next/link";
-import Container from "@material-ui/core/Container";
+import StudentContext from '../../context/student/student-context';
 
 
 const useStyles = makeStyles(theme => ({
@@ -59,7 +59,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
  const LandingPageLayout =  props => {
-
+    const context = useContext(StudentContext);
+    console.log(`Landing Page: ${JSON.stringify(context)}`);
     const classes = useStyles();
     const [open,setOpen] = useState(false);
 
