@@ -1,19 +1,28 @@
 import React, {useState} from 'react';
-import {Avatar, Box, Button, Grid, TextField, Typography,Snackbar,SnackbarContent,IconButton} from "@material-ui/core";
+import {
+    Avatar,
+    Box,
+    Button,
+    Grid,
+    TextField,
+    Typography,
+    Container, LinearProgress
+} from "@material-ui/core";
 import Link from "next/link";
 import CopyrightComponent from "./CopyrightComponent";
-import {useStyles} from "../src/material-styles/signin-styles";
-import ErrorIcon from '@material-ui/icons/Error';
-import CloseIcon from '@material-ui/icons/Close';
+import {useSignInStyles} from "../src/material-styles/signin-styles";
 import router from 'next/router';
 import {signin,authenticate} from "../auth";
+import ErrorSnackBar from "./snakbars/ErrorSnackBar";
 
 const SignInComponent = () => {
-    const classes = useStyles();
+    const classes = useSignInStyles();
+
     const [state,setState]=useState({
         email:'',
         password:''
     });
+    const [loading, setLoading] = useState(false);
     const [error,setError] = useState({
         emailError:false,
         emailErrorText:'',
@@ -34,9 +43,10 @@ const SignInComponent = () => {
             email:state.email,
             password:state.password
         };
-
+        setLoading(true);
         signin(user)
             .then(data => {
+                setLoading(false);
                 if (data.error){
                     setError({...error,
                         serverResError:true,
@@ -47,6 +57,7 @@ const SignInComponent = () => {
                         router.push('/student')
                     })
                 }
+
             }).catch (e=> {
                 console.log(e.message)
             })
@@ -55,92 +66,78 @@ const SignInComponent = () => {
 
     };
     const handleSnackBar = ()=>{
-        setState({...state,serverResError:false,serverResErrorText: ''})
+        setError({...error,serverResError:false,serverResErrorText: ''});
+
     };
     return (
-        <div className={classes.paper}>
-            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
-            <Typography component="h1" variant="h5">
-                Sign in
-            </Typography>
-            <Snackbar
-                anchorOrigin={{ vertical:'top', horizontal:'center' }}
-                open={error.serverResError}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                }}
-                onClose={handleSnackBar}
-                autoHideDuration={2000}
-            >
-                <SnackbarContent
-                    className={classes.error}
-                    aria-describedby="client-snackbar"
-                    message={
-                        <span id="client-snackbar" className={classes.errorMessage}>
-                            <ErrorIcon  className={classes.iconVariant}/>
-                            {error.serverResErrorText}
-                        </span>
-                    }
-                    action={[
-                        <IconButton key="close" aria-label="close" color="inherit" onClick={handleSnackBar}>
-                            <CloseIcon />
-                        </IconButton>,
-                    ]}
+        <div >
+            {loading && <LinearProgress color='secondary'/>}
+            <Container component="main" maxWidth="xs">
+                <div className={classes.paper}>
+                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                    <Typography component="h1" variant="h5">
+                        Sign in
+                    </Typography>
+                </div>
+                <ErrorSnackBar
+                    message={error.serverResErrorText}
+                    open={error.serverResError}
+                    handleSnackBar={handleSnackBar}
                 />
-            </Snackbar>
 
-            <form className={classes.form} onSubmit={handleSubmit}>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    autoFocus
-                    value={state.email}
-                    onChange={handleChange('email')}
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    value={state.password}
-                    onChange={handleChange('password')}
-                />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Sign In
-                </Button>
-                <Grid container>
-                    <Grid item xs>
-                        <Link href="/forgot-password" >
-                            <a >Forgot password?</a>
-                        </Link>
+                <form className={classes.form} onSubmit={handleSubmit}>
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={state.email}
+                        onChange={handleChange('email')}
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        value={state.password}
+                        onChange={handleChange('password')}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        Sign In
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/forgot-password" >
+                                <a >Forgot password?</a>
+                            </Link>
+                        </Grid>
+                        <Grid item>
+                            <Link href="/student/sign-up" >
+                                <a >Don't have an account? Sign Up</a>
+                            </Link>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <Link href="/sign-up" >
-                            <a >Don't have an account? Sign Up</a>
-                        </Link>
-                    </Grid>
-                </Grid>
-            </form>
-            <Box mt={5}>
-                <CopyrightComponent />
-            </Box>
+                </form>
+                <Box mt={5}>
+                    <CopyrightComponent />
+                </Box>
+            </Container>
         </div>
 
     );

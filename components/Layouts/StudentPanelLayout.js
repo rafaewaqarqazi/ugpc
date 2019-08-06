@@ -4,13 +4,13 @@ import {
     AppBar, CssBaseline, Divider, Drawer,
     Hidden, IconButton, List, ListItemText,
     ListItem, ListItemIcon, Toolbar, Typography,
-    makeStyles, Snackbar, SnackbarContent, Avatar
+    makeStyles, Avatar
 } from '@material-ui/core';
-import {MoveToInbox,Menu,Input,CheckCircle,Close} from '@material-ui/icons';
+import {MoveToInbox,Menu,Input} from '@material-ui/icons';
 import Link from "next/link";
 import router from 'next/router';
 import { signout} from "../../auth";
-import { green } from '@material-ui/core/colors';
+import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 const drawerWidth = 230;
 
 const useStyles = makeStyles(theme => ({
@@ -42,18 +42,6 @@ const useStyles = makeStyles(theme => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
-    },
-    success: {
-        backgroundColor: green[600],
-    },
-    successMessage: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    iconVariant: {
-        fontSize: 20,
-        opacity: 0.9,
-        marginRight: theme.spacing(1),
     },
     avatar: {
         width: 100,
@@ -132,31 +120,7 @@ const StudentPanelLayout = ({children})=> {
     return (
             <div className={classes.root}>
                 <CssBaseline />
-                <Snackbar
-                    anchorOrigin={{ vertical:'top', horizontal:'center' }}
-                    open={success}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    onClose={handleSuccess}
-                    autoHideDuration={2000}
-                >
-                    <SnackbarContent
-                        className={classes.success}
-                        aria-describedby="client-snackbar"
-                        message={
-                            <span id="client-snackbar" className={classes.successMessage}>
-                                <CheckCircle className={classes.iconVariant}/>
-                                {successMessage}
-                            </span>
-                        }
-                        action={[
-                            <IconButton key="close" aria-label="close" color="inherit" onClick={handleSuccess}>
-                                <Close />
-                            </IconButton>,
-                        ]}
-                    />
-                </Snackbar>
+              <SuccessSnackBar open={success} message={successMessage} handleClose={handleSuccess}/>
                 <AppBar position="fixed" className={classes.appBar} color='secondary'>
                     <Toolbar>
                         <IconButton

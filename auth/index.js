@@ -72,6 +72,23 @@ export const isAuthenticatedServer =async (token)=>{
         }
     });
 };
+
+export const verifyEmail = data =>{
+    return  fetch(`${serverUrl}/auth/verify-email`,{
+        method:"PUT",
+        headers:{
+            Accept:"application/json",
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(data)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};
+
+
 //
 // export const forgotPassword = email => {
 //     console.log("email: ", email);

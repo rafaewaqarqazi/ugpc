@@ -1,6 +1,7 @@
 import {makeStyles} from "@material-ui/core";
+import {green} from "@material-ui/core/colors";
 
-export const useStyles = makeStyles(theme => ({
+export const useSignInStyles = makeStyles(theme => ({
     '@global': {
         body: {
             backgroundColor: theme.palette.common.white,
@@ -23,19 +24,10 @@ export const useStyles = makeStyles(theme => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
-    error:{
-        backgroundColor: theme.palette.error.dark,
-    },
-    errorMessage: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    iconVariant: {
-        fontSize: 20,
-        opacity: 0.9,
-        marginRight: theme.spacing(1),
-    },
     formControl: {
         minWidth: 120,
+    },
+    root: {
+        maxWidth: 600,
     }
 }));

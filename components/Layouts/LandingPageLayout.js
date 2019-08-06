@@ -114,7 +114,7 @@ const useStyles = makeStyles(theme => ({
                             <Link href='/sign-in'>
                                 <Button color="primary" variant='outlined' className={classes.button}>Login</Button>
                             </Link>
-                            <Link href='/sign-up'>
+                            <Link href='/student/sign-up'>
                                 <Button color="primary" variant='outlined' className={classes.button}>Sign Up</Button>
                             </Link>
                         </Hidden>

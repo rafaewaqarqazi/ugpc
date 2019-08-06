@@ -32,6 +32,7 @@ exports.studentSignup = async (req, res)=>{
         sendEmail(emailData)
             .then(()=>{
                 return res.status(200).json({
+                    _id:student._id,
                     message: `Email has been sent to ${email}. Please check your email for verification`
                 });
             });
@@ -136,9 +137,9 @@ exports.requireSignin = expressjwt({
 
 
 exports.verifyEmail = (req, res) => {
-    const { emailVerificationCode,email } = req.body;
-
-    User.findOne({$and:[{email},{emailVerificationCode}]}).then(user => {
+    const { emailVerificationCode,_id } = req.body;
+        console.log(req.body);
+    User.findOne({$and:[{_id},{emailVerificationCode}]}).then(user => {
         // if err or no user
         if (!user)
             return res.status(401).json({
@@ -161,7 +162,7 @@ exports.verifyEmail = (req, res) => {
                 });
             }
             res.json({
-                message: `Great! Your Email Has been verified.`
+                message: `Your Email Has been verified. You can Sign-in Now`
             });
         });
     });
