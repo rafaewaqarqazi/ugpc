@@ -1,12 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useContext} from 'react';
 import {isAuthenticated} from "../../auth";
-import router from "next/dist/client/router";
+import router from "next/router";
 import PageLoading from "../loading/PageLoading";
 import PendingEligibility from "../eligible/PendingEligibility";
 import NotEligible from "../eligible/NotEligible";
-
+import ProjectContext from '../../context/project/project-context';
+import NoProjectComponent from "../NoProjectComponent";
+import {useRouter} from "next/router";
 
 const StudentRouter= props =>{
+    const r = useRouter();
+    const context = useContext(ProjectContext);
     const[loading,setLoading] = useState(true);
     const[pending, setPending] = useState(false);
     const [notEligible, setNotEligible] = useState(false);
@@ -31,6 +35,10 @@ const StudentRouter= props =>{
                setNotEligible(true);
            }
            else{
+
+               context.fetchByStudentId(isAuthenticated().user._id)
+
+
                setLoading(false)
            }
        }
@@ -53,11 +61,20 @@ const StudentRouter= props =>{
     }
     else
     {
-        return (
-            <div>
-                {props.children}
-            </div>
-        )
+        if (context.project.isLoading){
+            return (<PageLoading/>)
+        }
+        else if (context.project.project.length === 0 && r.pathname !== '/student/project/create'){
+            return (
+                <NoProjectComponent/>
+            )
+        }else{
+            return (
+                <div>
+                    {props.children}
+                </div>
+            )
+        }
     }
 };
 export default StudentRouter;

@@ -1,10 +1,10 @@
-import React, {useState, useContext, useEffect} from 'react';
-import ProjectContext from '../../context/project/project-context';
+import React, {useState} from 'react';
+
 import {
     AppBar, CssBaseline, Divider, Drawer,
     Hidden, IconButton, List, ListItemText,
     ListItem, ListItemIcon, Toolbar, Typography,
-    makeStyles, Avatar
+    makeStyles, Avatar, Grid
 } from '@material-ui/core';
 import {MoveToInbox,Menu,Input} from '@material-ui/icons';
 import Link from "next/link";
@@ -12,7 +12,8 @@ import router from 'next/router';
 import {isAuthenticated, signout} from "../../auth";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import StudentRouter from "../routers/StudentRouter";
-const drawerWidth = 230;
+import ProjectState from "../../context/project/ProjectState";
+const drawerWidth = 280;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -50,21 +51,15 @@ const useStyles = makeStyles(theme => ({
     },
     avatarMargin:{
         margin: theme.spacing(2)
+    },
+    blue:{
+        background:theme.palette.primary.dark,
+        height: '100%'
     }
 }));
 
 const StudentPanelLayout = ({children})=> {
-
-
-
-    const context = useContext(ProjectContext);
     const classes = useStyles();
-    useEffect(()=>{
-       context.fetchByStudentId(isAuthenticated().user._id);
-       if (context.project.project.length === 0){
-           console.log('No Project')
-       }
-    },[]);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [success,setSuccess] = useState(false);
     const [successMessage,setSuccessMessage] = useState('');
@@ -84,49 +79,59 @@ const StudentPanelLayout = ({children})=> {
     };
     const drawer = (
         <div>
-            <div className={classes.toolbar}/>
-            <div className={classes.avatarMargin}>
-                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
-            </div>
+            <Grid container spacing={0}>
+                <Grid item xs={2}>
+                    <div className={classes.toolbar}/>
+                    <div className={classes.blue}></div>
+                </Grid>
+                <Grid item xs={10}>
+                    <div className={classes.toolbar}/>
+                    <div className={classes.avatarMargin}>
+                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                    </div>
 
-            <Divider />
-            <List>
-                <Link href='/student/overview'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <MoveToInbox />
-                        </ListItemIcon>
-                        <ListItemText primary={"Overview"} />
-                    </ListItem>
-                </Link>
-                <Link href='/student/vision-document'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <MoveToInbox />
-                        </ListItemIcon>
-                        <ListItemText primary={"Vision Document"} />
-                    </ListItem>
-                </Link>
-                <Link href='/student/project/backlogs'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <MoveToInbox />
-                        </ListItemIcon>
-                        <ListItemText primary={"Backlogs"} />
-                    </ListItem>
-                </Link>
-                <ListItem button onClick={signOut}>
-                    <ListItemIcon>
-                        <Input />
-                    </ListItemIcon>
-                    <ListItemText primary={"SignOut"} />
-                </ListItem>
+                    <Divider />
+                    <List>
+                        <Link href='/student/overview'>
+                            <ListItem button >
+                                <ListItemIcon>
+                                    <MoveToInbox />
+                                </ListItemIcon>
+                                <ListItemText primary={"Overview"} />
+                            </ListItem>
+                        </Link>
+                        <Link href='/student/vision-document'>
+                            <ListItem button >
+                                <ListItemIcon>
+                                    <MoveToInbox />
+                                </ListItemIcon>
+                                <ListItemText primary={"Vision Document"} />
+                            </ListItem>
+                        </Link>
+                        <Link href='/student/project/backlogs'>
+                            <ListItem button >
+                                <ListItemIcon>
+                                    <MoveToInbox />
+                                </ListItemIcon>
+                                <ListItemText primary={"Backlogs"} />
+                            </ListItem>
+                        </Link>
+                        <ListItem button onClick={signOut}>
+                            <ListItemIcon>
+                                <Input />
+                            </ListItemIcon>
+                            <ListItemText primary={"SignOut"} />
+                        </ListItem>
 
-            </List>
+                    </List>
+                </Grid>
+
+            </Grid>
         </div>
     );
 
     return (
+        <ProjectState>
         <div className={classes.root}>
             <CssBaseline />
           <SuccessSnackBar open={success} message={successMessage} handleClose={handleSuccess}/>
@@ -185,6 +190,7 @@ const StudentPanelLayout = ({children})=> {
                 </StudentRouter>
             </main>
         </div>
+        </ProjectState>
     );
 
 };

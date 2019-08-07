@@ -36,3 +36,19 @@ exports.uploadAvatar = async (req, res) => {
         return res.status(500).send(error);
     }
 };
+exports.getNotEnrolledStudents =async (req, res)=>{
+   const projects = await Projects.aggregate([
+        {
+            $unwind: '$students'
+        },
+        {
+            $group:{_id:'$students'}
+        }
+    ]).exec();
+    let s =[]
+    projects.map((project,i) =>{
+        s[i]=project._id
+    });
+    const users = await Users.where('role').equals('Student').where('_id').nin(s).select('_id name email role');
+    await res.json(users)
+};

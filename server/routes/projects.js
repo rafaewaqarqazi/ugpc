@@ -6,7 +6,7 @@ const {requireSignin} = require('../controllers/auth');
 router.get('/by/:byStudentId',(req,res)=>{
     res.json(req.project);
 });
-// router.get('/all',getAllProjects);
+router.get('/all',getAllProjects);
 
 
 router.param('byStudentId',findByStudentId)

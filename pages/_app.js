@@ -23,13 +23,13 @@ class MyApp extends App {
                 <Head>
                     <title>UGPC</title>
                 </Head>
-                <ProjectState>
+
                 <ThemeProvider theme={theme}>
 
                     <CssBaseline />
                     <Component {...pageProps} />
                 </ThemeProvider>
-                </ProjectState>
+
             </Container>
         );
     }

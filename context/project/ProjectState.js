@@ -10,7 +10,7 @@ const ProjectState = (props) => {
         project:{}
     });
     const fetchByStudentId =async (id)=>{
-        console.log('fetch Called')
+        console.log('fetch Called');
         await fetchProjectByStudentId(dispatch,id);
     };
 useEffect(()=>{
