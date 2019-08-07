@@ -1,7 +1,7 @@
 import React, {useReducer,useEffect} from 'react';
 import StudentContext from './student-context';
 import {studentReducer} from "./student-reducer";
-import * as Actions from './actions';
+import * as Actions from './ActionTypes';
 import {isAuthenticated} from "../../auth";
 const StudentState = props => {
     const [state, dispatch] = useReducer(studentReducer,{

@@ -38,7 +38,6 @@ const SignInComponent = () => {
 
     const handleSubmit = e =>{
         e.preventDefault();
-        console.log(state);
         const user = {
             email:state.email,
             password:state.password
@@ -53,8 +52,6 @@ const SignInComponent = () => {
                         serverResErrorText:data.error
                     })
                 }else {
-                    context.setStudent(data.user);
-                    console.log(context)
                     authenticate(data,()=>{
                         router.push('/student/overview')
                     })

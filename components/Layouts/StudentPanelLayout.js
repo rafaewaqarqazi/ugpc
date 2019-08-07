@@ -1,5 +1,5 @@
-import React, { useState,useContext} from 'react';
-import StudentContext from '../../context/student/student-context';
+import React, {useState, useContext, useEffect} from 'react';
+import ProjectContext from '../../context/project/project-context';
 import {
     AppBar, CssBaseline, Divider, Drawer,
     Hidden, IconButton, List, ListItemText,
@@ -9,10 +9,9 @@ import {
 import {MoveToInbox,Menu,Input} from '@material-ui/icons';
 import Link from "next/link";
 import router from 'next/router';
-import { signout} from "../../auth";
+import {isAuthenticated, signout} from "../../auth";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import StudentRouter from "../routers/StudentRouter";
-import PageLoading from "../loading/PageLoading";
 const drawerWidth = 230;
 
 const useStyles = makeStyles(theme => ({
@@ -58,9 +57,14 @@ const StudentPanelLayout = ({children})=> {
 
 
 
-    const context = useContext(StudentContext);
+    const context = useContext(ProjectContext);
     const classes = useStyles();
-
+    useEffect(()=>{
+       context.fetchByStudentId(isAuthenticated().user._id);
+       if (context.project.project.length === 0){
+           console.log('No Project')
+       }
+    },[]);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [success,setSuccess] = useState(false);
     const [successMessage,setSuccessMessage] = useState('');
@@ -72,7 +76,6 @@ const StudentPanelLayout = ({children})=> {
             .then(res =>{
                 setSuccess(true);
                 setSuccessMessage(res.message);
-                context.removeStudent();
              })
     };
     const handleSuccess = ()=>{
@@ -143,8 +146,10 @@ const StudentPanelLayout = ({children})=> {
                     </Typography>
                 </Toolbar>
             </AppBar>
+
             <nav className={classes.drawer} aria-label="mailbox folders">
                 {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+
                 <Hidden smUp implementation="css">
                     <Drawer
 

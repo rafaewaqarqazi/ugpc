@@ -8,6 +8,19 @@ exports.getAllProjects = (req, res)=>{
         })
         .catch(err => res.status(400).json({error:err}))
 };
+exports.findByStudentId = (req,res,next,id)=>{
+    console.log(id);
+    Projects.find({students:id})
+        .populate('students','_id name')
+        .then(project => {
+            req.project = project;
+            next()
+        })
+        .catch(err => {
+            res.status(400).json({error:err});
+            next();
+        })
+};
 
 exports.createProject = (req, res) => {
 

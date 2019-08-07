@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../src/theme';
 import StudentState from "../context/student/StudentState";
+import ProjectState from "../context/project/ProjectState";
 class MyApp extends App {
     componentDidMount() {
         // Remove the server-side injected CSS.
@@ -22,13 +23,13 @@ class MyApp extends App {
                 <Head>
                     <title>UGPC</title>
                 </Head>
-                <StudentState>
-                    <ThemeProvider theme={theme}>
+                <ProjectState>
+                <ThemeProvider theme={theme}>
 
-                        <CssBaseline />
-                        <Component {...pageProps} />
-                    </ThemeProvider>
-                </StudentState>
+                    <CssBaseline />
+                    <Component {...pageProps} />
+                </ThemeProvider>
+                </ProjectState>
             </Container>
         );
     }

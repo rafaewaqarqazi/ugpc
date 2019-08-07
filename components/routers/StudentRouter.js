@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {isAuthenticated} from "../../auth";
 import router from "next/dist/client/router";
-import StudentPanelLayout from "../Layouts/StudentPanelLayout";
 import PageLoading from "../loading/PageLoading";
 import PendingEligibility from "../eligible/PendingEligibility";
 import NotEligible from "../eligible/NotEligible";

@@ -1,4 +1,4 @@
-import * as Actions from './actions'
+import * as Actions from './ActionTypes'
 
 export const studentReducer = (state, action) => {
 
