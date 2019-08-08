@@ -258,15 +258,6 @@ exports.resetPassword = (req, res) => {
     });
 };
 
-
-
-
-
-exports.requireSignin = expressjwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'auth'
-});
-
 exports.signout = (req,res) => {
     res.clearCookie('token');
     return res.json({message: "Signed out Successfully"});

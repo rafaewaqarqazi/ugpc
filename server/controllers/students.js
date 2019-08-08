@@ -45,10 +45,19 @@ exports.getNotEnrolledStudents =async (req, res)=>{
             $group:{_id:'$students'}
         }
     ]).exec();
-    let s =[]
+    let s =[];
     projects.map((project,i) =>{
         s[i]=project._id
     });
-    const users = await Users.where('role').equals('Student').where('_id').nin(s).select('_id name email role');
+   const ids = [
+        ...s,
+        req.params.userId
+    ];
+   console.log(req.profile);
+    const users = await Users.where('role').equals('Student')
+        .where({"student_details.isEligible": "Eligible"})
+        .where({"student_details.department": req.profile.student_details.department})
+        .where('_id').nin(ids)
+        .select('_id name email role student_details');
     await res.json(users)
 };

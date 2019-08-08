@@ -11,10 +11,6 @@ const StudentState = props => {
         role:'',
         isEmailVerified:false
     });
-    useEffect(()=>{
-        setStudent(isAuthenticated().user);
-        console.log(`USE EFFECT STATE: ${JSON.stringify(state)}`)
-    },[])
     const setStudent = student => {
         dispatch({
             type:Actions.SET_STUDENT,

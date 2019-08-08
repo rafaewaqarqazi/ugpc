@@ -36,7 +36,7 @@ const StudentRouter= props =>{
            }
            else{
 
-               context.fetchByStudentId(isAuthenticated().user._id)
+               context.fetchByStudentId()
 
 
                setLoading(false)

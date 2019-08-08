@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Stepper,
@@ -6,25 +6,16 @@ import {
     StepLabel,
     StepContent,
     Button,
-    Paper,
     Typography,
     TextField,
-    Collapse,
-    List,
-    ListItemIcon,
-    ListItem,
-    ListItemText,
-    ListItemAvatar,
-    Avatar,
-    FormControl,
-    FormLabel,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
-    Grid, Container, LinearProgress, CircularProgress
+    Grid, LinearProgress,
 } from '@material-ui/core';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import {isValid} from "../../helpers/clientSideValidators/createProjectValidator";
+import CreateProjectDetailsComponent from "./CreateProjectDetailsComponent";
+import ProjectContext from '../../context/project/project-context';
+import {isAuthenticated} from "../../auth";
+import SuccessSnackBar from "../snakbars/SuccessSnackBar";
+import router from 'next/router';
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
@@ -38,18 +29,6 @@ const useStyles = makeStyles(theme => ({
     },
     resetContainer: {
         padding: theme.spacing(3),
-    },
-    stepColor:{
-        color: '#784af4',
-        zIndex: 1,
-        fontSize: 18,
-    },
-    formControl:{
-        marginTop: theme.spacing(2)
-    },
-    group:{
-        display:'flex',
-        flexDirection:'row',
     }
 }));
 
@@ -59,111 +38,120 @@ const getSteps =()=> {
 
 
  const CreateProject =()=> {
+     const context = useContext(ProjectContext);
+
     const classes = useStyles();
-    const [activeStep, setActiveStep] = React.useState(0);
-     const [open, setOpen] = React.useState(false);
+    const [activeStep, setActiveStep] = useState(0);
+     const [value, setValue] = useState('solo');
+     const [selectedIndex, setSelectedIndex] = useState();
+     const [loading, setLoading] = useState(false);
+     const [success,setSuccess]=useState(false)
+    const [data,setData] = useState({
+        title:'',
+        description:'',
+        partnerId:'',
+        team:'solo'
+    });
+     const handleSuccess= ()=>{
+         setSuccess(false);
+         router.push('/student/overview')
+     }
+    const [errors,setErrors] = useState({
+        title:{
+            show:false,
+            message:''
+        },
+        description:{
+            show:false,
+            message:''
+        },
+        partnerId:{
+            show:false,
+            message:''
+        }
+    });
 
     const steps = getSteps();
-     const [value, setValue] = React.useState('');
 
-     const handleChange = (event)=> {
-         setValue(event.target.value);
-     }
+
+
     const handleNext = ()=> {
-        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        if (!isValid(data, setErrors, errors,activeStep)){
+            setActiveStep(prevActiveStep => prevActiveStep + 1);
+        }
+        else {return}
+
     };
 
     const handleBack = () =>{
         setActiveStep(prevActiveStep => prevActiveStep - 1);
     };
+    const handleSubmit=()=>{
+        setLoading(true);
+        const phase = isAuthenticated().user.student_details.batch.slice(1,3);
+        const projectData = {
+            title:data.title,
+            description:data.description,
+            phase:phase>=17 ? 'Documentation':'Implementation',
+            students:data.team === 'solo'?[
+                isAuthenticated().user._id
+            ]:[
+                isAuthenticated().user._id,
+                data.partnerId
+            ]
+        };
+        console.log(projectData);
 
-    const handleReset= () => {
-        setActiveStep(0);
+        context.createProject(projectData)
+            .then(()=>{
+                setLoading(false);
+                setSuccess(true);
+            })
     };
-
-
-     const handleClick=()=> {
-         setOpen(!open);
-     }
-
+    const handleChange = e => {
+        setErrors({
+            ...errors,
+            title:{
+                show:false,
+                message:''
+            }
+        });
+        setData({...data, title: e.target.value})
+    };
      const getStepContent = step => {
          switch (step) {
              case 0:
                  return (
                      <Grid container spacing={1}>
-                         <Grid xs={12} sm={10} md={8}>
-                             <TextField variant='outlined' label='Title' fullWidth name='title' placeholder='Enter Your Project Title here' required/>
+                         <Grid item xs={12} sm={10} md={8}>
+                             <TextField
+                                 variant='outlined'
+                                 label='Title'
+                                 fullWidth
+                                 name='title'
+                                 placeholder='Project Title here'
+                                 required
+                                 error={errors.title.show}
+                                 helperText={errors.title.message}
+                                 value={data.title}
+                                 onChange={handleChange}
+
+                             />
                          </Grid>
                      </Grid>
                  );
              case 1:
                  return (
-                     <Grid container spacing={1}>
-                         <Grid xs={12} sm={10} md={8}>
-                         <TextField variant='outlined'
-                                    label='Description'
-                                    fullWidth
-                                    name='description'
-                                    placeholder='Your Project description here'
-                                    multiline
-                                    rows={4}
-                                    required
-                         />
-                         </Grid>
-                         <Grid xs={12} sm={10} md={8}>
-                             <FormControl component="fieldset" className={classes.formControl}>
-                                 <FormLabel component="legend">Team</FormLabel>
-                                 <RadioGroup
-                                     aria-label="Mode"
-                                     name="mode"
-                                     className={classes.group}
-                                     value={value}
-                                     onChange={handleChange}
-                                 >
-                                     <FormControlLabel value="solo" control={<Radio />} label="Solo" />
-                                     <FormControlLabel value="due" control={<Radio />} label="Due" />
-
-                                 </RadioGroup>
-                             </FormControl>
-                         </Grid>
-                         {
-                             value==='due' && <Grid xs={12} sm={10} md={8}>
-                                 <List>
-                                     <ListItem button onClick={handleClick}>
-                                         <ListItemText primary="Choose Partner" />
-                                         {open ? <ExpandLess /> : <ExpandMore />}
-                                     </ListItem>
-                                     <Collapse in={open} timeout="auto" unmountOnExit>
-                                         <List component="div" disablePadding>
-                                             <ListItem alignItems="flex-start">
-                                                 <ListItemAvatar>
-                                                     <Avatar alt="Travis Howard" src="/static/images/avatar/iiui-logo.jpg" />
-                                                 </ListItemAvatar>
-                                                 <ListItemText
-                                                     primary="Partner Name"
-                                                     secondary={
-                                                         <React.Fragment>
-                                                             <Typography
-                                                                 component="span"
-                                                                 variant="body2"
-                                                                 className={classes.inline}
-                                                                 color="textPrimary"
-                                                             >
-                                                                 Registration No
-                                                             </Typography>
-                                                             {" — email"}
-                                                         </React.Fragment>
-                                                     }
-                                                 />
-                                             </ListItem>
-                                         </List>
-                                     </Collapse>
-                                 </List>
-                             </Grid>
-                         }
-
-
-                     </Grid>
+                    <CreateProjectDetailsComponent
+                        data={data}
+                        setData={setData}
+                        error={errors}
+                        setErrors={setErrors}
+                        value={value}
+                        setValue={setValue}
+                        selectedIndex={selectedIndex}
+                        setSelectedIndex={setSelectedIndex}
+                    />
 
                  );
              case 2:
@@ -180,6 +168,8 @@ const getSteps =()=> {
 
     return (
         <div className={classes.root}>
+            {loading && <LinearProgress color='secondary'/>}
+            <SuccessSnackBar open={success} message='Project Created Successfully' handleClose={handleSuccess}/>
             <Stepper activeStep={activeStep} orientation="vertical">
                 {steps.map((label, index) => (
                     <Step key={label}>
@@ -198,7 +188,7 @@ const getSteps =()=> {
                                     <Button
                                         variant="contained"
                                         color={activeStep === steps.length - 1 ? 'secondary' : 'primary'}
-                                        onClick={handleNext}
+                                        onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
                                         className={classes.button}
                                     >
                                         {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
@@ -209,9 +199,6 @@ const getSteps =()=> {
                     </Step>
                 ))}
             </Stepper>
-            {activeStep === steps.length && (
-                <CircularProgress color='secondary' />
-            )}
         </div>
     );
 }

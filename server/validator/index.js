@@ -64,10 +64,10 @@ exports.createProjectValidator = (req, res, next) =>{
     req.check('description',"description is Required").notEmpty();
     req.check('description')
         .isLength({
-            min:4,
-            max:300
+            min:50,
+            max:200
         })
-        .withMessage('Title must be between 4-300 characters');
+        .withMessage('Title must be between 4-200 characters');
 
     //Check for errors
     const errors = req.validationErrors();

@@ -42,6 +42,7 @@
     "nodemon": "1.19.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
+    "react-window": "1.8.5",
     "uuid": "3.3.2"
   }
 }

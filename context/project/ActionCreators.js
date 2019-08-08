@@ -1,20 +1,19 @@
-import fetch from 'isomorphic-unfetch';
-import {serverUrl} from "../../helpers/config";
 import * as Actions from './ActionTypes';
-export const fetchProjectByStudentId = async (dispatch,id)=>{
+import {fetchProjectByStudentId,createProjectAPI} from "../../helpers/apiCalls/students";
+
+//Fetchers
+
+export const getProjectByStudentId = async (dispatch)=>{
     dispatch(projectLoading());
-    const res = await fetch(`${serverUrl}/projects/by/${id}`,{
-        method:'GET',
-        headers:{
-            Accept:'application/json',
-            "Content-Type":'application/json'
-        }
-    });
-    const project = await res.json();
-    console.log('Fetch:',project);
+    const project = await fetchProjectByStudentId();
     dispatch(addProject(project));
 };
+export const createProjectAction = async (dispatch,data)=>{
+    const project = await createProjectAPI(data);
+    dispatch(addProject(await project));
+};
 
+//Action Dispatchers
 export const addProject = (project)=>({
     type:Actions.ADD_PROJECT,
     payload:project

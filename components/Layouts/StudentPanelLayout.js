@@ -132,9 +132,9 @@ const StudentPanelLayout = ({children})=> {
 
     return (
         <ProjectState>
-        <div className={classes.root}>
+            <div className={classes.root}>
             <CssBaseline />
-          <SuccessSnackBar open={success} message={successMessage} handleClose={handleSuccess}/>
+            <SuccessSnackBar open={success} message={successMessage} handleClose={handleSuccess}/>
             <AppBar position="fixed" className={classes.appBar} color='secondary'>
                 <Toolbar>
                     <IconButton

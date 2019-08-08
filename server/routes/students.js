@@ -16,6 +16,6 @@ const router = express.Router();
 router.put('/eligible/:userId',makeEligible);
 router.post('/project/new',requireSignin,isStudent,createProjectValidator,createProject);
 router.put("/project/vision-doc/:type/:id",upload.single('file'), uploadAvatar);
-router.get('/notEnrolled',requireSignin,getNotEnrolledStudents);
+router.get('/notEnrolled/:userId',requireSignin,isStudent,getNotEnrolledStudents);
 router.param("userId", userById);
 module.exports = router;
