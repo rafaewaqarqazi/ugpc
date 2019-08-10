@@ -7,5 +7,6 @@ export default React.createContext({
     createProject: data =>{},
     fetchByStudentId: id =>{},
     updateProject: project=>{},
-    removeProject: ()=>{}
+    removeProject: ()=>{},
+    uploadVision:(data,projectId)=>{}
 })

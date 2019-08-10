@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
             title:String,
             abstract:String,
             scope:String,
-            majorModules:[{ type:String}],
+            majorModules:[],
             status:String,
             docs:[{}],
             comments:[

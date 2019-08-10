@@ -40,7 +40,6 @@ const VerifyEmail = () => {
         };
         verifyEmail(data)
             .then(res => {
-                setLoading(false);
                 if (res.error){
                     setError({open:true,
                         message:res.error})

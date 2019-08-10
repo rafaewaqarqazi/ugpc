@@ -1,7 +1,7 @@
 import React, {useReducer, useEffect} from 'react';
 import ProjectContext from './project-context';
 import {projectReducer} from "./projectReducer";
-import {getProjectByStudentId, createProjectAction} from "./ActionCreators";
+import {getProjectByStudentId, createProjectAction,uploadVisionAction} from "./ActionCreators";
 
 const ProjectState = (props) => {
     const [state, dispatch] = useReducer(projectReducer,{
@@ -15,6 +15,9 @@ const ProjectState = (props) => {
     const createProject =async (data) =>{
        return await createProjectAction(dispatch,data);
     };
+    const uploadVision =async (data,projectId) => {
+        return await uploadVisionAction(data,projectId,dispatch)
+    };
 useEffect(()=>{
     console.log('Project State:',state)
 },[state])
@@ -22,7 +25,8 @@ useEffect(()=>{
         <ProjectContext.Provider value={{
             project:state,
             fetchByStudentId,
-            createProject:createProject
+            createProject:createProject,
+            uploadVision:uploadVision
         }}>
             {props.children}
         </ProjectContext.Provider>

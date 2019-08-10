@@ -36,4 +36,15 @@ export const fetchProjectByStudentId = async ()=>{
         }
     });
     return await res.json();
+};
+
+export const uploadVisionAPI = async (data,projectId )=>{
+    const res = await fetch(`${serverUrl}/students/project/vision-doc/pdf/${projectId}`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json'
+        },
+        body:data
+    });
+    return await res.json();
 }

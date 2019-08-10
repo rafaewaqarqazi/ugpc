@@ -36,7 +36,7 @@ const StudentRouter= props =>{
            }
            else{
 
-               context.fetchByStudentId()
+               context.fetchByStudentId();
 
 
                setLoading(false)

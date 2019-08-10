@@ -1,6 +1,7 @@
 const Users = require('../models/users');
 const Projects = require('../models/projects');
 const path = require('path');
+const formidable = require('formidable');
 exports.makeEligible = (req, res)=>{
     let student = req.profile;
     console.log(student);
@@ -14,27 +15,29 @@ exports.makeEligible = (req, res)=>{
         })
 };
 
-exports.uploadAvatar = async (req, res) => {
-    try {
-        console.log(req.params.id);
+exports.uploadVisionDocument = (req, res) => {
+       const update = {
+           documentation:{
+               visionDocument:[ {
+                       title:req.body.title,
+                       abstract:req.body.abstract,
+                       scope:req.body.scope,
+                       majorModules:JSON.parse(req.body.majorModules),
+                       docs:[{
+                               originalname:req.file.originalname,
+                               filename:req.file.filename
+                           }]
+                   }]
+           }
+       };
+
+        Projects.findByIdAndUpdate(req.params.id,update)
+        .then(project =>{
+            res.json({message: "Vision Document Uploaded"});
+        })
+            .catch(err => console.log(err.message));
 
 
-        await Projects.findByIdAndUpdate(req.params.id,{
-            documentation:{
-                visionDocument:{$push: {
-                    ...req.body,
-                    docs:{$push:{
-                        originalname:req.file.originalname,
-                        filename:req.file.filename
-                    }}
-                }}
-            }
-        });
-        await res.json({message: "Uploaded"});
-    } catch (error) {
-        console.log('error', error);
-        return res.status(500).send(error);
-    }
 };
 exports.getNotEnrolledStudents =async (req, res)=>{
    const projects = await Projects.aggregate([

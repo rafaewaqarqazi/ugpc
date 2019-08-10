@@ -15,7 +15,7 @@ export const useSnakBarStyles = makeStyles(theme => ({
         marginRight: theme.spacing(1),
     },
     root: {
-        maxWidth: 600,
+        maxWidth: 650,
     },
     success: {
         margin: theme.spacing(1),

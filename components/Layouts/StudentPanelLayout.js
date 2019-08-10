@@ -100,7 +100,7 @@ const StudentPanelLayout = ({children})=> {
                                 <ListItemText primary={"Overview"} />
                             </ListItem>
                         </Link>
-                        <Link href='/student/vision-document'>
+                        <Link href='/student/project/vision-document'>
                             <ListItem button >
                                 <ListItemIcon>
                                     <MoveToInbox />
@@ -131,7 +131,7 @@ const StudentPanelLayout = ({children})=> {
     );
 
     return (
-        <ProjectState>
+
             <div className={classes.root}>
             <CssBaseline />
             <SuccessSnackBar open={success} message={successMessage} handleClose={handleSuccess}/>
@@ -190,7 +190,7 @@ const StudentPanelLayout = ({children})=> {
                 </StudentRouter>
             </main>
         </div>
-        </ProjectState>
+
     );
 
 };
