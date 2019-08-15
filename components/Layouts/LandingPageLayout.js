@@ -19,7 +19,7 @@ import {
 import {Input} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from "next/link";
-import StudentContext from '../../context/student/student-context';
+// import StudentContext from '../../context/student/student-context';
 
 
 const useStyles = makeStyles(theme => ({
@@ -59,8 +59,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
  const LandingPageLayout =  props => {
-    const context = useContext(StudentContext);
-    console.log(`Landing Page: ${JSON.stringify(context)}`);
+    // const context = useContext(StudentContext);
+    // console.log(`Landing Page: ${JSON.stringify(context)}`);
     const classes = useStyles();
     const [open,setOpen] = useState(false);
 

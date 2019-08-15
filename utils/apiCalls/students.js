@@ -27,7 +27,7 @@ export const createProjectAPI = async (data)=>{
     return await res.json();
 };
 
-export const fetchProjectByStudentId = async ()=>{
+export const fetchProjectByStudentIdAPI = async ()=>{
     const res = await fetch(`${serverUrl}/projects/by/${isAuthenticated().user._id}`,{
         method:'GET',
         headers:{

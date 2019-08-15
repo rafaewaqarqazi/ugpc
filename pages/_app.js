@@ -3,9 +3,8 @@ import App, { Container } from 'next/app';
 import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
 import theme from '../src/theme';
-import ProjectState from "../context/project/ProjectState";
+import UserState from "../context/user/UserState";
 
 class MyApp extends App {
     componentDidMount() {
@@ -25,14 +24,12 @@ class MyApp extends App {
                     <Head>
                         <title>UGPC</title>
                     </Head>
-
-                    <ThemeProvider theme={theme}>
-                        <ProjectState>
-                        <CssBaseline />
-                        <Component {...pageProps} />
-                        </ProjectState>
-                    </ThemeProvider>
-
+                    <UserState>
+                        <ThemeProvider theme={theme}>
+                            <CssBaseline />
+                            <Component {...pageProps} />
+                        </ThemeProvider>
+                    </UserState>
                 </Container>
 
         );

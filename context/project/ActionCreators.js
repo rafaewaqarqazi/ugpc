@@ -1,11 +1,11 @@
 import * as Actions from './ActionTypes';
-import {fetchProjectByStudentId,createProjectAPI,uploadVisionAPI} from "../../helpers/apiCalls/students";
+import {fetchProjectByStudentIdAPI,createProjectAPI,uploadVisionAPI} from "../../utils/apiCalls/students";
 
 //Fetchers
 
 export const getProjectByStudentId = async (dispatch)=>{
     dispatch(projectLoading());
-    const project = await fetchProjectByStudentId();
+    const project = await fetchProjectByStudentIdAPI();
     dispatch(addProject(project));
 };
 export const createProjectAction = async (dispatch,data)=>{

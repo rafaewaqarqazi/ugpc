@@ -1,30 +1,30 @@
 import * as Actions from './ActionTypes'
 
-export const projectReducer = (state, action) => {
+export const userReducer = (state, action) => {
 
     switch (action.type) {
-        case Actions.ADD_PROJECT:
+        case Actions.ADD_USER:
             return {
                 ...state,
                 isLoading:false,
                 errMess: null,
-                project:action.payload,
+                user:action.payload,
             };
-        case Actions.PROJECT_LOADING:
+        case Actions.USER_LOADING:
             return {
                 ...state,
                 isLoading: true,
                 errMess: null,
-                project: {}
+                user: {}
             };
-        case Actions.PROJECT_FAILED:
+        case Actions.USER_FAILED:
             return {
                 ...state,
                 isLoading: false,
                 errMess: action.payload,
-                project: {}
+                user: {}
             };
-        case Actions.REMOVE_PROJECT:
+        case Actions.REMOVE_USER:
             return {};
         default:
             return state;

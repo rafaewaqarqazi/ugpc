@@ -16,7 +16,6 @@ const handle = app.getRequestHandler();
 app.prepare()
     .then(()=>{
         dotenv.config();
-
         const server = express();
 
         //MongoDB Connection
@@ -45,7 +44,33 @@ app.prepare()
                 res.status(401).json({error:"You are not Authorized to perform this Action"})
             }
         });
-
+        server.get('/',(req, res)=>{
+            return app.render(req, res, '/',req.query)
+        });
+        server.get('/sign-in',(req,res)=>{
+            return app.render(req, res, '/sign-in',req.query)
+        });
+        server.get('/student/sign-up',(req,res)=>{
+            return app.render(req, res, '/student/sign-up',req.query)
+        });
+        server.get('/student/overview',(req,res)=>{
+            return app.render(req, res, '/student/overview',req.query)
+        });
+        server.get('/student/verify-email/:id',(req,res)=>{
+            return app.render(req, res, '/student/verify-email',{id:req.params.id})
+        });
+        server.get('/student/project/create',(req,res)=>{
+            return app.render(req, res, '/student/project/create',req.query)
+        });
+        server.get('/student/project/backlogs',(req,res)=>{
+            return app.render(req, res, '/student/project/backlogs',req.query)
+        });
+        server.get('/student/project/vision-document',(req,res)=>{
+            return app.render(req, res, '/student/project/vision-document',req.query)
+        });
+        server.get('/student/project/vision-document/new',(req,res)=>{
+            return app.render(req, res, '/student/project/vision-document/new',req.query)
+        });
         server.get('*', (req, res) => {
             return handle(req, res)
         });

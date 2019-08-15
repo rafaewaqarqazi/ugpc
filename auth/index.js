@@ -1,5 +1,8 @@
 import fetch from 'isomorphic-unfetch';
-import {serverUrl} from "../helpers/config";
+import {serverUrl} from "../utils/config";
+import cookie from 'js-cookie';
+import Router from 'next/router'
+import nextCookie from 'next-cookies';
 export const signup = user =>{
     return  fetch(`${serverUrl}/auth/student/signup`,{
         method:"POST",
@@ -31,32 +34,20 @@ export const signin = user =>{
 };
 
 export const authenticate = (data, next)=>{
-    if (typeof window !== 'undefined'){
-        localStorage.setItem("jwt", JSON.stringify(data));
-        next();
-    }
+    cookie.set('token',data,{expires: 7});
+    next();
 };
 
 export const signout = ()=>{
-    if (typeof window !== "undefined") {
-        localStorage.removeItem("jwt");
-    }
-    return fetch(`${serverUrl}/auth/signout`,{
-        method: "GET"
-    })
-        .then(response => {
-            return response.json()
-        })
-        .catch(err => console.log(err));
 
+    cookie.remove('token');
+   router.push('/sign-in')
 };
 
 export const isAuthenticated =()=>{
-    if (typeof window == 'undefined'){
-        return false
-    }
-    if (localStorage.getItem('jwt')){
-        return JSON.parse(localStorage.getItem('jwt'))
+    const data= cookie.get('token');
+    if (data){
+        return JSON.parse(data)
     }
     else {
         return false;
@@ -88,7 +79,30 @@ export const verifyEmail = data =>{
         .catch(err => console.log(err));
 };
 
+export const studentAuth = ctx => {
+    const { token } = nextCookie(ctx);
+    const user =token ? JSON.parse(token) : {};
+    if (ctx.req && !token && user.role !== 'Student') {
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
 
+    if (!token && user.role !== 'Student') {
+        Router.push('/sign-in')
+    }
+
+    if (ctx.req && !token && !user.isEmailVerified) {
+        ctx.res.writeHead(302, { Location: `/student/verify-email/${user._id}` });
+        ctx.res.end();
+        return
+    }
+    else if (user.isEmailVerified){
+        Router.push(`/student/verify-email/${user._id}`)
+    }
+
+    return token
+};
 //
 // export const forgotPassword = email => {
 //     console.log("email: ", email);

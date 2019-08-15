@@ -17,17 +17,18 @@ exports.makeEligible = (req, res)=>{
 
 exports.uploadVisionDocument = (req, res) => {
        const update = {
-           documentation:{
-               visionDocument:[ {
-                       title:req.body.title,
-                       abstract:req.body.abstract,
-                       scope:req.body.scope,
-                       majorModules:JSON.parse(req.body.majorModules),
-                       docs:[{
-                               originalname:req.file.originalname,
-                               filename:req.file.filename
-                           }]
-                   }]
+           $push:{
+               "documentation.visionDocument":{
+                           "title":req.body.title,
+                           "abstract":req.body.abstract,
+                           "scope":req.body.scope,
+                           "majorModules":JSON.parse(req.body.majorModules),
+                            "status":'Waiting for Initial Approval',
+                            "document":{
+                               "originalname":req.file.originalname,
+                                "filename":req.file.filename
+                            }
+              }
            }
        };
 

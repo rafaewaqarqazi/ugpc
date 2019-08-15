@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
             scope:String,
             majorModules:[],
             status:String,
-            docs:[{}],
+            document:{},
             comments:[
                 {
                     text:String,

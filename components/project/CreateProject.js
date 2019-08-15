@@ -10,7 +10,7 @@ import {
     TextField,
     Grid, LinearProgress,
 } from '@material-ui/core';
-import {isValid} from "../../helpers/clientSideValidators/createProjectValidator";
+import {isValid} from "../../utils/clientSideValidators/createProjectValidator";
 import CreateProjectDetailsComponent from "./CreateProjectDetailsComponent";
 import ProjectContext from '../../context/project/project-context';
 import {isAuthenticated} from "../../auth";

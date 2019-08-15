@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 
 import {
     AppBar, CssBaseline, Divider, Drawer,
@@ -11,8 +11,9 @@ import Link from "next/link";
 import router from 'next/router';
 import {isAuthenticated, signout} from "../../auth";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
+import ProjectContext from '../../context/project/project-context';
+import UserContext from '../../context/user/user-context';
 import StudentRouter from "../routers/StudentRouter";
-import ProjectState from "../../context/project/ProjectState";
 const drawerWidth = 280;
 
 const useStyles = makeStyles(theme => ({
@@ -60,23 +61,20 @@ const useStyles = makeStyles(theme => ({
 
 const StudentPanelLayout = ({children})=> {
     const classes = useStyles();
+    const projectContext = useContext(ProjectContext);
+    const userContext = useContext(UserContext);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [success,setSuccess] = useState(false);
-    const [successMessage,setSuccessMessage] = useState('');
+
+
+    useEffect(()=>{
+        projectContext.fetchByStudentId();
+        userContext.fetchByUserId(isAuthenticated().user._id)
+    },[])
+
     const handleDrawerToggle =()=> {
         setMobileOpen(!mobileOpen);
     };
-    const signOut = ()=>{
-        signout()
-            .then(res =>{
-                setSuccess(true);
-                setSuccessMessage(res.message);
-             })
-    };
-    const handleSuccess = ()=>{
-        setSuccess(false);
-        router.push('/');
-    };
+
     const drawer = (
         <div>
             <Grid container spacing={0}>
@@ -116,7 +114,7 @@ const StudentPanelLayout = ({children})=> {
                                 <ListItemText primary={"Backlogs"} />
                             </ListItem>
                         </Link>
-                        <ListItem button onClick={signOut}>
+                        <ListItem button onClick={()=>signout()}>
                             <ListItemIcon>
                                 <Input />
                             </ListItemIcon>
@@ -134,7 +132,6 @@ const StudentPanelLayout = ({children})=> {
 
             <div className={classes.root}>
             <CssBaseline />
-            <SuccessSnackBar open={success} message={successMessage} handleClose={handleSuccess}/>
             <AppBar position="fixed" className={classes.appBar} color='secondary'>
                 <Toolbar>
                     <IconButton

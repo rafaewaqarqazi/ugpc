@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 
 import {ExpandLess, ExpandMore} from "@material-ui/icons";
-import {fetchNotEnrolledStudents} from "../../helpers/apiCalls/students";
+import {fetchNotEnrolledStudents} from "../../utils/apiCalls/students";
 
 const useStyles = makeStyles(theme => ({
     root: {
