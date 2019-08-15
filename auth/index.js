@@ -3,6 +3,7 @@ import {serverUrl} from "../utils/config";
 import cookie from 'js-cookie';
 import Router from 'next/router'
 import nextCookie from 'next-cookies';
+import router from "next/dist/client/router";
 export const signup = user =>{
     return  fetch(`${serverUrl}/auth/student/signup`,{
         method:"POST",
@@ -41,7 +42,7 @@ export const authenticate = (data, next)=>{
 export const signout = ()=>{
 
     cookie.remove('token');
-   router.push('/sign-in')
+   Router.push('/sign-in')
 };
 
 export const isAuthenticated =()=>{
@@ -81,28 +82,82 @@ export const verifyEmail = data =>{
 
 export const studentAuth = ctx => {
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {};
-    if (ctx.req && !token && user.role !== 'Student') {
+    const user =token ? JSON.parse(token) : undefined;
+
+    if (ctx.req && !token) {
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
-
-    if (!token && user.role !== 'Student') {
-        Router.push('/sign-in')
-    }
-
-    if (ctx.req && !token && !user.isEmailVerified) {
-        ctx.res.writeHead(302, { Location: `/student/verify-email/${user._id}` });
+    else if (ctx.req && token && user.user.role !== 'Student'){
+        ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
-    else if (user.isEmailVerified){
-        Router.push(`/student/verify-email/${user._id}`)
+    else if (ctx.req && token && !user.user.isEmailVerified) {
+        ctx.res.writeHead(302, { Location: `/student/verify-email/${user.user._id}` });
+        ctx.res.end();
+        return
+    }
+
+    if (!token &&  user.user.role !== 'Student') {
+        Router.push('/sign-in')
+    } else if (!user.user.isEmailVerified && typeof window !== 'undefined'){
+        Router.push(`/student/verify-email?id=${user.user._id}`, `/student/verify-email/${user.user._id}`)
+    }
+    return token
+
+
+
+};
+
+export const landingAuth = ctx => {
+    const { token } = nextCookie(ctx);
+    const user =token ? JSON.parse(token) : {};
+    if (ctx.req && token && user.user.role === 'Student') {
+        ctx.res.writeHead(302, { Location: '/student/overview' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role === 'UGPC_Member') {
+        ctx.res.writeHead(302, { Location: '/UGPC_Member/overview' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role === 'Coordinator') {
+        ctx.res.writeHead(302, { Location: '/coordinator/overview' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role === 'Chairman') {
+        ctx.res.writeHead(302, { Location: '/chairman/overview' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role === 'Supervisor') {
+        ctx.res.writeHead(302, { Location: '/supervisor/overview' });
+        ctx.res.end();
+        return
+    }
+    if (token && user.user.role === 'Student') {
+        Router.push('/student/overview')
+    }
+    else if (token && user.user.role === 'Supervisor') {
+        Router.push('/supervisor/overview')
+    }
+    else if (token && user.user.role === 'UGPC_Memeber') {
+        Router.push('/UGPC_Member/overview')
+    }
+    else if (token && user.user.role === 'Coordinator') {
+        Router.push('/coordinator/overview')
+    }
+    else if (token && user.user.role === 'Chairman') {
+        Router.push('/chairman/overview')
     }
 
     return token
 };
+
 //
 // export const forgotPassword = email => {
 //     console.log("email: ", email);

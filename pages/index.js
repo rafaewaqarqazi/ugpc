@@ -1,17 +1,17 @@
-import LandingRouter from "../components/routers/LandingRouter";
 import {Container} from '@material-ui/core';
-
+import LandingPageLayout from "../components/Layouts/LandingPageLayout";
+import {withLandingAuthSync} from "../components/routers/landingAuth";
 
 const Index = () => {
 
     return (
-        <LandingRouter>
+        <LandingPageLayout>
             <Container>
                 <h3>Welcome To UGPC</h3>
             </Container>
-        </LandingRouter>
+        </LandingPageLayout>
     );
 };
 
 
-export default Index;
+export default withLandingAuthSync(Index);

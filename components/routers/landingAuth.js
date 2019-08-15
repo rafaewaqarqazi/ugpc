@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
-import {studentAuth} from "../../auth";
+import {Component} from 'react';
+import {landingAuth} from "../../auth";
 import Router from 'next/router';
 const getDisplayName = Component =>
     Component.displayName || Component.name || 'Component';
 
-export const withStudentAuthSync = WrappedComponent =>
+export const withLandingAuthSync = WrappedComponent =>
     class extends Component {
         static displayName = `withAuthSync(${getDisplayName(WrappedComponent)})`;
 
         static async getInitialProps (ctx) {
-            const token = studentAuth(ctx);
+            const token = landingAuth(ctx)
 
             const componentProps =
                 WrappedComponent.getInitialProps &&
-                (await WrappedComponent.getInitialProps(ctx));
+                (await WrappedComponent.getInitialProps(ctx))
 
             return { ...componentProps, token }
         }

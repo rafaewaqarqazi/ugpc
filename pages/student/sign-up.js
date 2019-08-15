@@ -1,11 +1,12 @@
 import SignUpComponent from "../../components/SignUpComponent";
-import LandingRouter from "../../components/routers/LandingRouter";
+import {withLandingAuthSync} from "../../components/routers/landingAuth";
+import LandingPageLayout from "../../components/Layouts/LandingPageLayout";
 
 const SignUp =()=> {
     return (
-        <LandingRouter>
+        <LandingPageLayout>
             <SignUpComponent />
-        </LandingRouter>
+        </LandingPageLayout>
     );
 };
-export default SignUp
+export default withLandingAuthSync(SignUp);

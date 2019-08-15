@@ -8,7 +8,7 @@ const ProjectsRouter = require('./routes/projects');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
-
+const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -44,6 +44,11 @@ app.prepare()
                 res.status(401).json({error:"You are not Authorized to perform this Action"})
             }
         });
+        server.get('/pdf/:fileName',(req,res)=>{
+           const file = path.join(__dirname,'..','static',req.path)
+            // console.log(path.join(__dirname,'..',''))
+            app.serveStatic(req,res,file)
+        })
         server.get('/',(req, res)=>{
             return app.render(req, res, '/',req.query)
         });
@@ -56,9 +61,9 @@ app.prepare()
         server.get('/student/overview',(req,res)=>{
             return app.render(req, res, '/student/overview',req.query)
         });
-        server.get('/student/verify-email/:id',(req,res)=>{
-            return app.render(req, res, '/student/verify-email',{id:req.params.id})
-        });
+        // server.get('/student/verify-email/:id',(req,res)=>{
+        //     return app.render(req, res, '/student/verify-email',{id:req.params.id})
+        // });
         server.get('/student/project/create',(req,res)=>{
             return app.render(req, res, '/student/project/create',req.query)
         });

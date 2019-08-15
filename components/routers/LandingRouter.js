@@ -47,9 +47,9 @@ const LandingRouter = props =>{
     }
     else {
         return (
-            <LandingPageLayout>
+           <div>
                 {props.children}
-            </LandingPageLayout>
+           </div>
         );
     }
 
