@@ -43,160 +43,152 @@ const useStyles = makeStyles(theme =>({
         width:80,
         height:80
     },
+    wrapText:{
+        maxWidth:400,
+        whiteSpace: 'normal',
+        wordWrap: 'break-word'
+    }
 
 }));
 const ListComponent = ({visionDocuments, projectName}) => {
     const classes = useStyles();
-    const [openDetails,setOpenDetails] = useState(true);
+    const [openDetails,setOpenDetails] = useState(false);
     const [openDetailsMobile,setOpenDetailsMobile] = useState(false);
-    const handleOpenDetails = ()=>{
+    const [currentDocument,setCurrentDocument] = useState(undefined);
+    const handleOpenDetails = document => {
+        setCurrentDocument(document);
         setOpenDetails(true)
     };
     const handleCloseDetails = ()=>{
-        setOpenDetails(false)
-    }
+
+        setOpenDetails(false);
+        setCurrentDocument({})
+    };
     return (
         <Container>
             <Grid container spacing={2}>
 
-                {visionDocuments && visionDocuments.map((document, index) =>
-                    <>
-                        <Hidden mdUp>
-                            <Grid item key={document._id} xs={12}>
-                                <div  className={classes.paper}>
-                                    <Typography variant='body2'>{document.title.length >10? `${document.title.slice(0,10)}...`:document.title}</Typography>
-                                    <Chip color='primary' label={document.status.length >10? `${document.status.slice(0,10)}...`:document.status}  size="small"/>
+                <Grid item sm={openDetails?6:12} xs={12}>
+                    {visionDocuments && visionDocuments.map((document, index) =>
+                        <>
+                            <Hidden mdUp>
+                                    <div  className={classes.paper}>
+                                        <Typography variant='body2' noWrap>{document.title}</Typography>
+                                        <Chip color='primary'  label={document.status.length >10? `${document.status.slice(0,10)}...`:document.status}  size="small"/>
+                                        <Badge color="secondary" className={classes.margin} badgeContent={document.comments.length === 0?'0':document.comments.length}>
+                                            <Typography  variant='body2' noWrap>Comments</Typography>
+                                        </Badge>
+                                    </div>
+                            </Hidden>
+                            <Hidden smDown>
+
+                                <div  className={classes.paper}  onClick={()=>handleOpenDetails(document)}>
+                                    <Typography color='primary' variant='body2' noWrap>{projectName}</Typography>
+                                    <Typography  variant='body2' noWrap>{document.title}</Typography>
+                                    <Chip color='primary' label={document.status} size="small"/>
                                     <Badge color="secondary" className={classes.margin} badgeContent={document.comments.length === 0?'0':document.comments.length}>
-                                        <Typography  variant='body2'>Comments</Typography>
+                                    <Typography  variant='body2' noWrap>Comments</Typography>
                                     </Badge>
                                 </div>
-                            </Grid>
-                        </Hidden>
-                        <Hidden smDown>
-                            <Grid item key={document._id} sm={openDetails?6:12}>
-                            <div  className={classes.paper}  onClick={handleOpenDetails}>
-                                <Typography color='primary' variant='body2'>
-                                {openDetails ?
-                                    projectName.length >8 ?
-                                        `${projectName.slice(0,8)}...` :
-                                        projectName
-                                    :
-                                    projectName.length >20 ?
-                                        `${projectName.slice(0,20)}...` :
-                                        projectName
-                                }
-                                </Typography>
-                                <Typography  variant='body2' >
-                                {openDetails ?
-                                    document.title.length >8 ?
-                                        `${document.title.slice(0,8)}...` :
-                                        document.title
-                                    :
-                                    document.title.length >20 ?
-                                        `${document.title.slice(0,20)}...` :
-                                        document.title
-                                }
-                                </Typography>
-                                <Chip color='primary' label={document.status}  size="small"/>
-                                <Badge color="secondary" className={classes.margin} badgeContent={document.comments.length === 0?'0':document.comments.length}>
-                                <Typography  variant='body2'>Comments</Typography>
-                                </Badge>
+
+                            </Hidden>
+
+
+                        </>
+                    )}
+                </Grid>
+                <Grid item sm={openDetails?6:12} xs={12} >
+                <Hidden mdUp>
+
+                        {(openDetails || openDetailsMobile )&& currentDocument && (
+                            <div  className={classes.paper}>
+                                <Typography variant='body2'>{currentDocument.title.length >10? `${currentDocument.title.slice(0,10)}...`:currentDocument.title}</Typography>
+                                <Chip color='primary' label={currentDocument.status.length >10? `${currentDocument.status.slice(0,10)}...`:currentDocument.status}  size="small"/>
                             </div>
-                            </Grid>
-                        </Hidden>
+                        )}
 
-                        <Hidden mdUp>
-                            <Grid item key={document._id} xs={12}>
-                                {(openDetails || openDetailsMobile )&& (
-                                    <div  className={classes.paper}>
-                                        <Typography variant='body2'>{document.title.length >10? `${document.title.slice(0,10)}...`:document.title}</Typography>
-                                        <Chip color='primary' label={document.status.length >10? `${document.status.slice(0,10)}...`:document.status}  size="small"/>
-                                    </div>
-                                )}
-                            </Grid>
-                        </Hidden>
-                        <Hidden smDown>
-                            <Grid item key={document._id} sm={6} >
-                                {openDetails &&
-                                    <div >
-                                        <div className={`${classes.detailsHead} ${classes.detailsContent}`}>
-                                            <Typography color='textSecondary' variant='button'>
-                                                {projectName.length >20? `${projectName.slice(0,20)}...`:projectName}
-                                            </Typography>
-                                            <Close onClick={handleCloseDetails} className={classes.detailsClose}/>
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography variant='h6'>
-                                                {document.title}
-                                            </Typography>
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography color='textSecondary'>
-                                                    STATUS
-                                            </Typography>
-                                            <Chip color='primary' label={document.status}  size="small"/>
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography variant='subtitle2'>
-                                                Abstract
-                                            </Typography>
-                                            <Typography variant='body2'>
-                                                {document.abstract}
-                                            </Typography>
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography variant='subtitle2'>
-                                                Scope
-                                            </Typography>
-                                            <Typography variant='body2'>
-                                                {document.scope}
-                                            </Typography>
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography variant='subtitle2'>
-                                                Major Modules
-                                            </Typography>
-                                            {
-                                                document.majorModules.map((module,index)=>
-                                                    <Chip key={index} color='primary' variant='outlined' label={module}  className={classes.majorModules}/>
-                                                )
-                                            }
+                </Hidden>
+                <Hidden smDown>
 
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography variant='subtitle2'>
-                                                Comments
-                                            </Typography>
-                                            {
-                                              document.comments ?
-                                                  <Typography variant='h6' color='textSecondary'>
-                                                            No Comments Yet
-                                                  </Typography>
-                                                  : document.comments.map(comment=>
-                                                    <Typography variant='body2' key={comment._id}>
-                                                        {comment.text}
-                                                    </Typography>
-                                                )
-                                            }
-
-                                        </div>
-                                        <div className={classes.detailsContent}>
-                                            <Typography variant='subtitle2'>
-                                                Document
-                                            </Typography>
-                                            <Avatar className={classes.greenAvatar} >
-                                                <a href={`${serverUrl}/../pdf/${document.document.filename}`} target="_blank">
-                                                <Assignment style={{width: 50, height: 50}}/>
-                                                </a>
-                                            </Avatar>
-                                        </div>
-                                    </div>
+                        {openDetails && currentDocument &&
+                        <div >
+                            <div className={`${classes.detailsHead} ${classes.detailsContent}`}>
+                                <Typography color='textSecondary' variant='button' className={classes.wrapText}>
+                                    {projectName.length >20? `${projectName.slice(0,20)}...`:projectName}
+                                </Typography>
+                                <Close onClick={handleCloseDetails} className={classes.detailsClose}/>
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography variant='h6' className={classes.wrapText}>
+                                    {currentDocument.title}
+                                </Typography>
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography color='textSecondary'>
+                                    STATUS
+                                </Typography>
+                                <Chip color='primary' label={currentDocument.status}  size="small"/>
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography variant='subtitle2'>
+                                    Abstract
+                                </Typography>
+                                <Typography variant='body2' className={classes.wrapText}>
+                                    {currentDocument.abstract}
+                                </Typography>
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography variant='subtitle2'>
+                                    Scope
+                                </Typography>
+                                <Typography variant='body2' className={classes.wrapText}>
+                                    {currentDocument.scope}
+                                </Typography>
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography variant='subtitle2'>
+                                    Major Modules
+                                </Typography>
+                                {
+                                    currentDocument.majorModules.map((module,index)=>
+                                        <Chip key={index} color='primary' variant='outlined' label={module}  className={classes.majorModules}/>
+                                    )
                                 }
-                            </Grid>
 
-                        </Hidden>
-                    </>
-                )}
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography variant='subtitle2'>
+                                    Comments
+                                </Typography>
+                                {
+                                    currentDocument.comments ?
+                                        <Typography variant='h6' color='textSecondary'>
+                                            No Comments Yet
+                                        </Typography>
+                                        : currentDocument.comments.map(comment=>
+                                            <Typography variant='body2' key={comment._id}>
+                                                {comment.text}
+                                            </Typography>
+                                        )
+                                }
+
+                            </div>
+                            <div className={classes.detailsContent}>
+                                <Typography variant='subtitle2'>
+                                    Document
+                                </Typography>
+                                <Avatar className={classes.greenAvatar} >
+                                    <a href={`${serverUrl}/../pdf/${currentDocument.document.filename}`} target="_blank">
+                                        <Assignment style={{width: 50, height: 50}}/>
+                                    </a>
+                                </Avatar>
+                            </div>
+                        </div>
+                        }
+
+
+                </Hidden>
+                </Grid>
 
             </Grid>
         </Container>
