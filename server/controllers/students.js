@@ -24,6 +24,7 @@ exports.uploadVisionDocument = (req, res) => {
                            "scope":req.body.scope,
                            "majorModules":JSON.parse(req.body.majorModules),
                             "status":'Waiting for Initial Approval',
+                            "uploadedAt":Date.now(),
                             "document":{
                                "originalname":req.file.originalname,
                                 "filename":req.file.filename

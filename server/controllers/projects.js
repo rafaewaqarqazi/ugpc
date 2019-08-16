@@ -29,3 +29,24 @@ exports.createProject = (req, res) => {
         .then(data => res.json(data))
         .catch(err => res.json({error:err}))
 };
+
+exports.fetchWaitingVisionDocuments = (req, res)=>{
+    Projects.aggregate([
+        {
+            $unwind:"$documentation.visionDocument"
+        },
+        {
+            $project:{"documentation.visionDocument":1}
+        },
+        {
+            $match:{"documentation.visionDocument.status":"Waiting for Initial Approval"}
+        },
+        {
+            $sort:{"documentation.visionDocument.uploadedAt":1}
+        }
+    ])
+        .then(documents =>{
+            res.json(documents)
+        })
+        .catch(err => res.status(400).json(err.message))
+};

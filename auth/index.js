@@ -111,6 +111,27 @@ export const studentAuth = ctx => {
 
 };
 
+export const chairmanAuth = ctx => {
+    const { token } = nextCookie(ctx);
+    const user =token ? JSON.parse(token) : undefined;
+
+    if (ctx.req && !token) {
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role !== 'Chairman'){
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+
+    if (!token &&  user.user.role !== 'Chairman') {
+        Router.push('/sign-in')
+    }
+    return token
+};
+
 export const landingAuth = ctx => {
     const { token } = nextCookie(ctx);
     const user =token ? JSON.parse(token) : {};

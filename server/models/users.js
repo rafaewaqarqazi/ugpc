@@ -66,7 +66,7 @@ const userSchema = new mongoose.Schema({
             type:String
         }
     },
-    admin_details:{
+    chairman_details:{
         department:{
             type:String
         }

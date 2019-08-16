@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema({
                     author:{type:ObjectId, ref:"Users"}
                 }
             ],
-            marks:String
+            marks:String,
+            uploadedAt:Date,
+            updatedAt:Date
         }]
     },
     details:{
