@@ -52,7 +52,7 @@ const SignInComponent = () => {
                     })
                 }else {
                     authenticate(data,()=>{
-                        router.push('/student/overview')
+                        router.push('/')
                     })
                 }
 

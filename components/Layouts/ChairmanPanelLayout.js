@@ -1,46 +1,73 @@
 import React, {useState, useContext, useEffect} from 'react';
-
+import clsx from 'clsx';
 import {
     AppBar, CssBaseline, Divider, Drawer,
     Hidden, IconButton, List, ListItemText,
     ListItem, ListItemIcon, Toolbar, Typography,
-    makeStyles, Avatar, Grid
+    makeStyles, Avatar, Grid,useTheme
 } from '@material-ui/core';
 import {MoveToInbox,Menu,Input} from '@material-ui/icons';
 import Link from "next/link";
 import {isAuthenticated, signout} from "../../auth";
 import ProjectContext from '../../context/project/project-context';
 import UserContext from '../../context/user/user-context';
-
-const drawerWidth = 280;
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
     },
-    drawer: {
-        [theme.breakpoints.up('sm')]: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-    },
     appBar: {
-
-        zIndex: theme.zIndex.drawer + 1,
-
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
     },
     menuButton: {
         marginRight: theme.spacing(2),
-        [theme.breakpoints.up('sm')]: {
-            display: 'none',
-        },
     },
-    toolbar: theme.mixins.toolbar,
+    hide: {
+        display: 'none',
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
     drawerPaper: {
         width: drawerWidth,
     },
+    drawerHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-end',
+    },
     content: {
         flexGrow: 1,
+        padding: theme.spacing(3),
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginLeft: -drawerWidth,
+    },
+    contentShift: {
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
     },
     avatar: {
         width: 100,
@@ -58,9 +85,11 @@ const useStyles = makeStyles(theme => ({
 
 const ChairmanPanelLayout = ({children})=> {
     const classes = useStyles();
+    const theme = useTheme();
     const projectContext = useContext(ProjectContext);
     const userContext = useContext(UserContext);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [open, setOpen] = useState(true);
 
 
     useEffect(()=>{
@@ -71,115 +100,104 @@ const ChairmanPanelLayout = ({children})=> {
     const handleDrawerToggle =()=> {
         setMobileOpen(!mobileOpen);
     };
-
+    const handleDrawerOpen = ()=> {
+        setOpen(true);
+    }
+   const handleDrawerClose = ()=> {
+        setOpen(false);
+    }
     const drawer = (
         <div>
-            <Grid container spacing={0}>
-                <Grid item xs={2}>
-                    <div className={classes.toolbar}/>
-                    <div className={classes.blue}></div>
-                </Grid>
-                <Grid item xs={10}>
-                    <div className={classes.toolbar}/>
-                    <div className={classes.avatarMargin}>
-                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
-                    </div>
+            <div className={classes.toolbar}/>
+            <div className={classes.avatarMargin}>
+                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+            </div>
 
-                    <Divider />
-                    <List>
-                        <Link href='/chairman/overview'>
-                            <ListItem button >
-                                <ListItemIcon>
-                                    <MoveToInbox />
-                                </ListItemIcon>
-                                <ListItemText primary={"Overview"} />
-                            </ListItem>
-                        </Link>
-                        <Link href='/chairman/users/create'>
-                            <ListItem button >
-                                <ListItemIcon>
-                                    <MoveToInbox />
-                                </ListItemIcon>
-                                <ListItemText primary={"Create New User"} />
-                            </ListItem>
-                        </Link>
-                        <Link href='/chairman/users/all'>
-                            <ListItem button >
-                                <ListItemIcon>
-                                    <MoveToInbox />
-                                </ListItemIcon>
-                                <ListItemText primary={"All Users"} />
-                            </ListItem>
-                        </Link>
-                        <ListItem button onClick={()=>signout()}>
-                            <ListItemIcon>
-                                <Input />
-                            </ListItemIcon>
-                            <ListItemText primary={"SignOut"} />
-                        </ListItem>
+            <Divider />
+            <List>
+                <Link href='/chairman/overview'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <MoveToInbox />
+                        </ListItemIcon>
+                        <ListItemText primary={"Overview"} />
+                    </ListItem>
+                </Link>
+                <Link href='/chairman/users/create'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <MoveToInbox />
+                        </ListItemIcon>
+                        <ListItemText primary={"Create New User"} />
+                    </ListItem>
+                </Link>
+                <Link href='/chairman/users/all'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <MoveToInbox />
+                        </ListItemIcon>
+                        <ListItemText primary={"All Users"} />
+                    </ListItem>
+                </Link>
+                <ListItem button onClick={()=>signout()}>
+                    <ListItemIcon>
+                        <Input />
+                    </ListItemIcon>
+                    <ListItemText primary={"SignOut"} />
+                </ListItem>
 
-                    </List>
-                </Grid>
-
-            </Grid>
+            </List>
         </div>
     );
 
     return (
-
         <div className={classes.root}>
             <CssBaseline />
-            <AppBar position="fixed" className={classes.appBar} color='secondary'>
+            <AppBar
+                position="fixed"
+                className={clsx(classes.appBar, {
+                    [classes.appBarShift]: open,
+                })}
+            >
                 <Toolbar>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
+                        onClick={handleDrawerOpen}
                         edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
+                        className={clsx(classes.menuButton, open && classes.hide)}
                     >
-                        <Menu/>
+                        <Menu />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        Responsive drawer
+                        Persistent drawer
                     </Typography>
                 </Toolbar>
             </AppBar>
+            <Drawer
+                className={classes.drawer}
+                variant="persistent"
+                anchor="left"
+                open={open}
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+            >
+                <div className={classes.drawerHeader}>
+                    <IconButton onClick={handleDrawerClose}>
+                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    </IconButton>
+                </div>
+                <Divider />
+                {drawer}
+            </Drawer>
 
-            <nav className={classes.drawer} aria-label="mailbox folders">
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
 
-                <Hidden smUp implementation="css">
-                    <Drawer
-
-                        variant="temporary"
-                        open={mobileOpen}
-                        onClose={handleDrawerToggle}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
-                        }}
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-                <Hidden xsDown implementation="css">
-                    <Drawer
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        variant="permanent"
-                        open
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-            </nav>
-            <main className={classes.content}>
-                <div className={classes.toolbar} />
-                    {children}
+            <main className={clsx(classes.content, {
+                [classes.contentShift]: open,
+            })}>
+                <div className={classes.drawerHeader} />
+                {children}
             </main>
         </div>
 

@@ -42,35 +42,18 @@ const userSchema = new mongoose.Schema({
     emailVerificationCode:{
         type:String
     },
+    department:{
+        type:String
+    },
     student_details:{
-        isEligible:{
-            type:String,
-            default:'Pending'
-        }
-        ,
-        department:{
-            type:String
-        },
-        batch:{
-            type:String
-        },
-        regNo:{
-            type:String
-        }
+        isEligible:String,
+        batch:String,
+        regNo:String
     },
     ugpc_details:{
-        position:{
-            type:String
-        },
-        department:{
-            type:String
-        }
+        position:String
     },
-    chairman_details:{
-        department:{
-            type:String
-        }
-    }
+    chairman_details:{}
 });
 
 
@@ -83,7 +66,7 @@ userSchema.virtual("password")
         this.hashed_password = this.encryptPassword(password);
     })
     .get(function () {
-        return this._password;
+        return this.password;
     });
 
 

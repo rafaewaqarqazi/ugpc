@@ -16,25 +16,12 @@ import ProjectContext from '../../context/project/project-context';
 import {isAuthenticated} from "../../auth";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import router from 'next/router';
+import StepperComponent from "../stepper/StepperComponent";
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
-    },
-    button: {
-        marginTop: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
-    actionsContainer: {
-        marginBottom: theme.spacing(2),
-    },
-    resetContainer: {
-        padding: theme.spacing(3),
     }
 }));
-
-const getSteps =()=> {
-    return ['Basic', 'Details', 'Create Project'];
-};
 
 
  const CreateProject =()=> {
@@ -70,10 +57,6 @@ const getSteps =()=> {
             message:''
         }
     });
-
-    const steps = getSteps();
-
-
 
     const handleNext = ()=> {
         if (!isValid(data, setErrors, errors,activeStep)){
@@ -170,35 +153,14 @@ const getSteps =()=> {
         <div className={classes.root}>
             {loading && <LinearProgress color='secondary'/>}
             <SuccessSnackBar open={success} message='Project Created Successfully' handleClose={handleSuccess}/>
-            <Stepper activeStep={activeStep} orientation="vertical">
-                {steps.map((label, index) => (
-                    <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                        <StepContent>
-                            {getStepContent(index)}
-                            <div className={classes.actionsContainer}>
-                                <div>
-                                    <Button
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        className={classes.button}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color={activeStep === steps.length - 1 ? 'secondary' : 'primary'}
-                                        onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                                        className={classes.button}
-                                    >
-                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                    </Button>
-                                </div>
-                            </div>
-                        </StepContent>
-                    </Step>
-                ))}
-            </Stepper>
+            <StepperComponent
+                activeStep={activeStep}
+                getStepContent={getStepContent}
+                handleBack={handleBack}
+                handleNext={handleNext}
+                handleSubmit={handleSubmit}
+                steps={['Basic', 'Details', 'Create Project']}
+            />
         </div>
     );
 }

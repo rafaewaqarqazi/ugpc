@@ -82,7 +82,7 @@ export const verifyEmail = data =>{
 
 export const studentAuth = ctx => {
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : undefined;
+    const user =token ? JSON.parse(token) : {user:{role:''}};
 
     if (ctx.req && !token) {
         ctx.res.writeHead(302, { Location: '/sign-in' });
@@ -113,20 +113,20 @@ export const studentAuth = ctx => {
 
 export const chairmanAuth = ctx => {
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : undefined;
+    const user =token ? JSON.parse(token) : {user:{role:''}};
 
     if (ctx.req && !token) {
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role !== 'Chairman'){
+    else if (ctx.req && token && user.user.role !== 'Chairman DCSSE'){
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
 
-    if (!token &&  user.user.role !== 'Chairman') {
+    if (!token &&  user.user.role !== 'Chairman DCSSE') {
         Router.push('/sign-in')
     }
     return token
@@ -134,7 +134,7 @@ export const chairmanAuth = ctx => {
 
 export const landingAuth = ctx => {
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {};
+    const user =token ? JSON.parse(token) : {user:{role:''}};
     if (ctx.req && token && user.user.role === 'Student') {
         ctx.res.writeHead(302, { Location: '/student/overview' });
         ctx.res.end();
@@ -150,7 +150,7 @@ export const landingAuth = ctx => {
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'Chairman') {
+    else if (ctx.req && token && user.user.role === 'Chairman DCSSE') {
         ctx.res.writeHead(302, { Location: '/chairman/overview' });
         ctx.res.end();
         return
@@ -172,7 +172,7 @@ export const landingAuth = ctx => {
     else if (token && user.user.role === 'Coordinator') {
         Router.push('/coordinator/overview')
     }
-    else if (token && user.user.role === 'Chairman') {
+    else if (token && user.user.role === 'Chairman DCSSE') {
         Router.push('/chairman/overview')
     }
 

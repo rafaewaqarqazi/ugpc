@@ -17,6 +17,7 @@ import router from 'next/router';
 import TitleComponent from "../../title/TitleComponent";
 import DetailsComponent from "./DetailsComponent";
 import OverviewComponent from "./OverviewComponent";
+import StepperComponent from "../../stepper/StepperComponent";
 
 
 
@@ -40,10 +41,6 @@ const styles = theme => ({
     },
 
 });
-
-const getSteps =()=> {
-    return ['Overview', 'Details', 'Upload'];
-};
 
 
 class VisionDocumentUploadComponent extends Component{
@@ -272,41 +269,20 @@ class VisionDocumentUploadComponent extends Component{
 
     render() {
         const {classes} = this.props;
-        const steps = getSteps();
+
         return (
             <div className={classes.root}>
                 {this.state.loading && <LinearProgress color='secondary'/>}
                 <SuccessSnackBar open={this.state.success} message='Vision Document Uploaded' handleClose={this.handleSuccess}/>
                 <TitleComponent title='Vision Document Upload'/>
-                <Stepper activeStep={this.state.activeStep} orientation="vertical">
-                    {steps.map((label, index) => (
-                        <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                            <StepContent>
-                                {this.getStepContent(index)}
-                                <div className={classes.actionsContainer}>
-                                    <div>
-                                        <Button
-                                            disabled={this.state.activeStep === 0}
-                                            onClick={this.handleBack}
-                                            className={classes.button}
-                                        >
-                                            Back
-                                        </Button>
-                                        <Button
-                                            variant="contained"
-                                            color={this.state.activeStep === steps.length - 1 ? 'secondary' : 'primary'}
-                                            onClick={this.state.activeStep === steps.length - 1 ? this.handleSubmit : this.handleNext}
-                                            className={classes.button}
-                                        >
-                                            {this.state.activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </StepContent>
-                        </Step>
-                    ))}
-                </Stepper>
+               <StepperComponent
+                   steps={['Overview', 'Details', 'Upload']}
+                   handleBack={this.handleBack}
+                   handleNext={this.handleNext}
+                   handleSubmit={this.handleSubmit}
+                   getStepContent={this.getStepContent}
+                   activeStep={this.state.activeStep}
+               />
             </div>
         );
     }

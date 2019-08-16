@@ -47,8 +47,8 @@ const SignUpComponent = () => {
             name:values.name,
             email:values.email,
             password:values.password,
+            department:values.department,
             student_details:{
-                department:values.department,
                 batch:values.batch,
                 regNo:`${values.regNo}-FBAS/${values.department}/${values.batch}`
             }

@@ -10,13 +10,16 @@ exports.studentSignup = async (req, res)=>{
 
     const userExists = await User.findOne({email: req.body.email});
     if (userExists) return res.status(403).json({
-        error: "Email Already Exists"
+        error: "User Already Exists"
     });
     const emailVerCode = Math.floor(Math.random() * 100000000);
 
     const user = await new User({
         ...req.body,
-        emailVerificationCode: emailVerCode
+        emailVerificationCode: emailVerCode,
+        student_details:{
+            isEligible:'Pending'
+        }
     });
     const student = await user.save();
     if (student){
@@ -43,7 +46,7 @@ exports.ugpcSignup = async (req, res)=>{
 
     const userExists = await User.findOne({email: req.body.email});
     if (userExists) return res.status(403).json({
-        error: "Email Already Exists"
+        error: "User Already Exists"
     });
     const password = generator.generate({
         length: 10,
@@ -53,9 +56,8 @@ exports.ugpcSignup = async (req, res)=>{
 
     const user = await new User({
         ...req.body,
-        role:'UGPC_Member',
         password,
-        isEmailVerified: undefined
+        isEmailVerified: true
     });
     const newUser = await user.save();
     if (newUser){
@@ -71,12 +73,11 @@ exports.ugpcSignup = async (req, res)=>{
         sendEmail(emailData)
             .then(()=>{
                 return res.status(200).json({
-                    message: `Email has been sent to ${email}. Please check your email for verification`
+                    message: `User has been created. Please check email (${email}) for details`
                 });
             });
     }
 };
-
 exports.signin = (req, res) => {
     console.log('req.body',req.body);
     const {email, password} = req.body;
@@ -116,7 +117,7 @@ exports.signin = (req, res) => {
 
 
 exports.isChairman = (req, res, next) => {
-    let chairman = req.auth && req.auth.role === "Chairman";
+    let chairman = req.auth && req.auth.role === "Chairman DCSSE";
     if (!chairman){
         return res.status(403).json({
             error: "You are Not Authorized to perform this action"
