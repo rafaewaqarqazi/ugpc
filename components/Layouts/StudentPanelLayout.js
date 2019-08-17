@@ -1,192 +1,199 @@
 import React, {useState, useContext, useEffect} from 'react';
 
 import {
-    AppBar, CssBaseline, Divider, Drawer,
-    Hidden, IconButton, List, ListItemText,
-    ListItem, ListItemIcon, Toolbar, Typography,
-    makeStyles, Avatar, Grid
+    CssBaseline, Divider, Drawer,
+    IconButton, List, ListItemText,
+    ListItem, ListItemIcon,
+    Avatar, Tooltip, Menu,
+    MenuItem
 } from '@material-ui/core';
-import {MoveToInbox,Menu,Input} from '@material-ui/icons';
+import {MoveToInbox, Input, ChevronRight, ChevronLeft, Add} from '@material-ui/icons';
 import Link from "next/link";
-import router from 'next/router';
 import {isAuthenticated, signout} from "../../auth";
-import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import ProjectContext from '../../context/project/project-context';
 import UserContext from '../../context/user/user-context';
 import StudentRouter from "../routers/StudentRouter";
-const drawerWidth = 280;
+import clsx from "clsx";
+import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-    },
-    drawer: {
-        [theme.breakpoints.up('sm')]: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-    },
-    appBar: {
-
-        zIndex: theme.zIndex.drawer + 1,
-
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-        [theme.breakpoints.up('sm')]: {
-            display: 'none',
-        },
-    },
-    toolbar: theme.mixins.toolbar,
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    content: {
-        flexGrow: 1,
-    },
-    avatar: {
-        width: 100,
-        height: 100,
-        margin:'auto'
-    },
-    avatarMargin:{
-        margin: theme.spacing(2)
-    },
-    blue:{
-        background:theme.palette.primary.dark,
-        height: '100%'
-    }
-}));
 
 const StudentPanelLayout = ({children})=> {
-    const classes = useStyles();
+    const classes = useDrawerStyles();
     const projectContext = useContext(ProjectContext);
     const userContext = useContext(UserContext);
-    const [mobileOpen, setMobileOpen] = useState(false);
-
-
+    const [open, setOpen] = useState(true);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl2, setAnchorEl2] = React.useState(null);
     useEffect(()=>{
         projectContext.fetchByStudentId();
         userContext.fetchByUserId(isAuthenticated().user._id)
-    },[])
-
-    const handleDrawerToggle =()=> {
-        setMobileOpen(!mobileOpen);
+    },[]);
+    const handleDrawerOpen = ()=> {
+        setOpen(true);
     };
 
-    const drawer = (
-        <div>
-            <Grid container spacing={0}>
-                <Grid item xs={2}>
-                    <div className={classes.toolbar}/>
-                    <div className={classes.blue}></div>
-                </Grid>
-                <Grid item xs={10}>
-                    <div className={classes.toolbar}/>
-                    <div className={classes.avatarMargin}>
-                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
-                    </div>
+    const handleDrawerClose =()=> {
+        setOpen(false);
+    };
+    const handleAddMenuClose = ()=>{
+        setAnchorEl(null);
+    };
+    const handleAddMenuClick = event =>{
+        setAnchorEl(event.currentTarget)
+    };
 
-                    <Divider />
-                    <List>
-                        <Link href='/student/overview'>
-                            <ListItem button >
-                                <ListItemIcon>
-                                    <MoveToInbox />
-                                </ListItemIcon>
-                                <ListItemText primary={"Overview"} />
-                            </ListItem>
-                        </Link>
-                        <Link href='/student/project/vision-document'>
-                            <ListItem button >
-                                <ListItemIcon>
-                                    <MoveToInbox />
-                                </ListItemIcon>
-                                <ListItemText primary={"Vision Document"} />
-                            </ListItem>
-                        </Link>
-                        <Link href='/student/project/backlogs'>
-                            <ListItem button >
-                                <ListItemIcon>
-                                    <MoveToInbox />
-                                </ListItemIcon>
-                                <ListItemText primary={"Backlogs"} />
-                            </ListItem>
-                        </Link>
-                        <ListItem button onClick={()=>signout()}>
-                            <ListItemIcon>
-                                <Input />
-                            </ListItemIcon>
-                            <ListItemText primary={"SignOut"} />
-                        </ListItem>
 
-                    </List>
-                </Grid>
-
-            </Grid>
-        </div>
-    );
-
+    const handleProfileMenuClose = ()=>{
+        setAnchorEl2(null);
+    };
+    const handleProfileMenuClick = event =>{
+        setAnchorEl2(event.currentTarget)
+    };
     return (
-
-            <div className={classes.root}>
+        <div className={classes.root}>
             <CssBaseline />
-            <AppBar position="fixed" className={classes.appBar} color='secondary'>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <Menu/>
-                    </IconButton>
-                    <Typography variant="h6" noWrap>
-                        Responsive drawer
-                    </Typography>
-                </Toolbar>
-            </AppBar>
+            <Drawer
+                variant="permanent"
+                className={clsx(classes.drawer, {
+                    [classes.drawerOpen]: open,
+                    [classes.drawerClose]: !open,
+                })}
+                classes={{
+                    paper: clsx({
+                        [classes.drawerOpen]: open,
+                        [classes.drawerClose]: !open,
+                    }),
+                }}
+                open={open}
+            >
+                <div className={classes.side}>
+                    <div className={classes.sidebar}>
+                        <div className={classes.menuRightButton}>
+                            {
+                                !open ?
+                                    <Tooltip title='Expand' placement='right'>
+                                        <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
+                                            <ChevronRight color='inherit'/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    :
+                                    <div className={classes.blank}/>
 
-            <nav className={classes.drawer} aria-label="mailbox folders">
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                            }
+                        </div>
 
-                <Hidden smUp implementation="css">
-                    <Drawer
+                            <div className={classes.menus}>
+                                <div className={classes.menuRightTopContent} style={{flexGrow:1}}>
+                                    <div >
+                                        <Tooltip title='UGPC-Software' placement='right'>
+                                            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
+                                        </Tooltip>
+                                    </div>
+                                    <div>
+                                        <Tooltip title='Add' placement='right'>
+                                            <IconButton onClick={handleAddMenuClick} style={{color:'#fff'}}>
+                                                <Add/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Menu
+                                            id="simple-menu"
+                                            anchorEl={anchorEl}
+                                            keepMounted
+                                            open={Boolean(anchorEl)}
+                                            onClose={handleAddMenuClose}
+                                        >
+                                            <Link href='/student/project/vision-document/new'>
+                                                <MenuItem>Vision Document</MenuItem>
+                                            </Link>
+                                            <Link href='/student/project/backlogs/add'>
+                                                <MenuItem >Backlogs</MenuItem>
+                                            </Link>
+                                        </Menu>
+                                    </div>
+                                </div>
 
-                        variant="temporary"
-                        open={mobileOpen}
-                        onClose={handleDrawerToggle}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
-                        }}
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-                <Hidden xsDown implementation="css">
-                    <Drawer
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        variant="permanent"
-                        open
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-            </nav>
+                                <div className={classes.menuRightTopContent}>
+                                    <Tooltip title='Your Profile & Settings' placement='right'>
+                                        <IconButton onClick={handleProfileMenuClick}>
+                                            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" style={{width:30,height:30}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        id="simple-menu"
+                                        anchorEl={anchorEl2}
+                                        keepMounted
+                                        open={Boolean(anchorEl2)}
+                                        onClose={handleProfileMenuClose}
+                                    >
+                                        <Link href='/student/profile'>
+                                            <MenuItem>Profile</MenuItem>
+                                        </Link>
+                                        <MenuItem onClick={()=>signout()}>Sign Out</MenuItem>
+
+                                    </Menu>
+                                </div>
+                            </div>
+
+
+
+
+                    </div>
+                    <div className={classes.list}>
+                        <div className={classes.toolbar}>
+                            {
+                                open &&
+                                <Tooltip title='Collapse' placement='right'>
+                                    <IconButton onClick={handleDrawerClose}>
+                                        <ChevronLeft />
+                                    </IconButton>
+                                </Tooltip>
+                            }
+                        </div>
+                        <Divider />
+
+                        <List>
+                            <Link href='/student/overview'>
+                                <ListItem button >
+                                    <ListItemIcon>
+                                        <MoveToInbox />
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Roadmap"} />
+                                </ListItem>
+                            </Link>
+                            <Link href='/student/project/vision-document'>
+                                <ListItem button >
+                                    <ListItemIcon>
+                                        <MoveToInbox />
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Vision Docs"} />
+                                </ListItem>
+                            </Link>
+                            <Link href='/student/project/backlogs'>
+                                <ListItem button >
+                                    <ListItemIcon>
+                                        <MoveToInbox />
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Backlogs"} />
+                                </ListItem>
+                            </Link>
+                            <ListItem button onClick={()=>signout()}>
+                                <ListItemIcon>
+                                    <Input />
+                                </ListItemIcon>
+                                <ListItemText primary={"SignOut"} />
+                            </ListItem>
+
+                        </List>
+
+                    </div>
+                </div>
+            </Drawer>
             <main className={classes.content}>
-                <div className={classes.toolbar} />
                 <StudentRouter>
                     {children}
                 </StudentRouter>
             </main>
         </div>
-
     );
 
 };

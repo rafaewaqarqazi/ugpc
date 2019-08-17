@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme =>({
         display:'flex',
         flexDirection:'row',
         justifyContent:'space-between',
-        marginBottom:theme.spacing(2),
+        marginBottom:theme.spacing(0.5),
         padding:theme.spacing(0.5),
         backgroundColor:blueGrey[50],
         cursor:'pointer'
@@ -177,9 +177,9 @@ const ListComponent = ({visionDocuments, projectName}) => {
                                 <Typography variant='subtitle2'>
                                     Document
                                 </Typography>
-                                <Avatar className={classes.greenAvatar} >
-                                    <a href={`${serverUrl}/../pdf/${currentDocument.document.filename}`} target="_blank">
-                                        <Assignment style={{width: 50, height: 50}}/>
+                                <Avatar className={classes.greenAvatar} style={{borderRadius:0}}>
+                                    <a href={`${serverUrl}/../pdf/${currentDocument.document.filename}`} target="_blank" >
+                                        <Assignment style={{width: 50, height: 50,color: '#fff'}} />
                                     </a>
                                 </Avatar>
                             </div>
