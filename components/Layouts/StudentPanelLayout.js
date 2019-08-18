@@ -7,7 +7,9 @@ import {
     Avatar, Tooltip, Menu,
     MenuItem
 } from '@material-ui/core';
-import {MoveToInbox, Input, ChevronRight, ChevronLeft, Add} from '@material-ui/icons';
+import {MoveToInbox, Input, ChevronRight, ChevronLeft, Add,
+    DashboardOutlined, AssignmentOutlined, ViewColumnOutlined, Face, ExitToAppOutlined, PermIdentity
+} from '@material-ui/icons';
 import Link from "next/link";
 import {isAuthenticated, signout} from "../../auth";
 import ProjectContext from '../../context/project/project-context';
@@ -15,6 +17,7 @@ import UserContext from '../../context/user/user-context';
 import StudentRouter from "../routers/StudentRouter";
 import clsx from "clsx";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
+import Typography from "@material-ui/core/Typography";
 
 
 const StudentPanelLayout = ({children})=> {
@@ -103,10 +106,24 @@ const StudentPanelLayout = ({children})=> {
                                             onClose={handleAddMenuClose}
                                         >
                                             <Link href='/student/project/vision-document/new'>
-                                                <MenuItem>Vision Document</MenuItem>
+                                                <MenuItem>
+                                                    <ListItemIcon>
+                                                        <AssignmentOutlined />
+                                                    </ListItemIcon>
+                                                    <Typography variant="inherit" noWrap>
+                                                        Vision Document
+                                                    </Typography>
+                                                </MenuItem>
                                             </Link>
                                             <Link href='/student/project/backlogs/add'>
-                                                <MenuItem >Backlogs</MenuItem>
+                                                <MenuItem >
+                                                    <ListItemIcon>
+                                                        <ViewColumnOutlined />
+                                                    </ListItemIcon>
+                                                    <Typography variant="inherit" noWrap>
+                                                        Backlogs
+                                                    </Typography>
+                                                </MenuItem>
                                             </Link>
                                         </Menu>
                                     </div>
@@ -114,8 +131,8 @@ const StudentPanelLayout = ({children})=> {
 
                                 <div className={classes.menuRightTopContent}>
                                     <Tooltip title='Your Profile & Settings' placement='right'>
-                                        <IconButton onClick={handleProfileMenuClick}>
-                                            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" style={{width:30,height:30}}/>
+                                        <IconButton onClick={handleProfileMenuClick} size='small'>
+                                            <Face fontSize='large'/>
                                         </IconButton>
                                     </Tooltip>
                                     <Menu
@@ -126,9 +143,23 @@ const StudentPanelLayout = ({children})=> {
                                         onClose={handleProfileMenuClose}
                                     >
                                         <Link href='/student/profile'>
-                                            <MenuItem>Profile</MenuItem>
+                                            <MenuItem>
+                                                <ListItemIcon>
+                                                    <PermIdentity />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit" noWrap>
+                                                    Profile
+                                                </Typography>
+                                            </MenuItem>
                                         </Link>
-                                        <MenuItem onClick={()=>signout()}>Sign Out</MenuItem>
+                                        <MenuItem onClick={()=>signout()}>
+                                            <ListItemIcon>
+                                                <ExitToAppOutlined />
+                                            </ListItemIcon>
+                                            <Typography variant="inherit" noWrap>
+                                                Sign Out
+                                            </Typography>
+                                        </MenuItem>
 
                                     </Menu>
                                 </div>
@@ -155,7 +186,7 @@ const StudentPanelLayout = ({children})=> {
                             <Link href='/student/overview'>
                                 <ListItem button >
                                     <ListItemIcon>
-                                        <MoveToInbox />
+                                        <DashboardOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={"Roadmap"} />
                                 </ListItem>
@@ -163,7 +194,7 @@ const StudentPanelLayout = ({children})=> {
                             <Link href='/student/project/vision-document'>
                                 <ListItem button >
                                     <ListItemIcon>
-                                        <MoveToInbox />
+                                        <AssignmentOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={"Vision Docs"} />
                                 </ListItem>
@@ -171,7 +202,7 @@ const StudentPanelLayout = ({children})=> {
                             <Link href='/student/project/backlogs'>
                                 <ListItem button >
                                     <ListItemIcon>
-                                        <MoveToInbox />
+                                        <ViewColumnOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={"Backlogs"} />
                                 </ListItem>

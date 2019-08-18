@@ -152,12 +152,13 @@ const NewUserComponent = () => {
                                     input={<OutlinedInput  labelWidth={labelWidth} fullWidth name="role" id="role" required/>}
                                 >
                                     <MenuItem value='UGPC_Member'>Member</MenuItem>
+                                    <MenuItem value='Program_Office'>Program Office</MenuItem>
                                     <MenuItem value='Chairman DCSSE'>Chairman</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
                         {
-                            data.role === 'Chairman' ? (
+                            data.role === 'Chairman' || data.role === 'Program_Office' ? (
                                 <Grid item xs={12} sm={12}>
                                     <Typography variant='h5'>
                                         No Further Details
