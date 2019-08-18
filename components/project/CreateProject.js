@@ -59,17 +59,18 @@ const useStyles = makeStyles(theme => ({
     });
 
     const handleNext = ()=> {
-        if (!isValid(data, setErrors, errors,activeStep)){
-            setActiveStep(prevActiveStep => prevActiveStep + 1);
-        }
-        else {return}
+         if (!isValid(data, setErrors, errors,activeStep)){
+             setActiveStep(prevActiveStep => prevActiveStep + 1);
+         }
+         else {return}
 
-    };
+     };
 
-    const handleBack = () =>{
-        setActiveStep(prevActiveStep => prevActiveStep - 1);
-    };
-    const handleSubmit=()=>{
+     const handleBack = () =>{
+         setActiveStep(prevActiveStep => prevActiveStep - 1);
+     };
+    const handleSubmit= e =>{
+        e.preventDefault();
         setLoading(true);
         const phase = isAuthenticated().user.student_details.batch.slice(1,3);
         const projectData = {

@@ -1,5 +1,5 @@
 import * as Actions from './ActionTypes';
-import {fetchUserByIdAPI} from "../../utils/apiCalls/users";
+import {fetchUserByIdAPI, createNewUserAPI} from "../../utils/apiCalls/users";
 
 
 export const getUserById = async (dispatch)=>{
@@ -7,6 +7,9 @@ export const getUserById = async (dispatch)=>{
     const user = await fetchUserByIdAPI();
     dispatch(addUser(user));
 };
+export const createNewUser = async (user,dispatch)=>{
+    return await createNewUserAPI(user);
+}
 
 //Action Dispatchers
 export const addUser = user=>({

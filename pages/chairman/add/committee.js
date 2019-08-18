@@ -1,11 +1,13 @@
 import {withChairmanAuthSync} from "../../../components/routers/chairmanAuth";
 import ChairmanPanelLayout from "../../../components/Layouts/ChairmanPanelLayout";
-const All = () => {
+
+import TitleComponent from "../../../components/title/TitleComponent";
+const Committee = () => {
     return (
         <ChairmanPanelLayout>
-
+            <TitleComponent title='New Committee'/>
         </ChairmanPanelLayout>
     );
 };
 
-export default withChairmanAuthSync(All);
+export default withChairmanAuthSync(Committee);

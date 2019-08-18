@@ -43,11 +43,25 @@ exports.studentSignup = async (req, res)=>{
 };
 
 exports.ugpcSignup = async (req, res)=>{
-
-    const userExists = await User.findOne({email: req.body.email});
+    const {name, email, role, committee,position} = req.body;
+    const userExists = await User.findOne({email: email});
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
     });
+    if (role === 'UGPC_Member' && position === 'Chairman_Committee'){
+        console.log('Inside Chairman Check')
+        const chairmanExists = await User.findOne({$and:[{"ugpc_details.committee": committee},{"ugpc_details.position":'Chairman_Committee'}]});
+        if (chairmanExists) return res.status(403).json({
+            error: "Committee Already has a Chairman"
+        });
+    }
+    if (req.body.role === 'UGPC_Member' && req.body.position === 'Coordinator'){
+        const coordinatorExists = await User.findOne({$and:[{"ugpc_details.committee":committee},{"ugpc_details.position":'Coordinator'}]});
+        if (coordinatorExists) return res.status(403).json({
+            error: "Committee Already has a Coordinator"
+        });
+    }
+
     const password = generator.generate({
         length: 10,
         numbers: true
@@ -55,9 +69,16 @@ exports.ugpcSignup = async (req, res)=>{
 
 
     const user = await new User({
-        ...req.body,
+        name,
+        email,
+        role,
         password,
-        isEmailVerified: true
+        isEmailVerified: true,
+        ugpc_details:role === 'UGPC_Member'?{
+            committee,
+            position
+        }:undefined,
+        chairman_details: role === 'Chairman DCSSE'?{}:undefined
     });
     const newUser = await user.save();
     if (newUser){
@@ -73,7 +94,7 @@ exports.ugpcSignup = async (req, res)=>{
         sendEmail(emailData)
             .then(()=>{
                 return res.status(200).json({
-                    message: `User has been created. Please check email (${email}) for details`
+                    message: `Account has been created`
                 });
             });
     }

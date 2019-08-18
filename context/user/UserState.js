@@ -1,17 +1,21 @@
 import React, {useReducer, useEffect} from 'react';
 import UserContext from './user-context';
 import {userReducer} from "./userReducer";
-import {getUserById} from "./ActionCreators";
+import {getUserById, createNewUser} from "./ActionCreators";
 
 
 const UserState = (props) => {
     const [state, dispatch] = useReducer(userReducer,{
         isLoading:true,
         errMess:null,
-        user:{}
+        user:{},
+        users:[]
     });
     const fetchByUserId =async ()=>{
         return await getUserById(dispatch);
+    };
+    const createUser =async user=>{
+        return await createNewUser(user,dispatch);
     };
     useEffect(()=>{
         console.log('User State:',state)
@@ -19,7 +23,8 @@ const UserState = (props) => {
     return (
         <UserContext.Provider value={{
             user:state,
-            fetchByUserId
+            fetchByUserId,
+            createUser
         }}>
             {props.children}
         </UserContext.Provider>

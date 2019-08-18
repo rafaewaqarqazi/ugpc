@@ -51,7 +51,8 @@ const userSchema = new mongoose.Schema({
         regNo:String
     },
     ugpc_details:{
-        position:String
+        position:String,
+        committee:String
     },
     chairman_details:{}
 });

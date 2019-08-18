@@ -86,12 +86,12 @@ const StudentPanelLayout = ({children})=> {
                                 <div className={classes.menuRightTopContent} style={{flexGrow:1}}>
                                     <div >
                                         <Tooltip title='UGPC-Software' placement='right'>
-                                            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
+                                            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarMargin}/>
                                         </Tooltip>
                                     </div>
                                     <div>
                                         <Tooltip title='Add' placement='right'>
-                                            <IconButton onClick={handleAddMenuClick} style={{color:'#fff'}}>
+                                            <IconButton onClick={handleAddMenuClick} style={{color:'#fff'}} size='small'>
                                                 <Add/>
                                             </IconButton>
                                         </Tooltip>
@@ -176,13 +176,6 @@ const StudentPanelLayout = ({children})=> {
                                     <ListItemText primary={"Backlogs"} />
                                 </ListItem>
                             </Link>
-                            <ListItem button onClick={()=>signout()}>
-                                <ListItemIcon>
-                                    <Input />
-                                </ListItemIcon>
-                                <ListItemText primary={"SignOut"} />
-                            </ListItem>
-
                         </List>
 
                     </div>

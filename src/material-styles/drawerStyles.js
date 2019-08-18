@@ -81,5 +81,8 @@ export const useDrawerStyles = makeStyles(theme => ({
         [theme.breakpoints.up('sm')]: {
             height: '90%',
         },
+    },
+    avatarMargin:{
+        marginBottom:theme.spacing(2)
     }
 }));

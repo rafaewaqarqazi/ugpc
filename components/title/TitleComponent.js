@@ -1,21 +1,21 @@
 import React from 'react';
-import {Paper, Typography} from "@material-ui/core";
+import {Box, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles(theme=>({
     heading:{
-        marginBottom: theme.spacing(2),
+        marginBottom: theme.spacing(0.5),
         padding:theme.spacing(2)
     }
 }));
 const TitleComponent = ({title}) => {
     const classes = useStyles();
     return (
-        <Paper className={classes.heading}>
-            <Typography variant='h6'>
+        <Box boxShadow={3} className={classes.heading}>
+            <Typography variant='h5' color='textSecondary'>
                 {title}
             </Typography>
-        </Paper>
+        </Box>
     );
 };
 

@@ -1,10 +1,11 @@
 import ChairmanPanelLayout from "../../components/Layouts/ChairmanPanelLayout";
 import {withChairmanAuthSync} from "../../components/routers/chairmanAuth";
+import TitleComponent from "../../components/title/TitleComponent";
 
 const Overview = () => {
     return (
         <ChairmanPanelLayout>
-            <div>Chairman Overview</div>
+            <TitleComponent title='Overview'/>
         </ChairmanPanelLayout>
     );
 };
