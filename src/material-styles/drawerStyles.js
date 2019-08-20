@@ -41,7 +41,6 @@ export const useDrawerStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
-
     },
     side:{
         display:'flex',

@@ -77,6 +77,7 @@ const useStyles = makeStyles(theme => ({
             title:data.title,
             description:data.description,
             phase:phase>=17 ? 'Documentation':'Implementation',
+            department:isAuthenticated().user.department,
             students:data.team === 'solo'?[
                 isAuthenticated().user._id
             ]:[

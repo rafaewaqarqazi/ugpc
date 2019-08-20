@@ -11,7 +11,7 @@ const UserState = (props) => {
         user:{},
         users:[]
     });
-    const fetchByUserId =async ()=>{
+    const fetchUserById =async ()=>{
         return await getUserById(dispatch);
     };
     const createUser =async user=>{
@@ -23,7 +23,7 @@ const UserState = (props) => {
     return (
         <UserContext.Provider value={{
             user:state,
-            fetchByUserId,
+            fetchUserById,
             createUser
         }}>
             {props.children}

@@ -100,7 +100,10 @@ export const studentAuth = ctx => {
         return
     }
 
-    if (!token &&  user.user.role !== 'Student') {
+    if (!token){
+        Router.push('/sign-in')
+    }
+    else if (token &&  user.user.role !== 'Student') {
         Router.push('/sign-in')
     } else if (!user.user.isEmailVerified && typeof window !== 'undefined'){
         Router.push(`/student/verify-email?id=${user.user._id}`, `/student/verify-email/${user.user._id}`)
@@ -110,6 +113,29 @@ export const studentAuth = ctx => {
 
 
 };
+export const ugpcMemberAuth = (ctx, userRole) =>{
+    const { token } = nextCookie(ctx);
+    const user =token ? JSON.parse(token) : {user:{ugpc_details: {position: ''}}};
+
+    if (ctx.req && !token) {
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.ugpc_details.position !== userRole){
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+
+    if (!token){
+        Router.push('/sign-in')
+    }
+    else if (token &&  user.user.ugpc_details.position !== userRole) {
+        Router.push('/sign-in')
+    }
+    return token
+}
 
 export const chairmanAuth = ctx => {
     const { token } = nextCookie(ctx);
@@ -126,7 +152,10 @@ export const chairmanAuth = ctx => {
         return
     }
 
-    if (!token &&  user.user.role !== 'Chairman DCSSE') {
+    if (!token){
+        Router.push('/sign-in')
+    }
+    else if (token &&  user.user.role !== 'Chairman DCSSE') {
         Router.push('/sign-in')
     }
     return token
@@ -146,7 +175,10 @@ export const programOfficeAuth = ctx => {
         return
     }
 
-    if (!token &&  user.user.role !== 'Program_Office') {
+    if (!token){
+        Router.push('/sign-in')
+    }
+    else if (token &&  user.user.role !== 'Program_Office') {
         Router.push('/sign-in')
     }
     return token
@@ -154,19 +186,20 @@ export const programOfficeAuth = ctx => {
 
 export const landingAuth = ctx => {
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:''}};
+    const user =token ? JSON.parse(token) : {user:{role:'',ugpc_details:{position:'',committee:''}}};
+    console.log(user);
     if (ctx.req && token && user.user.role === 'Student') {
         ctx.res.writeHead(302, { Location: '/student/overview' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'UGPC_Member') {
+    else if (ctx.req && token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
         ctx.res.writeHead(302, { Location: '/UGPC_Member/overview' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'Coordinator') {
-        ctx.res.writeHead(302, { Location: '/coordinator/overview' });
+    else if (ctx.req && token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
+        ctx.res.writeHead(302, { Location: `/coordinator/overview` });
         ctx.res.end();
         return
     }
@@ -191,11 +224,11 @@ export const landingAuth = ctx => {
     else if (token && user.user.role === 'Supervisor') {
         Router.push('/supervisor/overview')
     }
-    else if (token && user.user.role === 'UGPC_Member') {
+    else if (token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
         Router.push('/UGPC_Member/overview')
     }
-    else if (token && user.user.role === 'Coordinator') {
-        Router.push('/coordinator/overview')
+    else if (token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
+        Router.push(`/coordinator/overview`)
     }
     else if (token && user.user.role === 'Chairman DCSSE') {
         Router.push('/chairman/overview')

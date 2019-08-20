@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    department:String,
     documentation:{
         visionDocument:[
             {
@@ -32,7 +33,8 @@ const userSchema = new mongoose.Schema({
             ],
             marks:String,
             uploadedAt:Date,
-            updatedAt:Date
+            updatedAt:Date,
+            meetingDate:Date
         }]
     },
     details:{

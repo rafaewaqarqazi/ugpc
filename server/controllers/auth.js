@@ -115,7 +115,7 @@ exports.signin = (req, res) => {
             })
         }
         //Generating Key
-        const {_id, name, email, role,isEmailVerified} = user;
+        const {_id, name, email, role,isEmailVerified,ugpc_details} = user;
 
         const token = jwt.sign({ _id, role},process.env.JWT_SECRET);
         const loggedInUser = {
@@ -124,7 +124,7 @@ exports.signin = (req, res) => {
             name,
             role,
             isEmailVerified,
-
+            ugpc_details: role === 'UGPC_Member' ? ugpc_details:undefined
         };
         return res.json({
             token,

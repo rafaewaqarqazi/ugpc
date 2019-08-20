@@ -6,6 +6,6 @@ export default React.createContext({
     user:{},
     users:[],
     createUser: user => {},
-    fetchUserById: id =>{},
+    fetchUserById: () =>{},
     removeUser: ()=>{},
 })

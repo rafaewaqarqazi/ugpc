@@ -11,7 +11,7 @@ exports.userById =(req,res,next,id)=>{
                 role,
                 isEmailVerified,
                 student_details:role==='Student'? student_details :undefined,
-                ugpc_details: role==='UGPC_MEMEBER'? ugpc_details :undefined,
+                ugpc_details: role==='UGPC_Member'? ugpc_details :undefined,
                 admin_details: role==='Chairman'? admin_details :undefined
             };
             req.profile = loggedInUser;
