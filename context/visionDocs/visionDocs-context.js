@@ -5,8 +5,9 @@ export default React.createContext({
     errMess:null,
     visionDocs:{},
     fetchByCommittee: committee =>{},
-    addComment:comment=>{},
-    removeComment:comment=>{},
+    comment:comment=>{},
+    changeStatus:status =>{},
+    unComment:comment=>{},
     updateDoc: project=>{},
     removeDoc: ()=>{},
 })

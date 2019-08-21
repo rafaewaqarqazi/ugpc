@@ -29,7 +29,8 @@ const StudentPanelLayout = ({children})=> {
     const [anchorEl2, setAnchorEl2] = React.useState(null);
     useEffect(()=>{
         projectContext.fetchByStudentId();
-        userContext.fetchByUserId(isAuthenticated().user._id)
+        console.log(userContext)
+        userContext.fetchUserById()
     },[]);
     const handleDrawerOpen = ()=> {
         setOpen(true);

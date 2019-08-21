@@ -13,3 +13,28 @@ export const fetchDocsByCommitteeAPI = async ()=>{
     });
     return await res.json();
 };
+export const commentOnVisionAPI = async comment =>{
+    const res = await fetch(`${serverUrl}/projects/visionDocument/comment`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(comment)
+    });
+    return await res.json();
+}
+
+export const changeStatusAPI = async status =>{
+    const res = await fetch(`${serverUrl}/projects/visionDocument/changeStatus`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(status)
+    });
+    return await res.json();
+}
