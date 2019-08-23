@@ -1,12 +1,14 @@
 const Users = require('../models/users');
 const Projects = require('../models/projects');
 const path = require('path');
-const formidable = require('formidable');
-exports.makeEligible = (req, res)=>{
+
+exports.changeEligibility = (req, res)=>{
     let student = req.profile;
-    console.log(student);
-    student.student_details.isEligible = true;
-    student.save()
+    console.log(req.body.status);
+    Users.update({_id:req.params.userId},
+        {
+            $set:{"student_details.isEligible":req.body.status}
+        })
         .then(data => {
             res.json({message:'Success'})
         })
@@ -58,11 +60,30 @@ exports.getNotEnrolledStudents =async (req, res)=>{
         ...s,
         req.params.userId
     ];
-   console.log(req.profile);
     const users = await Users.where('role').equals('Student')
         .where({"student_details.isEligible": "Eligible"})
         .where({"student_details.department": req.profile.student_details.department})
         .where('_id').nin(ids)
         .select('_id name email role student_details');
     await res.json(users)
+};
+exports.fetchForProgramOffice =async (req, res)=>{
+    try {
+        const students = await Users.find({
+            $and:
+                [
+                    {role:'Student'},
+                    {
+                        $or:[
+                            {"student_details.isEligible":'Pending'},
+                            {"student_details.isEligible":'Not Eligible'}
+                            ]
+                    }
+                ]
+        }).select('_id name email student_details department');
+
+        await res.json(students)
+    }catch (e) {
+        res.status(400).json(e.message)
+    }
 };

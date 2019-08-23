@@ -143,7 +143,7 @@ const CoordinatorLayout = ({children})=> {
                                     open={Boolean(anchorEl2)}
                                     onClose={handleProfileMenuClose}
                                 >
-                                    <Link href='/coordinator/profile'>
+                                    <Link href='/user/profile'>
                                         <MenuItem>
                                             <ListItemIcon>
                                                 <PermIdentity />

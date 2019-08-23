@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import React, { useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     AppBar,
@@ -75,6 +75,14 @@ const useStyles = makeStyles(theme => ({
                         <ListItemText primary={'Login'} />
                     </ListItem>
                 </Link>
+                <Link href='/student/sign-up'>
+                    <ListItem button >
+                        <ListItemIcon >
+                            <Input />
+                        </ListItemIcon>
+                        <ListItemText primary={'Create an Account'} />
+                    </ListItem>
+                </Link>
             </List>
         </div>
     );
@@ -112,7 +120,7 @@ const useStyles = makeStyles(theme => ({
                                 <Button color="primary" variant='outlined' className={classes.button}>Login</Button>
                             </Link>
                             <Link href='/student/sign-up'>
-                                <Button color="primary" variant='outlined' className={classes.button}>Sign Up</Button>
+                                <Button color="primary" variant='outlined' className={classes.button}>Create an Account</Button>
                             </Link>
                         </Hidden>
                     </Toolbar>

@@ -37,8 +37,7 @@ const useStyles = makeStyles(theme=>({
         display:'flex',
         flexDirection: 'row',
         justifyContent:'space-between',
-        alignItems: 'center',
-        boxShadow:'10'
+        alignItems: 'center'
     },
     formControl: {
         margin: theme.spacing(1),

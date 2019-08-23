@@ -136,7 +136,7 @@ const ChairmanPanelLayout = ({children})=> {
                                     open={Boolean(anchorEl2)}
                                     onClose={handleProfileMenuClose}
                                 >
-                                    <Link href='/student/profile'>
+                                    <Link href='/user/profile'>
                                         <MenuItem>
                                             <ListItemIcon>
                                                 <PermIdentity />

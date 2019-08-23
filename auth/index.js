@@ -221,7 +221,7 @@ export const landingAuth = ctx => {
         return
     }
     else if (ctx.req && token && user.user.role === 'Program_Office') {
-        ctx.res.writeHead(302, { Location: '/supervisor/overview' });
+        ctx.res.writeHead(302, { Location: '/program-office' });
         ctx.res.end();
         return
     }
@@ -241,7 +241,7 @@ export const landingAuth = ctx => {
         Router.push('/chairman/overview')
     }
     else if (token && user.user.role === 'Program_Office') {
-        Router.push('/chairman/overview')
+        Router.push('/program-office')
     }
 
     return token
