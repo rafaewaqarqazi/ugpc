@@ -49,6 +49,7 @@ const SignUpComponent = () => {
             password:values.password,
             department:values.department,
             student_details:{
+                isEligible:'Pending',
                 batch:values.batch,
                 regNo:`${values.regNo}-FBAS/${values.department}/${values.batch}`
             }

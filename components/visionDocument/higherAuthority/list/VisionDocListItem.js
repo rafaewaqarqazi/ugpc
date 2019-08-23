@@ -2,12 +2,15 @@ import React, { useState} from 'react';
 import {Badge, Box, Container, Hidden, Typography} from "@material-ui/core";
 import VisionDocDetailsDialog from "./VisionDocDetailsDialog";
 import {makeStyles} from "@material-ui/styles";
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles(theme =>({
+    listItemContainer:{
+      marginTop:theme.spacing(2)
+    },
     listItem:{
         display:'flex',
         cursor:'pointer',
-
     },
     listItemColor:{
         backgroundColor:theme.palette.secondary.light,
@@ -15,9 +18,9 @@ const useStyles = makeStyles(theme =>({
         minWidth:theme.spacing(0.6)
     },
     listItemContent:{
-        padding: theme.spacing(1.2),
+        padding: theme.spacing(0.7),
         '&:hover':{
-            padding:theme.spacing(1.7),
+            boxShadow:theme.shadows[6],
         },
         width:'100%',
         display:'flex',
@@ -48,14 +51,14 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
         setOpen(true);
     };
     return (
-        <Container style={{marginTop:10}}>
+        <div className={classes.listItemContainer}>
             {
                 filter.length === 0?
                     <div>
                         <Typography variant='h5' color='textSecondary'>No Documents Found</Typography>
                     </div>
                     :filter.map(doc=>(
-                        <Box boxShadow={2} mb={0.5}  >
+                        <div>
                             <Hidden smUp implementation="css">
                                 <div className={classes.listItem} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemColor}/>
@@ -94,8 +97,8 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
 
                                 </div>
                             </Hidden>
-
-                        </Box>
+                            <Divider/>
+                        </div>
                     ))}
             {
                 open &&
@@ -109,7 +112,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
                 />
             }
 
-        </Container>
+        </div>
     );
 };
 

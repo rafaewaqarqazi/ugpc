@@ -16,10 +16,7 @@ exports.studentSignup = async (req, res)=>{
 
     const user = await new User({
         ...req.body,
-        emailVerificationCode: emailVerCode,
-        student_details:{
-            isEligible:'Pending'
-        }
+        emailVerificationCode: emailVerCode
     });
     const student = await user.save();
     if (student){

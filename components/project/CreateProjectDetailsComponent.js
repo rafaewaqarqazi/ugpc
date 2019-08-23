@@ -118,7 +118,13 @@ const CreateProjectDetailsComponent = ({data, setData,error, setErrors,value,set
                         </ListItem>
                         <Collapse in={open} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding className={classes.root}>
-                                {studentsList.list.map((student,index)=>(
+                                {
+                                    studentsList.list.length === 0 ?
+                                    <ListItem>
+                                        <Typography variant='h5'>No Students Found</Typography>
+                                    </ListItem>
+                                       :
+                                    studentsList.list.map((student,index)=>(
                                     <Fragment key={index}>
                                         <ListItem alignItems="flex-start"
                                                   selected={selectedIndex === index}

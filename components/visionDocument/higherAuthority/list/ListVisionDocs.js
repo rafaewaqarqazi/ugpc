@@ -15,8 +15,10 @@ import {Assignment, Search} from '@material-ui/icons';
 import VisionDocListItem from "./VisionDocListItem";
 const useStyles = makeStyles(theme=>({
     listContainer:{
-        padding:theme.spacing(2),
+        padding:theme.spacing(2,2,10,2),
         marginTop: theme.spacing(8),
+        boxShadow: theme.shadows[10],
+        marginBottom: theme.spacing(5)
     },
     top:{
         width: theme.spacing(11),
@@ -27,7 +29,8 @@ const useStyles = makeStyles(theme=>({
         alignItems:'center',
         justifyContent: 'center',
         marginTop:-theme.spacing(5),
-        marginBottom:theme.spacing(5)
+        marginBottom:theme.spacing(5),
+        boxShadow:theme.shadows[10]
     },
     listHeader:{
         paddingBottom: theme.spacing(1.2),
@@ -130,11 +133,11 @@ const ListVisionDocs = ({docs}) => {
 
     return (
         <div>
-            <Box boxShadow={10} className={classes.listContainer}>
-                <Box boxShadow={10} className={classes.top}>
+            <div className={classes.listContainer}>
+                <div className={classes.top}>
                     <Assignment fontSize='large'/>
-                </Box>
-                <Box boxShadow={3} p={2}>
+                </div>
+                <div >
                     <div className={classes.listHeader}>
                         <FormControl variant="outlined" margin='dense' className={classes.formControl}>
                             <InputLabel ref={inputLabel} htmlFor="status">
@@ -177,8 +180,8 @@ const ListVisionDocs = ({docs}) => {
                         inputLabel={inputLabel}
                         labelWidth={labelWidth}
                     />
-                </Box>
-            </Box>
+                </div>
+            </div>
         </div>
     );
 };

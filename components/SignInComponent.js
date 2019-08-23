@@ -51,9 +51,7 @@ const SignInComponent = () => {
                         serverResErrorText:data.error
                     })
                 }else {
-                    authenticate(data,()=>{
-                        router.push('/')
-                    })
+                    authenticate(data)
                 }
 
             }).catch (e=> {

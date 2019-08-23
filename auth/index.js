@@ -4,6 +4,7 @@ import cookie from 'js-cookie';
 import Router from 'next/router'
 import nextCookie from 'next-cookies';
 import router from "next/dist/client/router";
+
 export const signup = user =>{
     return  fetch(`${serverUrl}/auth/student/signup`,{
         method:"POST",
@@ -34,13 +35,12 @@ export const signin = user =>{
         .catch(err => console.log(err));
 };
 
-export const authenticate = (data, next)=>{
+export const authenticate = (data)=>{
     cookie.set('token',data,{expires: 7});
-    next();
+    Router.push('/')
 };
 
 export const signout = ()=>{
-
     cookie.remove('token');
    Router.push('/sign-in')
 };
@@ -115,14 +115,18 @@ export const studentAuth = ctx => {
 };
 export const ugpcMemberAuth = (ctx, userRole) =>{
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{ugpc_details: {position: ''}}};
-
+    const user =token ? JSON.parse(token) : {user:{role:'',ugpc_details: {position: ''}}};
     if (ctx.req && !token) {
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.ugpc_details.position !== userRole){
+    else if (ctx.req && token && user.user.role !== 'UGPC_Member'){
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position !== userRole){
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
@@ -131,7 +135,10 @@ export const ugpcMemberAuth = (ctx, userRole) =>{
     if (!token){
         Router.push('/sign-in')
     }
-    else if (token &&  user.user.ugpc_details.position !== userRole) {
+    else if (token &&  user.user.role !== 'UGPC_Member') {
+        Router.push('/sign-in')
+    }
+    else if (token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position !== userRole){
         Router.push('/sign-in')
     }
     return token
