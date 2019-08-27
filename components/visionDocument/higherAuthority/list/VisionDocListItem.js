@@ -1,43 +1,12 @@
 import React, { useState} from 'react';
-import {Badge, Box, Container, Hidden, Typography} from "@material-ui/core";
+import {Badge, Hidden, Typography} from "@material-ui/core";
 import VisionDocDetailsDialog from "./VisionDocDetailsDialog";
-import {makeStyles} from "@material-ui/styles";
 import Divider from "@material-ui/core/Divider";
+import {useListItemStyles} from "../../../../src/material-styles/listItemStyles";
 
-const useStyles = makeStyles(theme =>({
-    listItemContainer:{
-      marginTop:theme.spacing(2)
-    },
-    listItem:{
-        display:'flex',
-        cursor:'pointer',
-    },
-    listItemColor:{
-        backgroundColor:theme.palette.secondary.light,
-        minHeight:'100%',
-        minWidth:theme.spacing(0.6)
-    },
-    listItemContent:{
-        padding: theme.spacing(0.7),
-        '&:hover':{
-            boxShadow:theme.shadows[6],
-        },
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
-    },
-    badgeMargin: {
-        margin: theme.spacing(0.5),
-    },
-    badgePadding: {
-        padding: theme.spacing(0, 1),
-    },
-}))
 
 const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
-    const classes = useStyles();
+    const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
     const [open,setOpen] = useState(false);
 
@@ -50,6 +19,39 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
 
         setOpen(true);
     };
+
+    const getBorderColor = status =>{
+        if (status === 'Waiting for Initial Approval'){
+            return {
+                borderLeft:'4px solid #1A237E'
+            }
+        }
+        else if (status === 'Approved for Meeting'){
+            return {
+                borderLeft:'4px solid #1565C0'
+            }
+        }
+        else if (status === 'Meeting Scheduled'){
+            return {
+                borderLeft:'4px solid #FBC02D'
+            }
+        }
+        else if (status === 'Approved with Changes'){
+            return {
+                borderLeft:'4px solid #004D40'
+            }
+        }
+        else if (status === 'Approved'){
+            return {
+                borderLeft:'4px solid #4CAF50'
+            }
+        }
+        else if (status === 'Rejected'){
+            return {
+                borderLeft:'4px solid #b71c1c'
+            }
+        }
+    }
     return (
         <div className={classes.listItemContainer}>
             {
@@ -58,7 +60,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
                         <Typography variant='h5' color='textSecondary'>No Documents Found</Typography>
                     </div>
                     :filter.map(doc=>(
-                        <div>
+                        <div key={doc.documentation.visionDocument._id}>
                             <Hidden smUp implementation="css">
                                 <div className={classes.listItem} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemColor}/>
@@ -80,9 +82,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
                                 </div>
                             </Hidden>
                             <Hidden xsDown implementation="css">
-                                <div className={classes.listItem} onClick={()=>openDetails(doc)}>
-                                    <div className={classes.listItemColor}/>
-
+                                <div className={classes.listItem} style={getBorderColor(doc.documentation.visionDocument.status)} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemContent}>
                                         <Typography noWrap>{doc.title}</Typography>
                                         <Typography noWrap color='textSecondary'>{doc.documentation.visionDocument.status}</Typography>

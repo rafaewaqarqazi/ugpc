@@ -1,7 +1,12 @@
 import React, {useReducer, useEffect} from 'react';
 import VisionDocsContext from './visionDocs-context';
 import {visionDocsReducer} from "./visionDocsReducer";
-import {getDocsByCommittee,commentOnVision,changeStatusAction} from "./ActionCreators";
+import {
+    getDocsByCommittee,
+    commentOnVision,
+    changeStatusAction,
+    scheduleVisionDefenceAction
+} from "./ActionCreators";
 
 const VisionDocsState = (props) => {
     const [state, dispatch] = useReducer(visionDocsReducer,{
@@ -17,6 +22,10 @@ const VisionDocsState = (props) => {
     }
     const changeStatus = async status =>{
         return await changeStatusAction(status,dispatch);
+    };
+    const scheduleVisionDefence = async data =>{
+
+        return await scheduleVisionDefenceAction(data,dispatch);
     }
 useEffect(()=>{
     console.log('Vision Docs State:',state)
@@ -26,7 +35,8 @@ useEffect(()=>{
             visionDocs:state,
             fetchByCommittee,
             comment,
-            changeStatus
+            changeStatus,
+            scheduleVisionDefence
         }}>
             {props.children}
         </VisionDocsContext.Provider>

@@ -17,6 +17,8 @@ import {isAuthenticated} from "../../auth";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import router from 'next/router';
 import StepperComponent from "../stepper/StepperComponent";
+import UserContext from '../../context/user/user-context';
+
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
@@ -26,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
  const CreateProject =()=> {
      const context = useContext(ProjectContext);
-
+    const userContext = useContext(UserContext);
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
      const [value, setValue] = useState('solo');
@@ -72,16 +74,16 @@ const useStyles = makeStyles(theme => ({
     const handleSubmit= e =>{
         e.preventDefault();
         setLoading(true);
-        const phase = isAuthenticated().user.student_details.batch.slice(1,3);
+        const phase = userContext.user.user.student_details.batch.slice(1,3);
         const projectData = {
             title:data.title,
             description:data.description,
             phase:phase>=17 ? 'Documentation':'Implementation',
-            department:isAuthenticated().user.department,
+            department:userContext.user.user.department,
             students:data.team === 'solo'?[
-                isAuthenticated().user._id
+                userContext.user.user._id
             ]:[
-                isAuthenticated().user._id,
+                userContext.user.user._id,
                 data.partnerId
             ]
         };

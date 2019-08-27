@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
+const projectsSchema = new mongoose.Schema({
     title:{
       type:String,
       required:true
@@ -108,4 +108,4 @@ const userSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('Projects',  userSchema);
+module.exports = mongoose.model('Projects',  projectsSchema);

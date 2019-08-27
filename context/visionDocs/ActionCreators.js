@@ -1,5 +1,10 @@
 import * as Actions from './ActionTypes';
-import {fetchDocsByCommitteeAPI,commentOnVisionAPI,changeStatusAPI} from "../../utils/apiCalls/visionDocs";
+import {
+    fetchDocsByCommitteeAPI,
+    commentOnVisionAPI,
+    changeStatusAPI,
+    scheduleVisionDefenceAPI
+} from "../../utils/apiCalls/visionDocs";
 
 //Fetchers
 
@@ -14,11 +19,14 @@ export const commentOnVision = async (comment,dispatch)=>{
 }
 export const changeStatusAction = async (status,dispatch)=>{
     const res =await changeStatusAPI(status);
-    dispatch(docsLoading());
-    const docs = await fetchDocsByCommitteeAPI();
-    dispatch(addDocs(docs));
+   await getDocsByCommittee(dispatch);
     return await res;
 }
+
+export const scheduleVisionDefenceAction = async (data,dispatch)=>{
+    const res =await scheduleVisionDefenceAPI(data);
+    return await res;
+};
 //Action Dispatchers
 export const addDocs = (project)=>({
     type:Actions.ADD_DOCS,

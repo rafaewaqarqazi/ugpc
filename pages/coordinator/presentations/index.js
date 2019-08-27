@@ -1,13 +1,17 @@
 import {withCoordinatorAuthSync} from "../../../components/routers/coordinatorAuth";
 import CoordinatorLayout from "../../../components/Layouts/CoordinatorLayout";
-import TitleComponent from "../../../components/title/TitleComponent";
+import VisionDocsState from "../../../context/visionDocs/VisionDocsState";
+import PresentationComponent from "../../../components/presentations/PresentationComponent";
 
 const Index = () => {
     return (
-        <CoordinatorLayout>
-            <TitleComponent title='Presentations'/>
-        </CoordinatorLayout>
+        <VisionDocsState>
+            <CoordinatorLayout>
+                <PresentationComponent />
+            </CoordinatorLayout>
+        </VisionDocsState>
     );
 };
+
 
 export default withCoordinatorAuthSync(Index);

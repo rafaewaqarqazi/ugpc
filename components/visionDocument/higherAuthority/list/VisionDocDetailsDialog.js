@@ -54,23 +54,18 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const classes = useStyles();
     const visionDocsContext = useContext(VisionDocsContext);
     const [changeStatus,setChangeStatus] = useState('No Change');
-    const [comment,setComment] = useState('');
-    // const [labelWidth, setLabelWidth] = useState(0);
-    // const inputLabel = useRef(null);
-    // useEffect(() => {
-    //     setLabelWidth(inputLabel.current.offsetWidth);
-    // }, []);
+    const [commentText,setCommentText] = useState('');
 
     const handleChangeStatus = e =>{
         setChangeStatus(e.target.value)
     };
     const handleCommentChange = e =>{
-        setComment(e.target.value)
+        setCommentText(e.target.value)
     };
     const handleComment = ()=>{
-        if (comment !== ''){
+        if (commentText !== ''){
             const commentDetails = {
-                text:comment,
+                text:commentText,
                 projectId:currentDocument._id,
                 documentId:currentDocument.documentation.visionDocument._id,
                 author:isAuthenticated().user._id
@@ -79,7 +74,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
             visionDocsContext.comment(commentDetails)
                 .then(res =>{
                     const a = currentDocument.documentation.visionDocument.comments.push({
-                        text:comment,
+                        text:commentText,
                         createdAt:Date.now(),
                         author:{
                             name:isAuthenticated().user.name,
@@ -149,10 +144,17 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                             <MenuItem value='No Change'>No Change</MenuItem>
                                             {
                                                 isAuthenticated().user.ugpc_details.position === 'Coordinator' &&
-                                                <MenuItem value='Approved for Meeting'>Approve for Meeting</MenuItem>
+                                                    currentDocument.documentation.visionDocument.status === 'Waiting for Initial Approval' &&
+                                                        <MenuItem value='Approved for Meeting'>Approve for Meeting</MenuItem>
                                             }
-                                            <MenuItem value='Approved With Changes'>Approve With Changes</MenuItem>
-                                            <MenuItem value='Approved'>Approve</MenuItem>
+                                            {
+                                                currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
+                                                <>
+                                                    <MenuItem value='Approved With Changes'>Approve With Changes</MenuItem>
+                                                    <MenuItem value='Approved'>Approve</MenuItem>
+                                                </>
+                                            }
+
                                             <MenuItem value='Rejected'>Reject</MenuItem>
                                         </Select>
                                     </FormControl>
@@ -191,7 +193,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 </Typography>
                                 {
                                     currentDocument.students.map((student,index)=>
-                                        <Container>
+                                        <Container key={index}>
                                             <List>
                                                 <ListItem alignItems="flex-start">
                                                     <ListItemAvatar>
@@ -247,7 +249,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 {
                                                     currentDocument.documentation.visionDocument.comments.map(comment=>
 
-                                                        <ListItem alignItems="flex-start">
+                                                        <ListItem alignItems="flex-start" key={comment._id}>
                                                             <ListItemAvatar>
                                                                 <Avatar alt="Cindy Baker" src="/static/images/avatar/personAvatar.png" />
                                                             </ListItemAvatar>
@@ -284,7 +286,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                     variant="outlined"
                                     multiline
                                     fullWidth
-                                    value={comment}
+                                    value={commentText}
                                     onChange={handleCommentChange}
                                     rowsMax="4"
                                     InputProps={{

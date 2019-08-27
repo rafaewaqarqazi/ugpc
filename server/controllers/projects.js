@@ -52,7 +52,7 @@ exports.fetchWaitingVisionDocuments = (req, res)=>{
         .catch(err => res.status(400).json(err.message))
 };
 
-exports.fetchVisionDocsByCommittee =async (req, res)=>{
+exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
 
     try {
         //Waiting For Initial approval Query
@@ -158,5 +158,23 @@ exports.changeStatus = (req, res)=>{
     ).then(result => {
         res.json(result)
     })
+        .catch(err => res.json(err))
+}
+
+exports.scheduleVisionDefence = async (req,res)=>{
+    const {projectIds,visionDocsIds,date} = req.body;
+    Projects.updateMany(
+        {"_id":{$in:projectIds},"documentation.visionDocument._id":{$in:visionDocsIds}},
+        {
+            $set:{
+                "documentation.visionDocument.$.status":'Meeting Scheduled',
+                "documentation.visionDocument.$.updatedAt":Date.now(),
+                "documentation.visionDocument.$.meetingDate":date,
+            }
+        }
+    )
+        .then(result => {
+            res.json(result)
+        })
         .catch(err => res.json(err))
 }
