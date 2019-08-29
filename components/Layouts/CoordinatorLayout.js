@@ -28,7 +28,8 @@ import {
     Add,
     Face,
     PermIdentity,
-    ExitToAppOutlined
+    ExitToAppOutlined,
+    ScheduleOutlined
 } from "@material-ui/icons";
 import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
@@ -116,7 +117,7 @@ const CoordinatorLayout = ({children})=> {
                                         open={Boolean(anchorEl)}
                                         onClose={handleAddMenuClose}
                                     >
-                                        <Link href='/coordinator/add/presentation'>
+                                        <Link href='/coordinator/presentation'>
                                             <MenuItem>
                                                 <ListItemIcon>
                                                     <SupervisorAccountOutlined />
@@ -214,9 +215,17 @@ const CoordinatorLayout = ({children})=> {
                             <Link href='/coordinator/presentations'>
                                 <ListItem button >
                                     <ListItemIcon>
+                                        <ScheduleOutlined />
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Sch Presentations"} />
+                                </ListItem>
+                            </Link>
+                            <Link href='/coordinator/meetings'>
+                                <ListItem button >
+                                    <ListItemIcon>
                                         <VisibilityOutlined />
                                     </ListItemIcon>
-                                    <ListItemText primary={"Presentations"} />
+                                    <ListItemText primary={"Meetings"} />
                                 </ListItem>
                             </Link>
                             <Link href='/coordinator/supervisors'>

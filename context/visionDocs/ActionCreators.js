@@ -3,8 +3,10 @@ import {
     fetchDocsByCommitteeAPI,
     commentOnVisionAPI,
     changeStatusAPI,
-    scheduleVisionDefenceAPI
+    scheduleVisionDefenceAPI,
+    submitAdditionFilesVisionDocAPI,
 } from "../../utils/apiCalls/visionDocs";
+
 
 //Fetchers
 
@@ -23,10 +25,14 @@ export const changeStatusAction = async (status,dispatch)=>{
     return await res;
 }
 
+export const submitAdditionFilesVisionDocAction = async (formData,type,dispatch)=>{
+    return  await submitAdditionFilesVisionDocAPI(formData,type);
+}
 export const scheduleVisionDefenceAction = async (data,dispatch)=>{
     const res =await scheduleVisionDefenceAPI(data);
     return await res;
 };
+
 //Action Dispatchers
 export const addDocs = (project)=>({
     type:Actions.ADD_DOCS,

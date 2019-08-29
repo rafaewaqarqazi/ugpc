@@ -11,13 +11,15 @@ const {userById} = require("../controllers/users");
 const {changeEligibility,
     uploadVisionDocument,
     getNotEnrolledStudents,
-    fetchForProgramOffice
+    fetchForProgramOffice,
+    resubmitVisionDoc
 } = require('../controllers/students');
 const upload = require('../upload');
 const router = express.Router();
 
 router.put('/eligibility/:userId',changeEligibility);
-router.get('/fetch/programOffice',fetchForProgramOffice)
+router.get('/fetch/programOffice',fetchForProgramOffice);
+router.put('/additionalFile/vision-doc/:type',upload.single('file'),resubmitVisionDoc)
 router.post('/project/new',requireSignin,isStudent,createProjectValidator,createProject);
 router.put("/project/vision-doc/:type/:id",upload.single('file'), uploadVisionDocument);
 router.get('/notEnrolled/:userId',requireSignin,isStudent,getNotEnrolledStudents);

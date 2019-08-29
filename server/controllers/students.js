@@ -1,16 +1,44 @@
 const Users = require('../models/users');
+require('dotenv').config();
 const Projects = require('../models/projects');
 const path = require('path');
+const {sendEmail} = require("../helpers");
 
 exports.changeEligibility = (req, res)=>{
-    let student = req.profile;
-    console.log(req.body.status);
-    Users.update({_id:req.params.userId},
-        {
-            $set:{"student_details.isEligible":req.body.status}
-        })
-        .then(data => {
-            res.json({message:'Success'})
+    Users.findOneAndUpdate({_id:req.params.userId},
+        {"student_details.isEligible":req.body.status}
+        )
+        .then(user => {
+            const emailText = req.body.status === 'Eligible'?
+                `Dear Student,/nYou are Eligible for FYP, please click on the following link to start your Project./n${
+                    process.env.CLIENT_URL
+                }/student/project/create`
+                :
+                'Dear Student,/n You are NOT ELIGIBLE for FYP YET. For further details please visit program office';
+            const emailHtml =req.body.status === 'Eligible'?
+                `
+                    <p>Dear Student,</p>
+                    <p>You are Eligible for FYP, please click on the following link to start your Project.</p>
+                    <p>${process.env.CLIENT_URL}/student/project/create</p>
+                `:
+                `
+                <p>Dear Student,</p>
+                    <p>You are <b>NOT ELIGIBLE</b> for FYP YET. For further details please visit program office</p>
+                `;
+
+            const emailData = {
+                from: "noreply@node-react.com",
+                to: user.email,
+                subject: "Eligibility Status Update | Program Office",
+                text: emailText,
+                html: emailHtml
+            };
+
+            sendEmail(emailData)
+                .then(()=>{
+                    return  res.json({message:'Success'})
+                });
+
         })
         .catch(err => {
             res.status(400).json({error:err})
@@ -27,10 +55,12 @@ exports.uploadVisionDocument = (req, res) => {
                            "majorModules":JSON.parse(req.body.majorModules),
                             "status":'Waiting for Initial Approval',
                             "uploadedAt":Date.now(),
-                            "document":{
-                               "originalname":req.file.originalname,
-                                "filename":req.file.filename
-                            }
+                            "documents":[{
+                                "originalname":req.file.originalname,
+                                "filename":req.file.filename,
+                                "type":req.file.mimetype
+                            }]
+
               }
            }
        };
@@ -87,3 +117,23 @@ exports.fetchForProgramOffice =async (req, res)=>{
         res.status(400).json(e.message)
     }
 };
+
+exports.resubmitVisionDoc = (req,res)=>{
+    const {projectId,documentId} = req.body;
+    console.log('File',req.file)
+    Projects.updateOne(
+        {"_id":projectId, "documentation.visionDocument._id":documentId},
+        {
+            $push:{
+                "documentation.visionDocument.$.documents":{
+                    "originalname":req.file.originalname,
+                    "filename":req.file.filename,
+                    "type":req.file.mimetype
+                }
+            }
+        }
+    ).then(result => {
+        res.json(result)
+    })
+        .catch(err => res.json(err))
+}

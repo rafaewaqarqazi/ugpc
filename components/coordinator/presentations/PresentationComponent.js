@@ -1,6 +1,6 @@
 import React, {useEffect, useContext} from 'react';
 import {Container, LinearProgress} from "@material-ui/core";
-import VisionDocsContext from '../../context/visionDocs/visionDocs-context';
+import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import {makeStyles} from "@material-ui/styles";
 import ListVisionDocsForPresentation from "./ListVisionDocsForPresentation";
 

@@ -10,20 +10,16 @@ const StudentRouter= props =>{
     const r = useRouter();
     const context = useContext(ProjectContext);
     const userContext = useContext(UserContext);
-    const[pending, setPending] = useState(false);
-    const [notEligible, setNotEligible] = useState(false);
-   useEffect(()=>{
-       if (!userContext.user.isLoading){
-           const pend = userContext.user.user.student_details.isEligible === 'Pending';
-           const notElg = userContext.user.user.student_details.isEligible === 'Not Eligible';
-            if (pend){
-               setPending(true);
-           }
-           else if (notElg){
-               setNotEligible(true);
-           }
-       }
-   },[userContext.user.isLoading]);
+    const pending = !userContext.user.isLoading ?
+        userContext.user.user.role === 'Student'?
+            userContext.user.user.student_details.isEligible === 'Pending'
+            : false
+        :false;
+    const notEligible = !userContext.user.isLoading ?
+        userContext.user.user.role === 'Student'?
+            userContext.user.user.student_details.isEligible === 'Not Eligible'
+            : false
+        :false;
 
     if (userContext.user.isLoading){
         return (

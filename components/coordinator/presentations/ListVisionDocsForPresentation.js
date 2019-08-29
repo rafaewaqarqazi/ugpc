@@ -10,15 +10,15 @@ import {
     DialogContentText,
     DialogTitle, LinearProgress
 } from "@material-ui/core";
-import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
+import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import {formatData} from "./formatData";
-import VisionDocDetailsDialog from "../visionDocument/higherAuthority/list/VisionDocDetailsDialog";
+import VisionDocDetailsDialog from "../../visionDocument/higherAuthority/list/VisionDocDetailsDialog";
 import {DateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import VisionDocsContext from '../../context/visionDocs/visionDocs-context';
-import SuccessSnackBar from "../snakbars/SuccessSnackBar";
+import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
+import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 
 const useStyles = makeStyles(theme =>({
     scheduleContainer:{
@@ -158,6 +158,7 @@ const ListVisionDocsForPresentation = ({docs}) => {
                 setOpenSnackbar(true);
                 setTimeout(()=>{
                     visionDocsContext.fetchByCommittee();
+                    visionDocsContext.fetchMeetings();
                 },2000);
 
                 setDialogOpen(false);

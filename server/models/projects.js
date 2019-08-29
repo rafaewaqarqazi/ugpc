@@ -23,7 +23,7 @@ const projectsSchema = new mongoose.Schema({
             scope:String,
             majorModules:[],
             status:String,
-            document:{},
+            documents:[],
             comments:[
                 {
                     text:String,

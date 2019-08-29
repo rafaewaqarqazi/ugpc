@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     Button,
     Chip, Container, Dialog, DialogActions,
@@ -14,10 +14,11 @@ import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../../auth";
 import Avatar from "@material-ui/core/Avatar";
 import {serverUrl} from "../../../../utils/config";
-import {Assignment, Send} from "@material-ui/icons";
+import {Assignment, PictureAsPdfOutlined, Send} from "@material-ui/icons";
 import VisionDocsContext from "../../../../context/visionDocs/visionDocs-context";
 import {makeStyles} from "@material-ui/styles";
 import {green} from "@material-ui/core/colors";
+import {getVisionDocsStatusChipColor} from "../../../../src/material-styles/visionDocsListBorderColor";
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -26,6 +27,28 @@ const useStyles = makeStyles(theme => ({
     },
     detailsContent:{
         marginBottom:theme.spacing(2)
+    },
+    document: {
+        cursor:'pointer',
+        width:70,
+        height:70,
+        border:'1px solid lightgrey',
+        borderRadius:2,
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        "&:hover":{
+            boxShadow:theme.shadows[2]
+        },
+        '& a':{
+            textDecoration:'none',
+            color:'#9E9E9E'
+        },
+        marginRight:theme.spacing(1)
+    },
+    documentsList:{
+        display: 'flex',
+        padding: theme.spacing(1)
     },
     greenAvatar: {
         margin: 10,
@@ -55,7 +78,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const visionDocsContext = useContext(VisionDocsContext);
     const [changeStatus,setChangeStatus] = useState('No Change');
     const [commentText,setCommentText] = useState('');
-
     const handleChangeStatus = e =>{
         setChangeStatus(e.target.value)
     };
@@ -124,7 +146,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 <Typography color='textSecondary'>
                                     STATUS
                                 </Typography>
-                                <Chip color='primary' label={currentDocument.documentation.visionDocument.status}  size="small"/>
+                                <Chip color='primary' style={getVisionDocsStatusChipColor(currentDocument.documentation.visionDocument.status)} label={currentDocument.documentation.visionDocument.status}  size="small"/>
                             </div>
                             {
                                 isAuthenticated().user.role === 'UGPC_Member' &&
@@ -149,11 +171,13 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                             }
                                             {
                                                 currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
-                                                <>
                                                     <MenuItem value='Approved With Changes'>Approve With Changes</MenuItem>
-                                                    <MenuItem value='Approved'>Approve</MenuItem>
-                                                </>
                                             }
+                                            {
+                                                currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
+                                                <MenuItem value='Approved'>Approve</MenuItem>
+                                            }
+
 
                                             <MenuItem value='Rejected'>Reject</MenuItem>
                                         </Select>
@@ -226,13 +250,53 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                         <Grid item xs={12} sm={6}>
                             <div className={classes.detailsContent}>
                                 <Typography variant='subtitle2'>
-                                    Document
+                                    Documents
                                 </Typography>
-                                <Avatar className={classes.greenAvatar} style={{borderRadius:0}}>
-                                    <a href={`${serverUrl}/../pdf/${currentDocument.documentation.visionDocument.document.filename}`} target="_blank" >
-                                        <Assignment style={{width: 50, height: 50,color: '#fff'}} />
-                                    </a>
-                                </Avatar>
+                                <div>
+                                    <Container>
+                                        <Typography noWrap>Vision Docs</Typography>
+                                        <div className={classes.documentsList}>
+                                            {
+                                                currentDocument.documentation.visionDocument.documents.map(document =>{
+                                                    if(document.type === 'application/pdf'){
+                                                        return (
+                                                            <div className={classes.document} key={document.filename} >
+                                                                <a href={`${serverUrl}/../pdf/${document.filename}`} target="_blank" >
+                                                                    <PictureAsPdfOutlined style={{width: 50, height: 50}} />
+                                                                </a>
+                                                            </div>
+                                                        )}
+
+                                                })
+                                            }
+                                        </div>
+
+                                    </Container>
+
+                                </div>
+                                <div>
+                                    <Container>
+                                        <Typography noWrap>Presentation</Typography>
+                                        <div className={classes.documentsList}>
+                                            {
+                                                currentDocument.documentation.visionDocument.documents.map(document =>{
+                                                    if(document.type === 'application/vnd.ms-powerpoint' || document.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
+                                                        return (
+                                                            <div className={classes.document} key={document.filename}>
+                                                                <a key={document.filename} href={`${serverUrl}/../presentation/${document.filename}`} target="_blank" >
+                                                                    <Assignment style={{width: 50, height: 50}} />
+                                                                </a>
+                                                            </div>
+                                                        )}
+
+                                                })
+                                            }
+                                        </div>
+
+                                    </Container>
+
+                                </div>
+
                             </div>
                             <div className={classes.detailsContent}>
                                 <Typography variant='subtitle2'>

@@ -1,5 +1,7 @@
 const Projects = require('../models/projects');
-
+const mongoose = require('mongoose')
+const {sendEmail} = require("../helpers");
+const moment = require('moment');
 exports.getAllProjects = (req, res)=>{
     Projects.find()
         .populate('students','_id name')
@@ -53,7 +55,6 @@ exports.fetchWaitingVisionDocuments = (req, res)=>{
 };
 
 exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
-
     try {
         //Waiting For Initial approval Query
         const waitingResults= await Projects.aggregate([
@@ -63,8 +64,10 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$match:{"documentation.visionDocument.status":"Waiting for Initial Approval"}},
             {$sort:{"documentation.visionDocument.uploadedAt":1}}
         ]);
-        const waitingR = await Projects.populate(waitingResults,{path:"students",select:'_id name department student_details.regNo'});
-        const waiting = await Projects.populate(waitingR,{path:"documentation.visionDocument.comments.author",select:'_id name role department'});
+        const waiting = await Projects.populate(waitingResults,[
+            {path:"students",select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
+            ]);
         //Waiting For Meeting Schedule Query
         const approvedForMeetingResults= await Projects.aggregate([
             {$match:{department:req.params.committee}},
@@ -73,8 +76,10 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$match:{"documentation.visionDocument.status":"Approved for Meeting"}},
             {$sort:{"documentation.visionDocument.uploadedAt":1}}
         ]);
-        const approvedForMeetingR = await Projects.populate(approvedForMeetingResults,{path:"students",select:'_id name department student_details.regNo'});
-        const approvedForMeeting = await Projects.populate(approvedForMeetingR,{path:"documentation.visionDocument.comments.author",select:'_id name role department'});
+        const approvedForMeeting = await Projects.populate(approvedForMeetingResults,[
+            {path:"students",select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
+        ]);
         //Meeting Scheduled Query
         const meetingScheduledResults= await Projects.aggregate([
             {$match:{department:req.params.committee}},
@@ -83,9 +88,10 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$match:{"documentation.visionDocument.status":"Meeting Scheduled"}},
             {$sort:{"documentation.visionDocument.updatedAt":1}}
         ]);
-        const meetingScheduledR = await Projects.populate(meetingScheduledResults,{path:"students",select:'_id name department student_details.regNo'});
-         const meetingScheduled =   await Projects.populate(meetingScheduledR,{path:"documentation.visionDocument.comments.author",select:'_id name role department'});
-
+        const meetingScheduled = await Projects.populate(meetingScheduledResults,[
+            {path:"students",select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
+        ]);
         //Approved with Changes Query
         const approvedWithChangesResults= await Projects.aggregate([
             {$match:{department:req.params.committee}},
@@ -94,8 +100,10 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$match:{"documentation.visionDocument.status":"Approved With Changes"}},
             {$sort:{"documentation.visionDocument.updatedAt":1}}
         ]);
-        const approvedWithChangesR = await Projects.populate(approvedWithChangesResults,{path:"students",select:'_id name department student_details.regNo'})
-        const approvedWithChanges =   await Projects.populate(approvedWithChangesR,{path:"documentation.visionDocument.comments.author",select:'_id name role department'});
+        const approvedWithChanges = await Projects.populate(approvedWithChangesResults,[
+            {path:"students",select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
+        ])
 
         //Approved Query
 
@@ -106,8 +114,10 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$match:{"documentation.visionDocument.status":"Approved"}},
             {$sort:{"documentation.visionDocument.updatedAt":1}}
         ]);
-        const approvedR = await Projects.populate(approvedResults,{path:"students",select:'_id name department student_details.regNo'})
-        const approved =   await Projects.populate(approvedR,{path:"documentation.visionDocument.comments.author",select:'_id name role department'});
+        const approved = await Projects.populate(approvedResults,[
+            {path:"students",select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
+        ])
 
         //Rejected Query
         const rejectedResults= await Projects.aggregate([
@@ -117,9 +127,11 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$match:{"documentation.visionDocument.status":"Rejected"}},
             {$sort:{"documentation.visionDocument.updatedAt":1}}
         ]);
-        const rejectedR = await Projects.populate(rejectedResults,{path:"students",select:'_id name department student_details.regNo'})
-        const rejected =   await Projects.populate(rejectedR,{path:"documentation.visionDocument.comments.author",select:'_id name role department'});
-       await res.json({waiting,approvedForMeeting,meetingScheduled,approvedWithChanges,approved,rejected})
+        const rejected = await Projects.populate(rejectedResults,[
+            {path:"students",select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
+        ])
+        await res.json({waiting,approvedForMeeting,meetingScheduled,approvedWithChanges,approved,rejected})
     }
     catch(err){
         res.status(400).json(err.message)
@@ -162,19 +174,75 @@ exports.changeStatus = (req, res)=>{
 }
 
 exports.scheduleVisionDefence = async (req,res)=>{
-    const {projectIds,visionDocsIds,date} = req.body;
-    Projects.updateMany(
-        {"_id":{$in:projectIds},"documentation.visionDocument._id":{$in:visionDocsIds}},
-        {
-            $set:{
-                "documentation.visionDocument.$.status":'Meeting Scheduled',
-                "documentation.visionDocument.$.updatedAt":Date.now(),
-                "documentation.visionDocument.$.meetingDate":date,
+    try {
+        const {projectIds,visionDocsIds,date} = req.body;
+        const pIds = projectIds.map(id => mongoose.Types.ObjectId(id));
+        const result = await Projects.updateMany(
+            {"_id":{$in:projectIds},"documentation.visionDocument._id":{$in:visionDocsIds}},
+            {
+                $set:{
+                    "documentation.visionDocument.$.status":'Meeting Scheduled',
+                    "documentation.visionDocument.$.updatedAt":Date.now(),
+                    "documentation.visionDocument.$.meetingDate":date,
+                }
             }
-        }
-    )
-        .then(result => {
-            res.json(result)
-        })
-        .catch(err => res.json(err))
+        );
+        const studentsResult = await Projects.aggregate([
+            {$match:{"_id":{$in:pIds}}},
+            {$project:{"_id":-1,students:1}},
+        ]);
+        const students = await Projects.populate(studentsResult,{path:"students",select:'-_id email'});
+        let emails =[];
+        await students.map(student => student.students.map(e=>{emails=[...emails,e.email]}));
+
+        //Sending Email
+
+        const emailData = {
+            from: "noreply@node-react.com",
+            to: emails,
+            subject: "Proposal Defence Schedule",
+            text: `Dear Student,/nYour Proposal Defence is scheduled on ${moment(date).format('LLL')}./nYou need to upload Your presentation in ppt/pptx before ${moment(date).format('LLL')}./nNote:Please be on time otherwise you will be placed at the end of the list`,
+            html: `
+                <p>Dear Student,</p>
+                <p>Your Proposal Defence is Scheduled on ${moment(date).format('LLL')}.</p>
+                <p>You need to upload Your presentation in ppt/pptx before ${moment(date).format('LLL')}</p>
+                <p><b>Note:</b>Please be on time otherwise you will be placed at the end of the list</p>
+            `
+        };
+
+        sendEmail(emailData)
+            .then(()=>{
+                return  res.json({message:'Success'})
+            });
+    }
+    catch (e) {
+        await res.json({error:e.message})
+    }
+
+
+};
+
+exports.fetchMeetings =async (req,res)=>{
+    const projectsResult = await Projects.aggregate([
+                                {
+                                    $unwind:"$documentation.visionDocument"
+                                },
+                                {
+                                  $project:{documentation:1,title:1,department:1,students:1}
+                                },
+                                {
+                                    $match:{$and:[{"documentation.visionDocument.status":"Meeting Scheduled"},{"department":req.params.committee}]}
+                                },
+                                {
+                                    $group:{
+                                        "_id":"$documentation.visionDocument.meetingDate",
+                                        projects:{$push:"$$ROOT"}
+                                    }
+                                },
+                            ]);
+    const projects =await Projects.populate(projectsResult,[
+        {path:'projects.students',model:'Users',select:'-_id name department student_details.regNo'},
+        {path:'projects.documentation.visionDocument.comments.author',model:'Users',select:'-_id name ugpc_details'}
+    ])
+    await res.json(projects)
 }

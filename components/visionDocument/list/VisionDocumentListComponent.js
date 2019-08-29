@@ -1,35 +1,16 @@
 import React, {useContext} from 'react';
-import TitleComponent from "../../title/TitleComponent";
 import ProjectContext from '../../../context/project/project-context';
-
-
 import {makeStyles} from "@material-ui/styles";
 import {Box, Button, Container, Divider, LinearProgress} from "@material-ui/core";
 import {Assignment} from "@material-ui/icons";
 import Link from "next/link";
 import StudentVisionListItem from "./StudentVisionListItem";
+import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
     container:{
         marginTop:theme.spacing(5),
-    },
-    listContainer:{
-        padding:theme.spacing(2,2,10,2),
-        marginTop: theme.spacing(8),
-        boxShadow:theme.shadows[10],
-        marginBottom: theme.spacing(5)
-    },
-    top:{
-        width: theme.spacing(11),
-        height:theme.spacing(11),
-        backgroundColor: theme.palette.secondary.dark,
-        color:'#fff',
-        display: 'flex',
-        alignItems:'center',
-        justifyContent: 'center',
-        marginTop:-theme.spacing(5),
-        marginBottom:theme.spacing(5),
-        boxShadow:theme.shadows[10],
     },
     listHeader:{
         paddingBottom: theme.spacing(1.2),
@@ -38,22 +19,23 @@ const useStyles = makeStyles(theme => ({
         justifyContent:'flex-end',
         alignItems: 'center'
     },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 160,
-    },
-
 }));
 const VisionDocumentListComponent = () => {
     const context = useContext(ProjectContext);
     const classes = useStyles();
+    const listContainerStyles = useListContainerStyles();
     return (
         <div>
             {context.project.isLoading ? <LinearProgress /> :
                 <Container className={classes.container}>
-                    <div className={classes.listContainer}>
-                        <div className={classes.top}>
-                            <Assignment fontSize='large'/>
+                    <div className={listContainerStyles.listContainer}>
+                        <div className={listContainerStyles.top}>
+                            <div className={listContainerStyles.topIconBox}>
+                                <Assignment className={listContainerStyles.headerIcon}/>
+                            </div>
+                            <div className={listContainerStyles.topTitle}>
+                                <Typography variant='h5'>Vision Documents</Typography>
+                            </div>
                         </div>
                         <div className={classes.listHeader}>
                             <Link href='/student/project/vision-document/new'>

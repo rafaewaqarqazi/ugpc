@@ -4,7 +4,7 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
 
         let pathName =path.join(__dirname,'..','static',`${req.params.type}`);
-        console.log(path);
+        console.log(pathName)
         cb(null,pathName)
     },
     filename: (req, file, cb) => {
@@ -13,15 +13,6 @@ const storage = multer.diskStorage({
     },});
 const upload = multer({
     storage: storage,
-    fileFilter: (req, file, cb) => {
-        // only pdf files accepted //
-        if (!file.originalname.match(/\.pdf$/)) {
-            return cb(new Error('Only csv files are allowed!'), false);
-        }
-        else{
-            cb(null, true);
-        }
-    } ,
-    limits: { fileSize: 1000000 }
+
 });
 module.exports = upload;
