@@ -25,3 +25,12 @@ export const createNewUserAPI = async user=>{
     });
     return await res.json();
 };
+export const getChairmanName = async ()=>{
+    const res = await fetch(`${serverUrl}/auth/fetch/chairmanName`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+        }
+    });
+    return await res.json();
+}

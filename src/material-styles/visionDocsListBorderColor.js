@@ -50,7 +50,7 @@ export const getVisionDocsStatusChipColor = status =>{
             color:'white'
         }
     }
-    else if (status === 'Approved with Changes'){
+    else if (status === 'Approved With Changes'){
         return {
             backgroundColor:'#004D40',
             color:'white'

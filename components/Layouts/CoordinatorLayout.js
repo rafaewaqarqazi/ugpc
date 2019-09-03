@@ -217,7 +217,7 @@ const CoordinatorLayout = ({children})=> {
                                     <ListItemIcon>
                                         <ScheduleOutlined />
                                     </ListItemIcon>
-                                    <ListItemText primary={"Sch Presentations"} />
+                                    <ListItemText primary={"Schedule Presentations"} style={{whiteSpace:'normal'}} />
                                 </ListItem>
                             </Link>
                             <Link href='/coordinator/meetings'>

@@ -37,7 +37,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
                                 <div className={classes.listItem} style={getVisionDocsListBorderColor(doc.documentation.visionDocument.status)} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemContent}>
                                         <div>
-                                            <Typography noWrap>{doc.title}</Typography>
+                                            <Typography noWrap>{doc.documentation.visionDocument.title}</Typography>
                                             <Typography noWrap color='textSecondary'>{doc.documentation.visionDocument.status}</Typography>
                                         </div>
                                         <Badge color="secondary" badgeContent={doc.documentation.visionDocument.comments.length} className={classes.badgeMargin}>
@@ -54,7 +54,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
                             <Hidden xsDown implementation="css">
                                 <div className={classes.listItem} style={getVisionDocsListBorderColor(doc.documentation.visionDocument.status)} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemContent}>
-                                        <Typography noWrap>{doc.title}</Typography>
+                                        <Typography noWrap>{doc.documentation.visionDocument.title}</Typography>
                                         <Typography noWrap color='textSecondary'>{doc.documentation.visionDocument.status}</Typography>
                                         <Badge color="secondary" badgeContent={doc.documentation.visionDocument.comments.length} className={classes.badgeMargin}>
                                             <Typography className={classes.badgePadding} noWrap>{

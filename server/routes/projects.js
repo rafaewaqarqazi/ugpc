@@ -8,7 +8,9 @@ const {
     commentOnVision,
     changeStatus,
     scheduleVisionDefence,
-    fetchMeetings
+    fetchMeetings,
+    assignSupervisor,
+    generateAcceptanceLetter
 } = require('../controllers/projects');
 const {requireSignin} = require('../controllers/auth');
 
@@ -22,6 +24,7 @@ router.get('/fetch/:committee',fetchVisionDocsByCommitteeCoordinator);
 router.put('/visionDocument/comment',commentOnVision);
 router.put('/visionDocument/changeStatus',changeStatus);
 router.put('/visionDocument/schedule/visionDefence',scheduleVisionDefence);
-
+router.put('/supervisor/assign',assignSupervisor);
+router.put('/generate/acceptanceLetter',generateAcceptanceLetter)
 router.param('byStudentId',findByStudentId);
 module.exports = router;

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const uuidv1 = require('uuid/v1');
 const crypto = require('crypto');
-
+const {ObjectId} = mongoose.Schema;
 const userSchema = new mongoose.Schema({
     name:{
         type: String,
@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         default: 'Student'
     },
+    additionalRole:String,
     isEmailVerified:{
         type:Boolean,
         default:false
@@ -53,6 +54,9 @@ const userSchema = new mongoose.Schema({
     ugpc_details:{
         position:String,
         committee:String
+    },
+    supervisor_details:{
+        projects:{type:ObjectId, ref:"Projects"}
     },
     chairman_details:{}
 });

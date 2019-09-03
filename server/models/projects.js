@@ -2,12 +2,9 @@ const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema;
 
 const projectsSchema = new mongoose.Schema({
-    title:{
+    groupName:{
       type:String,
       required:true
-    },
-    description:{
-        type:String
     },
     students:[{type:ObjectId, ref:"Users"}],
     phase:{
@@ -56,14 +53,10 @@ const projectsSchema = new mongoose.Schema({
             marks:String
         },
         acceptanceLetter:{
-            file:String,
+            name:String,
             issueDate:Date
         },
         epic:[{
-            _id:{
-                type:ObjectId,
-                default: new mongoose.Types.ObjectId()
-            },
             name:String,
             associatedBacklogs:[{
                 type:ObjectId
@@ -72,10 +65,6 @@ const projectsSchema = new mongoose.Schema({
         }]
         ,
         backlogs:[{
-            _id:{
-                type:ObjectId,
-                default: new mongoose.Types.ObjectId()
-            },
             title: String,
             description:String,
             assignee:[{

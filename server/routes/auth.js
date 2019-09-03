@@ -9,7 +9,8 @@ const  {
     requireSignin,
     checkEligibility,
     getUser,
-    chairmanSignup
+    chairmanSignup,
+    getChairmanName
 } = require('../controllers/auth');
 const {
     userSignUpValidator
@@ -17,6 +18,7 @@ const {
 const router = express.Router();
 
 router.get('/:userId',getUser);
+router.get('/fetch/chairmanName',getChairmanName)
 router.post('/student/signup',userSignUpValidator, studentSignup);
 router.post('/ugpc/signup',requireSignin,isChairman, ugpcSignup);
 router.get('/isEligible',requireSignin,checkEligibility);
