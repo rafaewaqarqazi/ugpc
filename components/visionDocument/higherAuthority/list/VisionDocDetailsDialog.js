@@ -28,6 +28,7 @@ import ApprovalLetter from "../../../approvalLetter/ApprovalLetter";
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
 import {getChairmanName} from "../../../../utils/apiCalls/users";
+import {getRandomColor} from "../../../../src/material-styles/randomColors";
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -76,9 +77,10 @@ const useStyles = makeStyles(theme => ({
         marginRight:theme.spacing(0.5)
     },
     wrapText:{
-        maxWidth:400,
+
         whiteSpace: 'normal',
-        wordWrap: 'break-word'
+        overflow:'hidden',
+        textOverflow: 'ellipsis'
     },
     appBar: {
         position: 'relative',
@@ -105,7 +107,7 @@ const useStyles = makeStyles(theme => ({
         left: '50%',
         marginTop: -12,
         marginLeft: -12,
-    },
+    }
 }));
 const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,inputLabel,labelWidth}) => {
     const classes = useStyles();
@@ -123,7 +125,12 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
         getChairmanName()
             .then(result=>{
                 console.log(result);
-                setChairmanName(result.name);
+                if (result.name){
+                    setChairmanName(result.name);
+                }
+                else {
+                    setChairmanName('Not Available Yet')
+                }
                 setLetterViewer(true);
             })
 
@@ -232,8 +239,8 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
         <div>
             <SuccessSnackBar open={successSnackbar} message={'Success'} handleClose={closeSnackbar}/>
             <Dialog
-                fullWidth={true}
-                maxWidth='md'
+                fullWidth
+                maxWidth='lg'
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="dialog-title"
@@ -332,7 +339,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 <List>
                                                     <ListItem alignItems="flex-start">
                                                         <ListItemAvatar>
-                                                            <Avatar alt={student.name} src="/static/images/avatar/personAvatar.png" />
+                                                            <Avatar style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
                                                         </ListItemAvatar>
                                                         <ListItemText
                                                             primary={student.name}
@@ -423,10 +430,9 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 <List className={classes.commentList}>
                                                     {
                                                         currentDocument.documentation.visionDocument.comments.map(comment=>
-
                                                             <ListItem alignItems="flex-start" key={comment._id}>
                                                                 <ListItemAvatar>
-                                                                    <Avatar alt="Cindy Baker" src="/static/images/avatar/personAvatar.png" />
+                                                                    <Avatar style={{backgroundColor:getRandomColor()}}>{comment.author.name.charAt(0)}</Avatar>
                                                                 </ListItemAvatar>
                                                                 <ListItemText
                                                                     primary={comment.author.name}
@@ -485,7 +491,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                     </DialogContent>
                     <DialogActions>
                         {
-                            !currentDocument.details.acceptanceLetter.name?
+                            currentDocument.details && !currentDocument.details.acceptanceLetter.name?
                             <div className={classes.wrapper}>
                                 <Button
                                     variant="contained"
@@ -548,13 +554,17 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                     </Toolbar>
                 </AppBar>
                 <DialogContent style={{height:500}}>
-                    <ApprovalLetter
-                        title={currentDocument.documentation.visionDocument.title}
-                        students={currentDocument.students}
-                        supervisor={currentDocument.details.supervisor}
-                        date={currentDocument.details.acceptanceLetter.issueDate}
-                        chairmanName={chairmanName}
-                    />
+                    {
+                        currentDocument.details &&
+                        <ApprovalLetter
+                            title={currentDocument.documentation.visionDocument.title}
+                            students={currentDocument.students}
+                            supervisor={currentDocument.details.supervisor}
+                            date={currentDocument.details.acceptanceLetter.issueDate}
+                            chairmanName={chairmanName}
+                        />
+                    }
+
                 </DialogContent>
             </Dialog>
         </div>

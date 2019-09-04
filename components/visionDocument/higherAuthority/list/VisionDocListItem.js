@@ -1,11 +1,17 @@
 import React, { useState} from 'react';
-import {Badge, Hidden, Typography} from "@material-ui/core";
+import {Badge, Typography, Grid, Tooltip, Chip, Zoom} from "@material-ui/core";
 import VisionDocDetailsDialog from "./VisionDocDetailsDialog";
 import Divider from "@material-ui/core/Divider";
 import {useListItemStyles} from "../../../../src/material-styles/listItemStyles";
-import {getVisionDocsListBorderColor} from "../../../../src/material-styles/visionDocsListBorderColor";
+import {
+    getVisionDocsStatusChipColor
+} from "../../../../src/material-styles/visionDocsListBorderColor";
+import Avatar from "@material-ui/core/Avatar";
+import moment from "moment";
+import {getRandomColor} from "../../../../src/material-styles/randomColors";
 
 const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
+
     const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
     const [open,setOpen] = useState(false);
@@ -23,7 +29,6 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
         setOpen(true);
     };
 
-
     return (
         <div className={classes.listItemContainer}>
             {
@@ -33,39 +38,43 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
                     </div>
                     :filter.map(doc=>(
                         <div key={doc.documentation.visionDocument._id}>
-                            <Hidden smUp implementation="css">
-                                <div className={classes.listItem} style={getVisionDocsListBorderColor(doc.documentation.visionDocument.status)} onClick={()=>openDetails(doc)}>
-                                    <div className={classes.listItemContent}>
+                            <Grid container spacing={1} className={classes.listItem} onClick={()=>openDetails(doc)}>
+                                <Grid item xs={12} sm={2} className={classes.gridTransition}>
+                                    <div className={classes.grid1} style={{backgroundColor:getRandomColor()}} >
                                         <div>
-                                            <Typography noWrap>{doc.documentation.visionDocument.title}</Typography>
-                                            <Typography noWrap color='textSecondary'>{doc.documentation.visionDocument.status}</Typography>
+                                            {
+                                                doc.students.map(student =>
+                                                    <Tooltip title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
+                                                        <Avatar className={classes.avatar} style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
+                                                    </Tooltip>
+                                                )
+                                            }
                                         </div>
-                                        <Badge color="secondary" badgeContent={doc.documentation.visionDocument.comments.length} className={classes.badgeMargin}>
-                                            <Typography className={classes.badgePadding} noWrap>{
-                                                doc.documentation.visionDocument.comments.length > 0 ?
-                                                    'Comments':
-                                                    'No Comments'
-                                            }</Typography>
+                                        <Tooltip title='Updated On' placement="top" TransitionComponent={Zoom}>
+                                        <Typography variant="body2" style={{textAlign:'center'}}>{moment(doc.documentation.visionDocument.updatedAt).format('ddd MMM D, YYYY') }</Typography>
+                                        </Tooltip>
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={8} className={classes.gridTransition}>
+                                    <Typography variant='h6' noWrap>{doc.documentation.visionDocument.title}</Typography>
+                                    <Chip style={getVisionDocsStatusChipColor(doc.documentation.visionDocument.status)} label={doc.documentation.visionDocument.status}  size="small"/>
+                                    <Tooltip title='Abstract' placement="top" TransitionComponent={Zoom}>
+                                        <Typography className={classes.wrapText}  variant="body2" color="textSecondary" component="p" >{doc.documentation.visionDocument.abstract}</Typography>
+                                    </Tooltip>
+                                </Grid>
+                                <Grid item xs={12} sm={2} className={classes.gridTransition}>
+                                    <div className={classes.lastGrid}>
+                                        <Badge  badgeContent={ doc.documentation.visionDocument.comments.length > 0 ? doc.documentation.visionDocument.comments.length: '0'} max={10} color='secondary' className={classes.badgeMargin}>
+                                            <Typography className={classes.badgePadding} noWrap>
+                                                    Comments</Typography>
+                                        </Badge>
+                                        <Badge badgeContent={doc.documentation.visionDocument.majorModules.length} max={10} color='secondary' className={classes.badgeMargin}>
+                                            <Typography className={classes.badgePadding} noWrap>Modules</Typography>
                                         </Badge>
                                     </div>
 
-                                </div>
-                            </Hidden>
-                            <Hidden xsDown implementation="css">
-                                <div className={classes.listItem} style={getVisionDocsListBorderColor(doc.documentation.visionDocument.status)} onClick={()=>openDetails(doc)}>
-                                    <div className={classes.listItemContent}>
-                                        <Typography noWrap>{doc.documentation.visionDocument.title}</Typography>
-                                        <Typography noWrap color='textSecondary'>{doc.documentation.visionDocument.status}</Typography>
-                                        <Badge color="secondary" badgeContent={doc.documentation.visionDocument.comments.length} className={classes.badgeMargin}>
-                                            <Typography className={classes.badgePadding} noWrap>{
-                                                doc.documentation.visionDocument.comments.length > 0 ?
-                                                    'Comments':
-                                                    'No Comments'
-                                            }</Typography>
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </Hidden>
+                                </Grid>
+                            </Grid>
                             <Divider/>
                         </div>
                     ))}

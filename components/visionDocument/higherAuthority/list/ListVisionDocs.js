@@ -14,8 +14,10 @@ import {Assignment, Search} from '@material-ui/icons';
 import {useListContainerStyles} from "../../../../src/material-styles/listContainerStyles";
 import VisionDocListItem from "./VisionDocListItem";
 import Typography from "@material-ui/core/Typography";
+import {useTheme} from "@material-ui/styles";
 
 const ListVisionDocs = ({docs}) => {
+    const theme = useTheme();
     const classes = useListContainerStyles();
     const [status, setStatus] = useState('All');
     const [documents,setDocuments]=useState([]);
@@ -107,7 +109,7 @@ const ListVisionDocs = ({docs}) => {
                 <div className={classes.topIconBox}>
                     <Assignment className={classes.headerIcon}/>
                 </div>
-                <div className={classes.topTitle}>
+                <div className={classes.topTitle} >
                     <Typography variant='h5'>Vision Documents</Typography>
                 </div>
 
@@ -143,7 +145,6 @@ const ListVisionDocs = ({docs}) => {
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <Search />
-
                                 </InputAdornment>
                             ),
                         }}

@@ -47,7 +47,6 @@ const VisionDocumentListComponent = () => {
                         <Divider/>
                         <StudentVisionListItem
                             visionDocuments={context.project.project[0].documentation.visionDocument}
-                            projectTitle={context.project.project[0].title}
                             students={context.project.project[0].students}
                             projectId={context.project.project[0]._id}
                         />

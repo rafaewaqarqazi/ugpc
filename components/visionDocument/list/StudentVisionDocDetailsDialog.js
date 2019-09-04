@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     },
 
 }));
-const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,projectTitle,open,handleClose,setCurrentDocument}) => {
+const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,handleClose,setCurrentDocument}) => {
     const classes = useStyles();
     const visionDocsContext = useContext(VisionDocsContext);
     const [comment,setComment] = useState('');
@@ -158,7 +158,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,proje
             aria-labelledby="dialog-title"
         >
 
-            <DialogTitle id="dialog-title">{projectTitle}</DialogTitle>
+            <DialogTitle id="dialog-title">{currentDocument.title}</DialogTitle>
             {open && <>
                 <DialogContent>
                     <Grid container spacing={2}>

@@ -5,7 +5,7 @@ import StudentVisionDocDetailsDialog from "./StudentVisionDocDetailsDialog";
 import {getVisionDocsListBorderColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
-const StudentVisionListItem = ({visionDocuments,students,projectId,projectTitle}) => {
+const StudentVisionListItem = ({visionDocuments,students,projectId}) => {
     const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
     const [open,setOpen] = useState(false);
@@ -32,7 +32,7 @@ const StudentVisionListItem = ({visionDocuments,students,projectId,projectTitle}
                                 <div className={classes.listItem} style={getVisionDocsListBorderColor(doc.status)} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemContent}>
                                         <div>
-                                            <Typography noWrap>{projectTitle}</Typography>
+                                            <Typography noWrap>{doc.title}</Typography>
                                             <Typography noWrap color='textSecondary'>{doc.status}</Typography>
                                         </div>
                                         <Badge color="secondary" badgeContent={doc.comments.length} className={classes.badgeMargin}>
@@ -48,7 +48,7 @@ const StudentVisionListItem = ({visionDocuments,students,projectId,projectTitle}
                             <Hidden xsDown implementation="css">
                                 <div className={classes.listItem} style={getVisionDocsListBorderColor(doc.status)} onClick={()=>openDetails(doc)}>
                                     <div className={classes.listItemContent}>
-                                        <Typography noWrap>{projectTitle}</Typography>
+                                        <Typography noWrap>{doc.title}</Typography>
                                         <Typography noWrap color='textSecondary'>{doc.status}</Typography>
                                         <Badge color="secondary" badgeContent={doc.comments.length} className={classes.badgeMargin}>
                                             <Typography className={classes.badgePadding} noWrap>{
@@ -71,7 +71,6 @@ const StudentVisionListItem = ({visionDocuments,students,projectId,projectTitle}
                     currentDocument={currentDocument}
                     projectId={projectId}
                     students={students}
-                    projectTitle={projectTitle}
                     setCurrentDocument={setCurrentDocument}
                 />
             }

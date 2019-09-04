@@ -38,10 +38,12 @@ const Index = () => {
     const fetchData = ()=>{
         fetchMeetingsAPI()
             .then(result =>{
-                setMeetings(result[0].projects);
-                setFilter(result[0].projects);
-                console.log(result)
-                setMeetingsDate([...meetingsDates, moment( Array.from(result.map(r => r._id))).format('LLL')])
+                if (result.length >0 ){
+                    // setMeetings(result[0].projects);
+                    // setFilter(result[0].projects);
+                    console.log(result)
+                    setMeetingsDate([...meetingsDates, moment( Array.from(result.map(r => r._id))).format('LLL')])
+                }
                 setLoading(false);
             })
     }
@@ -51,7 +53,7 @@ const Index = () => {
     },[]);
     const handleChange =(event)=> {
         setDates(event.target.value);
-        console.log(meetingsDates[event.target.value])
+
         let data = [];
         switch (event.target.value) {
 
@@ -126,8 +128,6 @@ const Index = () => {
                         </div>
                     </div>
                 </Container>
-
-
             </CoordinatorLayout>
         </VisionDocsState>
     );
