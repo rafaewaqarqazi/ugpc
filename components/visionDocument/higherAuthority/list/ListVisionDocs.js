@@ -26,14 +26,12 @@ const ListVisionDocs = ({docs}) => {
     const [labelWidth, setLabelWidth] = useState(0);
     useEffect(() => {
         setLabelWidth(inputLabel.current.offsetWidth);
-        const data = [
-            ...docs.waiting,
-            ...docs.approvedForMeeting,
-            ...docs.meetingScheduled,
-            ...docs.approvedWithChanges,
-            ...docs.approved,
-            ...docs.rejected
-        ];
+        let data = [];
+        docs.map(doc => {
+            doc.projects.map(project => {
+                data = [...data, project]
+            })
+        })
         setDocuments(data);
         setFilter(data);
     }, []);
@@ -42,57 +40,79 @@ const ListVisionDocs = ({docs}) => {
         let data = [];
         switch (event.target.value) {
             case 'All':
-                 data = [
-                    ...docs.waiting,
-                    ...docs.approvedForMeeting,
-                    ...docs.meetingScheduled,
-                    ...docs.approvedWithChanges,
-                    ...docs.approved,
-                    ...docs.rejected
-                ];
+                docs.map(doc => {
+                    doc.projects.map(project => {
+                        data = [...data, project]
+                    })
+                })
                 setDocuments(data);
                 setFilter(data);
                 break;
             case 'Waiting for Initial Approval':
-                 data = [
-                    ...docs.waiting,
-                ];
+                 docs.map(doc => {
+                     if (doc._id.status === 'Waiting for Initial Approval'){
+                         doc.projects.map(project => {
+                             data = [...data, project]
+                         })
+                     }
+                 })
                 setDocuments(data);
                 setFilter(data);
 
                 break;
             case 'Approved for Meeting':
-                data =[
-                    ...docs.approvedForMeeting,
-                ];
+                docs.map(doc => {
+                    if (doc._id.status === 'Approved for Meeting'){
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    }
+                })
                 setDocuments(data);
                 setFilter(data);
                 break;
             case 'Meeting Scheduled':
-                data =[
-                    ...docs.meetingScheduled,
-                ];
+                docs.map(doc => {
+                    if (doc._id.status === 'Meeting Scheduled'){
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    }
+                })
                 setDocuments(data);
                 setFilter(data);
                 break;
             case 'Approved with Changes':
-                data =[
-                    ...docs.approvedWithChanges,
-                ];
+                docs.map(doc => {
+                    if (doc._id.status === 'Approved with Changes'){
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    }
+                })
                 setDocuments(data);
                 setFilter(data);
                 break;
             case 'Approved':
-                data =[
-                    ...docs.approved,
-                ];
+                docs.map(doc => {
+                    if (doc._id.status === 'Approved'){
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    }
+                })
+                console.log(data)
                 setDocuments(data);
                 setFilter(data);
                 break;
             case 'Rejected':
-                data =[
-                    ...docs.rejected,
-                ];
+                docs.map(doc => {
+                    if (doc._id.status === 'Rejected'){
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    }
+                })
                 setDocuments(data);
                 setFilter(data);
                 break;

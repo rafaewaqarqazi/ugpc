@@ -3,18 +3,20 @@ import {serverUrl} from "../config";
 import {isAuthenticated} from "../../auth";
 
 export const fetchDocsByCommitteeAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/projects/fetch/${isAuthenticated().user.ugpc_details.committee}`,{
+    console.log(isAuthenticated().user.ugpc_details.committees)
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/byCommittees?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
             "Content-Type":'application/json',
             Authorization:`Bearer ${isAuthenticated().token}`
-        }
+        },
+        // body:JSON.stringify({committees:isAuthenticated().user.ugpc_details.committees})
     });
     return await res.json();
 };
 export const commentOnVisionAPI = async comment =>{
-    const res = await fetch(`${serverUrl}/projects/visionDocument/comment`,{
+    const res = await fetch(`${serverUrl}/visionDocument/comment`,{
         method:'PUT',
         headers:{
             Accept:'application/json',
@@ -27,7 +29,7 @@ export const commentOnVisionAPI = async comment =>{
 }
 
 export const changeStatusAPI = async status =>{
-    const res = await fetch(`${serverUrl}/projects/visionDocument/changeStatus`,{
+    const res = await fetch(`${serverUrl}/visionDocument/changeStatus`,{
         method:'PUT',
         headers:{
             Accept:'application/json',
@@ -40,7 +42,7 @@ export const changeStatusAPI = async status =>{
 };
 
 export const scheduleVisionDefenceAPI = async data =>{
-    const res = await fetch(`${serverUrl}/projects/visionDocument/schedule/visionDefence`,{
+    const res = await fetch(`${serverUrl}/visionDocument/scheduleDefence`,{
         method:'PUT',
         headers:{
             Accept:'application/json',
@@ -65,13 +67,14 @@ export const submitAdditionFilesVisionDocAPI = async (formData,type) =>{
 }
 
 export const fetchMeetingsAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/projects/visionDocument/meetings/${isAuthenticated().user.ugpc_details.committee}`,{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/byMeetings?committees=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
             "Content-Type":'application/json',
             Authorization:`Bearer ${isAuthenticated().token}`
-        }
+        },
+        // body:JSON.stringify({committees:isAuthenticated().user.ugpc_details.committees})
     });
     return await res.json();
 }

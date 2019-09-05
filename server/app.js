@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const StudentsRouter = require('./routes/students');
 const AuthRouter = require('./routes/auth');
 const ProjectsRouter = require('./routes/projects');
+const visionDocumentRouter = require('./routes/visionDocument');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
@@ -38,6 +39,7 @@ app.prepare()
         server.use('/api/students',StudentsRouter);
         server.use('/api/auth',AuthRouter);
         server.use('/api/projects',ProjectsRouter);
+        server.use('/api/visionDocument',visionDocumentRouter);
         //Unauthorized Handler
         server.use(function (err,req,res,next) {
             if (err.name === 'UnauthorizedError'){

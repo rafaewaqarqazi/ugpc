@@ -279,7 +279,6 @@ exports.checkEligibility = (req,res) => {
     res.json(req.auth);
 };
 exports.getChairmanName = async (req, res)=>{
-    console.log('asjda;lksjd')
     try {
         const chairman = await User.findOne({role:'Chairman DCSSE'})
             .select('-_id name');

@@ -15,7 +15,6 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
     const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
     const [open,setOpen] = useState(false);
-
     const handleClose = ()=>{
         setOpen(false)
         setCurrentDocument({})
@@ -25,7 +24,6 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
     };
     const openDetails = details =>{
         setCurrentDocument(details);
-
         setOpen(true);
     };
 
@@ -44,7 +42,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
                                         <div>
                                             {
                                                 doc.students.map(student =>
-                                                    <Tooltip title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
+                                                    <Tooltip key={student._id} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
                                                         <Avatar className={classes.avatar} style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
                                                     </Tooltip>
                                                 )
