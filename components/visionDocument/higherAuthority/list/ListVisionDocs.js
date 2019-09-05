@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {makeStyles} from "@material-ui/styles";
+
 import {
-    Box,
+    Typography,
     Divider,
     FormControl,
     InputLabel,
@@ -13,11 +13,8 @@ import {
 import {Assignment, Search} from '@material-ui/icons';
 import {useListContainerStyles} from "../../../../src/material-styles/listContainerStyles";
 import VisionDocListItem from "./VisionDocListItem";
-import Typography from "@material-ui/core/Typography";
-import {useTheme} from "@material-ui/styles";
 
 const ListVisionDocs = ({docs}) => {
-    const theme = useTheme();
     const classes = useListContainerStyles();
     const [status, setStatus] = useState('All');
     const [documents,setDocuments]=useState([]);
@@ -48,66 +45,9 @@ const ListVisionDocs = ({docs}) => {
                 setDocuments(data);
                 setFilter(data);
                 break;
-            case 'Waiting for Initial Approval':
-                 docs.map(doc => {
-                     if (doc._id.status === 'Waiting for Initial Approval'){
-                         doc.projects.map(project => {
-                             data = [...data, project]
-                         })
-                     }
-                 })
-                setDocuments(data);
-                setFilter(data);
-
-                break;
-            case 'Approved for Meeting':
+            case event.target.value :
                 docs.map(doc => {
-                    if (doc._id.status === 'Approved for Meeting'){
-                        doc.projects.map(project => {
-                            data = [...data, project]
-                        })
-                    }
-                })
-                setDocuments(data);
-                setFilter(data);
-                break;
-            case 'Meeting Scheduled':
-                docs.map(doc => {
-                    if (doc._id.status === 'Meeting Scheduled'){
-                        doc.projects.map(project => {
-                            data = [...data, project]
-                        })
-                    }
-                })
-                setDocuments(data);
-                setFilter(data);
-                break;
-            case 'Approved with Changes':
-                docs.map(doc => {
-                    if (doc._id.status === 'Approved with Changes'){
-                        doc.projects.map(project => {
-                            data = [...data, project]
-                        })
-                    }
-                })
-                setDocuments(data);
-                setFilter(data);
-                break;
-            case 'Approved':
-                docs.map(doc => {
-                    if (doc._id.status === 'Approved'){
-                        doc.projects.map(project => {
-                            data = [...data, project]
-                        })
-                    }
-                })
-                console.log(data)
-                setDocuments(data);
-                setFilter(data);
-                break;
-            case 'Rejected':
-                docs.map(doc => {
-                    if (doc._id.status === 'Rejected'){
+                    if (doc._id.status === event.target.value){
                         doc.projects.map(project => {
                             data = [...data, project]
                         })
@@ -120,7 +60,7 @@ const ListVisionDocs = ({docs}) => {
     };
     const handleChangeSearch = e =>{
         const data = documents;
-        setFilter(e.target.value !==''? data.filter(doc => doc.title.toLowerCase().includes(e.target.value.toLowerCase())) : documents)
+        setFilter(e.target.value !==''? data.filter(doc => doc.documentation.visionDocument.title.toLowerCase().includes(e.target.value.toLowerCase())) : documents)
     };
 
     return (

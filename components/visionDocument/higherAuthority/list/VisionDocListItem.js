@@ -31,8 +31,16 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
         <div className={classes.listItemContainer}>
             {
                 filter.length === 0?
-                    <div style={{display:'flex', alignItems:'center',justifyContent:'center'}}>
-                        <Typography variant='h5' color='textSecondary'>No Documents Found</Typography>
+                    <div className={classes.emptyList}>
+                        <div
+                            className={classes.emptyListContainer}
+                        >
+                            <div className={classes.emptyList}>
+                                <Typography variant='subtitle2' color='textSecondary'>
+                                    No Projects Found
+                                </Typography>
+                            </div>
+                        </div>
                     </div>
                     :filter.map(doc=>(
                         <div key={doc.documentation.visionDocument._id}>

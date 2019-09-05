@@ -27,22 +27,34 @@ const useStyles = makeStyles(theme => ({
 }))
 const Index = () => {
     const [meetings,setMeetings] = useState([]);
+    const [results,setResults] = useState([])
     const [loading,setLoading] = useState(true);
     const classes = useStyles();
     const containerClasses = useListContainerStyles();
     const inputLabel = useRef(null);
     const [labelWidth, setLabelWidth] = useState(0);
     const [meetingsDates,setMeetingsDate] = useState([])
-    const [dates,setDates] = useState('All');
+    const [selectedDate,setSelectedDate] = useState('All');
     const [filter,setFilter] = useState([]);
     const fetchData = ()=>{
         fetchMeetingsAPI()
             .then(result =>{
                 if (result.length >0 ){
-                    // setMeetings(result[0].projects);
-                    // setFilter(result[0].projects);
+                    let data = [];
+                    result.map(doc => {
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    })
+                    setResults(result);
+                    setMeetings(data);
+                    setFilter(data);
                     console.log(result)
-                    setMeetingsDate([...meetingsDates, moment( Array.from(result.map(r => r._id))).format('LLL')])
+                    let date = [];
+                    result.map(r => {
+                        date = [...date, moment(r._id).format('LLL')]
+                    })
+                    setMeetingsDate([...date])
                 }
                 setLoading(false);
             })
@@ -52,16 +64,36 @@ const Index = () => {
        fetchData()
     },[]);
     const handleChange =(event)=> {
-        setDates(event.target.value);
+        setSelectedDate(event.target.value);
 
         let data = [];
         switch (event.target.value) {
-
+            case 'All':
+                results.map(doc => {
+                    doc.projects.map(project => {
+                        data = [...data, project]
+                    })
+                })
+                setMeetings(data);
+                setFilter(data);
+                break;
+            case event.target.value :
+                results.map(doc => {
+                    const date = moment(doc._id).format('LLL')
+                    if (date === event.target.value){
+                        doc.projects.map(project => {
+                            data = [...data, project]
+                        })
+                    }
+                })
+                setMeetings(data);
+                setFilter(data);
+                break;
         }
     };
     const handleChangeSearch = e =>{
         const data = meetings;
-        setFilter(e.target.value !==''? data.filter(doc => doc.title.toLowerCase().includes(e.target.value.toLowerCase())) : meetings)
+        setFilter(e.target.value !==''? data.filter(doc => doc.documentation.visionDocument.title.toLowerCase().includes(e.target.value.toLowerCase())) : meetings)
     };
     return (
         <VisionDocsState>
@@ -85,14 +117,14 @@ const Index = () => {
                                         Meeting Date
                                     </InputLabel>
                                     <Select
-                                        value={dates}
+                                        value={selectedDate}
                                         onChange={handleChange}
                                         input={<OutlinedInput labelWidth={labelWidth} name="status" id="status" />}
                                     >
                                         <MenuItem value='All'>All</MenuItem>
                                         {
-                                            meetingsDates.map(date =>
-                                                <MenuItem value={date}>{date}</MenuItem>
+                                            meetingsDates.map((date,index) =>
+                                                <MenuItem key={index} value={date}>{date}</MenuItem>
                                             )
                                         }
                                     </Select>

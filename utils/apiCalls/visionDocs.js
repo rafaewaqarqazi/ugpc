@@ -11,7 +11,6 @@ export const fetchDocsByCommitteeAPI = async ()=>{
             "Content-Type":'application/json',
             Authorization:`Bearer ${isAuthenticated().token}`
         },
-        // body:JSON.stringify({committees:isAuthenticated().user.ugpc_details.committees})
     });
     return await res.json();
 };
@@ -67,14 +66,13 @@ export const submitAdditionFilesVisionDocAPI = async (formData,type) =>{
 }
 
 export const fetchMeetingsAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/visionDocument/fetch/byMeetings?committees=${isAuthenticated().user.ugpc_details.committees}`,{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/byMeetings?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
             "Content-Type":'application/json',
             Authorization:`Bearer ${isAuthenticated().token}`
         },
-        // body:JSON.stringify({committees:isAuthenticated().user.ugpc_details.committees})
     });
     return await res.json();
 }

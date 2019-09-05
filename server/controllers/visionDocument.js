@@ -7,60 +7,8 @@ const _ = require('lodash');
 exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
     try {
         const {committees} = req.query;
-        console.log(committees)
-        // //Waiting For Initial approval Query
-        // const waitingResults= await Projects.aggregate([
-        //     {$match:{department:{$in:committees}}},
-        //     {$project:{students: 1,"documentation.visionDocument":1,title:1}},
-        //     {$unwind:"$documentation.visionDocument"},
-        //     {$match:{"documentation.visionDocument.status":"Waiting for Initial Approval"}},
-        //     {$sort:{"documentation.visionDocument.uploadedAt":1}}
-        // ]);
-        // const waiting = await Projects.populate(waitingResults,[
-        //     {path:"students",select:'_id name department student_details.regNo'},
-        //     {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
-        // ]);
-        // //Waiting For Meeting Schedule Query
-        // const approvedForMeetingResults= await Projects.aggregate([
-        //     {$match:{department:{$in:committees}}},
-        //     {$project:{students: 1,"documentation.visionDocument":1,title:1}},
-        //     {$unwind:"$documentation.visionDocument"},
-        //     {$match:{"documentation.visionDocument.status":"Approved for Meeting"}},
-        //     {$sort:{"documentation.visionDocument.uploadedAt":1}}
-        // ]);
-        // const approvedForMeeting = await Projects.populate(approvedForMeetingResults,[
-        //     {path:"students",select:'_id name department student_details.regNo'},
-        //     {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
-        // ]);
-        // //Meeting Scheduled Query
-        // const meetingScheduledResults= await Projects.aggregate([
-        //     {$match:{department:{$in:committees}}},
-        //     {$project:{students: 1,"documentation.visionDocument":1,title:1}},
-        //     {$unwind:"$documentation.visionDocument"},
-        //     {$match:{"documentation.visionDocument.status":"Meeting Scheduled"}},
-        //     {$sort:{"documentation.visionDocument.updatedAt":1}}
-        // ]);
-        // const meetingScheduled = await Projects.populate(meetingScheduledResults,[
-        //     {path:"students",select:'_id name department student_details.regNo'},
-        //     {path:"documentation.visionDocument.comments.author",select:'_id name role department'}
-        // ]);
-        // //Approved with Changes Query
-        // const approvedWithChangesResults= await Projects.aggregate([
-        //     {$match:{department:{$in:committees}}},
-        //     {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1}},
-        //     {$unwind:"$documentation.visionDocument"},
-        //     {$match:{"documentation.visionDocument.status":"Approved With Changes"}},
-        //     {$sort:{"documentation.visionDocument.updatedAt":1}}
-        // ]);
-        // const approvedWithChanges = await Projects.populate(approvedWithChangesResults,[
-        //     {path:"students",select:'_id name department student_details.regNo'},
-        //     {path:"documentation.visionDocument.comments.author",select:'_id name role department'},
-        //     {path:"details.supervisor",select:'_id name supervisor_details.position'}
-        // ])
-        //
-        // //Approved Query
-        //
-        const approvedResults= await Projects.aggregate([
+
+        const results= await Projects.aggregate([
             {$match:{department:{$in:committees}}},
             {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1}},
             {$unwind:"$documentation.visionDocument"},
@@ -72,25 +20,13 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             },
             {$sort:{"documentation.visionDocument.updatedAt":1}}
         ]);
-        const approved = await Projects.populate(approvedResults,[
+        const result = await Projects.populate(results,[
             {path:"projects.students",model:'Users',select:'_id name department student_details.regNo'},
             {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
             {path:"projects.supervisor",model:'Users',select:'_id name supervisor_details.position'}
         ])
-        //
-        // //Rejected Query
-        // const rejectedResults= await Projects.aggregate([
-        //     {$match:{department:{$in:committees}}},
-        //     {$project:{students: 1,"documentation.visionDocument":1,title:1}},
-        //     {$unwind:"$documentation.visionDocument"},
-        //     {$match:{"documentation.visionDocument.status":"Rejected"}},
-        //     {$sort:{"documentation.visionDocument.updatedAt":1}}
-        // ]);
-        // const rejected = await Projects.populate(rejectedResults,[
-        //     {path:"students",select:'_id name department student_details.regNo'},
-        //     {path:"documentation.visionDocument.comments.author",select:'_id name role department'},
-        // ])
-        await res.json(approved)
+
+        await res.json(result)
     }
     catch(err){
         res.status(400).json(err.message)
@@ -182,6 +118,8 @@ exports.scheduleVisionDefence = async (req,res)=>{
 };
 
 exports.fetchMeetings =async (req,res)=>{
+    const {committees} = req.query;
+    console.log(committees)
     const projectsResult = await Projects.aggregate([
         {
             $unwind:"$documentation.visionDocument"
@@ -190,7 +128,7 @@ exports.fetchMeetings =async (req,res)=>{
             $project:{documentation:1,title:1,department:1,students:1}
         },
         {
-            $match:{$and:[{"documentation.visionDocument.status":"Meeting Scheduled"},{"department":req.params.committee}]}
+            $match:{"department":{$in:committees}}
         },
         {
             $group:{

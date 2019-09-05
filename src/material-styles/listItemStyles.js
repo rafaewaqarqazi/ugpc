@@ -4,6 +4,18 @@ import {deepPurple} from "@material-ui/core/colors";
 import {getRandomColor} from "./randomColors";
 
 export const useListItemStyles = makeStyles(theme =>({
+    emptyListContainer:{
+        border:'1.7px dashed grey',
+        marginTop:theme.spacing(2),
+        borderRadius:5,
+        width:'100%'
+    },
+    emptyList:{
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        padding:theme.spacing(5),
+    },
     listItemContainer:{
         marginTop:theme.spacing(2)
     },

@@ -52,9 +52,9 @@
     "nodemailer": "6.3.0",
     "nodemon": "1.19.1",
     "random-material-color": "1.0.5",
-    "react": "16.8.6",
+    "react": "16.9.0",
     "react-beautiful-dnd": "11.0.5",
-    "react-dom": "16.8.6",
+    "react-dom": "16.9.0",
     "react-window": "1.8.5",
     "uuid": "3.3.2"
   }
