@@ -8,7 +8,8 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, LinearProgress
+    DialogTitle, LinearProgress,
+    Grid
 } from "@material-ui/core";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
@@ -30,14 +31,25 @@ const useStyles = makeStyles(theme =>({
         display:'flex',
         alignItems:'center',
         justifyContent:'center',
-        padding:theme.spacing(5)
+        padding:theme.spacing(5),
+        textAlign:'center'
     },
     scheduleActions:{
-        display: 'flex',
-        flexDirection:'row',
-        alignItems: 'center',
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'stretch',
         padding: theme.spacing(1),
-        marginTop: theme.spacing(2)
+        marginTop: theme.spacing(2),
+
+        [theme.breakpoints.up('sm')]: {
+            display:'flex',
+            flexDirection:'row',
+            alignItems:'center',
+            padding: theme.spacing(1),
+            marginTop: theme.spacing(2),
+
+        }
     },
     presentationTitle:{
         flexGrow:1
@@ -65,7 +77,7 @@ const useStyles = makeStyles(theme =>({
         display:'flex',
         borderRadius:2,
         alignItems:'center'
-    }
+    },
 }));
 
 
@@ -207,6 +219,8 @@ const ListVisionDocsForPresentation = ({docs}) => {
                                                 >
                                                     Cancel
                                                 </Button>
+
+
                                                 <Button
                                                     variant='contained'
                                                     style={{marginLeft:5,borderRadius:0}}

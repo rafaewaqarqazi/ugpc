@@ -86,7 +86,7 @@ export const useListItemStyles = makeStyles(theme =>({
     gridTransition:{
         transition: theme.transitions.create("all", {
             easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
+            duration: theme.transitions.duration.standard
         })
     }
 }))

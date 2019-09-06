@@ -19,9 +19,17 @@ const PresentationComponent = () => {
     return (
         <div >
             {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :
-                <Container className={classes.container}>
-                    <ListVisionDocsForPresentation docs={visionDocsContext.visionDocs.visionDocs.approvedForMeeting}/>
-                </Container>
+                visionDocsContext.visionDocs.visionDocs.map((docs,index) => {
+                    if (docs._id.status==='Approved for Meeting'){
+                        return  <Container className={classes.container} key={index}>
+                            <ListVisionDocsForPresentation docs={docs}/>
+                        </Container>
+                    }else{
+                        return  <Container className={classes.container} key={index}>
+                            <ListVisionDocsForPresentation docs={[]}/>
+                        </Container>
+                    }
+                })
             }
 
         </div>
