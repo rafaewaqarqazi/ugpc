@@ -26,6 +26,35 @@ export const visionDocsReducer = (state, action) => {
             };
         case Actions.REMOVE_DOCS:
             return [];
+        case Actions.ADD_MARKS:
+            const newState = state.visionDocs.map(doc =>({
+                ...doc,
+                projects:doc.projects.map(project =>{
+                    if(project._id === '5d4d7298c0f2d61f04d3254d'){
+                        return {
+                            ...project,
+                            details:{
+                                ...project.details,
+                                marks:{
+                                    ...project.details.marks,
+                                    visionDocument:'9'
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        return {
+                            ...project
+                        }
+                    }
+
+                })
+            }))
+
+            return {
+                ...state,
+                visionDocs: newState
+            }
         default:
             return state;
     }

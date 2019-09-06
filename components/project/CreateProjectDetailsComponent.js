@@ -15,6 +15,7 @@ import {
 
 import {ExpandLess, ExpandMore} from "@material-ui/icons";
 import {fetchNotEnrolledStudents} from "../../utils/apiCalls/students";
+import {getRandomColor} from "../../src/material-styles/randomColors";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -131,7 +132,7 @@ const CreateProjectDetailsComponent = ({data, setData,error, setErrors,value,set
                                                   onClick={handleListItemClick(index)}
                                         >
                                             <ListItemAvatar>
-                                                <Avatar alt="Travis Howard" src="/static/images/avatar/iiui-logo.jpg" />
+                                                <Avatar style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
                                             </ListItemAvatar>
                                             <ListItemText
                                                 primary={student.name}

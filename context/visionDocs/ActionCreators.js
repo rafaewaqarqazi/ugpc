@@ -5,6 +5,7 @@ import {
     changeStatusAPI,
     scheduleVisionDefenceAPI,
     submitAdditionFilesVisionDocAPI,
+    addMarksAPI,
 } from "../../utils/apiCalls/visionDocs";
 
 
@@ -32,6 +33,12 @@ export const scheduleVisionDefenceAction = async (data,dispatch)=>{
     const res =await scheduleVisionDefenceAPI(data);
     return await res;
 };
+export const addMarksAction = async (marks,projectId,dispatch)=>{
+    const res = await addMarksAPI(marks,projectId);
+    dispatch(addMarks({marks,projectId}))
+    return await res;
+}
+
 
 //Action Dispatchers
 export const addDocs = (project)=>({
@@ -41,3 +48,8 @@ export const addDocs = (project)=>({
 export const docsLoading = ()=>({
     type:Actions.DOCS_LOADING
 });
+
+export const addMarks = marks =>({
+    type:Actions.ADD_MARKS,
+    payload:marks
+})

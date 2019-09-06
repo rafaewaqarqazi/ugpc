@@ -7,6 +7,7 @@ export default React.createContext({
     fetchByCommittee: committee =>{},
     scheduleVisionDefence:data =>{},
     submitAdditionFilesVisionDoc:(formData,type) =>{},
+    addMarks:marks=>{},
     comment:comment=>{},
     changeStatus:status =>{},
     unComment:comment=>{},

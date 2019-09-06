@@ -75,6 +75,22 @@ export const fetchMeetingsAPI = async ()=>{
         },
     });
     return await res.json();
+};
+
+export const addMarksAPI = async (marks,projectId) =>{
+    const res = await fetch(`${serverUrl}/visionDocument/addMarks`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify({
+            marks,
+            projectId
+        })
+    });
+    return await res.json();
 }
 
 

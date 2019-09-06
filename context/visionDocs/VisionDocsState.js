@@ -7,14 +7,14 @@ import {
     changeStatusAction,
     scheduleVisionDefenceAction,
     submitAdditionFilesVisionDocAction,
+    addMarksAction
 } from "./ActionCreators";
 
 const VisionDocsState = (props) => {
     const [state, dispatch] = useReducer(visionDocsReducer,{
         isLoading:true,
         errMess:null,
-        visionDocs:[],
-        meetings:[]
+        visionDocs:[]
     });
     const fetchByCommittee =async ()=>{
          return await getDocsByCommittee(dispatch);
@@ -32,6 +32,9 @@ const VisionDocsState = (props) => {
     const submitAdditionFilesVisionDoc = async (formData,type) =>{
         return await submitAdditionFilesVisionDocAction(formData,type,dispatch);
     };
+    const addMarks = async (marks,projectId) =>{
+        return await addMarksAction(marks,projectId,dispatch);
+    }
 useEffect(()=>{
     console.log('Vision Docs State:',state)
 },[state])
@@ -43,6 +46,7 @@ useEffect(()=>{
             changeStatus,
             scheduleVisionDefence,
             submitAdditionFilesVisionDoc,
+            addMarks
         }}>
             {props.children}
         </VisionDocsContext.Provider>

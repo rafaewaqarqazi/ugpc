@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Badge, Typography, Grid, Tooltip, Chip, Zoom} from "@material-ui/core";
 import VisionDocDetailsDialog from "./VisionDocDetailsDialog";
 import Divider from "@material-ui/core/Divider";
@@ -10,7 +10,7 @@ import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
 import {getRandomColor} from "../../../../src/material-styles/randomColors";
 
-const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
+const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
 
     const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
@@ -18,15 +18,11 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
     const handleClose = ()=>{
         setOpen(false)
         setCurrentDocument({})
-        if (fetchData){
-            fetchData()
-        }
     };
     const openDetails = details =>{
         setCurrentDocument(details);
         setOpen(true);
     };
-
     return (
         <div className={classes.listItemContainer}>
             {
@@ -85,7 +81,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
                         </div>
                     ))}
             {
-                open &&
+                open &&(
                 <VisionDocDetailsDialog
                     open={open}
                     handleClose={handleClose}
@@ -93,7 +89,7 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth,fetchData}) => {
                     setCurrentDocument={setCurrentDocument}
                     inputLabel={inputLabel}
                     labelWidth={labelWidth}
-                />
+                />)
             }
 
         </div>

@@ -10,7 +10,7 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
 
         const results= await Projects.aggregate([
             {$match:{department:{$in:committees}}},
-            {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1}},
+            {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1,"details.marks":1}},
             {$unwind:"$documentation.visionDocument"},
             {
                 $group:{
@@ -23,7 +23,7 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
         const result = await Projects.populate(results,[
             {path:"projects.students",model:'Users',select:'_id name department student_details.regNo'},
             {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
-            {path:"projects.supervisor",model:'Users',select:'_id name supervisor_details.position'}
+            {path:"projects.details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
         ])
 
         await res.json(result)
@@ -143,3 +143,23 @@ exports.fetchMeetings =async (req,res)=>{
     ])
     await res.json(projects)
 };
+exports.addMarks = async (req,res)=>{
+    try {
+        const {marks,projectId} = req.body;
+        console.log(req.body)
+        const result = await Projects.update({"_id":projectId},{
+            $set:{
+                "details.marks.visionDocument":marks
+            }
+
+        })
+
+        if(result.ok){
+            await res.json({message:"Marks Added"})
+        }
+    }
+    catch (e) {
+        res.status(400).json(e.message)
+    }
+
+}

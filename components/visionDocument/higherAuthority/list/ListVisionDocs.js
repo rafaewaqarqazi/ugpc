@@ -21,17 +21,17 @@ const ListVisionDocs = ({docs}) => {
     const [filter,setFilter] = useState([]);
     const inputLabel = useRef(null);
     const [labelWidth, setLabelWidth] = useState(0);
-    useEffect(() => {
+    useEffect(() =>{
         setLabelWidth(inputLabel.current.offsetWidth);
         let data = [];
         docs.map(doc => {
             doc.projects.map(project => {
                 data = [...data, project]
             })
-        })
+        });
         setDocuments(data);
         setFilter(data);
-    }, []);
+    }, [docs]);
     const handleChange =(event)=> {
         setStatus(event.target.value);
         let data = [];

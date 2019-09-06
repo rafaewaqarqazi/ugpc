@@ -28,13 +28,17 @@ const projectsSchema = new mongoose.Schema({
                     author:{type:ObjectId, ref:"Users"}
                 }
             ],
-            marks:String,
             uploadedAt:Date,
             updatedAt:Date,
             meetingDate:Date
         }]
     },
     details:{
+        marks:{
+          visionDocument: String,
+          internal: String,
+          external: String
+        },
         createdAt:{
             type:Date,
             default: Date.now()
@@ -45,12 +49,10 @@ const projectsSchema = new mongoose.Schema({
             date:{
                 type:Date
             },
-            marks:String
         },
         external:{
             examiners:[{type:ObjectId, ref:"Users"}],
             date:Date,
-            marks:String
         },
         acceptanceLetter:{
             name:String,

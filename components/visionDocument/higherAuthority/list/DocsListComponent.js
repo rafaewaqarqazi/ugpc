@@ -18,10 +18,10 @@ const DocsListComponent = () => {
     },[]);
     return (
         <div >
-            {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :
+            {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :(
                 <Container className={classes.container}>
                     <ListVisionDocs docs={visionDocsContext.visionDocs.visionDocs}/>
-                </Container>
+                </Container>)
                 }
 
         </div>
