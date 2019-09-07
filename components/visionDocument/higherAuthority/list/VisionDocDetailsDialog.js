@@ -1,8 +1,8 @@
-import React, {Fragment, useContext, useEffect, useState} from 'react';
+import React, {Fragment, useContext, useState} from 'react';
 import {
     Button,
     Chip, CircularProgress, Container, Dialog, DialogActions,
-    DialogContent, DialogContentText,
+    DialogContent,
     DialogTitle,
     FormControl, IconButton, InputAdornment,
     InputLabel, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, MenuItem,

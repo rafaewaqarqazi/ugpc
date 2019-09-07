@@ -1,6 +1,6 @@
 ## Under Graduate Project Committee Automation Web App
 
-A Software development tool for Final Year of BS students and Project committee to make their life easier in whole process.
+A Software development tool for Final Year of BSCS/SE/IT students and Project committee to make their life easier in whole process, from **proposal submission to project Tracking and evaluation and much more**.
 
 **Project is being Developed Using MERN Stack and NextJS React Framework**
 
