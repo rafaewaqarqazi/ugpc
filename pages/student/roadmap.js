@@ -3,7 +3,7 @@ import ProjectState from "../../context/project/ProjectState";
 
 import {withStudentAuthSync} from '../../components/routers/studentAuth';
 
-const Overview = () => {
+const Roadmap = () => {
     return (
             <ProjectState>
                 <StudentPanelLayout>
@@ -14,4 +14,4 @@ const Overview = () => {
 };
 
 
-export default withStudentAuthSync(Overview);
+export default withStudentAuthSync(Roadmap);

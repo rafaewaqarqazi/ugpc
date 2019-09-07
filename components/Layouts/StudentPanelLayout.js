@@ -184,7 +184,7 @@ const StudentPanelLayout = ({children})=> {
                         <Divider />
 
                         <List>
-                            <Link href='/student/overview'>
+                            <Link href='/student/roadmap'>
                                 <ListItem button >
                                     <ListItemIcon>
                                         <DashboardOutlined />

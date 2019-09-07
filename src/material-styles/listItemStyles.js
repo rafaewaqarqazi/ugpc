@@ -39,10 +39,12 @@ export const useListItemStyles = makeStyles(theme =>({
     avatar:{
         width:30,
         height:30,
-        margin:theme.spacing(1)
+        margin:theme.spacing(1),
+        backgroundColor:getRandomColor(),
     },
     grid1:{
         display:'flex',
+        backgroundColor:getRandomColor(),
         flexDirection: 'column',
         padding:theme.spacing(0.2),
         justifyContent: 'space-between',

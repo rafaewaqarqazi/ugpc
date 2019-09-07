@@ -13,6 +13,7 @@ import {
 import {Assignment, Search} from '@material-ui/icons';
 import {useListContainerStyles} from "../../../../src/material-styles/listContainerStyles";
 import VisionDocListItem from "./VisionDocListItem";
+import {getRandomColor} from "../../../../src/material-styles/randomColors";
 
 const ListVisionDocs = ({docs}) => {
     const classes = useListContainerStyles();
@@ -66,7 +67,7 @@ const ListVisionDocs = ({docs}) => {
     return (
         <div className={classes.listContainer}>
             <div className={classes.top}>
-                <div className={classes.topIconBox}>
+                <div className={classes.topIconBox} >
                     <Assignment className={classes.headerIcon}/>
                 </div>
                 <div className={classes.topTitle} >

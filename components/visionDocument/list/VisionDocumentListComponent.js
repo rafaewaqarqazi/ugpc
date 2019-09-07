@@ -7,6 +7,7 @@ import Link from "next/link";
 import StudentVisionListItem from "./StudentVisionListItem";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import Typography from "@material-ui/core/Typography";
+import VisionDocListItem from "../higherAuthority/list/VisionDocListItem";
 
 const useStyles = makeStyles(theme => ({
     container:{
@@ -45,10 +46,9 @@ const VisionDocumentListComponent = () => {
                             </Link>
                         </div>
                         <Divider/>
+
                         <StudentVisionListItem
-                            visionDocuments={context.project.project[0].documentation.visionDocument}
-                            students={context.project.project[0].students}
-                            projectId={context.project.project[0]._id}
+                            project={context.project.project[0]}
                         />
                     </div>
                 </Container>

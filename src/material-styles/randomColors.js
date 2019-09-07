@@ -15,5 +15,6 @@ const colors = [
 ]
 
 export const getRandomColor = ()=>{
-    return _.sample(colors);
+    return _.sample(colors)
 }
+

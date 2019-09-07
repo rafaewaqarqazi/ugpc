@@ -8,7 +8,7 @@ import {
     Menu, List, ListItem, ListItemAvatar, ListItemText, MenuItem,
     OutlinedInput,
     Select, TextField,
-    Typography, ListItemIcon
+    Typography, ListItemIcon, AppBar, Toolbar
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../auth";
@@ -20,6 +20,10 @@ import {makeStyles} from "@material-ui/styles";
 import {green} from "@material-ui/core/colors";
 import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import {DropzoneArea} from "material-ui-dropzone";
+import {getRandomColor} from "../../../src/material-styles/randomColors";
+import CloseIcon from '@material-ui/icons/Close';
+import ApprovalLetter from "../../approvalLetter/ApprovalLetter";
+import {getChairmanName} from "../../../utils/apiCalls/users";
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -65,9 +69,25 @@ const useStyles = makeStyles(theme => ({
         whiteSpace: 'normal',
         wordWrap: 'break-word'
     },
-
+    avatar:{
+        backgroundColor:getRandomColor()
+    },
+    appBar: {
+        position: 'relative',
+    },
+    title: {
+        marginLeft: theme.spacing(2),
+        flex: 1,
+    },
+    buttonSuccess: {
+        backgroundColor: green[500],
+        '&:hover': {
+            backgroundColor: green[700],
+        },
+        color:theme.palette.background.paper
+    },
 }));
-const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,handleClose,setCurrentDocument}) => {
+const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
     const classes = useStyles();
     const visionDocsContext = useContext(VisionDocsContext);
     const [comment,setComment] = useState('');
@@ -77,6 +97,8 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
     const [fileDialogLoading,setFileDialogLoading] = useState(false);
     const [file,setFile]=useState([]);
     const [fileError,setFileError] = useState(false);
+    const [letterViewer,setLetterViewer] = useState(false);
+    const [chairmanName,setChairmanName]= useState('');
     const handleClickAttachDocumentMenu = (event)=> {
         setAnchorEl(event.currentTarget);
     }
@@ -124,6 +146,23 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
     const handleOnClosePPTDialog = ()=>{
         setOpenPPTUploadDialog(false)
     };
+    const closeLetterViewer = ()=>{
+        setLetterViewer(false)
+    };
+    const openLetterViewer = ()=>{
+        getChairmanName()
+            .then(result=>{
+                console.log(result);
+                if (result.name){
+                    setChairmanName(result.name);
+                }
+                else {
+                    setChairmanName('Not Available Yet')
+                }
+                setLetterViewer(true);
+            })
+
+    }
     const handleUploadFile = type=>{
         if (file.length === 0){
             setFileError(true)
@@ -201,12 +240,12 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
                                     Students
                                 </Typography>
                                 {
-                                    students.map((student)=>
+                                    project.students.map((student)=>
                                         <Container key={student._id}>
                                             <List>
                                                 <ListItem alignItems="flex-start">
                                                     <ListItemAvatar>
-                                                        <Avatar alt={student.name} src="/static/images/avatar/personAvatar.png" />
+                                                        <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
                                                     </ListItemAvatar>
                                                     <ListItemText
                                                         primary={student.name}
@@ -343,7 +382,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
                                                     currentDocument.comments.map(comment=>
                                                         <ListItem alignItems="flex-start" key={comment._id} divider>
                                                             <ListItemAvatar>
-                                                                <Avatar alt="Cindy Baker" src="/static/images/avatar/personAvatar.png" />
+                                                                <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
                                                             </ListItemAvatar>
                                                             <ListItemText
                                                                 primary={comment.author.name}
@@ -355,12 +394,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
                                                                         >
                                                                             {comment.author.role}
                                                                         </Typography>
-                                                                        <Typography
-                                                                            variant="body2"
-                                                                            color="textPrimary"
-                                                                        >
-                                                                            {comment.text}
-                                                                        </Typography>
+                                                                        {` — ${comment.text}`}
                                                                     </React.Fragment>
                                                                 }
                                                             />
@@ -397,6 +431,11 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
                     </Grid>
                 </DialogContent>
                 <DialogActions>
+                    {
+                        project.details && project.details.acceptanceLetter.name && (
+                            <Button onClick={openLetterViewer} className={classes.buttonSuccess} variant='contained'>View Acceptance Letter</Button>
+                        )
+                    }
                     <Button onClick={handleClose} color="primary" variant='contained'>
                         Close
                     </Button>
@@ -451,6 +490,34 @@ const StudentVisionDocDetailsDialog = ({currentDocument,students,projectId,open,
                         Upload
                     </Button>
                 </DialogActions>
+            </Dialog>
+            <Dialog open={letterViewer} onClose={closeLetterViewer} fullScreen>
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title} noWrap>
+                            Auto Generated Acceptance Letter
+                        </Typography>
+                        <Button color="inherit" onClick={closeLetterViewer}>
+                            Download
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <DialogContent style={{height:500}}>
+                    {
+                        project.details &&(
+                            <ApprovalLetter
+                                title={currentDocument.title}
+                                students={project.students}
+                                supervisor={project.details.supervisor}
+                                date={project.details.acceptanceLetter.issueDate}
+                                chairmanName={chairmanName}
+                            />)
+                    }
+
+                </DialogContent>
             </Dialog>
             </>
     );

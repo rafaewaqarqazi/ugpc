@@ -153,7 +153,6 @@ const Index = () => {
                                     filter={filter}
                                     inputLabel={inputLabel}
                                     labelWidth={labelWidth}
-                                    fetchData={fetchData}
                                 />
                             }
 

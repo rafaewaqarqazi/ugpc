@@ -107,6 +107,9 @@ const useStyles = makeStyles(theme => ({
         left: '50%',
         marginTop: -12,
         marginLeft: -12,
+    },
+    avatar:{
+        backgroundColor:getRandomColor()
     }
 }));
 const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,inputLabel,labelWidth}) => {
@@ -325,9 +328,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 currentDocument.documentation.visionDocument.status !== 'Approved' && currentDocument.documentation.visionDocument.status !== 'Approved With Changes' &&
                                                 <MenuItem value='Rejected'>Reject</MenuItem>
                                             }
-
-
-
                                         </Select>
                                     </FormControl>
                                 </div>
@@ -363,13 +363,14 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 <Typography variant='subtitle2'>
                                     Students
                                 </Typography>
-                                {
-                                    currentDocument.students.map((student,index)=>
-                                        <Container key={index}>
-                                            <List >
-                                                <ListItem alignItems="flex-start">
+
+                                <Container >
+                                    <List >
+                                        {
+                                            currentDocument.students.map((student,index)=>(
+                                                <ListItem alignItems="flex-start" key={index}>
                                                     <ListItemAvatar>
-                                                        <Avatar style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
+                                                        <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
                                                     </ListItemAvatar>
                                                     <ListItemText
                                                         primary={student.name}
@@ -388,10 +389,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                         }
                                                     />
                                                 </ListItem>
-                                            </List>
-                                        </Container>
-                                    )
-                                }
+                                            ))
+                                        }
+                                    </List>
+                                </Container>
 
                             </div>
                         </Grid>
@@ -405,7 +406,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                         <Typography noWrap>Vision Docs</Typography>
                                         <div className={classes.documentsList}>
                                             {
-                                                currentDocument.documentation.visionDocument.documents.map(document =>{
+                                                currentDocument.documentation.visionDocument.documents.map((document) =>{
                                                     if(document.type === 'application/pdf'){
                                                         return (
                                                             <div className={classes.document} key={document.filename} >
@@ -489,35 +490,31 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 :
                                                 <Container>
                                                     {
-                                                        currentDocument.documentation.visionDocument.comments.map((comment,index)=>
-                                                            <Fragment key={index}>
-                                                            <ListItem alignItems="flex-start" key={comment._id}>
-                                                                <ListItemAvatar>
-                                                                    <Avatar style={{backgroundColor:getRandomColor()}}>{comment.author.name.charAt(0)}</Avatar>
-                                                                </ListItemAvatar>
-                                                                <ListItemText
-                                                                    primary={comment.author.name}
-                                                                    secondary={
-                                                                        <React.Fragment>
-                                                                            <Typography
-                                                                                variant="caption"
-                                                                                color="textSecondary"
-                                                                            >
-                                                                                {comment.author.role}
-                                                                            </Typography>
-                                                                            <Typography
-                                                                                variant="body2"
-                                                                                color="textPrimary"
-                                                                            >
-                                                                                {comment.text}
-                                                                            </Typography>
-                                                                        </React.Fragment>
-                                                                    }
-                                                                />
-                                                            </ListItem>
+                                                        currentDocument.documentation.visionDocument.comments.map((comment)=>(
+                                                            <Fragment key={comment._id}>
+                                                                <ListItem alignItems="flex-start" key={comment._id}>
+                                                                    <ListItemAvatar>
+                                                                        <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
+                                                                    </ListItemAvatar>
+                                                                    <ListItemText
+                                                                        primary={comment.author.name}
+                                                                        secondary={
+                                                                            <React.Fragment>
+                                                                                <Typography
+                                                                                    variant="caption"
+                                                                                    color="textSecondary"
+                                                                                >
+                                                                                    {comment.author.role}
+                                                                                </Typography>
+
+                                                                            </React.Fragment>
+                                                                        }
+                                                                    />
+                                                                </ListItem>
                                                                 <Divider variant="inset" component="li" />
                                                             </Fragment>
-                                                        ) }
+                                                        ))
+                                                    }
                                                 </Container>
                                         }
                                         </List>
@@ -555,22 +552,26 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 </DialogContent>
                 <DialogActions>
                     {
-                        currentDocument.details && !currentDocument.details.acceptanceLetter.name?
-                        <div className={classes.wrapper}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={buttonClassname}
-                                disabled={generateLetterLoading}
-                                onClick={handleGenerateLetterButtonClick}
-                            >
-                                Generate Acceptance Letter
-                            </Button>
-                            {generateLetterLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-                        </div>
-                            :
-                            (currentDocument.documentation.visionDocument.status === 'Approved' || currentDocument.documentation.visionDocument.status === 'Approved With Changes') &&
-                            <Button onClick={openLetterViewer} className={classes.buttonSuccess} variant='contained'>View Acceptance Letter</Button>
+                        (currentDocument.documentation.visionDocument.status === 'Approved' || currentDocument.documentation.visionDocument.status === 'Approved With Changes') &&(
+                            currentDocument.details && !currentDocument.details.acceptanceLetter.name?
+                                <div className={classes.wrapper}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={buttonClassname}
+                                        disabled={generateLetterLoading}
+                                        onClick={handleGenerateLetterButtonClick}
+                                    >
+                                        Generate Acceptance Letter
+                                    </Button>
+                                    {generateLetterLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                </div>
+                                :
+
+                                <Button onClick={openLetterViewer} className={classes.buttonSuccess} variant='contained'>View Acceptance Letter</Button>
+                        )
+
+
                     }
 
                     {

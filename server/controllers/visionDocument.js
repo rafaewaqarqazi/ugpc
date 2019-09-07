@@ -119,17 +119,15 @@ exports.scheduleVisionDefence = async (req,res)=>{
 
 exports.fetchMeetings =async (req,res)=>{
     const {committees} = req.query;
-    console.log(committees)
     const projectsResult = await Projects.aggregate([
-        {
-            $unwind:"$documentation.visionDocument"
-        },
-        {
-            $project:{documentation:1,title:1,department:1,students:1}
-        },
         {
             $match:{"department":{$in:committees}}
         },
+        {
+            $unwind:"$documentation.visionDocument"
+        },
+        {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1,"details.marks":1}},
+
         {
             $group:{
                 "_id":"$documentation.visionDocument.meetingDate",
@@ -139,14 +137,14 @@ exports.fetchMeetings =async (req,res)=>{
     ]);
     const projects =await Projects.populate(projectsResult,[
         {path:'projects.students',model:'Users',select:'-_id name department student_details.regNo'},
-        {path:'projects.documentation.visionDocument.comments.author',model:'Users',select:'-_id name ugpc_details'}
+        {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
+        {path:"projects.details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
     ])
     await res.json(projects)
 };
 exports.addMarks = async (req,res)=>{
     try {
         const {marks,projectId} = req.body;
-        console.log(req.body)
         const result = await Projects.update({"_id":projectId},{
             $set:{
                 "details.marks.visionDocument":marks

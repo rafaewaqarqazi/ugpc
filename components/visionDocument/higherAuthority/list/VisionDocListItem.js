@@ -38,18 +38,18 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
                             </div>
                         </div>
                     </div>
-                    :filter.map(doc=>(
-                        <div key={doc.documentation.visionDocument._id}>
+                    :filter.map((doc,index)=>(
+                        <div key={index}>
                             <Grid container spacing={1} className={classes.listItem} onClick={()=>openDetails(doc)}>
                                 <Grid item xs={12} sm={2} className={classes.gridTransition}>
-                                    <div className={classes.grid1} style={{backgroundColor:getRandomColor()}} >
+                                    <div className={classes.grid1} >
                                         <div>
                                             {
-                                                doc.students.map(student =>
-                                                    <Tooltip key={student._id} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                                        <Avatar className={classes.avatar} style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
+                                                doc.students.map((student,index) =>(
+                                                    <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
+                                                        <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
                                                     </Tooltip>
-                                                )
+                                                ))
                                             }
                                         </div>
                                         <Tooltip title='Updated On' placement="top" TransitionComponent={Zoom}>
@@ -96,4 +96,4 @@ const VisionDocListItem = ({filter, inputLabel, labelWidth}) => {
     );
 };
 
-export default VisionDocListItem;
+export default React.memo(VisionDocListItem);

@@ -196,7 +196,7 @@ export const landingAuth = ctx => {
     const user =token ? JSON.parse(token) : {user:{role:'',ugpc_details:{position:'',committee:''}}};
     console.log(user);
     if (ctx.req && token && user.user.role === 'Student') {
-        ctx.res.writeHead(302, { Location: '/student/overview' });
+        ctx.res.writeHead(302, { Location: '/student/roadmap' });
         ctx.res.end();
         return
     }
@@ -226,7 +226,7 @@ export const landingAuth = ctx => {
         return
     }
     if (token && user.user.role === 'Student') {
-        Router.push('/student/overview')
+        Router.push('/student/roadmap')
     }
     else if (token && user.user.role === 'Supervisor') {
         Router.push('/supervisor/overview')
