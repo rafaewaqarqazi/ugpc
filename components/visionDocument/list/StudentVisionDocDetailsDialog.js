@@ -1,20 +1,21 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, Fragment} from 'react';
 import {
     Button,
     Chip, Container, Dialog, DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl, IconButton, InputAdornment,
+    IconButton, InputAdornment,
     Menu, List, ListItem, ListItemAvatar, ListItemText, MenuItem,
-    OutlinedInput,
-    Select, TextField,
-    Typography, ListItemIcon, AppBar, Toolbar
+    TextField,
+    Typography, ListItemIcon, AppBar, Toolbar,
+    Divider,
+    Collapse
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../auth";
 import Avatar from "@material-ui/core/Avatar";
 import {serverUrl} from "../../../utils/config";
-import {Assignment, Send, AttachFile, PictureAsPdfOutlined, ExitToAppOutlined} from "@material-ui/icons";
+import {Assignment, Send, AttachFile,ExpandLess, ExpandMore, PictureAsPdfOutlined} from "@material-ui/icons";
 import VisionDocsContext from "../../../context/visionDocs/visionDocs-context";
 import {makeStyles} from "@material-ui/styles";
 import {green} from "@material-ui/core/colors";
@@ -99,10 +100,13 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
     const [fileError,setFileError] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
     const [chairmanName,setChairmanName]= useState('');
+    const [showComments,setShowComments] = useState(false);
     const handleClickAttachDocumentMenu = (event)=> {
         setAnchorEl(event.currentTarget);
     }
-
+    const handleShowComments = e =>{
+        setShowComments(!showComments);
+    }
     const handleCloseAttachDocumentMenu = ()=> {
         setAnchorEl(null);
     }
@@ -367,43 +371,68 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                                 </Menu>
                             </div>
                             <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Comments
-                                </Typography>
-                                {
-                                    currentDocument.comments.length === 0 ?
-                                        <Typography variant='h6' color='textSecondary' style={{display:'flex', alignItems:'center',justifyContent:'center'}}>
-                                            No Comments Yet
-                                        </Typography>
-                                        :
-                                        <Container>
-                                            <List className={classes.commentList}>
-                                                {
-                                                    currentDocument.comments.map(comment=>
-                                                        <ListItem alignItems="flex-start" key={comment._id} divider>
-                                                            <ListItemAvatar>
-                                                                <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
-                                                            </ListItemAvatar>
-                                                            <ListItemText
-                                                                primary={comment.author.name}
-                                                                secondary={
-                                                                    <React.Fragment>
-                                                                        <Typography
-                                                                            variant="caption"
-                                                                            color="textSecondary"
-                                                                        >
-                                                                            {comment.author.role}
-                                                                        </Typography>
-                                                                        {` — ${comment.text}`}
-                                                                    </React.Fragment>
-                                                                }
-                                                            />
-                                                        </ListItem>
-                                                    ) }
-                                            </List>
-                                        </Container>
+                                <List>
+                                    <ListItem button onClick={handleShowComments}>
+                                        <ListItemText primary="Show Comments" />
+                                        {showComments ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItem>
+                                    <Collapse in={showComments} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding className={classes.commentList}>
+                                            {
+                                                currentDocument.comments.length === 0 ?
+                                                    <ListItem>
+                                                        <Typography variant='h5' color='textSecondary'>No Comments Yet</Typography>
+                                                    </ListItem>
+                                                    :
+                                                    <Container>
+                                                        {
+                                                            currentDocument.comments.map((comment)=>(
+                                                                <Fragment key={comment._id}>
+                                                                    <ListItem alignItems="flex-start" key={comment._id}>
+                                                                        <ListItemAvatar>
+                                                                            <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
+                                                                        </ListItemAvatar>
+                                                                        <ListItemText
+                                                                            primary={
+                                                                                <React.Fragment>
+                                                                                    <Typography
+                                                                                        component="span"
+                                                                                        variant="button"
+                                                                                        display='inline'
+                                                                                        color="textPrimary"
+                                                                                    >
+                                                                                        {comment.author.name}
+                                                                                    </Typography>
+                                                                                    <div >
+                                                                                        <Typography variant='caption' color='textSecondary'>
+                                                                                            {comment.author.role}
+                                                                                        </Typography>
 
-                                }
+                                                                                    </div>
+
+                                                                                </React.Fragment>
+                                                                            }
+                                                                            secondary={
+                                                                                <Typography
+                                                                                    component="span"
+                                                                                    variant="body2"
+                                                                                    display='inline'
+                                                                                    color="textPrimary"
+                                                                                >
+                                                                                    {comment.text}
+                                                                                </Typography>
+                                                                            }
+                                                                        />
+                                                                    </ListItem>
+                                                                    <Divider variant="inset" component="li" />
+                                                                </Fragment>
+                                                            ))
+                                                        }
+                                                    </Container>
+                                            }
+                                        </List>
+                                    </Collapse>
+                                </List>
                             </div>
                             <div className={classes.detailsContent}>
                                 <TextField

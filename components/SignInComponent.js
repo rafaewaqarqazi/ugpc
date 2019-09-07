@@ -1,4 +1,4 @@
-import React, {useState,useContext} from 'react';
+import React, {useState} from 'react';
 import {
     Avatar,
     Box,
@@ -11,7 +11,6 @@ import {
 import Link from "next/link";
 import CopyrightComponent from "./CopyrightComponent";
 import {useSignInStyles} from "../src/material-styles/signin-styles";
-import router from 'next/router';
 import {signin,authenticate} from "../auth";
 import ErrorSnackBar from "./snakbars/ErrorSnackBar";
 
@@ -44,7 +43,6 @@ const SignInComponent = () => {
         setLoading(true);
         signin(user)
             .then(data => {
-                setLoading(false);
                 if (data.error){
                     setError({...error,
                         serverResError:true,

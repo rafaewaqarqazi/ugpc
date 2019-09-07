@@ -194,7 +194,6 @@ export const programOfficeAuth = ctx => {
 export const landingAuth = ctx => {
     const { token } = nextCookie(ctx);
     const user =token ? JSON.parse(token) : {user:{role:'',ugpc_details:{position:'',committee:''}}};
-    console.log(user);
     if (ctx.req && token && user.user.role === 'Student') {
         ctx.res.writeHead(302, { Location: '/student/roadmap' });
         ctx.res.end();

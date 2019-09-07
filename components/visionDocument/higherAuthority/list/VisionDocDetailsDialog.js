@@ -497,17 +497,34 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                                         <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
                                                                     </ListItemAvatar>
                                                                     <ListItemText
-                                                                        primary={comment.author.name}
-                                                                        secondary={
+                                                                        primary={
                                                                             <React.Fragment>
                                                                                 <Typography
-                                                                                    variant="caption"
-                                                                                    color="textSecondary"
+                                                                                    component="span"
+                                                                                    variant="button"
+                                                                                    display='inline'
+                                                                                    color="textPrimary"
                                                                                 >
-                                                                                    {comment.author.role}
+                                                                                    {comment.author.name}
                                                                                 </Typography>
+                                                                                <div >
+                                                                                    <Typography variant='caption' color='textSecondary'>
+                                                                                        {comment.author.role}
+                                                                                    </Typography>
+
+                                                                                </div>
 
                                                                             </React.Fragment>
+                                                                        }
+                                                                        secondary={
+                                                                            <Typography
+                                                                                component="span"
+                                                                                variant="body2"
+                                                                                display='inline'
+                                                                                color="textPrimary"
+                                                                            >
+                                                                                {comment.text}
+                                                                            </Typography>
                                                                         }
                                                                     />
                                                                 </ListItem>
@@ -534,7 +551,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
-                                                <IconButton size='small' onClick={handleComment}>
+                                                <IconButton size='small' >
                                                     <Send />
                                                 </IconButton>
 
