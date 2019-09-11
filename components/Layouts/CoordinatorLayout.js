@@ -29,7 +29,7 @@ import {
     Face,
     PermIdentity,
     ExitToAppOutlined,
-    ScheduleOutlined, AssignmentOutlined, ViewColumnOutlined
+    ScheduleOutlined, AssignmentOutlined, ViewColumnOutlined, SettingsOutlined
 } from "@material-ui/icons";
 import {isAuthenticated, signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
@@ -68,63 +68,76 @@ const CoordinatorLayout = ({children})=> {
         setMobileOpen(!mobileOpen);
     };
     const drawer = (
-        <List>
-            <Link href='/coordinator/overview'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <DashboardOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Overview"} />
-                </ListItem>
+        <Fragment>
+            <List>
+                <Link href='/coordinator/overview'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <DashboardOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Overview"} />
+                    </ListItem>
 
-            </Link>
+                </Link>
 
-            <Link href='/coordinator/vision-documents'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <Laptop />
-                    </ListItemIcon>
-                    <ListItemText primary={"Vision Docs"} />
-                </ListItem>
-            </Link>
+                <Link href='/coordinator/vision-documents'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <Laptop />
+                        </ListItemIcon>
+                        <ListItemText primary={"Vision Docs"} />
+                    </ListItem>
+                </Link>
 
-            <Link href='/coordinator/projects'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <Laptop />
-                    </ListItemIcon>
-                    <ListItemText primary={"Projects"} />
-                </ListItem>
-            </Link>
+                <Link href='/coordinator/projects'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <Laptop />
+                        </ListItemIcon>
+                        <ListItemText primary={"Projects"} />
+                    </ListItem>
+                </Link>
 
-            <Link href='/coordinator/presentations'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <ScheduleOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Schedule Presentations"} style={{whiteSpace:'normal'}} />
-                </ListItem>
-            </Link>
+                <Link href='/coordinator/presentations'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <ScheduleOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Schedule Presentations"} style={{whiteSpace:'normal'}} />
+                    </ListItem>
+                </Link>
 
-            <Link href='/coordinator/meetings'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <VisibilityOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Meetings"} />
-                </ListItem>
-            </Link>
+                <Link href='/coordinator/meetings'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <VisibilityOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Meetings"} />
+                    </ListItem>
+                </Link>
 
-            <Link href='/coordinator/supervisors'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <SupervisorAccountOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Supervisors"} />
-                </ListItem>
-            </Link>
+                <Link href='/coordinator/supervisors'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <SupervisorAccountOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Supervisors"} />
+                    </ListItem>
+                </Link>
 
-        </List>
+            </List>
+            <Divider/>
+            <List>
+                <Link href='/coordinator/settings'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <SettingsOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Settings"} />
+                    </ListItem>
+                </Link>
+            </List>
+        </Fragment>
 
     );
     const addMenu = (

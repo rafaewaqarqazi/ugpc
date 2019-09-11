@@ -8,8 +8,9 @@ import {
     MenuItem,
     Hidden, Toolbar, Button, AppBar
 } from '@material-ui/core';
-import {MoveToInbox, Input, ChevronRight, ChevronLeft, Add,
-    DashboardOutlined, AssignmentOutlined, ViewColumnOutlined, Face, ExitToAppOutlined, PermIdentity
+import {ListAltOutlined, ChevronRight, ChevronLeft, Add,
+    DashboardOutlined, AssignmentOutlined, ViewColumnOutlined, Face, ExitToAppOutlined, PermIdentity,
+    SettingsOutlined
 } from '@material-ui/icons';
 import Link from "next/link";
 import {isAuthenticated, signout} from "../../auth";
@@ -108,32 +109,54 @@ const StudentPanelLayout = ({children})=> {
         </div>
     )
     const drawer = (
-        <List>
-            <Link href='/student/roadmap'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <DashboardOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Roadmap"} />
-                </ListItem>
-            </Link>
-            <Link href='/student/project/vision-document'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <AssignmentOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Vision Docs"} />
-                </ListItem>
-            </Link>
-            <Link href='/student/project/backlogs'>
-                <ListItem button >
-                    <ListItemIcon>
-                        <ViewColumnOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary={"Backlogs"} />
-                </ListItem>
-            </Link>
-        </List>
+        <Fragment>
+            <List>
+                <Link href='/student/roadmap'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <DashboardOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Roadmap"} />
+                    </ListItem>
+                </Link>
+                <Link href='/student/project/vision-document'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <AssignmentOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Vision Docs"} />
+                    </ListItem>
+                </Link>
+                <Link href='/student/project/backlogs'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <ListAltOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Backlogs"} />
+                    </ListItem>
+                </Link>
+                <Link href='/student/project/scrumBoard'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <ViewColumnOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Scrum Board"} />
+                    </ListItem>
+                </Link>
+            </List>
+            <Divider/>
+            <List>
+                <Link href='/student/project/settings'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <SettingsOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Settings"} />
+                    </ListItem>
+                </Link>
+            </List>
+        </Fragment>
+
     )
     return (
         <div >
@@ -287,10 +310,6 @@ const StudentPanelLayout = ({children})=> {
                                         </Menu>
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                             <div className={classes.list}>
                                 <div className={classes.toolbar}>

@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center'
     },
 }));
-const VisionDocumentListComponent = () => {
+const StudentVisionDocumentListComponent = () => {
     const context = useContext(ProjectContext);
     const classes = useStyles();
     const listContainerStyles = useListContainerStyles();
@@ -58,4 +58,4 @@ const VisionDocumentListComponent = () => {
     );
 };
 
-export default VisionDocumentListComponent;
+export default StudentVisionDocumentListComponent;

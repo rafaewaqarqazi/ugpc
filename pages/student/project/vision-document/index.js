@@ -1,5 +1,5 @@
 import StudentPanelLayout from "../../../../components/Layouts/StudentPanelLayout";
-import VisionDocumentListComponent from "../../../../components/visionDocument/list/VisionDocumentListComponent";
+import StudentVisionDocumentListComponent from "../../../../components/visionDocument/list/StudentVisionDocumentListComponent";
 import ProjectState from "../../../../context/project/ProjectState";
 import {withStudentAuthSync} from "../../../../components/routers/studentAuth";
 import VisionDocsState from "../../../../context/visionDocs/VisionDocsState";
@@ -9,7 +9,7 @@ const VisionDocument = () => {
         <ProjectState>
             <VisionDocsState>
                 <StudentPanelLayout>
-                    <VisionDocumentListComponent/>
+                    <StudentVisionDocumentListComponent/>
                 </StudentPanelLayout>
             </VisionDocsState>
         </ProjectState>
