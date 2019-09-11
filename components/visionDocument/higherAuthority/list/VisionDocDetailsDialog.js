@@ -10,7 +10,7 @@ import {
     Select, TextField,
     Typography,
     AppBar,
-    Toolbar, Collapse, Divider
+    Toolbar
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../../auth";
@@ -28,92 +28,14 @@ import ApprovalLetter from "../../../approvalLetter/ApprovalLetter";
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
 import {getChairmanName} from "../../../../utils/apiCalls/users";
-import {getRandomColor} from "../../../../src/material-styles/randomColors";
+import {RenderComments} from "../../common/RenderComments";
+import {useDocDetailsDialogStyles} from "../../../../src/material-styles/docDetailsDialogStyles";
+import {RenderDocBasicDetails} from "../../common/RenderDocBasicDetails";
+import {RenderDocumentAttachments} from "../../common/RenderDocumentAttachments";
 
-const useStyles = makeStyles(theme => ({
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 160,
-    },
-    detailsContent:{
-        marginBottom:theme.spacing(2)
-    },
-    document: {
-        cursor:'pointer',
-        width:70,
-        height:70,
-        border:'1px solid lightgrey',
-        borderRadius:2,
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        "&:hover":{
-            boxShadow:theme.shadows[2]
-        },
-        '& a':{
-            textDecoration:'none',
-            color:'#9E9E9E'
-        },
-        marginRight:theme.spacing(1)
-    },
-    documentsList:{
-        display: 'flex',
-        padding: theme.spacing(1)
-    },
-    greenAvatar: {
-        margin: 10,
-        color: '#fff',
-        backgroundColor: green[500],
-        cursor:'pointer',
-        width:80,
-        height:80
-    },
-    commentList:{
-        position: 'relative',
-        overflow: 'auto',
-        maxHeight: 300,
-    },
-    majorModules:{
-        marginRight:theme.spacing(0.5)
-    },
-    wrapText:{
 
-        whiteSpace: 'normal',
-        overflow:'hidden',
-        textOverflow: 'ellipsis'
-    },
-    appBar: {
-        position: 'relative',
-    },
-    title: {
-        marginLeft: theme.spacing(2),
-        flex: 1,
-    },
-    wrapper: {
-        margin: theme.spacing(1),
-        position: 'relative',
-    },
-    buttonSuccess: {
-        backgroundColor: green[500],
-        '&:hover': {
-            backgroundColor: green[700],
-        },
-        color:theme.palette.background.paper
-    },
-    buttonProgress: {
-        color: green[500],
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
-    },
-    avatar:{
-        backgroundColor:getRandomColor()
-    }
-}));
-const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,inputLabel,labelWidth}) => {
-    const classes = useStyles();
+const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument}) => {
+    const classes = useDocDetailsDialogStyles();
     const visionDocsContext = useContext(VisionDocsContext);
     const [changeStatus,setChangeStatus] = useState('No Change');
     const [commentText,setCommentText] = useState('');
@@ -124,7 +46,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [generateLetterLoading,setGenerateLetterLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [chairmanName,setChairmanName]= useState('');
-    const [showComments,setShowComments] = useState(false);
     const [marks,setMarks] = useState('');
     const [saveButton,setSaveButton]= useState(true);
     const handleMarksChange = event =>{
@@ -135,9 +56,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
         }
 
         setMarks(event.target.value);
-    }
-    const handleShowComments = e =>{
-        setShowComments(!showComments);
     }
     const openLetterViewer = ()=>{
         getChairmanName()
@@ -302,13 +220,13 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                         Change Status
                                     </Typography>
                                     <FormControl variant="outlined" margin='dense' className={classes.formControl}>
-                                        <InputLabel ref={inputLabel} htmlFor="changeStatus">
+                                        <InputLabel  htmlFor="changeStatus">
                                             Status
                                         </InputLabel>
                                         <Select
                                             value={changeStatus}
                                             onChange={handleChangeStatus}
-                                            input={<OutlinedInput labelWidth={labelWidth} name="changeStatus" id="changeStatus" />}
+                                            input={<OutlinedInput labelWidth={47} name="changeStatus" id="changeStatus" />}
                                         >
                                             <MenuItem value='No Change'>No Change</MenuItem>
                                             {
@@ -332,121 +250,13 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                     </FormControl>
                                 </div>
                             }
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Abstract
-                                </Typography>
-                                <Typography variant='body2' className={classes.wrapText}>
-                                    {currentDocument.documentation.visionDocument.abstract}
-                                </Typography>
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Scope
-                                </Typography>
-                                <Typography variant='body2' className={classes.wrapText}>
-                                    {currentDocument.documentation.visionDocument.scope}
-                                </Typography>
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Major Modules
-                                </Typography>
-                                {
-                                    currentDocument.documentation.visionDocument.majorModules.map((module,index)=>
-                                        <Chip  key={index} color='primary' variant='outlined' label={module}  className={classes.majorModules}/>
-                                    )
-                                }
-
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Students
-                                </Typography>
-
-                                <Container >
-                                    <List >
-                                        {
-                                            currentDocument.students.map((student,index)=>(
-                                                <ListItem alignItems="flex-start" key={index}>
-                                                    <ListItemAvatar>
-                                                        <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={student.name}
-                                                        secondary={
-                                                            <React.Fragment>
-                                                                <Typography
-                                                                    component="span"
-                                                                    variant="body2"
-                                                                    display='inline'
-                                                                    color="textPrimary"
-                                                                >
-                                                                    {student.department}
-                                                                </Typography>
-                                                                {` — ${student.student_details.regNo}`}
-                                                            </React.Fragment>
-                                                        }
-                                                    />
-                                                </ListItem>
-                                            ))
-                                        }
-                                    </List>
-                                </Container>
-
-                            </div>
+                            <RenderDocBasicDetails
+                                project={currentDocument}
+                                currentDocument={currentDocument.documentation.visionDocument}
+                                />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Documents
-                                </Typography>
-                                <div>
-                                    <Container>
-                                        <Typography noWrap>Vision Docs</Typography>
-                                        <div className={classes.documentsList}>
-                                            {
-                                                currentDocument.documentation.visionDocument.documents.map((document) =>{
-                                                    if(document.type === 'application/pdf'){
-                                                        return (
-                                                            <div className={classes.document} key={document.filename} >
-                                                                <a href={`${serverUrl}/../pdf/${document.filename}`} target="_blank" >
-                                                                    <PictureAsPdfOutlined style={{width: 50, height: 50}} />
-                                                                </a>
-                                                            </div>
-                                                        )}
-
-                                                })
-                                            }
-                                        </div>
-
-                                    </Container>
-
-                                </div>
-                                <div>
-                                    <Container>
-                                        <Typography noWrap>Presentation</Typography>
-                                        <div className={classes.documentsList}>
-                                            {
-                                                currentDocument.documentation.visionDocument.documents.map(document =>{
-                                                    if(document.type === 'application/vnd.ms-powerpoint' || document.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
-                                                        return (
-                                                            <div className={classes.document} key={document.filename}>
-                                                                <a key={document.filename} href={`${serverUrl}/../presentation/${document.filename}`} target="_blank" >
-                                                                    <Assignment style={{width: 50, height: 50}} />
-                                                                </a>
-                                                            </div>
-                                                        )}
-
-                                                })
-                                            }
-                                        </div>
-
-                                    </Container>
-
-                                </div>
-
-                            </div>
+                            <RenderDocumentAttachments documents={currentDocument.documentation.visionDocument.documents} />
                             {
                                 (currentDocument.documentation.visionDocument.status === 'Approved' || currentDocument.documentation.visionDocument.status === 'Approved With Changes') &&
                                 <div className={classes.detailsContent}>
@@ -475,68 +285,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 </div>
                             }
                             <div className={classes.detailsContent}>
-                                <List>
-                                    <ListItem button onClick={handleShowComments}>
-                                        <ListItemText primary="Show Comments" />
-                                        {showComments ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItem>
-                                    <Collapse in={showComments} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding className={classes.commentList}>
-                                        {
-                                            currentDocument.documentation.visionDocument.comments.length === 0 ?
-                                                <ListItem>
-                                                    <Typography variant='h5' color='textSecondary'>No Comments Yet</Typography>
-                                                </ListItem>
-                                                :
-                                                <Container>
-                                                    {
-                                                        currentDocument.documentation.visionDocument.comments.map((comment)=>(
-                                                            <Fragment key={comment._id}>
-                                                                <ListItem alignItems="flex-start" key={comment._id}>
-                                                                    <ListItemAvatar>
-                                                                        <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
-                                                                    </ListItemAvatar>
-                                                                    <ListItemText
-                                                                        primary={
-                                                                            <React.Fragment>
-                                                                                <Typography
-                                                                                    component="span"
-                                                                                    variant="button"
-                                                                                    display='inline'
-                                                                                    color="textPrimary"
-                                                                                >
-                                                                                    {comment.author.name}
-                                                                                </Typography>
-                                                                                <div >
-                                                                                    <Typography variant='caption' color='textSecondary'>
-                                                                                        {comment.author.role}
-                                                                                    </Typography>
-
-                                                                                </div>
-
-                                                                            </React.Fragment>
-                                                                        }
-                                                                        secondary={
-                                                                            <Typography
-                                                                                component="span"
-                                                                                variant="body2"
-                                                                                display='inline'
-                                                                                color="textPrimary"
-                                                                            >
-                                                                                {comment.text}
-                                                                            </Typography>
-                                                                        }
-                                                                    />
-                                                                </ListItem>
-                                                                <Divider variant="inset" component="li" />
-                                                            </Fragment>
-                                                        ))
-                                                    }
-                                                </Container>
-                                        }
-                                        </List>
-                                    </Collapse>
-                                </List>
+                                <RenderComments comments={currentDocument.documentation.visionDocument.comments}/>
                             </div>
                             <div className={classes.detailsContent}>
                                 <TextField

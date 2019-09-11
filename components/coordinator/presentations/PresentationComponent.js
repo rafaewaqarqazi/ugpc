@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useState, Fragment} from 'react';
 import {Container, LinearProgress} from "@material-ui/core";
 import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import {makeStyles} from "@material-ui/styles";
@@ -12,25 +12,36 @@ const useStyles = makeStyles(theme => ({
 }))
 const PresentationComponent = () => {
     const visionDocsContext = useContext(VisionDocsContext);
+    const [empty,setEmpty] = useState(true);
     const classes = useStyles();
     useEffect(()=>{
         visionDocsContext.fetchByCommittee();
     },[]);
+
+    const Render = ()=>{
+        let documents = [];
+        visionDocsContext.visionDocs.visionDocs.map((docs) => {
+            if (docs._id.status==='Approved for Meeting'){
+                documents = docs.projects
+            }
+        })
+        if (documents.length > 0){
+            return  <Container className={classes.container}>
+                <ListVisionDocsForPresentation docs={documents}/>
+            </Container>
+        }
+        else {
+            return  <Container className={classes.container}>
+                <ListVisionDocsForPresentation docs={[]}/>
+            </Container>
+        }
+    }
     return (
         <div >
             {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :
-                visionDocsContext.visionDocs.visionDocs.map((docs,index) => {
-                    if (docs._id.status==='Approved for Meeting'){
-                        return  <Container className={classes.container} key={index}>
-                            <ListVisionDocsForPresentation docs={docs}/>
-                        </Container>
-                    }else{
-                        return  <Container className={classes.container} key={index}>
-                            <ListVisionDocsForPresentation docs={[]}/>
-                        </Container>
-                    }
-                })
+                <Render />
             }
+
 
         </div>
     );

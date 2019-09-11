@@ -20,6 +20,7 @@ import {DateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
+import {RenderListItemContent} from "../../visionDocument/common/RenderListItemContent";
 
 const useStyles = makeStyles(theme =>({
     scheduleContainer:{
@@ -170,7 +171,7 @@ const ListVisionDocsForPresentation = ({docs}) => {
                 setOpenSnackbar(true);
                 setTimeout(()=>{
                     visionDocsContext.fetchByCommittee();
-                    visionDocsContext.fetchMeetings();
+                    // visionDocsContext.fetchMeetings();
                 },2000);
 
                 setDialogOpen(false);
@@ -287,11 +288,13 @@ const ListVisionDocsForPresentation = ({docs}) => {
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}
                                                                                         ref={provided.innerRef}
-                                                                                        className={presentationClasses.listItem}
                                                                                     >
-                                                                                        <Typography noWrap style={{flexGrow:1}}>{project.title}</Typography>
-                                                                                        <Typography noWrap key={index} color='textSecondary'>{project.students[0].student_details.regNo}</Typography>
-                                                                                        <Button onClick={()=>openDetails(project)} size='small' color='primary'>See Details</Button>
+                                                                                        <div onClick={()=>openDetails(project)}>
+                                                                                            <RenderListItemContent
+                                                                                                doc={project.documentation.visionDocument}
+                                                                                                project={project}
+                                                                                                />
+                                                                                        </div>
 
                                                                                     </div>
 
@@ -323,7 +326,6 @@ const ListVisionDocsForPresentation = ({docs}) => {
                         handleClose={handleClose}
                         currentDocument={currentDocument}
                         setCurrentDocument={setCurrentDocument}
-                        labelWidth={50}
                     />
                 }
             </div>

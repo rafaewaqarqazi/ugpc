@@ -20,7 +20,7 @@ const VisionDocsState = (props) => {
          return await getDocsByCommittee(dispatch);
     };
     const comment = async comment =>{
-        return await commentOnVision(comment,dispatch);
+        return await commentOnVision(comment);
     }
     const changeStatus = async status =>{
         return await changeStatusAction(status,dispatch);

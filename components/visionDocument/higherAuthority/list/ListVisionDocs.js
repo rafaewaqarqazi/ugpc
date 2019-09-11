@@ -13,17 +13,14 @@ import {
 import {Assignment, Search} from '@material-ui/icons';
 import {useListContainerStyles} from "../../../../src/material-styles/listContainerStyles";
 import VisionDocListItem from "./VisionDocListItem";
-import {getRandomColor} from "../../../../src/material-styles/randomColors";
+
 
 const ListVisionDocs = ({docs}) => {
     const classes = useListContainerStyles();
     const [status, setStatus] = useState('All');
     const [documents,setDocuments]=useState([]);
     const [filter,setFilter] = useState([]);
-    const inputLabel = useRef(null);
-    const [labelWidth, setLabelWidth] = useState(0);
     useEffect(() =>{
-        setLabelWidth(inputLabel.current.offsetWidth);
         let data = [];
         docs.map(doc => {
             doc.projects.map(project => {
@@ -78,13 +75,13 @@ const ListVisionDocs = ({docs}) => {
             <div >
                 <div className={classes.listHeader}>
                     <FormControl variant="outlined" margin='dense' className={classes.formControl}>
-                        <InputLabel ref={inputLabel} htmlFor="status">
+                        <InputLabel htmlFor="status">
                             Status
                         </InputLabel>
                         <Select
                             value={status}
                             onChange={handleChange}
-                            input={<OutlinedInput labelWidth={labelWidth} name="status" id="status" />}
+                            input={<OutlinedInput labelWidth={47} name="status" id="status" />}
                         >
                             <MenuItem value='All'>All</MenuItem>
                             <MenuItem value='Waiting for Initial Approval'>Waiting for Initial Approval</MenuItem>
@@ -114,8 +111,6 @@ const ListVisionDocs = ({docs}) => {
                 <Divider/>
                 <VisionDocListItem
                     filter={filter}
-                    inputLabel={inputLabel}
-                    labelWidth={labelWidth}
                 />
             </div>
         </div>

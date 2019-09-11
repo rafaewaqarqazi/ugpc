@@ -1,5 +1,6 @@
 import {makeStyles} from "@material-ui/core";
 import {blue} from "@material-ui/core/colors";
+import {getRandomColor} from "./randomColors";
 
 const drawerWidth = 280;
 export const useDrawerStyles = makeStyles(theme => ({
@@ -83,5 +84,17 @@ export const useDrawerStyles = makeStyles(theme => ({
     },
     avatarMargin:{
         marginBottom:theme.spacing(2)
+    },
+    avatarDrawer:{
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        padding:theme.spacing(2)
+    },
+    avatarSize:{
+        width:100,
+        height:100,
+        fontSize:32,
+        backgroundColor:getRandomColor()
     }
 }));

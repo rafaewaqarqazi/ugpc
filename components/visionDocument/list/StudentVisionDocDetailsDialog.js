@@ -1,95 +1,30 @@
-import React, {useContext, useState, Fragment} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Button,
-    Chip, Container, Dialog, DialogActions,
+    Chip,Dialog, DialogActions,
     DialogContent,
     DialogTitle,
     IconButton, InputAdornment,
-    Menu, List, ListItem, ListItemAvatar, ListItemText, MenuItem,
+    Menu, MenuItem,
     TextField,
     Typography, ListItemIcon, AppBar, Toolbar,
-    Divider,
-    Collapse
+    Grid,
 } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../auth";
-import Avatar from "@material-ui/core/Avatar";
-import {serverUrl} from "../../../utils/config";
-import {Assignment, Send, AttachFile,ExpandLess, ExpandMore, PictureAsPdfOutlined} from "@material-ui/icons";
+import {Assignment, Send, AttachFile, PictureAsPdfOutlined} from "@material-ui/icons";
 import VisionDocsContext from "../../../context/visionDocs/visionDocs-context";
-import {makeStyles} from "@material-ui/styles";
-import {green} from "@material-ui/core/colors";
 import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import {DropzoneArea} from "material-ui-dropzone";
-import {getRandomColor} from "../../../src/material-styles/randomColors";
 import CloseIcon from '@material-ui/icons/Close';
 import ApprovalLetter from "../../approvalLetter/ApprovalLetter";
 import {getChairmanName} from "../../../utils/apiCalls/users";
+import {RenderComments} from "../common/RenderComments";
+import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
+import {RenderDocBasicDetails} from "../common/RenderDocBasicDetails";
+import {RenderDocumentAttachments} from "../common/RenderDocumentAttachments";
 
-const useStyles = makeStyles(theme => ({
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 160,
-    },
-    detailsContent:{
-        marginBottom:theme.spacing(2)
-    },
-    document: {
-        cursor:'pointer',
-        width:70,
-        height:70,
-        border:'1px solid lightgrey',
-        borderRadius:2,
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        "&:hover":{
-            boxShadow:theme.shadows[2]
-        },
-        '& a':{
-            textDecoration:'none',
-            color:'#9E9E9E'
-        },
-        marginRight:theme.spacing(1)
-    },
-    documentsList:{
-        display: 'flex',
-        padding: theme.spacing(1)
-    },
-
-    commentList:{
-        position: 'relative',
-        overflow: 'auto',
-        maxHeight: 300,
-    },
-    majorModules:{
-        marginRight:theme.spacing(0.5)
-    },
-    wrapText:{
-        maxWidth:400,
-        whiteSpace: 'normal',
-        wordWrap: 'break-word'
-    },
-    avatar:{
-        backgroundColor:getRandomColor()
-    },
-    appBar: {
-        position: 'relative',
-    },
-    title: {
-        marginLeft: theme.spacing(2),
-        flex: 1,
-    },
-    buttonSuccess: {
-        backgroundColor: green[500],
-        '&:hover': {
-            backgroundColor: green[700],
-        },
-        color:theme.palette.background.paper
-    },
-}));
 const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
-    const classes = useStyles();
+    const classes = useDocDetailsDialogStyles();
     const visionDocsContext = useContext(VisionDocsContext);
     const [comment,setComment] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -100,12 +35,8 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
     const [fileError,setFileError] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
     const [chairmanName,setChairmanName]= useState('');
-    const [showComments,setShowComments] = useState(false);
     const handleClickAttachDocumentMenu = (event)=> {
         setAnchorEl(event.currentTarget);
-    }
-    const handleShowComments = e =>{
-        setShowComments(!showComments);
     }
     const handleCloseAttachDocumentMenu = ()=> {
         setAnchorEl(null);
@@ -117,7 +48,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
         if (comment !== ''){
             const commentDetails = {
                 text:comment,
-                projectId:projectId,
+                projectId:project._id,
                 documentId:currentDocument._id,
                 author:isAuthenticated().user._id
             };
@@ -175,7 +106,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
             setFileDialogLoading(true);
             let formData = new FormData();
             formData.set('file',file)
-            formData.set('projectId',projectId);
+            formData.set('projectId',project._id);
             formData.set('documentId',currentDocument._id)
 
 
@@ -195,7 +126,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
         <>
         <Dialog
             fullWidth={true}
-            maxWidth='md'
+            maxWidth='lg'
             open={open}
             onClose={handleClose}
             aria-labelledby="dialog-title"
@@ -212,227 +143,58 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                                 </Typography>
                                 <Chip style={getVisionDocsStatusChipColor(currentDocument.status)} label={currentDocument.status}  size="small"/>
                             </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Abstract
-                                </Typography>
-                                <Typography variant='body2' className={classes.wrapText}>
-                                    {currentDocument.abstract}
-                                </Typography>
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Scope
-                                </Typography>
-                                <Typography variant='body2' className={classes.wrapText}>
-                                    {currentDocument.scope}
-                                </Typography>
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Major Modules
-                                </Typography>
-                                {
-                                    currentDocument.majorModules.map((module,index)=>
-                                        <Chip key={index} color='primary' variant='outlined' label={module}  className={classes.majorModules}/>
-                                    )
-                                }
-
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Students
-                                </Typography>
-                                {
-                                    project.students.map((student)=>
-                                        <Container key={student._id}>
-                                            <List>
-                                                <ListItem alignItems="flex-start">
-                                                    <ListItemAvatar>
-                                                        <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={student.name}
-                                                        secondary={
-                                                            <React.Fragment>
-                                                                <Typography
-                                                                    component="span"
-                                                                    variant="body2"
-                                                                    display='inline'
-                                                                    color="textPrimary"
-                                                                >
-                                                                    {student.department}
-                                                                </Typography>
-                                                                {` — ${student.student_details.regNo}`}
-                                                            </React.Fragment>
-                                                        }
-                                                    />
-                                                </ListItem>
-                                            </List>
-                                        </Container>
-                                    )
-                                }
-
-                            </div>
+                            <RenderDocBasicDetails
+                                currentDocument={currentDocument}
+                                project={project}
+                                />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <div className={classes.detailsContent}>
-                                <Typography variant='subtitle2'>
-                                    Documents
-                                </Typography>
-                                <div>
-                                    <Container>
-                                        <Typography noWrap>Vision Docs</Typography>
-                                        <div className={classes.documentsList}>
-                                            {
-                                                currentDocument.documents.map(document =>{
-                                                    if(document.type === 'application/pdf'){
-                                                        return (
-                                                            <div className={classes.document} key={document.filename} >
-                                                                <a href={`${serverUrl}/../pdf/${document.filename}`} target="_blank" >
-                                                                    <PictureAsPdfOutlined style={{width: 50, height: 50}} />
-                                                                </a>
-                                                            </div>
-                                                        )}
+                            <RenderDocumentAttachments documents={currentDocument.documents}/>
+                            {
+                                (currentDocument.status === 'Meeting Scheduled' || currentDocument.status === 'Approved With Changes') &&
+                                <IconButton
+                                    aria-controls="attachment-menu"
+                                    aria-haspopup="true"
+                                    onClick={handleClickAttachDocumentMenu}
 
-                                                })
-                                            }
-                                        </div>
-
-                                    </Container>
-
-                                </div>
-                                <div>
-                                    <Container>
-                                        <Typography noWrap>Presentation</Typography>
-                                        <div className={classes.documentsList}>
-                                            {
-                                                currentDocument.documents.map(document =>{
-                                                    if(document.type === 'application/vnd.ms-powerpoint' || document.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
-                                                        return (
-                                                            <div className={classes.document} key={document.filename}>
-                                                                <a key={document.filename} href={`${serverUrl}/../presentation/${document.filename}`} target="_blank" >
-                                                                    <Assignment style={{width: 50, height: 50}} />
-                                                                </a>
-                                                            </div>
-                                                        )}
-
-                                                })
-                                            }
-                                        </div>
-
-                                    </Container>
-
-                                </div>
+                                >
+                                    <AttachFile/>
+                                </IconButton>
+                            }
+                            <Menu
+                                id="attachment-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleCloseAttachDocumentMenu}
+                            >
                                 {
-                                    (currentDocument.status === 'Meeting Scheduled' || currentDocument.status === 'Approved with Changes') &&
-                                    <IconButton
-                                        aria-controls="attachment-menu"
-                                        aria-haspopup="true"
-                                        onClick={handleClickAttachDocumentMenu}
-                                        style={{marginTop:5}}
-                                    >
-                                        <AttachFile/>
-                                    </IconButton>
+                                    currentDocument.status === 'Approved With Changes' &&
+                                    <MenuItem onClick={()=>setOpenDocUploadDialog(true)}>
+                                        <ListItemIcon>
+                                            <PictureAsPdfOutlined />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap>
+                                            ReSubmit Vision Document
+                                        </Typography>
+                                    </MenuItem>
                                 }
 
+                                {
+                                    currentDocument.status === 'Meeting Scheduled' &&
+                                    <MenuItem onClick={()=>setOpenPPTUploadDialog(true)}>
+                                        <ListItemIcon>
+                                            <Assignment />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap>
+                                            Presentation File
+                                        </Typography>
+                                    </MenuItem>
+                                }
 
-                                <Menu
-                                    id="attachment-menu"
-                                    anchorEl={anchorEl}
-                                    keepMounted
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleCloseAttachDocumentMenu}
-                                >
-                                    {
-                                        currentDocument.status === 'Approved with Changes' &&
-                                        <MenuItem onClick={()=>setOpenDocUploadDialog(true)}>
-                                            <ListItemIcon>
-                                                <PictureAsPdfOutlined />
-                                            </ListItemIcon>
-                                            <Typography variant="inherit" noWrap>
-                                                ReSubmit Vision Document
-                                            </Typography>
-                                        </MenuItem>
-                                    }
-
-                                    {
-                                        currentDocument.status === 'Meeting Scheduled' &&
-                                        <MenuItem onClick={()=>setOpenPPTUploadDialog(true)}>
-                                            <ListItemIcon>
-                                                <Assignment />
-                                            </ListItemIcon>
-                                            <Typography variant="inherit" noWrap>
-                                                Presentation File
-                                            </Typography>
-                                        </MenuItem>
-                                    }
-
-                                </Menu>
-                            </div>
+                            </Menu>
                             <div className={classes.detailsContent}>
-                                <List>
-                                    <ListItem button onClick={handleShowComments}>
-                                        <ListItemText primary="Show Comments" />
-                                        {showComments ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItem>
-                                    <Collapse in={showComments} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding className={classes.commentList}>
-                                            {
-                                                currentDocument.comments.length === 0 ?
-                                                    <ListItem>
-                                                        <Typography variant='h5' color='textSecondary'>No Comments Yet</Typography>
-                                                    </ListItem>
-                                                    :
-                                                    <Container>
-                                                        {
-                                                            currentDocument.comments.map((comment)=>(
-                                                                <Fragment key={comment._id}>
-                                                                    <ListItem alignItems="flex-start" key={comment._id}>
-                                                                        <ListItemAvatar>
-                                                                            <Avatar className={classes.avatar}>{comment.author.name.charAt(0).toUpperCase()}</Avatar>
-                                                                        </ListItemAvatar>
-                                                                        <ListItemText
-                                                                            primary={
-                                                                                <React.Fragment>
-                                                                                    <Typography
-                                                                                        component="span"
-                                                                                        variant="button"
-                                                                                        display='inline'
-                                                                                        color="textPrimary"
-                                                                                    >
-                                                                                        {comment.author.name}
-                                                                                    </Typography>
-                                                                                    <div >
-                                                                                        <Typography variant='caption' color='textSecondary'>
-                                                                                            {comment.author.role}
-                                                                                        </Typography>
-
-                                                                                    </div>
-
-                                                                                </React.Fragment>
-                                                                            }
-                                                                            secondary={
-                                                                                <Typography
-                                                                                    component="span"
-                                                                                    variant="body2"
-                                                                                    display='inline'
-                                                                                    color="textPrimary"
-                                                                                >
-                                                                                    {comment.text}
-                                                                                </Typography>
-                                                                            }
-                                                                        />
-                                                                    </ListItem>
-                                                                    <Divider variant="inset" component="li" />
-                                                                </Fragment>
-                                                            ))
-                                                        }
-                                                    </Container>
-                                            }
-                                        </List>
-                                    </Collapse>
-                                </List>
+                                <RenderComments comments={currentDocument.comments}/>
                             </div>
                             <div className={classes.detailsContent}>
                                 <TextField

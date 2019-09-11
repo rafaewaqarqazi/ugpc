@@ -17,7 +17,7 @@ export const getDocsByCommittee = async (dispatch)=>{
     dispatch(addDocs(docs));
 };
 
-export const commentOnVision = async (comment,dispatch)=>{
+export const commentOnVision = async (comment)=>{
     return await commentOnVisionAPI(comment);
 }
 export const changeStatusAction = async (status,dispatch)=>{
@@ -52,4 +52,6 @@ export const docsLoading = ()=>({
 export const addMarks = marks =>({
     type:Actions.ADD_MARKS,
     payload:marks
-})
+});
+
+export const addComments = (comments) => ({})

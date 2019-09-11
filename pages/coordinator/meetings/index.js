@@ -31,8 +31,6 @@ const Index = () => {
     const [loading,setLoading] = useState(true);
     const classes = useStyles();
     const containerClasses = useListContainerStyles();
-    const inputLabel = useRef(null);
-    const [labelWidth, setLabelWidth] = useState(0);
     const [meetingsDates,setMeetingsDate] = useState([])
     const [selectedDate,setSelectedDate] = useState('All');
     const [filter,setFilter] = useState([]);
@@ -60,8 +58,9 @@ const Index = () => {
             })
     }
     useEffect(()=>{
-        setLabelWidth(inputLabel.current.offsetWidth);
-       fetchData()
+
+       fetchData();
+
     },[]);
     const handleChange =(event)=> {
         setSelectedDate(event.target.value);
@@ -113,13 +112,13 @@ const Index = () => {
                         <div >
                             <div className={containerClasses.listHeader}>
                                 <FormControl variant="outlined" margin='dense' className={containerClasses.formControl}>
-                                    <InputLabel ref={inputLabel} htmlFor="status">
+                                    <InputLabel  htmlFor="status">
                                         Meeting Date
                                     </InputLabel>
                                     <Select
                                         value={selectedDate}
                                         onChange={handleChange}
-                                        input={<OutlinedInput labelWidth={labelWidth} name="status" id="status" />}
+                                        input={<OutlinedInput labelWidth={100} name="status" id="status" />}
                                     >
                                         <MenuItem value='All'>All</MenuItem>
                                         {
@@ -151,8 +150,6 @@ const Index = () => {
                                 !loading &&
                                 <VisionDocListItem
                                     filter={filter}
-                                    inputLabel={inputLabel}
-                                    labelWidth={labelWidth}
                                 />
                             }
 
