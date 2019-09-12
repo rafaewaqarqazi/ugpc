@@ -126,6 +126,7 @@ exports.assignSupervisor = async (req,res)=>{
 exports.generateAcceptanceLetter = async (req, res)=>{
     const {projectId,regNo} = req.body;
     const date = Date.now();
+    const estimatedDeadline =  moment(date).add(4,'M').add(1,'d').startOf('d');
     const result= await Projects.updateOne(
         {"_id":projectId},
         {
@@ -133,8 +134,8 @@ exports.generateAcceptanceLetter = async (req, res)=>{
                 "details.acceptanceLetter":{
                         name:`${regNo}.pdf`,
                         issueDate:date
-                    }
-
+                    },
+                "details.estimatedDeadline":estimatedDeadline
             }
         }
         );

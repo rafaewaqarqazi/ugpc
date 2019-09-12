@@ -8,13 +8,14 @@ export const useListItemStyles = makeStyles(theme =>({
         border:'1.7px dashed grey',
         marginTop:theme.spacing(2),
         borderRadius:5,
-        width:'100%'
+        width:'100%',
+        padding:theme.spacing(5),
     },
     emptyList:{
         display:'flex',
         alignItems:'center',
         justifyContent:'center',
-        padding:theme.spacing(5),
+        textAlign:'center'
     },
     listItemContainer:{
         marginTop:theme.spacing(2)

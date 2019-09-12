@@ -4,7 +4,7 @@ import VisionDocsState from "../../../context/visionDocs/VisionDocsState";
 import {fetchMeetingsAPI} from "../../../utils/apiCalls/visionDocs";
 import {makeStyles} from "@material-ui/styles";
 import Container from "@material-ui/core/Container";
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {Assignment, Search} from "@material-ui/icons";
 import Typography from "@material-ui/core/Typography";

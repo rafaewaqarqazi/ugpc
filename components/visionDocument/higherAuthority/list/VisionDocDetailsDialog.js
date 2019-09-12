@@ -1,11 +1,11 @@
-import React, {Fragment, useContext, useState} from 'react';
+import React, { useContext, useState} from 'react';
 import {
     Button,
     Chip, CircularProgress, Container, Dialog, DialogActions,
     DialogContent,
     DialogTitle,
     FormControl, IconButton, InputAdornment,
-    InputLabel, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, MenuItem,
+    InputLabel, LinearProgress, MenuItem,
     OutlinedInput,
     Select, TextField,
     Typography,
@@ -14,16 +14,13 @@ import {
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../../auth";
-import Avatar from "@material-ui/core/Avatar";
-import {serverUrl} from "../../../../utils/config";
-import {Assignment, ExpandLess, ExpandMore, PictureAsPdfOutlined, Send} from "@material-ui/icons";
+
+import { Send} from "@material-ui/icons";
 import VisionDocsContext from "../../../../context/visionDocs/visionDocs-context";
-import {makeStyles} from "@material-ui/styles";
-import {green} from "@material-ui/core/colors";
+
 import {getVisionDocsStatusChipColor} from "../../../../src/material-styles/visionDocsListBorderColor";
 import {assignSupervisorAuto, generateAcceptanceLetter} from "../../../../utils/apiCalls/projects";
 import SuccessSnackBar from "../../../snakbars/SuccessSnackBar";
-import { PDFDownloadLink } from '@react-pdf/renderer'
 import ApprovalLetter from "../../../approvalLetter/ApprovalLetter";
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
@@ -202,10 +199,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 <DialogContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
-                            {/*<PDFDownloadLink document={<ApprovalLetter />} fileName="somename.pdf" style={{textDecoration: 'none'}}>*/}
-                            {/*    {({ blob, url, loading, error }) => (loading ? <CircularProgress/> : <Button>Download</Button>)}*/}
-                            {/*</PDFDownloadLink>*/}
-
 
                             <div className={classes.detailsContent}>
                                 <Typography color='textSecondary'>

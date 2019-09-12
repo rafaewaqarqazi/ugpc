@@ -49,6 +49,7 @@ const SignInComponent = () => {
                         serverResErrorText:data.error
                     })
                 }else {
+                    setLoading(false)
                     authenticate(data)
                 }
 

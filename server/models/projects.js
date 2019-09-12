@@ -46,9 +46,7 @@ const projectsSchema = new mongoose.Schema({
         supervisor:{type:ObjectId, ref:"Users"},
         internal:{
             examiners:[{type:ObjectId, ref:"Users"}],
-            date:{
-                type:Date
-            },
+            date:Date,
         },
         external:{
             examiners:[{type:ObjectId, ref:"Users"}],
@@ -58,14 +56,7 @@ const projectsSchema = new mongoose.Schema({
             name:String,
             issueDate:Date
         },
-        epic:[{
-            name:String,
-            associatedBacklogs:[{
-                type:ObjectId
-            }]
-
-        }]
-        ,
+        estimatedDeadline:Date,
         backlogs:[{
             title: String,
             description:String,

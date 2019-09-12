@@ -23,15 +23,11 @@ const VisionDocListItem = ({filter}) => {
         <div className={classes.listItemContainer}>
             {
                 filter.length === 0?
-                    <div className={classes.emptyList}>
-                        <div
-                            className={classes.emptyListContainer}
-                        >
-                            <div className={classes.emptyList}>
-                                <Typography variant='subtitle2' color='textSecondary'>
-                                    No Projects Found
-                                </Typography>
-                            </div>
+                    <div className={classes.emptyListContainer}>
+                        <div className={classes.emptyList}>
+                            <Typography variant='subtitle2' color='textSecondary'>
+                                No Projects Found
+                            </Typography>
                         </div>
                     </div>
                     :filter.map((doc,index)=>(

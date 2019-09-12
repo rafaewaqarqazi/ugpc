@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
      const [loading, setLoading] = useState(false);
      const [success,setSuccess]=useState(false)
     const [data,setData] = useState({
-        title:'',
+        groupName:'',
         description:'',
         partnerId:'',
         team:'solo'
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
          router.push('/student/overview')
      }
     const [errors,setErrors] = useState({
-        title:{
+        groupName:{
             show:false,
             message:''
         },
@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
         setLoading(true);
         const phase = userContext.user.user.student_details.batch.slice(1,3);
         const projectData = {
-            title:data.title,
+            groupName:data.title,
             description:data.description,
             phase:phase>=17 ? 'Documentation':'Implementation',
             department:userContext.user.user.department,
@@ -98,12 +98,12 @@ const useStyles = makeStyles(theme => ({
     const handleChange = e => {
         setErrors({
             ...errors,
-            title:{
+            groupName:{
                 show:false,
                 message:''
             }
         });
-        setData({...data, title: e.target.value})
+        setData({...data, groupName: e.target.value})
     };
      const getStepContent = step => {
          switch (step) {
@@ -118,9 +118,9 @@ const useStyles = makeStyles(theme => ({
                                  name='title'
                                  placeholder='Project Title here'
                                  required
-                                 error={errors.title.show}
-                                 helperText={errors.title.message}
-                                 value={data.title}
+                                 error={errors.groupName.show}
+                                 helperText={errors.groupName.message}
+                                 value={data.groupName}
                                  onChange={handleChange}
 
                              />

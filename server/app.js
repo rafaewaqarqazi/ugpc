@@ -9,8 +9,10 @@ const visionDocumentRouter = require('./routes/visionDocument');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
+const compression = require('compression')
 const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
+console.log(dev)
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -18,7 +20,7 @@ app.prepare()
     .then(()=>{
         dotenv.config();
         const server = express();
-
+        server.use(compression())
         //MongoDB Connection
         mongoose.connect(process.env.MONGO_URI)
             .then(()=>{
