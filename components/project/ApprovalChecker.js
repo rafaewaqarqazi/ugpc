@@ -13,41 +13,37 @@ const ApprovalChecker = ({children,title}) => {
         <ProjectContext.Consumer>
             {
                 ({project}) => (
-                    <Container>
+                project.isLoading ? <LinearProgress/> :
+                    <div className={classes.listContainer}>
+                        <div className={classes.top}>
+                            <div className={classes.topIconBox} >
+                                {
+                                    title==='Backlogs' && <ListAltOutlined className={classes.headerIcon}/>
+                                }
+                                {
+                                    title === 'Scrum Board' && <ViewColumnOutlined className={classes.headerIcon}/>
+                                }
+                            </div>
+                            <div className={classes.topTitle} >
+                                <Typography variant='h5'>{title}</Typography>
+                            </div>
+                        </div>
                         {
-                            project.isLoading ? <LinearProgress/> :
-                                <div className={classes.listContainer}>
-                                    <div className={classes.top}>
-                                        <div className={classes.topIconBox} >
-                                            {
-                                                title==='Backlogs' && <ListAltOutlined className={classes.headerIcon}/>
-                                            }
-                                            {
-                                                title === 'Scrum Board' && <ViewColumnOutlined className={classes.headerIcon}/>
-                                            }
-                                        </div>
-                                        <div className={classes.topTitle} >
-                                            <Typography variant='h5'>{title}</Typography>
-                                        </div>
+                            !project.project[0].details.acceptanceLetter ? (
+
+                                <div className={classesEmpty.emptyListContainer}>
+                                    <div className={classesEmpty.emptyList}>
+                                        <Typography variant='subtitle2' color='textSecondary'>
+                                            Please Wait while your Project is Approved
+                                        </Typography>
                                     </div>
-                                    {
-                                        !project.project[0].details.acceptanceLetter ? (
-
-                                            <div className={classesEmpty.emptyListContainer}>
-                                                <div className={classesEmpty.emptyList}>
-                                                    <Typography variant='subtitle2' color='textSecondary'>
-                                                        Please Wait while your Project is Approved
-                                                    </Typography>
-                                                </div>
-                                            </div>
-
-                                        ):(
-                                            <div>{children}</div>
-                                        )
-                                    }
                                 </div>
+
+                            ):(
+                                <div>{children}</div>
+                            )
                         }
-                    </Container>
+                    </div>
                 )
             }
         </ProjectContext.Consumer>

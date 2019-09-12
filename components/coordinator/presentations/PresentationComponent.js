@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState, Fragment} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {Container, LinearProgress} from "@material-ui/core";
 import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import {makeStyles} from "@material-ui/styles";
@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 }))
 const PresentationComponent = () => {
     const visionDocsContext = useContext(VisionDocsContext);
-    const [empty,setEmpty] = useState(true);
+
     const classes = useStyles();
     useEffect(()=>{
         visionDocsContext.fetchByCommittee();
@@ -41,8 +41,6 @@ const PresentationComponent = () => {
             {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :
                 <Render />
             }
-
-
         </div>
     );
 };

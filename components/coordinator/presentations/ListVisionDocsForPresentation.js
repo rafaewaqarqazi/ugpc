@@ -185,152 +185,152 @@ const ListVisionDocsForPresentation = ({docs}) => {
     }
     return (
         <Fragment>
-        <SuccessSnackBar open={openSnackBar} handleClose={handleSnackbarClose} message={'Meeting Scheduled'}/>
-        <DragDropContext onDragEnd={onDragEnd}>
-            <div className={classes.listContainer}>
-                <div className={classes.top}>
-                    <div className={classes.topIconBox}>
-                        <ScheduleOutlined className={classes.headerIcon}/>
+            <SuccessSnackBar open={openSnackBar} handleClose={handleSnackbarClose} message={'Meeting Scheduled'}/>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div className={classes.listContainer}>
+                    <div className={classes.top}>
+                        <div className={classes.topIconBox}>
+                            <ScheduleOutlined className={classes.headerIcon}/>
+                        </div>
+                        <div className={classes.topTitle}>
+                            <Typography variant='h5' >Presentations</Typography>
+                        </div>
                     </div>
-                    <div className={classes.topTitle}>
-                        <Typography variant='h5' >Presentations</Typography>
-                    </div>
-                </div>
-                <Divider/>
+                    <Divider/>
 
-                {
-                    !loading &&
-                    state.columnOrder.map(columnId => {
-                        const column = state.columns[columnId];
-                        const projects = column.projectsIds.map(projectId => state.projects[projectId]);
-                        const disabledButton = column.projectsIds.length <= 0;
-                        return (
-                            <div key={column.id}>
-                                <div className={presentationClasses.scheduleActions}>
-                                    <Typography variant='subtitle1' className={presentationClasses.presentationTitle}>{column.title}</Typography>
-                                    {
-                                        column.title==='Schedule Presentations' &&
-                                            <>
-                                                <Button
-                                                    variant='outlined'
-                                                    style={{borderRadius:0}}
-                                                    disabled={disabledButton}
-                                                    onClick={handleCancel}
-                                                    size='small'
-                                                >
-                                                    Cancel
-                                                </Button>
+                    {
+                        !loading &&
+                        state.columnOrder.map(columnId => {
+                            const column = state.columns[columnId];
+                            const projects = column.projectsIds.map(projectId => state.projects[projectId]);
+                            const disabledButton = column.projectsIds.length <= 0;
+                            return (
+                                <div key={column.id}>
+                                    <div className={presentationClasses.scheduleActions}>
+                                        <Typography variant='subtitle1' className={presentationClasses.presentationTitle}>{column.title}</Typography>
+                                        {
+                                            column.title==='Schedule Presentations' &&
+                                                <>
+                                                    <Button
+                                                        variant='outlined'
+                                                        style={{borderRadius:0}}
+                                                        disabled={disabledButton}
+                                                        onClick={handleCancel}
+                                                        size='small'
+                                                    >
+                                                        Cancel
+                                                    </Button>
 
 
-                                                <Button
-                                                    variant='contained'
-                                                    style={{marginLeft:5,borderRadius:0}}
-                                                    color='secondary' size='small'
-                                                    disabled={disabledButton}
-                                                    onClick={()=>setDialogOpen(true)}
-                                                >
-                                                    Schedule Now
-                                                </Button>
-                                            </>
-                                    }
-                                </div>
-                                <Divider/>
-                                <Droppable droppableId={column.id}>
-                                    {
-                                        (provided, snapShot) =>{
-                                            if (column.title === 'Schedule Presentations' && column.projectsIds.length === 0){
+                                                    <Button
+                                                        variant='contained'
+                                                        style={{marginLeft:5,borderRadius:0}}
+                                                        color='secondary' size='small'
+                                                        disabled={disabledButton}
+                                                        onClick={()=>setDialogOpen(true)}
+                                                    >
+                                                        Schedule Now
+                                                    </Button>
+                                                </>
+                                        }
+                                    </div>
+                                    <Divider/>
+                                    <Droppable droppableId={column.id}>
+                                        {
+                                            (provided, snapShot) =>{
+                                                if (column.title === 'Schedule Presentations' && column.projectsIds.length === 0){
 
-                                                return(
-                                                <div
-                                                    className={presentationClasses.scheduleContainer}
-                                                    {...provided.droppableProps}
-                                                    ref={provided.innerRef}
-                                                    style={getListStyle(snapShot.isDraggingOver)}
-                                                >
-                                                    <div className={presentationClasses.emptySchedule}>
-                                                        <Typography variant='subtitle2' color='textSecondary'>
-                                                            Drag and drop Projects from list given below
-                                                        </Typography>
-                                                    </div>
-                                                    {provided.placeholder}
-                                                </div>
-                                                )
-                                            }else{
-                                                if (column.projectsIds.length === 0){
                                                     return(
-                                                        <div
-                                                            className={presentationClasses.scheduleContainer}
-                                                            {...provided.droppableProps}
-                                                            ref={provided.innerRef}
-                                                        >
-                                                            <div className={presentationClasses.emptySchedule}>
-                                                                <Typography variant='subtitle2' color='textSecondary'>
-                                                                    No Documents Yet to Schedule Presentation
-                                                                </Typography>
-                                                            </div>
-                                                            {provided.placeholder}
+                                                    <div
+                                                        className={presentationClasses.scheduleContainer}
+                                                        {...provided.droppableProps}
+                                                        ref={provided.innerRef}
+                                                        style={getListStyle(snapShot.isDraggingOver)}
+                                                    >
+                                                        <div className={presentationClasses.emptySchedule}>
+                                                            <Typography variant='subtitle2' color='textSecondary'>
+                                                                Drag and drop Projects from list given below
+                                                            </Typography>
                                                         </div>
+                                                        {provided.placeholder}
+                                                    </div>
                                                     )
                                                 }else{
-                                                    return (
-                                                        <div
-                                                            {...provided.droppableProps}
-                                                            ref={provided.innerRef}
-                                                            className={presentationClasses.listContainer}
-                                                        >
-                                                            {projects.map((project,index )=>
-                                                                <div key={project._id} className={presentationClasses.list}>
-                                                                    <Draggable draggableId={project._id} index={index}>
-                                                                        {
-                                                                            (provided, snapShot) =>(
-                                                                                <>
-                                                                                    <div
-                                                                                        {...provided.draggableProps}
-                                                                                        {...provided.dragHandleProps}
-                                                                                        ref={provided.innerRef}
-                                                                                    >
-                                                                                        <div onClick={()=>openDetails(project)}>
-                                                                                            <RenderListItemContent
-                                                                                                doc={project.documentation.visionDocument}
-                                                                                                project={project}
-                                                                                                />
+                                                    if (column.projectsIds.length === 0){
+                                                        return(
+                                                            <div
+                                                                className={presentationClasses.scheduleContainer}
+                                                                {...provided.droppableProps}
+                                                                ref={provided.innerRef}
+                                                            >
+                                                                <div className={presentationClasses.emptySchedule}>
+                                                                    <Typography variant='subtitle2' color='textSecondary'>
+                                                                        No Documents Yet to Schedule Presentation
+                                                                    </Typography>
+                                                                </div>
+                                                                {provided.placeholder}
+                                                            </div>
+                                                        )
+                                                    }else{
+                                                        return (
+                                                            <div
+                                                                {...provided.droppableProps}
+                                                                ref={provided.innerRef}
+                                                                className={presentationClasses.listContainer}
+                                                            >
+                                                                {projects.map((project,index )=>
+                                                                    <div key={project._id} className={presentationClasses.list}>
+                                                                        <Draggable draggableId={project._id} index={index}>
+                                                                            {
+                                                                                (provided, snapShot) =>(
+                                                                                    <>
+                                                                                        <div
+                                                                                            {...provided.draggableProps}
+                                                                                            {...provided.dragHandleProps}
+                                                                                            ref={provided.innerRef}
+                                                                                        >
+                                                                                            <div onClick={()=>openDetails(project)}>
+                                                                                                <RenderListItemContent
+                                                                                                    doc={project.documentation.visionDocument}
+                                                                                                    project={project}
+                                                                                                    />
+                                                                                            </div>
+
                                                                                         </div>
 
-                                                                                    </div>
+                                                                                        <Divider/>
+                                                                                    </>
+                                                                                )
+                                                                            }
 
-                                                                                    <Divider/>
-                                                                                </>
-                                                                            )
-                                                                        }
+                                                                        </Draggable>
+                                                                    </div>
+                                                                )}
+                                                                {provided.placeholder}
+                                                            </div>
+                                                        )
+                                                    }
 
-                                                                    </Draggable>
-                                                                </div>
-                                                            )}
-                                                            {provided.placeholder}
-                                                        </div>
-                                                    )
                                                 }
-
                                             }
                                         }
-                                    }
-                                </Droppable>
-                            </div>
-                        )
-                    })
-                }
-                {
-                    open &&
-                    <VisionDocDetailsDialog
-                        open={open}
-                        handleClose={handleClose}
-                        currentDocument={currentDocument}
-                        setCurrentDocument={setCurrentDocument}
-                    />
-                }
-            </div>
+                                    </Droppable>
+                                </div>
+                            )
+                        })
+                    }
+                    {
+                        open &&
+                        <VisionDocDetailsDialog
+                            open={open}
+                            handleClose={handleClose}
+                            currentDocument={currentDocument}
+                            setCurrentDocument={setCurrentDocument}
+                        />
+                    }
+                </div>
 
-        </DragDropContext>
+            </DragDropContext>
             <Dialog
                 open={dialogOpen}
                 onClose={handleCloseDialog}

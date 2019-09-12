@@ -70,10 +70,8 @@ const projectsSchema = new mongoose.Schema({
             }],
             priority:String,
             createdAt:Date,
-            deadLine: Date,
-            attachments:[{
-                data:String
-            }]
+            storyPoints: String,
+            attachments:[{}]
 
         }],
         sprints:[{
