@@ -4,7 +4,7 @@ import {withStudentAuthSync} from '../../../components/routers/studentAuth';
 import ApprovalChecker from "../../../components/project/ApprovalChecker";
 import {LinearProgress} from "@material-ui/core";
 import {formatBacklogs, formatScrumBoard} from "../../../components/coordinator/presentations/formatData";
-import ListBacklogs from "../../../components/project/backlogs/ListBacklogs";
+import ListBacklog from "../../../components/project/backlogs/ListBacklog";
 import ProjectContext from "../../../context/project/project-context";
 import RenderScrumBoard from "../../../components/project/scrumBoard/RenderScrumBoard";
 

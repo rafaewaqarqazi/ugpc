@@ -32,7 +32,8 @@ export const fetchProjectByStudentIdAPI = async ()=>{
         method:'GET',
         headers:{
             Accept:'application/json',
-            "Content-Type":'application/json'
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
         }
     });
     return await res.json();
@@ -42,9 +43,22 @@ export const uploadVisionAPI = async (data,projectId )=>{
     const res = await fetch(`${serverUrl}/students/project/vision-doc/pdf/${projectId}`,{
         method:'PUT',
         headers:{
-            Accept:'application/json'
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
         },
         body:data
+    });
+    return await res.json();
+};
+export const addTaskToBacklogAPI = async (projectId,task)=>{
+    const res = await fetch(`${serverUrl}/backlog/task/add`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify({projectId,task})
     });
     return await res.json();
 }

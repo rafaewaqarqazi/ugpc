@@ -19,6 +19,8 @@ exports.findByStudentId = (req,res,next,id)=>{
         .populate('students','_id name department student_details')
         .populate('documentation.visionDocument.comments.author','_id name role department')
         .populate('details.supervisor','_id name supervisor_details.position')
+        .populate('details.backlog.assignee', '_id name department student_details')
+        .populate('details.backlog.createdBy', 'name')
         .then(project => {
             req.project = project;
             next()

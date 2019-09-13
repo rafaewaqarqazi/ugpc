@@ -30,20 +30,21 @@ export const formatData = docs => {
     return data;
 }
 
-export const formatBacklogs = backlogs => {
-    const ids = Array.from(backlogs.map(backlog => backlog._id));
+export const formatBacklog = backlog => {
+    const sortedBacklog = backlog.sort((a,b)=>a.priority-b.priority)
+    const ids = Array.from(sortedBacklog.map(backlg => backlg._id));
     let tasks = {}
-    Array.from(backlogs.map(backlog => backlog._id),(id,index)=>{
+
+    console.log(sortedBacklog)
+    sortedBacklog.map((backlg,index) =>{
         tasks = {
             ...tasks,
-            [id]:backlogs[index]
+            [backlg._id]:backlg
         }
-        return tasks
+        // return tasks
     });
-    console.log(tasks);
-
     const data = {
-        backlogs:tasks,
+        tasks:tasks,
         columns:{
             'column-1':{
                 'id':'column-1',
@@ -52,7 +53,7 @@ export const formatBacklogs = backlogs => {
             },
             'column-2':{
                 'id':'column-2',
-                title:'Backlogs',
+                title:'Backlog',
                 tasksIds:ids
             },
         },

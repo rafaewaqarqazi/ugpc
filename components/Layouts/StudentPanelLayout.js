@@ -33,7 +33,6 @@ const StudentPanelLayout = ({children})=> {
     const [anchorEl2, setAnchorEl2] = React.useState(null);
     useEffect(()=>{
         projectContext.fetchByStudentId();
-        console.log(userContext)
         userContext.fetchUserById()
     },[]);
     const handleDrawerOpen = ()=> {
@@ -127,12 +126,12 @@ const StudentPanelLayout = ({children})=> {
                         <ListItemText primary={"Vision Docs"} />
                     </ListItem>
                 </Link>
-                <Link href='/student/project/backlogs'>
+                <Link href='/student/project/backlog'>
                     <ListItem button >
                         <ListItemIcon>
                             <ListAltOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Backlogs"} />
+                        <ListItemText primary={"Backlog"} />
                     </ListItem>
                 </Link>
                 <Link href='/student/project/scrumBoard'>

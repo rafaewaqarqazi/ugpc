@@ -1,32 +1,27 @@
-export   const getVisionDocsListBorderColor = status =>{
-    if (status === 'Waiting for Initial Approval'){
+export   const getBacklogTaskPriorityColor = priority =>{
+    if (priority === '1'){
         return {
-            borderLeft:'4px solid #1A237E'
+            borderLeft:'6px solid #f44336'
         }
     }
-    else if (status === 'Approved for Meeting'){
+    else if (priority === '2'){
         return {
-            borderLeft:'4px solid #1565C0'
+            borderLeft:'6px solid #ff5722'
         }
     }
-    else if (status === 'Meeting Scheduled'){
+    else if (priority === '3'){
         return {
-            borderLeft:'4px solid #FBC02D'
+            borderLeft:'6px solid #ffc107'
         }
     }
-    else if (status === 'Approved With Changes'){
+    else if (priority === '4'){
         return {
-            borderLeft:'4px solid #004D40'
+            borderLeft:'6px solid #03a9f4'
         }
     }
-    else if (status === 'Approved'){
+    else if (priority === '5'){
         return {
-            borderLeft:'4px solid #4CAF50'
-        }
-    }
-    else if (status === 'Rejected'){
-        return {
-            borderLeft:'4px solid #b71c1c'
+            borderLeft:'6px solid #4caf50'
         }
     }
 };

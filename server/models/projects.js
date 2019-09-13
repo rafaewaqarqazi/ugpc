@@ -57,7 +57,7 @@ const projectsSchema = new mongoose.Schema({
             issueDate:Date
         },
         estimatedDeadline:Date,
-        backlogs:[{
+        backlog:[{
             title: String,
             description:String,
             assignee:[{
@@ -70,6 +70,10 @@ const projectsSchema = new mongoose.Schema({
             }],
             priority:String,
             createdAt:Date,
+            createdBy:{
+                type:ObjectId,
+                ref:"Users"
+            },
             storyPoints: String,
             attachments:[{}]
 

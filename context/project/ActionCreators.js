@@ -1,5 +1,10 @@
 import * as Actions from './ActionTypes';
-import {fetchProjectByStudentIdAPI,createProjectAPI,uploadVisionAPI} from "../../utils/apiCalls/students";
+import {
+    fetchProjectByStudentIdAPI,
+    createProjectAPI,
+    uploadVisionAPI,
+    addTaskToBacklogAPI
+} from "../../utils/apiCalls/students";
 
 //Fetchers
 
@@ -18,6 +23,13 @@ export const uploadVisionAction=async (data,projectId,dispatch)=>{
     return await uploadVisionAPI(data,projectId);
 }
 
+
+//Backlog
+
+export const addTaskToBacklogAction = async (projectId,task,dispatch) =>{
+    const result =  await addTaskToBacklogAPI(projectId,task);
+    await dispatch(addBacklog(projectId,result.details.backlog))
+}
 //Action Dispatchers
 export const addProject = (project)=>({
     type:Actions.ADD_PROJECT,
@@ -26,3 +38,10 @@ export const addProject = (project)=>({
 export const projectLoading = ()=>({
     type:Actions.PROJECT_LOADING
 });
+const addBacklog = (projectId,backlog)=>({
+    type:Actions.ADD_BACKLOG,
+    payload:{
+        projectId,
+        backlog
+    }
+})

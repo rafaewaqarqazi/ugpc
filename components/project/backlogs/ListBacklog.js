@@ -1,10 +1,18 @@
 import React, { useState} from 'react';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Typography} from "@material-ui/core";
-import {Add} from '@material-ui/icons'
+import {
+    Button,
+    IconButton,
+    Divider,
+    Typography,
+    Grid, Tooltip, Zoom,
+} from "@material-ui/core";
+import {Add,Close} from '@material-ui/icons'
 import {makeStyles} from "@material-ui/styles";
 import CreateTaskDialog from "./CreateTaskDialog";
+import RenderBacklogTaskItem from "./RenderBacklogTaskItem";
+import {formatBacklog} from "../../coordinator/presentations/formatData";
 const useStyles = makeStyles(theme =>({
     backlogContainer:{
         border:'1.7px dashed grey',
@@ -38,14 +46,49 @@ const useStyles = makeStyles(theme =>({
     title:{
         flexGrow:1
     },
+    listContainer:{
+        display:'flex',
+        flexDirection: 'column',
+        padding:theme.spacing(2),
+        border:'1px solid lightgrey',
+        borderRadius: 5,
+        minHeight:150,
+        flexGrow:1,
+        marginTop:theme.spacing(2)
+    },
+    detailsContainer:{
+        minHeight:150,
 
+        marginTop:theme.spacing(2)
+    },
+    listItem:{
+        backgroundColor:'rgba(255,255,255,0.5)',
+        borderLeft:'4px solid #F57F17',
+        padding:theme.spacing(1.2),
+        '&:hover':{
+            boxShadow:theme.shadows[6]
+        },
+        display:'flex',
+        borderRadius:2,
+        alignItems:'center'
+    },
+    detailsHeader:{
+        display:'flex'
+    }
 }));
 
-const ListBacklogs = ({backlogs}) => {
-    const [state,setState] = useState(backlogs);
+const ListBacklog = ({backlog,data}) => {
+    const [state,setState] = useState(backlog);
     const classes = useStyles();
     const [finalIds,setFinalIds] = useState([]);
     const [openCreateTask,setOpenCreateTask] = useState(false);
+    const [openDetails,setOpenDetails] = useState(false);
+    const [details,setDetails]= useState({});
+
+    const handleOpenDetails = detail => {
+        setDetails(detail);
+        setOpenDetails(true)
+    }
     const onDragEnd= result=>{
         const { destination, source, draggableId } = result;
         if (!destination){
@@ -61,13 +104,13 @@ const ListBacklogs = ({backlogs}) => {
         if (start === finish){
             return;
         }
-        const startTaskIds = Array.from(start.projectsIds);
+        const startTaskIds = Array.from(start.tasksIds);
         startTaskIds.splice(source.index,1);
         const newStart = {
             ...start,
             tasksIds: startTaskIds
         };
-        const finishTaskIds = Array.from(finish.projectsIds);
+        const finishTaskIds = Array.from(finish.tasksIds);
         finishTaskIds.splice(destination.index,0,draggableId);
         setFinalIds(finishTaskIds);
         const newFinish = {
@@ -87,6 +130,16 @@ const ListBacklogs = ({backlogs}) => {
     };
     const handleCreateTaskClose = ()=>{
         setOpenCreateTask(false)
+    };
+    const handleCancelSprint = ()=>{
+        setState(formatBacklog(data))
+    };
+    const getListStyle = isDraggingOver=>({
+        backgroundColor: isDraggingOver ? '#C5E1A5' :'#fff'
+    });
+    const closeDetails = ()=>{
+        setOpenDetails(false)
+        setDetails({});
     }
     return (
         <div>
@@ -108,6 +161,7 @@ const ListBacklogs = ({backlogs}) => {
                                             style={{borderRadius:0}}
                                             size='small'
                                             disabled={disabledButton}
+                                            onClick={handleCancelSprint}
                                         >
                                             Cancel
                                         </Button>
@@ -122,7 +176,7 @@ const ListBacklogs = ({backlogs}) => {
                                     </>
                                 }
                                 {
-                                    column.title==='Backlogs' &&
+                                    column.title==='Backlog' &&
                                         <Button
                                             variant='outlined'
                                             color='secondary'
@@ -145,7 +199,7 @@ const ListBacklogs = ({backlogs}) => {
                                                     className={classes.backlogContainer}
                                                     {...provided.droppableProps}
                                                     ref={provided.innerRef}
-                                                    // style={getListStyle(snapShot.isDraggingOver)}
+                                                    style={getListStyle(snapShot.isDraggingOver)}
                                                 >
                                                     <div className={classes.emptyContainer}>
                                                         <Typography variant='subtitle2' color='textSecondary'>
@@ -173,40 +227,61 @@ const ListBacklogs = ({backlogs}) => {
                                                 )
                                             }else{
                                                 return (
-                                                    <div
-                                                        {...provided.droppableProps}
-                                                        ref={provided.innerRef}
-                                                    >
-                                                        {tasks.map((task,index )=>
-                                                            <div key={task._id} >
-                                                                <Draggable draggableId={task._id} index={index}>
-                                                                    {
-                                                                        (provided, snapShot) =>(
-                                                                            <>
-                                                                                <div
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                    ref={provided.innerRef}
-                                                                                >
-                                                                                    {/*<div onClick={()=>openDetails(project)}>*/}
-                                                                                    {/*    <RenderListItemContent*/}
-                                                                                    {/*        doc={project.documentation.visionDocument}*/}
-                                                                                    {/*        project={project}*/}
-                                                                                    {/*    />*/}
-                                                                                    {/*</div>*/}
+                                                    <Grid container spacing={1}>
 
-                                                                                </div>
+                                                        <Grid item xs={openDetails ? false : 12} sm={openDetails ? 6 : 12}>
+                                                            <div
+                                                                {...provided.droppableProps}
+                                                                ref={provided.innerRef}
+                                                                className={classes.listContainer}
+                                                            >
+                                                                {tasks.map((task,index )=>
+                                                                    <div key={task._id} >
+                                                                        <Draggable draggableId={task._id} index={index}>
+                                                                            {
+                                                                                (provided, snapShot) =>(
+                                                                                    <>
+                                                                                        <div
+                                                                                            {...provided.draggableProps}
+                                                                                            {...provided.dragHandleProps}
+                                                                                            ref={provided.innerRef}
+                                                                                            onClick={()=>handleOpenDetails(task)}
+                                                                                        >
 
-                                                                                <Divider/>
-                                                                            </>
-                                                                        )
-                                                                    }
+                                                                                            <RenderBacklogTaskItem task={task}/>
+                                                                                        </div>
+                                                                                        <Divider/>
+                                                                                    </>
+                                                                                )
+                                                                            }
 
-                                                                </Draggable>
+                                                                        </Draggable>
+                                                                    </div>
+                                                                )}
+                                                                {provided.placeholder}
                                                             </div>
-                                                        )}
-                                                        {provided.placeholder}
-                                                    </div>
+                                                        </Grid>
+                                                        {
+                                                            openDetails &&
+                                                            <Grid item xs={openDetails ? 12 : false} sm={openDetails ? 6 : false}>
+                                                                <div  className={classes.detailsContainer}>
+                                                                    <div className={classes.detailsHeader}>
+                                                                        <Tooltip  title='Title' placement="top-start" TransitionComponent={Zoom}>
+                                                                            <Typography variant='h6' style={{flexGrow:1}}>{details.title}</Typography>
+                                                                        </Tooltip>
+                                                                        <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
+                                                                            <IconButton size='small' onClick={closeDetails}>
+                                                                                <Close/>
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    </div>
+                                                                </div>
+                                                            </Grid>
+                                                        }
+
+
+                                                    </Grid>
+
                                                 )
                                             }
 
@@ -232,4 +307,4 @@ const ListBacklogs = ({backlogs}) => {
     );
 };
 
-export default ListBacklogs;
+export default ListBacklog;

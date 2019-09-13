@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext,Fragment, useState} from 'react';
 import {
     Dialog,
     DialogActions,
@@ -16,13 +16,13 @@ import {
     Select,
     OutlinedInput,
     MenuItem,
-    Fade,
-    Container,
     Divider
 } from "@material-ui/core";
 import {Done,Close, Add} from '@material-ui/icons'
 import {makeStyles} from "@material-ui/styles";
 import ProjectContext from '../../../context/project/project-context';
+import {isTaskValid} from "../../../utils/clientSideValidators/createTaskValidator";
+import {isAuthenticated} from "../../../auth";
 const useStyles = makeStyles(theme =>({
     content:{
         marginBottom:theme.spacing(2)
@@ -38,9 +38,6 @@ const useStyles = makeStyles(theme =>({
         overflow:'hidden',
         padding:theme.spacing(1.2)
     },
-    subTasksListItem:{
-
-    }
 }))
 const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
     const classes = useStyles();
@@ -49,10 +46,38 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
         title:'',
         description:'',
         assignee:[],
-        priority:'Normal',
+        priority:'3',
         storyPoints:'',
         subTasks:[]
     });
+    const [error,setError] = useState({
+        title:{
+            show:false,
+            message:''
+        },
+        description:{
+            show:false,
+            message:''
+        },
+        assignee:{
+            show:false,
+            message:''
+        },
+        storyPoints:{
+            show:false,
+            message:''
+        },
+        subTask:{
+            title:{
+                show:false,
+                message:''
+            },
+            description:{
+                show:false,
+                message:''
+            },
+        }
+    })
     const [subTask,setSubTask] = useState({
         title:'',
         description:'',
@@ -60,6 +85,13 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
     })
     const [showSubTaskInput,setShowSubTaskInput] = useState(false)
     const handleClickChip = id => {
+        setError({
+            ...error,
+            assignee:{
+                show:false,
+                message:''
+            }
+        })
         if(state.assignee.includes(id)){
             setState({
                 ...state,
@@ -82,10 +114,40 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
         setShowSubTaskInput(false)
     };
     const handleChange = event => {
-        setState({
-            ...state,
-            [event.target.name]:event.target.value
-        })
+        if (event.target.name === 'storyPoints' && !event.target.value.match(/^[0-9]*$/)){
+            setError({
+                ...error,
+                storyPoints:{
+                    show:true,
+                    message:'Only Numbers are allowed'
+                }
+            })
+        }else {
+            setError({
+                ...error,
+                title:{
+                    show:false,
+                    message:''
+                },
+                description:{
+                    show:false,
+                    message:''
+                },
+                assignee:{
+                    show:false,
+                    message:''
+                },
+                storyPoints:{
+                    show:false,
+                    message:''
+                },
+            })
+            setState({
+                ...state,
+                [event.target.name]:event.target.value
+            })
+        }
+
     };
     const addSubTask = ()=>{
         setState({
@@ -95,9 +157,20 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
         setShowSubTaskInput(false)
     };
     const handleCreateTask = ()=>{
-        console.log(state);
-        handleCreateTaskClose()
-    }
+
+        if(isTaskValid(state,error,setError)){
+            const data = {
+                ...state,
+                createdBy:isAuthenticated().user._id
+            }
+            projectContext.addTaskToBacklog(projectContext.project.project[0]._id,data)
+                .then(result =>{
+                    handleCreateTaskClose()
+                })
+        }
+
+    };
+
     return (
         <Dialog
             open={openCreateTask}
@@ -121,6 +194,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 name='title'
                                 value={state.title}
                                 onChange={handleChange}
+                                error={error.title.show}
+                                helperText={error.title.message}
                                 />
                             <TextField
                                 label='Detailed Description'
@@ -133,6 +208,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 name='description'
                                 value={state.description}
                                 onChange={handleChange}
+                                error={error.description.show}
+                                helperText={error.description.message}
                             />
 
                         </div>
@@ -142,7 +219,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                             </Typography>
                             {
                                 projectContext.project.project[0].students.map((student) => (
-                                    <Tooltip key={student._id} title={student.student_details.regNo} placement='right'>
+                                    <Fragment key={student._id}>
+                                    <Tooltip title={student.student_details.regNo} placement='right'>
                                         <Chip
                                             avatar={<Avatar >{student.name.charAt(0).toUpperCase()}</Avatar>}
                                             label={student.name}
@@ -153,6 +231,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                             variant="outlined"
                                         />
                                     </Tooltip>
+                                        {error.assignee.show && <Typography variant='caption' color='error'>{error.assignee.message}</Typography>}
+                                    </Fragment>
                                 ))
                             }
                         </div>
@@ -167,11 +247,11 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                     onChange={handleChange}
                                     input={<OutlinedInput labelWidth={52} name="priority" id="priority" />}
                                 >
-                                    <MenuItem value='Very High'>Very High</MenuItem>
-                                    <MenuItem value='High'>High</MenuItem>
-                                    <MenuItem value='Normal'>Normal</MenuItem>
-                                    <MenuItem value='Low'>Low</MenuItem>
-                                    <MenuItem value='Very Low'>Very Low</MenuItem>
+                                    <MenuItem value='1'>Very High</MenuItem>
+                                    <MenuItem value='2'>High</MenuItem>
+                                    <MenuItem value='3'>Normal</MenuItem>
+                                    <MenuItem value='4'>Low</MenuItem>
+                                    <MenuItem value='5'>Very Low</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
@@ -190,6 +270,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                     name='storyPoints'
                                     value={state.storyPoints}
                                     onChange={handleChange}
+                                    error={error.storyPoints.show}
+                                    helperText={error.storyPoints.message}
                                 />
                             </Tooltip>
 
@@ -218,6 +300,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                         name='title'
                                         value={subTask.title}
                                         onChange={handleSubTaskChange}
+                                        error={error.subTask.title.show}
+                                        helperText={error.subTask.title.message}
                                     />
                                     <TextField
                                         label='Description'
@@ -230,6 +314,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                         name='description'
                                         value={subTask.description}
                                         onChange={handleSubTaskChange}
+                                        error={error.subTask.description.show}
+                                        helperText={error.subTask.description.message}
                                     />
                                 </DialogContent>
                                 <DialogActions>

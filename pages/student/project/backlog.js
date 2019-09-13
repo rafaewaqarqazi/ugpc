@@ -3,16 +3,16 @@ import ProjectState from "../../../context/project/ProjectState";
 import {withStudentAuthSync} from "../../../components/routers/studentAuth";
 import ApprovalChecker from "../../../components/project/ApprovalChecker";
 import ProjectContext from '../../../context/project/project-context';
-import {Container, LinearProgress} from "@material-ui/core";
-import ListBacklogs from "../../../components/project/backlogs/ListBacklogs";
-import {formatBacklogs} from "../../../components/coordinator/presentations/formatData";
+import { LinearProgress} from "@material-ui/core";
+import ListBacklog from "../../../components/project/backlogs/ListBacklog";
+import {formatBacklog} from "../../../components/coordinator/presentations/formatData";
 
-const Backlogs = () => {
+const Backlog = () => {
 
     return (
         <ProjectState>
             <StudentPanelLayout>
-                <Container>
+
                     <ApprovalChecker title={'Backlogs'}>
                             <ProjectContext.Consumer>
                                 {
@@ -23,9 +23,9 @@ const Backlogs = () => {
                                             )
                                         }
                                         if (!project.isLoading){
-                                            const backlogs = formatBacklogs(project.project[0].details.backlogs)
+                                            const backlog = formatBacklog(project.project[0].details.backlog)
                                             return (
-                                                <ListBacklogs backlogs={backlogs} />
+                                                <ListBacklog backlog={backlog} data={project.project[0].details.backlog}/>
                                             )
                                         }
 
@@ -33,10 +33,10 @@ const Backlogs = () => {
                                 }
                             </ProjectContext.Consumer>
                     </ApprovalChecker>
-                </Container>
+
             </StudentPanelLayout>
         </ProjectState>
     );
 };
 
-export default withStudentAuthSync(Backlogs);
+export default withStudentAuthSync(Backlog);
