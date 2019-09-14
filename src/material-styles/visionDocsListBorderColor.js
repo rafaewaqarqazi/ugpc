@@ -6,7 +6,7 @@ export   const getBacklogTaskPriorityColor = priority =>{
     }
     else if (priority === '2'){
         return {
-            borderLeft:'6px solid #ff5722'
+            borderLeft:'6px solid #ff9800'
         }
     }
     else if (priority === '3'){

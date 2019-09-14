@@ -1,7 +1,7 @@
 import React, {useReducer, useEffect} from 'react';
 import ProjectContext from './project-context';
 import {projectReducer} from "./projectReducer";
-import {getProjectByStudentId, createProjectAction,uploadVisionAction,addTaskToBacklogAction} from "./ActionCreators";
+import {getProjectByStudentId, createProjectAction,uploadVisionAction,addTaskToBacklogAction,planSprintAction} from "./ActionCreators";
 
 const ProjectState = (props) => {
     const [state, dispatch] = useReducer(projectReducer,{
@@ -20,6 +20,9 @@ const ProjectState = (props) => {
     };
     const addTaskToBacklog = async (projectId,task)=>{
         return await addTaskToBacklogAction(projectId,task,dispatch)
+    };
+    const planSprint = async (data) =>{
+        return await planSprintAction(data,dispatch);
     }
 useEffect(()=>{
     console.log('Project State:',state)
@@ -30,7 +33,8 @@ useEffect(()=>{
             fetchByStudentId,
             createProject:createProject,
             uploadVision:uploadVision,
-            addTaskToBacklog
+            addTaskToBacklog,
+            planSprint
         }}>
             {props.children}
         </ProjectContext.Provider>

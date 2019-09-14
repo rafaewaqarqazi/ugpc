@@ -61,4 +61,17 @@ export const addTaskToBacklogAPI = async (projectId,task)=>{
         body:JSON.stringify({projectId,task})
     });
     return await res.json();
+};
+
+export const planSprintAPI = async data =>{
+    const res = await fetch(`${serverUrl}/backlog/planSprint`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
 }

@@ -66,7 +66,8 @@ const projectsSchema = new mongoose.Schema({
             }],
             subTasks:[{
                 title:String,
-                description: String
+                description: String,
+                status:String
             }],
             priority:String,
             createdAt:Date,
@@ -78,7 +79,7 @@ const projectsSchema = new mongoose.Schema({
             attachments:[{}]
 
         }],
-        sprints:[{
+        sprint:{
             name:String,
             startDate:Date,
             endDate:Date,
@@ -86,7 +87,7 @@ const projectsSchema = new mongoose.Schema({
             inProgress:[{}],
             inReview:[{}],
             done:[{}]
-        }]
+        }
     }
 
 });

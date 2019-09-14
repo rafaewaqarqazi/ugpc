@@ -23,6 +23,7 @@ import {makeStyles} from "@material-ui/styles";
 import ProjectContext from '../../../context/project/project-context';
 import {isTaskValid} from "../../../utils/clientSideValidators/createTaskValidator";
 import {isAuthenticated} from "../../../auth";
+import RenderSubTasks from "./RenderSubTasks";
 const useStyles = makeStyles(theme =>({
     content:{
         marginBottom:theme.spacing(2)
@@ -181,7 +182,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
             aria-labelledby="title"
         >
             <DialogTitle id='title'>Create New Task</DialogTitle>
-            <DialogContent>
+            <DialogContent dividers>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <div className={classes.content}>
@@ -324,22 +325,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 </DialogActions>
                             </Dialog>
                         </div>
-                        <div className={`${classes.content} ${classes.subTasksContainer}`}>
-                            {
-                                state.subTasks.length === 0 ?
-                                <div style={{display: 'flex',height:'100%',alignItems: 'center', justifyContent:'center'}}>
-                                    <Typography variant='caption' color='textSecondary'>No SubTasks yet</Typography>
-                                </div>
-                                    :
-                                    state.subTasks.map((subTask,index) => (
-                                    <div key={index} className={classes.subTasksListItem}>
-                                        <Typography variant='subtitle2'>{subTask.title.toUpperCase()}</Typography>
-                                        <Typography variant='caption' color='textSecondary'>{subTask.status}</Typography>
-                                        <Typography variant='body1'>{subTask.description}</Typography>
-                                        <Divider/>
-                                    </div>
-                                ))
-                            }
+                        <div className={`${classes.content} `}>
+                            <RenderSubTasks subTasks={state.subTasks}/>
                         </div>
                     </Grid>
                 </Grid>

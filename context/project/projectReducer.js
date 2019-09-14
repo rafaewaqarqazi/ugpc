@@ -26,14 +26,15 @@ export const projectReducer = (state, action) => {
             };
         case Actions.REMOVE_PROJECT:
             return {};
-        case Actions.ADD_BACKLOG:
+        case Actions.ADD_BACKLOG_ANDSPRINT:
             const newState = state.project.map(proj => {
                 if (proj._id === action.payload.projectId){
                     return {
                         ...proj,
                         details:{
                             ...proj.details,
-                            backlog:action.payload.backlog
+                            backlog:action.payload.details.backlog,
+                            sprint:action.payload.details.sprint
                         }
                     }
                 }

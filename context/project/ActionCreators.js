@@ -3,7 +3,8 @@ import {
     fetchProjectByStudentIdAPI,
     createProjectAPI,
     uploadVisionAPI,
-    addTaskToBacklogAPI
+    addTaskToBacklogAPI,
+    planSprintAPI
 } from "../../utils/apiCalls/students";
 
 //Fetchers
@@ -28,7 +29,11 @@ export const uploadVisionAction=async (data,projectId,dispatch)=>{
 
 export const addTaskToBacklogAction = async (projectId,task,dispatch) =>{
     const result =  await addTaskToBacklogAPI(projectId,task);
-    await dispatch(addBacklog(projectId,result.details.backlog))
+    await dispatch(addBacklogAndSprint(projectId,result.details))
+};
+export const planSprintAction = async (data,dispatch) =>{
+    const result = await planSprintAPI(data);
+    await dispatch(addBacklogAndSprint(data.projectId,result.details))
 }
 //Action Dispatchers
 export const addProject = (project)=>({
@@ -38,10 +43,10 @@ export const addProject = (project)=>({
 export const projectLoading = ()=>({
     type:Actions.PROJECT_LOADING
 });
-const addBacklog = (projectId,backlog)=>({
-    type:Actions.ADD_BACKLOG,
+const addBacklogAndSprint = (projectId,details)=>({
+    type:Actions.ADD_BACKLOG_ANDSPRINT,
     payload:{
         projectId,
-        backlog
+        details
     }
 })
