@@ -79,7 +79,7 @@ const projectsSchema = new mongoose.Schema({
             attachments:[{}]
 
         }],
-        sprint:{
+        sprint:[{
             name:String,
             startDate:Date,
             endDate:Date,
@@ -87,7 +87,7 @@ const projectsSchema = new mongoose.Schema({
             inProgress:[{}],
             inReview:[{}],
             done:[{}]
-        }
+        }]
     }
 
 });

@@ -6,23 +6,20 @@ import {
     Divider,
     Typography,
     Grid, Tooltip, Zoom, Hidden, Dialog, DialogContent, DialogTitle,
-    GridList,
-    GridListTile, DialogActions, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem
+     DialogActions, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem
 } from "@material-ui/core";
-import {Add,Close,AttachFile} from '@material-ui/icons'
+import {Add,Close} from '@material-ui/icons'
 import {makeStyles} from "@material-ui/styles";
 import CreateTaskDialog from "./CreateTaskDialog";
 import RenderBacklogTaskItem from "./RenderBacklogTaskItem";
 import {formatBacklog} from "../../coordinator/presentations/formatData";
-import Avatar from "@material-ui/core/Avatar";
 import {getRandomColor} from "../../../src/material-styles/randomColors";
-import {getBacklogTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
-import {serverUrl} from "../../../utils/config";
-import RenderSubTasks from "./RenderSubTasks";
 import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import moment from "moment";
 import ProjectContext from '../../../context/project/project-context';
+import RenderTaskDetails from "../common/RenderTaskDetails";
+
 const useStyles = makeStyles(theme =>({
     backlogContainer:{
         border:'1.7px dashed grey',
@@ -72,41 +69,10 @@ const useStyles = makeStyles(theme =>({
 
         marginTop:theme.spacing(2)
     },
-    listItem:{
-        backgroundColor:'rgba(255,255,255,0.5)',
-        borderLeft:'4px solid #F57F17',
-        padding:theme.spacing(1.2),
-        '&:hover':{
-            boxShadow:theme.shadows[6]
-        },
-        display:'flex',
-        borderRadius:2,
-        alignItems:'center'
-    },
+
     detailsHeader:{
         display:'flex',
         marginBottom:theme.spacing(2)
-    },
-    wrapText:{
-        whiteSpace: 'normal',
-        wordWrap: 'break-word'
-    },
-    avatar:{
-        marginRight:theme.spacing(0.2),
-        width:30,
-        height:30,
-        backgroundColor: getRandomColor(),
-    },
-    detailsContent:{
-        marginBottom:theme.spacing(2)
-    },
-    priority:{
-        paddingLeft:theme.spacing(1),
-        borderRadius:'4px 0 0 4px',
-    },
-    gridList: {
-        width: 350,
-        height: 300,
     },
 }));
 
@@ -223,98 +189,6 @@ const ListBacklog = ({backlog}) => {
         setOpenDetails(false)
         setDetails({});
     };
-    const getPriority = (priority) => {
-        switch (priority) {
-            case '1' : return 'Very High';
-            case '2' : return 'High';
-            case '3' : return 'Normal';
-            case '4' : return 'Low';
-            case '5' : return 'Very Low'
-        }
-    }
-    const renderDetails = (
-        openDetails &&
-        <Grid container spacing={1}>
-            <Grid item xs={12} sm={6}>
-                <div className={classes.detailsContent}>
-                    <Tooltip title='Add Attachments' placement='top'>
-                        <IconButton style={{borderRadius:0,backgroundColor:'#e0e0e0'}} size='small' ><AttachFile/></IconButton>
-                    </Tooltip>
-                </div>
-
-                <div className={classes.detailsContent}>
-                    <Tooltip title='Description' placement='top'>
-                        <Typography variant='body1' className={classes.wrapText}>
-                            {details.description}
-                        </Typography>
-                    </Tooltip>
-                </div>
-                <div className={classes.detailsContent}>
-                    <Typography variant='subtitle2'>
-                        Attachments
-                    </Typography>
-                    {
-                        details.attachments.length === 0 ? (
-                            <Typography variant='body1' color='textSecondary' className={classes.wrapText}>
-                                No Attachments Found
-                            </Typography>
-                        ):(
-                            <GridList cellHeight={160} className={classes.gridList} cols={3}>
-                                {
-                                    details.attachments.map(attachment =>
-                                        <GridListTile key={attachment.fileName} >
-                                            <img src={`${serverUrl}/../images/${attachment.fileName}`} alt={attachment.originalname}/>
-                                        </GridListTile>
-                                    )
-                                }
-                            </GridList>
-
-                        )
-                    }
-                </div>
-                <div className={classes.detailsContent}>
-                    <Typography variant='subtitle2'>
-                        Sub Tasks
-                    </Typography>
-                    <RenderSubTasks subTasks={details.subTasks}/>
-                </div>
-
-            </Grid>
-            <Grid item xs={12} sm={6}>
-                <div className={classes.detailsContent}>
-                    <Typography variant='subtitle2'>
-                        Assignee
-                    </Typography>
-                    <div style={{display:'flex',paddingLeft:5}}>
-                        {
-                            details.assignee.map((student,index) => (
-                                <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                    <Avatar className={classes.avatar} >{student.name.charAt(0).toUpperCase()}</Avatar>
-                                </Tooltip>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div className={classes.detailsContent}>
-                    <Typography variant='subtitle2' noWrap>
-                        Story Point Estimate
-                    </Typography>
-                    <Typography variant='body1' color='textSecondary'>
-                        {details.storyPoints}
-                    </Typography>
-                </div>
-                <div className={classes.detailsContent}>
-                    <Typography variant='subtitle2' noWrap>
-                        Priority
-                    </Typography>
-                    <Typography className={classes.priority} variant='body1' color='textSecondary' style={getBacklogTaskPriorityColor(details.priority)}>
-                        {getPriority(details.priority)}
-                    </Typography>
-                </div>
-
-            </Grid>
-        </Grid>
-    );
     const isValid = (name)=>{
         if (name.length <=4 || name.length >=50){
             setNameError({
@@ -497,7 +371,10 @@ const ListBacklog = ({backlog}) => {
                                     </IconButton>
                                 </Tooltip>
                             </div>
-                            {renderDetails}
+                            {
+                                openDetails &&
+                                <RenderTaskDetails details={details}/>
+                            }
                         </div>
                     }
                 </Hidden>
@@ -513,7 +390,11 @@ const ListBacklog = ({backlog}) => {
                         </Tooltip>
                     </DialogTitle>
                     <DialogContent dividers>
-                        {renderDetails}
+                        {
+                            openDetails &&
+                            <RenderTaskDetails details={details}/>
+                        }
+
                     </DialogContent>
                 </Dialog>
             </Hidden>

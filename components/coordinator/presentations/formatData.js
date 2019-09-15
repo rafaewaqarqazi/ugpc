@@ -64,39 +64,60 @@ export const formatBacklog = backlog => {
 };
 
 export const formatScrumBoard = sprint => {
-    const ids = Array.from(sprint.map(spr => spr._id));
+    console.log(sprint)
+    const todoIds = Array.from(sprint.todos.map(todo => todo._id));
+    const inProgressIds = Array.from(sprint.inProgress.map(inPrg => inPrg._id));
+    const inReviewIds = Array.from(sprint.inReview.map(inRev => inRev._id));
+    const doneIds = Array.from(sprint.done.map(done => done._id));
     let tasks = {}
-    Array.from(sprint.map(spr => spr._id),(id,index)=>{
+    sprint.todos.map(todo => {
         tasks = {
             ...tasks,
-            [id]:sprint[index]
+            [todo._id]:todo
         }
-        return tasks
-    });
+    })
+    sprint.inProgress.map(inPrg => {
+        tasks = {
+            ...tasks,
+            [inPrg._id]:inPrg
+        }
+    })
+    sprint.inReview.map(inRev => {
+        tasks = {
+            ...tasks,
+            [inRev._id]:inRev
+        }
+    })
+    sprint.done.map(done => {
+        tasks = {
+            ...tasks,
+            [done._id]:done
+        }
+    })
     console.log(tasks);
 
     const data = {
-        sprint:tasks,
+        tasks,
         columns:{
             'column-1':{
                 'id':'column-1',
                 title:'Todos',
-                tasksIds:ids
+                tasksIds:todoIds
             },
             'column-2':{
                 'id':'column-2',
                 title:'In Progress',
-                tasksIds:[]
+                tasksIds:inProgressIds
             },
             'column-3':{
                 'id':'column-3',
                 title:'In Review',
-                tasksIds:[]
+                tasksIds:inReviewIds
             },
             'column-4':{
                 'id':'column-4',
                 title:'Done',
-                tasksIds:[]
+                tasksIds:doneIds
             },
         },
         columnOrder:['column-1','column-2','column-3','column-4']

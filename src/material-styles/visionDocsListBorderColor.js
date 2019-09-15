@@ -25,7 +25,33 @@ export   const getBacklogTaskPriorityColor = priority =>{
         }
     }
 };
-
+export const getSprintTaskPriorityColor = priority =>{
+    if (priority === '1'){
+        return {
+            borderTop:'8px solid #f44336'
+        }
+    }
+    else if (priority === '2'){
+        return {
+            borderTop:'8px solid #ff9800'
+        }
+    }
+    else if (priority === '3'){
+        return {
+            borderTop:'8px solid #ffc107'
+        }
+    }
+    else if (priority === '4'){
+        return {
+            borderTop:'8px solid #03a9f4'
+        }
+    }
+    else if (priority === '5'){
+        return {
+            borderTop:'8px solid #4caf50'
+        }
+    }
+};
 export const getVisionDocsStatusChipColor = status =>{
     if (status === 'Waiting for Initial Approval'){
         return {

@@ -1,16 +1,30 @@
-import React, { useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
-import {Button, Divider, Typography, Grid} from "@material-ui/core";
+import {
+    Button,
+    Divider,
+    Typography,
+    Grid,
+    InputLabel,
+    Select,
+    OutlinedInput,
+    MenuItem,
+    FormControl, Dialog, DialogTitle, Tooltip, Zoom, IconButton, DialogContent, Hidden
+} from "@material-ui/core";
 
 import {makeStyles} from "@material-ui/styles";
+import {formatScrumBoard} from "../../coordinator/presentations/formatData";
+import RenderSprintTaskItem from "./RenderSprintTaskItem";
+import {Close} from "@material-ui/icons";
+import RenderTaskDetails from "../common/RenderTaskDetails";
 const useStyles = makeStyles(theme =>({
-    scheduleContainer:{
+    container:{
         border:'1.7px dashed grey',
         marginTop:theme.spacing(2),
         borderRadius:5
     },
-    emptySchedule:{
+    emptyContainer:{
         display:'flex',
         alignItems:'center',
         justifyContent:'center',
@@ -18,25 +32,17 @@ const useStyles = makeStyles(theme =>({
         textAlign:'center',
         height:theme.spacing(20)
     },
-    scheduleActions:{
+    columnHeader:{
         display:'flex',
-        flexDirection:'column',
+        flexDirection:'row',
         alignItems:'center',
-        justifyContent:'stretch',
         padding: theme.spacing(1),
         marginTop: theme.spacing(2),
-
-        [theme.breakpoints.up('sm')]: {
-            display:'flex',
-            flexDirection:'row',
-            alignItems:'center',
-            padding: theme.spacing(1),
-            marginTop: theme.spacing(2),
-
-        }
     },
-    presentationTitle:{
-        flexGrow:1
+    count:{
+        flexGrow:1,
+        marginLeft:theme.spacing(1),
+
     },
     listContainer:{
         display:'flex',
@@ -49,18 +55,7 @@ const useStyles = makeStyles(theme =>({
         marginTop:theme.spacing(2)
     },
     list:{
-
-    },
-    listItem:{
-        backgroundColor:'rgba(255,255,255,0.5)',
-        borderLeft:'4px solid #F57F17',
-        padding:theme.spacing(1.2),
-        '&:hover':{
-            boxShadow:theme.shadows[6]
-        },
-        display:'flex',
-        borderRadius:2,
-        alignItems:'center'
+        marginBottom:theme.spacing(1.5)
     },
     columns:{
         display:'flex',
@@ -68,10 +63,32 @@ const useStyles = makeStyles(theme =>({
     }
 }));
 
-const RenderScrumBoard = ({sprint}) => {
-    const [state,setState] = useState(sprint);
-    const presentationClasses = useStyles();
+const RenderScrumBoard = ({sprint,sprintNames}) => {
+    const [state,setState] = useState({});
+    const classes = useStyles();
+    const [selectedSprint,setSelectedSprint] = useState(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
+    const [loading,setLoading] = useState(true);
     const [finalIds,setFinalIds] = useState([]);
+    const [openDetails,setOpenDetails] = useState(false);
+    const [details,setDetails]= useState({});
+    useEffect(()=>{
+        const data = sprint;
+        const filter = data.filter(d => d.name === selectedSprint)[0]
+        console.log('Filter',filter)
+        setState(formatScrumBoard(filter));
+        setLoading(false)
+    },[sprint]);
+    const getListStyle = isDraggingOver=>({
+        backgroundColor: isDraggingOver ? '#C5E1A5' :'#fff'
+    });
+    const handleOpenDetails = detail => {
+        setDetails(detail);
+        setOpenDetails(true);
+    };
+    const closeDetails = ()=>{
+        setOpenDetails(false)
+        setDetails({});
+    };
     const onDragEnd= result=>{
         const { destination, source, draggableId } = result;
         if (!destination){
@@ -87,13 +104,13 @@ const RenderScrumBoard = ({sprint}) => {
         if (start === finish){
             return;
         }
-        const startTaskIds = Array.from(start.projectsIds);
+        const startTaskIds = Array.from(start.tasksIds);
         startTaskIds.splice(source.index,1);
         const newStart = {
             ...start,
             tasksIds: startTaskIds
         };
-        const finishTaskIds = Array.from(finish.projectsIds);
+        const finishTaskIds = Array.from(finish.tasksIds);
         finishTaskIds.splice(destination.index,0,draggableId);
         setFinalIds(finishTaskIds);
         const newFinish = {
@@ -111,8 +128,37 @@ const RenderScrumBoard = ({sprint}) => {
         }
         setState(newState);
     };
+    const handleSelectSprint = event => {
+        setSelectedSprint(event.target.value)
+        const data = sprint;
+        const filter = data.filter(d => d.name === event.target.value)[0]
+        setState(formatScrumBoard(filter));
+    }
     return (
+        !loading &&
         <div>
+            <FormControl variant="outlined" margin='dense' style={{marginBottom:20}}>
+                <InputLabel htmlFor="sprint">
+                    Select Sprint
+                </InputLabel>
+                <Select
+
+                    value={selectedSprint}
+                    onChange={handleSelectSprint}
+                    input={<OutlinedInput labelWidth={95} name="sprint" id="sprint" />}
+                >
+                    {
+                        sprintNames.length === 0 &&
+                        <MenuItem value='No Sprint Created'>No Sprint Created</MenuItem>
+                    }
+
+                    {
+                        sprintNames.map((name,index) => (
+                            <MenuItem key={index} value={name}>{name}</MenuItem>
+                        ))
+                    }
+                </Select>
+            </FormControl>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Grid container spacing={1}>
                     {
@@ -121,7 +167,11 @@ const RenderScrumBoard = ({sprint}) => {
                             const tasks = column.tasksIds.map(taskId => state.tasks[taskId]);
                             return (
                                 <Grid item xs={6} sm={3} key={column.id} >
-                                    <Typography variant='subtitle1' className={presentationClasses.presentationTitle}>{column.title}</Typography>
+                                    <div className={classes.columnHeader}>
+                                        <Typography variant='subtitle1' display='inline'>{column.title}</Typography>
+                                        <Typography variant='caption' color='textSecondary' className={classes.count}>{column.tasksIds.length}</Typography>
+                                    </div>
+
                                     <Divider/>
                                     <Droppable droppableId={column.id}>
                                         {
@@ -130,12 +180,12 @@ const RenderScrumBoard = ({sprint}) => {
 
                                                     return(
                                                         <div
-                                                            className={presentationClasses.scheduleContainer}
+                                                            className={classes.container}
                                                             {...provided.droppableProps}
                                                             ref={provided.innerRef}
-                                                            // style={getListStyle(snapShot.isDraggingOver)}
+                                                            style={getListStyle(snapShot.isDraggingOver)}
                                                         >
-                                                            <div className={presentationClasses.emptySchedule}>
+                                                            <div className={classes.emptyContainer}>
                                                                 <Typography variant='subtitle2' color='textSecondary'>
                                                                     Yeah! No Tasks Todo
                                                                 </Typography>
@@ -148,14 +198,14 @@ const RenderScrumBoard = ({sprint}) => {
 
                                                     return(
                                                         <div
-                                                            className={presentationClasses.scheduleContainer}
+                                                            className={classes.container}
                                                             {...provided.droppableProps}
                                                             ref={provided.innerRef}
-                                                            // style={getListStyle(snapShot.isDraggingOver)}
+                                                            style={getListStyle(snapShot.isDraggingOver)}
                                                         >
-                                                            <div className={presentationClasses.emptySchedule}>
+                                                            <div className={classes.emptyContainer}>
                                                                 <Typography variant='subtitle2' color='textSecondary'>
-                                                                    Drag n Drop Tasks from Todos
+                                                                    Drag n Drop Tasks here
                                                                 </Typography>
                                                             </div>
                                                             {provided.placeholder}
@@ -167,11 +217,11 @@ const RenderScrumBoard = ({sprint}) => {
                                                     if (column.tasksIds.length === 0){
                                                         return(
                                                             <div
-                                                                className={presentationClasses.scheduleContainer}
+                                                                className={classes.container}
                                                                 {...provided.droppableProps}
                                                                 ref={provided.innerRef}
                                                             >
-                                                                <div className={presentationClasses.emptySchedule}>
+                                                                <div className={classes.emptyContainer}>
                                                                     <Typography variant='subtitle2' color='textSecondary'>
                                                                         No Tasks Created Yet
                                                                     </Typography>
@@ -184,25 +234,21 @@ const RenderScrumBoard = ({sprint}) => {
                                                             <div
                                                                 {...provided.droppableProps}
                                                                 ref={provided.innerRef}
-                                                                className={presentationClasses.listContainer}
+                                                                className={classes.listContainer}
                                                             >
                                                                 {tasks.map((task,index )=>
-                                                                    <div key={task._id} className={presentationClasses.list}>
+                                                                    <div key={task._id} className={classes.list}>
                                                                         <Draggable draggableId={task._id} index={index}>
                                                                             {
-                                                                                (provided, snapShot) =>(
+                                                                                (provided) =>(
                                                                                     <>
                                                                                         <div
                                                                                             {...provided.draggableProps}
                                                                                             {...provided.dragHandleProps}
                                                                                             ref={provided.innerRef}
+                                                                                            onClick={()=>handleOpenDetails(task)}
                                                                                         >
-                                                                                            {/*<div onClick={()=>openDetails(project)}>*/}
-                                                                                            {/*    <RenderListItemContent*/}
-                                                                                            {/*        doc={project.documentation.visionDocument}*/}
-                                                                                            {/*        project={project}*/}
-                                                                                            {/*    />*/}
-                                                                                            {/*</div>*/}
+                                                                                            <RenderSprintTaskItem task={task}/>
 
                                                                                         </div>
 
@@ -231,6 +277,23 @@ const RenderScrumBoard = ({sprint}) => {
 
 
             </DragDropContext>
+            <Dialog fullWidth maxWidth='sm' open={openDetails} onClose={closeDetails}>
+                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
+                    <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
+                    <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
+                        <IconButton size='small' onClick={closeDetails}>
+                            <Close/>
+                        </IconButton>
+                    </Tooltip>
+                </DialogTitle>
+                <DialogContent dividers>
+                    {
+                        openDetails &&
+                        <RenderTaskDetails details={details}/>
+                    }
+
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

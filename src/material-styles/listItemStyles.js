@@ -1,6 +1,4 @@
 import {makeStyles} from "@material-ui/styles";
-import randomMC from "random-material-color";
-import {deepPurple} from "@material-ui/core/colors";
 import {getRandomColor} from "./randomColors";
 
 export const useListItemStyles = makeStyles(theme =>({

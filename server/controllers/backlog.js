@@ -64,13 +64,17 @@ exports.planSprint = async (req,res)=>{
             },
             {multi:true}
         );
+        const update = {
+            "name":name,
+            "startDate":startDate,
+            "endDate":endDate,
+            "todos":await filteredTasks
+        };
+        console.log(update)
         const updatedResult = await Projects.findByIdAndUpdate(projectId,
             {
-                $set:{
-                    "details.sprint.name":name,
-                    "details.sprint.startDate":startDate,
-                    "details.sprint.endDate":endDate,
-                    "details.sprint.todos":filteredTasks
+                $push: {
+                    "details.sprint": update
                 }
             },{new:true})
             .select('details.backlog details.sprint')
