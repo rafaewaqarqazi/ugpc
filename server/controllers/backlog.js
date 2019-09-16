@@ -95,3 +95,56 @@ exports.planSprint = async (req,res)=>{
     }
 
 }
+
+exports.changeTaskStatus = async (req,res)=>{
+    try {
+        const {projectId,taskId,existingColumn,newColumn,task,sprintId} = req.body;
+        const assignee = task.assignee.map(a => mongoose.Types.ObjectId(a._id));
+        const createdBy = mongoose.Types.ObjectId(task.createdBy._id)
+        const updatedTask = {
+            ...task,
+            _id:mongoose.Types.ObjectId(taskId),
+            assignee:assignee,
+            createdBy:createdBy
+        }
+        //Removing Task from Existing Column
+        const result = await Projects.updateOne(
+            {"_id":projectId,"details.sprint._id":sprintId},
+            {
+
+                    $pull:{
+                        [`details.sprint.$[].${existingColumn}`]:{
+                            _id:mongoose.Types.ObjectId(taskId)
+                        }
+                    }
+
+            },
+        );
+
+        //Adding Task to New Column
+
+        const updatedResult = await Projects.findOneAndUpdate(
+            {"_id":projectId,"details.sprint._id":sprintId},
+            {
+                $push: {
+                    [`details.sprint.$.${newColumn}`]:updatedTask
+                }
+            },{new:true})
+            .select('details.backlog details.sprint')
+            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.createdBy','name')
+            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
+            .sort({"details.backlog.priority":1})
+        await res.json(updatedResult)
+    }catch (e) {
+        await res.json(e.message)
+    }
+
+}

@@ -8,6 +8,7 @@ export default React.createContext({
     fetchByStudentId: id =>{},
     addTaskToBacklog: (projectId,task) => {},
     planSprint: data => {},
+    changeColumn: data => {},
     updateProject: project=>{},
     removeProject: ()=>{},
     uploadVision:(data,projectId)=>{}

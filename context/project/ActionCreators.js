@@ -4,7 +4,8 @@ import {
     createProjectAPI,
     uploadVisionAPI,
     addTaskToBacklogAPI,
-    planSprintAPI
+    planSprintAPI,
+    changeColumnAPI
 } from "../../utils/apiCalls/students";
 
 //Fetchers
@@ -34,6 +35,11 @@ export const addTaskToBacklogAction = async (projectId,task,dispatch) =>{
 export const planSprintAction = async (data,dispatch) =>{
     const result = await planSprintAPI(data);
     await dispatch(addBacklogAndSprint(data.projectId,result.details))
+};
+
+export const changeColumnAction = async (data,dispatch) =>{
+    const result = await changeColumnAPI(data);
+    return await dispatch(addBacklogAndSprint(data.projectId,result.details))
 }
 //Action Dispatchers
 export const addProject = (project)=>({

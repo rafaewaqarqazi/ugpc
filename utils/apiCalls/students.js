@@ -74,4 +74,17 @@ export const planSprintAPI = async data =>{
         body:JSON.stringify(data)
     });
     return await res.json();
+};
+
+export const changeColumnAPI = async data =>{
+    const res = await fetch(`${serverUrl}/backlog/task/change/column`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
 }

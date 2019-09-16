@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
 import {
@@ -18,6 +18,7 @@ import {formatScrumBoard} from "../../coordinator/presentations/formatData";
 import RenderSprintTaskItem from "./RenderSprintTaskItem";
 import {Close} from "@material-ui/icons";
 import RenderTaskDetails from "../common/RenderTaskDetails";
+import ProjectContext from '../../../context/project/project-context';
 const useStyles = makeStyles(theme =>({
     container:{
         border:'1.7px dashed grey',
@@ -64,6 +65,7 @@ const useStyles = makeStyles(theme =>({
 }));
 
 const RenderScrumBoard = ({sprint,sprintNames}) => {
+    const projectContext = useContext(ProjectContext);
     const [state,setState] = useState({});
     const classes = useStyles();
     const [selectedSprint,setSelectedSprint] = useState(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
@@ -74,7 +76,6 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     useEffect(()=>{
         const data = sprint;
         const filter = data.filter(d => d.name === selectedSprint)[0]
-        console.log('Filter',filter)
         setState(formatScrumBoard(filter));
         setLoading(false)
     },[sprint]);
@@ -101,8 +102,29 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
 
         const start = state.columns[source.droppableId];
         const finish = state.columns[destination.droppableId];
+
         if (start === finish){
             return;
+        }else{
+            // const existingColumn = start.id;
+            // const newColumn = finish.id;
+            const taskIds = Array.from(start.tasksIds);
+            const task = state.tasks[taskIds[source.index]];
+            const sprintFilter = sprint;
+            const sprintId = sprintFilter.filter(f => f.name === selectedSprint)[0]._id;
+            const data = {
+                existingColumn:start.id,
+                newColumn:finish.id,
+                task,
+                sprintId,
+                taskId:task._id,
+                projectId:projectContext.project.project[0]._id
+            }
+            projectContext.changeColumn(data)
+                .then(result => {
+                    console.log(result)
+                })
+
         }
         const startTaskIds = Array.from(start.tasksIds);
         startTaskIds.splice(source.index,1);
