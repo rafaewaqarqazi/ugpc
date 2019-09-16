@@ -20,5 +20,8 @@ export const useSnakBarStyles = makeStyles(theme => ({
     success: {
         margin: theme.spacing(1),
         backgroundColor:green[600]
+    },
+    info:{
+        backgroundColor: theme.palette.primary.main
     }
 }));

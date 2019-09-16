@@ -87,4 +87,17 @@ export const changeColumnAPI = async data =>{
         body:JSON.stringify(data)
     });
     return await res.json();
+};
+
+export const changePriorityDnDAPI = async data =>{
+    const res = await fetch(`${serverUrl}/backlog/task/change/priority`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
 }

@@ -19,6 +19,8 @@ import RenderSprintTaskItem from "./RenderSprintTaskItem";
 import {Close} from "@material-ui/icons";
 import RenderTaskDetails from "../common/RenderTaskDetails";
 import ProjectContext from '../../../context/project/project-context';
+import UserContext from '../../../context/user/user-context';
+import InfoSnackBar from "../../snakbars/InfoSnackBar";
 const useStyles = makeStyles(theme =>({
     container:{
         border:'1.7px dashed grey',
@@ -48,15 +50,18 @@ const useStyles = makeStyles(theme =>({
     listContainer:{
         display:'flex',
         flexDirection: 'column',
-        padding:theme.spacing(2),
+        padding:theme.spacing(1),
         border:'1px solid lightgrey',
         borderRadius: 5,
         minHeight:150,
         flexGrow:1,
-        marginTop:theme.spacing(2)
+        marginTop:theme.spacing(2),
+        maxHeight:650,
+        overflowY:'auto',
+        backgroundColor:'#ebecf0'
     },
     list:{
-        marginBottom:theme.spacing(1.5)
+        marginBottom:theme.spacing(1)
     },
     columns:{
         display:'flex',
@@ -66,11 +71,13 @@ const useStyles = makeStyles(theme =>({
 
 const RenderScrumBoard = ({sprint,sprintNames}) => {
     const projectContext = useContext(ProjectContext);
+    const userContext = useContext(UserContext);
     const [state,setState] = useState({});
     const classes = useStyles();
     const [selectedSprint,setSelectedSprint] = useState(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
     const [loading,setLoading] = useState(true);
     const [finalIds,setFinalIds] = useState([]);
+    const [openInfoSnackBar,setOpenInfoSnackBar] = useState(false);
     const [openDetails,setOpenDetails] = useState(false);
     const [details,setDetails]= useState({});
     useEffect(()=>{
@@ -106,8 +113,11 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         if (start === finish){
             return;
         }else{
-            // const existingColumn = start.id;
-            // const newColumn = finish.id;
+           const userRole = userContext.user.user.role;
+           if (userRole === 'Student' && start.id === 'inReview' && finish.id === 'done'){
+               setOpenInfoSnackBar(true)
+               return;
+           }
             const taskIds = Array.from(start.tasksIds);
             const task = state.tasks[taskIds[source.index]];
             const sprintFilter = sprint;
@@ -159,7 +169,8 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     return (
         !loading &&
         <div>
-            <FormControl variant="outlined" margin='dense' style={{marginBottom:20}}>
+            <InfoSnackBar message='Only supervisor can move to Done' open={openInfoSnackBar} setOpen={setOpenInfoSnackBar} />
+            <FormControl variant="outlined" margin='dense' style={{marginBottom:20,minWidth:160}}>
                 <InputLabel htmlFor="sprint">
                     Select Sprint
                 </InputLabel>

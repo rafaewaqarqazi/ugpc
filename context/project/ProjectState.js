@@ -2,13 +2,20 @@ import React, {useReducer, useEffect} from 'react';
 import ProjectContext from './project-context';
 import {projectReducer} from "./projectReducer";
 import {
-    getProjectByStudentId,
-    createProjectAction,
-    uploadVisionAction,
-    addTaskToBacklogAction,
-    planSprintAction,
-    changeColumnAction
+    addProjectAction,
+    projectLoadingAction,
+    addBacklogAction,
+    addSprintAction
 } from "./ActionCreators";
+import {
+    addTaskToBacklogAPI,
+    changeColumnAPI,
+    changePriorityDnDAPI,
+    createProjectAPI,
+    fetchProjectByStudentIdAPI,
+    uploadVisionAPI,
+    planSprintAPI
+} from "../../utils/apiCalls/students";
 
 const ProjectState = (props) => {
     const [state, dispatch] = useReducer(projectReducer,{
@@ -17,22 +24,32 @@ const ProjectState = (props) => {
         project:{}
     });
     const fetchByStudentId =async ()=>{
-         return await getProjectByStudentId(dispatch);
+        dispatch(projectLoadingAction());
+        const project = await fetchProjectByStudentIdAPI();
+        dispatch(addProjectAction(await project));
     };
     const createProject =async (data) =>{
-       return await createProjectAction(dispatch,data);
+        const project = await createProjectAPI(data);
+        dispatch(addProjectAction(await project));
     };
     const uploadVision =async (data,projectId) => {
-        return await uploadVisionAction(data,projectId,dispatch)
+        return await uploadVisionAPI(data,projectId);
     };
     const addTaskToBacklog = async (projectId,task)=>{
-        return await addTaskToBacklogAction(projectId,task,dispatch)
+        const result =  await addTaskToBacklogAPI(projectId,task);
+        await dispatch(addBacklogAction(projectId,result.details.backlog))
     };
     const planSprint = async (data) =>{
-        return await planSprintAction(data,dispatch);
+        const result = await planSprintAPI(data);
+        await dispatch(addBacklogAction(data.projectId,result.details.backlog))
     };
     const changeColumn = async (data)=>{
-        return await changeColumnAction(data,dispatch)
+        const result = await changeColumnAPI(data);
+        await dispatch(addSprintAction(data.projectId,result.details.sprint))
+    };
+    const changePriorityDnD = async (data)=>{
+        const result = await changePriorityDnDAPI(data);
+        await dispatch(addBacklogAction(data.projectId,result.details.backlog))
     }
 useEffect(()=>{
     console.log('Project State:',state)
@@ -45,7 +62,8 @@ useEffect(()=>{
             uploadVision:uploadVision,
             addTaskToBacklog,
             planSprint,
-            changeColumn
+            changeColumn,
+            changePriorityDnD
         }}>
             {props.children}
         </ProjectContext.Provider>

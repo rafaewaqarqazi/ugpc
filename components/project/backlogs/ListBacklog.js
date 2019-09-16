@@ -13,7 +13,6 @@ import {makeStyles} from "@material-ui/styles";
 import CreateTaskDialog from "./CreateTaskDialog";
 import RenderBacklogTaskItem from "./RenderBacklogTaskItem";
 import {formatBacklog} from "../../coordinator/presentations/formatData";
-import {getRandomColor} from "../../../src/material-styles/randomColors";
 import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import moment from "moment";
@@ -129,28 +128,75 @@ const ListBacklog = ({backlog}) => {
         const finish = state.columns[destination.droppableId];
         if (start === finish){
             const newTaskIds = Array.from(start.tasksIds);
-            // const draggedLoc = state.tasks[newTaskIds[source.index]];
-            // const droppedLoc = state.tasks[newTaskIds[destination.index]];
-            newTaskIds.splice(source.index,1);
-            newTaskIds.splice(destination.index,0,draggableId);
-
-            const newColumn={
-                ...start,
-                tasksIds: newTaskIds
-            };
-
-            const newState = {
-                ...state,
-                columns:{
-                    ...state.columns,
-                    [newColumn.id]:newColumn
-                }
+            const draggedLoc = state.tasks[newTaskIds[source.index]];
+            const droppedLoc = state.tasks[newTaskIds[destination.index]];
+            const nextTask = state.tasks[newTaskIds[destination.index + 1]];
+            const prevTask = state.tasks[newTaskIds[destination.index - 1]];
+            let newPriority = '';
+            if(!nextTask){
+                newPriority = droppedLoc.priority === '5' ? '5' : (1 + parseInt(droppedLoc.priority)).toString()
             }
+            else if (!prevTask){
+                newPriority = droppedLoc.priority === '1' ? '1' : (parseInt(droppedLoc.priority) - 1).toString()
+            } else if (draggedLoc.priority < droppedLoc.priority){
 
-            setState(newState);
-            // console.log('Dragged Loc',draggedLoc);
-            // console.log('Dropped Loc',droppedLoc);
+                if ((parseInt(droppedLoc.priority) - parseInt(prevTask.priority)) === 1){
+                    newPriority =  droppedLoc.priority
+                }else if ((parseInt(droppedLoc.priority) - parseInt(prevTask.priority)) > 1){
+                    newPriority =  droppedLoc.priority
+                }
+                else if ((parseInt(nextTask.priority) - parseInt(droppedLoc.priority)) > 1){
+                    newPriority =  (parseInt(prevTask.priority) + 1).toString()
+                }
+                else if((parseInt(droppedLoc.priority) === parseInt(prevTask.priority)) && (parseInt(nextTask.priority) - parseInt(droppedLoc.priority) === 1)) {
+                    newPriority =   (parseInt(droppedLoc.priority) +1).toString()
+                }else if(parseInt(droppedLoc.priority) === parseInt(prevTask.priority) && parseInt(droppedLoc.priority) === parseInt(nextTask.priority) ) {
+                    newPriority =   droppedLoc.priority
+                }
+
+            }
+            else if (draggedLoc.priority > droppedLoc.priority){
+                if ((parseInt(droppedLoc.priority) - parseInt(prevTask.priority)) === 1){
+                    newPriority =  prevTask.priority
+                }else if ((parseInt(droppedLoc.priority) - parseInt(prevTask.priority)) > 1){
+                    newPriority =  (parseInt(prevTask.priority) + 1).toString()
+                } else {
+                    newPriority =  droppedLoc.priority;
+                }
+
+            }
+            else if (draggedLoc.priority === droppedLoc.priority){
+                newTaskIds.splice(source.index,1);
+                newTaskIds.splice(destination.index,0,draggableId);
+                const newColumn={
+                    ...start,
+                    tasksIds: newTaskIds
+                };
+
+                const newState = {
+                    ...state,
+                    columns:{
+                        ...state.columns,
+                        [newColumn.id]:newColumn
+                    }
+                };
+
+                setState(newState);
+
+                return;
+            }
+            const task = state.tasks[newTaskIds[source.index]];
+            const data = {
+                taskId:task._id,
+                projectId:projectContext.project.project[0]._id,
+                priority:newPriority
+            };
+            projectContext.changePriorityDnD(data)
+                .then(result =>{
+                    return;
+                })
             return;
+
         }
         const startTaskIds = Array.from(start.tasksIds);
         startTaskIds.splice(source.index,1);

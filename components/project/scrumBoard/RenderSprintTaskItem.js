@@ -8,12 +8,12 @@ const useStyles = makeStyles(theme=>({
     listItem:{
         backgroundColor:'rgba(255,255,255,0.5)',
         padding:theme.spacing(1.2),
-        boxShadow:theme.shadows[2],
+        boxShadow:theme.shadows[1],
         '&:hover':{
             boxShadow:theme.shadows[8]
         },
         display:'flex',
-        borderRadius:5,
+
         alignItems:'center'
     },
     description:{
@@ -55,12 +55,12 @@ const RenderSprintTaskItem = ({task}) => {
                         )
                     }
                 </Grid>
-                <Grid item xs={6} sm={6}>
+                <Grid item xs={12} sm={6}>
                     <Badge badgeContent={task.subTasks.length > 0 ? task.subTasks.length : '0'} max={10} color='secondary'>
                         <Typography noWrap>Sub Tasks</Typography>
                     </Badge>
                 </Grid>
-                <Grid item xs={6} sm={6} style={{display:'flex',justifyContent:'flex-end'}}>
+                <Grid item xs={12} sm={6} style={{display:'flex',justifyContent:'flex-end'}}>
                     {
                         task.assignee.map((student,index) =>(
                             <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>

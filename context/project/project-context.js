@@ -9,6 +9,7 @@ export default React.createContext({
     addTaskToBacklog: (projectId,task) => {},
     planSprint: data => {},
     changeColumn: data => {},
+    changePriorityDnD:data =>{},
     updateProject: project=>{},
     removeProject: ()=>{},
     uploadVision:(data,projectId)=>{}

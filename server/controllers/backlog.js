@@ -20,14 +20,6 @@ exports.addNewTask = async (req,res)=>{
             .select('details.backlog details.sprint')
             .populate('details.backlog.assignee','name department student_details email')
             .populate('details.backlog.createdBy','name')
-            .populate('details.sprint.todos.assignee','name department student_details email')
-            .populate('details.sprint.todos.createdBy','name')
-            .populate('details.sprint.inProgess.assignee','name department student_details email')
-            .populate('details.sprint.inProgess.createdBy','name')
-            .populate('details.sprint.inReview.assignee','name department student_details email')
-            .populate('details.sprint.inReview.createdBy','name')
-            .populate('details.sprint.done.assignee','name department student_details email')
-            .populate('details.sprint.done.createdBy','name')
             .sort({"details.backlog.priority":1})
 
         await res.json(result)
@@ -80,14 +72,6 @@ exports.planSprint = async (req,res)=>{
             .select('details.backlog details.sprint')
             .populate('details.backlog.assignee','name department student_details email')
             .populate('details.backlog.createdBy','name')
-            .populate('details.sprint.todos.assignee','name department student_details email')
-            .populate('details.sprint.todos.createdBy','name')
-            .populate('details.sprint.inProgess.assignee','name department student_details email')
-            .populate('details.sprint.inProgess.createdBy','name')
-            .populate('details.sprint.inReview.assignee','name department student_details email')
-            .populate('details.sprint.inReview.createdBy','name')
-            .populate('details.sprint.done.assignee','name department student_details email')
-            .populate('details.sprint.done.createdBy','name')
             .sort({"details.backlog.priority":1})
        await res.json(updatedResult)
     }catch (e) {
@@ -130,9 +114,6 @@ exports.changeTaskStatus = async (req,res)=>{
                     [`details.sprint.$.${newColumn}`]:updatedTask
                 }
             },{new:true})
-            .select('details.backlog details.sprint')
-            .populate('details.backlog.assignee','name department student_details email')
-            .populate('details.backlog.createdBy','name')
             .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
             .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
             .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
@@ -141,10 +122,37 @@ exports.changeTaskStatus = async (req,res)=>{
             .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
             .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
             .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
-            .sort({"details.backlog.priority":1})
+            // .sort({"details.backlog.priority":1})
         await res.json(updatedResult)
     }catch (e) {
         await res.json(e.message)
     }
 
+};
+
+exports.changeTaskPriority = async (req, res) =>{
+    try {
+        const {projectId,taskId,priority} = req.body;
+        //Removing Task from Existing Column
+        const result = await Projects.updateOne(
+
+        );
+
+        //Adding Task to New Column
+
+        const updatedResult = await Projects.findOneAndUpdate(
+            {"_id":projectId,"details.backlog._id":taskId},
+            {
+                $set:{
+                    "details.backlog.$.priority":priority
+                }
+            },{new:true})
+            .select('details.backlog details.sprint')
+            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.createdBy','name')
+            .sort({"details.backlog.priority":1})
+        await res.json(updatedResult)
+    }catch (e) {
+        await res.json(e.message)
+    }
 }

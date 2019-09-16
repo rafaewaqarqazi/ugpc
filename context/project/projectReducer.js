@@ -26,26 +26,46 @@ export const projectReducer = (state, action) => {
             };
         case Actions.REMOVE_PROJECT:
             return {};
-        case Actions.ADD_BACKLOG_ANDSPRINT:
-            const newState = state.project.map(proj => {
-                if (proj._id === action.payload.projectId){
+        case Actions.ADD_BACKLOG:{
+            const newState = state.project.map(project => {
+                if (project._id === action.payload.projectId){
                     return {
-                        ...proj,
+                        ...project,
                         details:{
-                            ...proj.details,
-                            backlog:action.payload.details.backlog,
-                            sprint:action.payload.details.sprint
+                            ...project.details,
+                            backlog:action.payload.backlog,
                         }
                     }
                 }
                 else {
-                    return {...proj}
+                    return {...project}
                 }
-            })
+            });
             return {
                 ...state,
                 project: newState
-            }
+            };
+        }
+        case Actions.ADD_SPRINT:{
+            const modState = state.project.map(project => {
+                if (project._id === action.payload.projectId){
+                    return {
+                        ...project,
+                        details:{
+                            ...project.details,
+                            sprint:action.payload.sprint,
+                        }
+                    }
+                }
+                else {
+                    return {...project}
+                }
+            });
+            return {
+                ...state,
+                project: modState
+            };
+        }
         default:
             return state;
     }
