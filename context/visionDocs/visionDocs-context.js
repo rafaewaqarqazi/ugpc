@@ -8,6 +8,8 @@ export default React.createContext({
     scheduleVisionDefence:data =>{},
     submitAdditionFilesVisionDoc:(formData,type) =>{},
     addMarks:marks=>{},
+    generateAcceptanceLetter:(projectId,regNo)=>{},
+    assignSupervisorAuto:(projectId,title)=>{},
     comment:comment=>{},
     changeStatus:status =>{},
     unComment:comment=>{},

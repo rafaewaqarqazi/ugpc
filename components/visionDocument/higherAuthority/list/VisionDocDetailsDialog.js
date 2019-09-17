@@ -100,9 +100,8 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
     const handleGenerateLetterButtonClick =()=> {
         setGenerateLetterLoading(true);
-        generateAcceptanceLetter(currentDocument._id,currentDocument.students[0].student_details.regNo)
+        visionDocsContext.generateAcceptanceLetter(currentDocument._id,currentDocument.students[0].student_details.regNo)
             .then(result =>{
-                console.log(result);
                 setCurrentDocument({
                     ...currentDocument,
                     details:{
@@ -154,7 +153,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
         }
         visionDocsContext.changeStatus(statusDetails)
             .then(res =>{
-                assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title)
+                visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title)
                     .then(result => {
                         if (result.error){
                             console.log(result.error)
@@ -207,7 +206,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 <Chip style={getVisionDocsStatusChipColor(currentDocument.documentation.visionDocument.status)} label={currentDocument.documentation.visionDocument.status}  size="small"/>
                             </div>
                             {
-                                isAuthenticated().user.role === 'UGPC_Member' &&
+                                isAuthenticated().user.additionalRole === 'UGPC_Member' &&
                                 <div className={classes.detailsContent}>
                                     <Typography color='textSecondary'>
                                         Change Status

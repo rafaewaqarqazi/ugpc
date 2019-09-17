@@ -7,8 +7,12 @@ import {
     changeStatusAction,
     scheduleVisionDefenceAction,
     submitAdditionFilesVisionDocAction,
-    addMarksAction
+    addMarksAction,
+    generateAcceptanceLetterAction,
+    assignSupervisorAction
 } from "./ActionCreators";
+import {assignSupervisorAutoAPI, generateAcceptanceLetterAPI} from "../../utils/apiCalls/projects";
+import {changeStatusAPI} from "../../utils/apiCalls/visionDocs";
 
 const VisionDocsState = (props) => {
     const [state, dispatch] = useReducer(visionDocsReducer,{
@@ -23,7 +27,9 @@ const VisionDocsState = (props) => {
         return await commentOnVision(comment);
     }
     const changeStatus = async status =>{
-        return await changeStatusAction(status,dispatch);
+        const res =await changeStatusAPI(status);
+        await getDocsByCommittee(dispatch);
+        return await res;
     };
     const scheduleVisionDefence = async data =>{
 
@@ -34,6 +40,17 @@ const VisionDocsState = (props) => {
     };
     const addMarks = async (marks,projectId) =>{
         return await addMarksAction(marks,projectId,dispatch);
+    };
+    const generateAcceptanceLetter = async (projectId,regNo) =>{
+        const result = await generateAcceptanceLetterAPI(projectId,regNo);
+        dispatch(generateAcceptanceLetterAction(projectId,await result.issueDate,regNo))
+        return await result;
+    };
+    const assignSupervisorAuto = async (projectId,title)=>{
+        console.log('Title',title);
+        const result = await assignSupervisorAutoAPI(projectId,title);
+        dispatch(assignSupervisorAction(projectId,await result.supervisor));
+        return await result
     }
 useEffect(()=>{
     console.log('Vision Docs State:',state)
@@ -46,7 +63,9 @@ useEffect(()=>{
             changeStatus,
             scheduleVisionDefence,
             submitAdditionFilesVisionDoc,
-            addMarks
+            addMarks,
+            generateAcceptanceLetter,
+            assignSupervisorAuto
         }}>
             {props.children}
         </VisionDocsContext.Provider>

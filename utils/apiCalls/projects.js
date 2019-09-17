@@ -2,7 +2,7 @@ import fetch from "isomorphic-unfetch";
 import {serverUrl} from "../config";
 import {isAuthenticated} from "../../auth";
 
-export const assignSupervisorAuto = async (projectId,title) =>{
+export const assignSupervisorAutoAPI = async (projectId,title) =>{
     const res = await fetch(`${serverUrl}/projects/supervisor/assign`,{
         method:'PUT',
         headers:{
@@ -15,7 +15,7 @@ export const assignSupervisorAuto = async (projectId,title) =>{
     return await res.json();
 };
 
-export const generateAcceptanceLetter = async (projectId,regNo)=>{
+export const generateAcceptanceLetterAPI = async (projectId,regNo)=>{
     const res = await fetch(`${serverUrl}/projects/generate/acceptanceLetter`,{
         method:'PUT',
         headers:{

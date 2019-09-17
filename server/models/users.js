@@ -56,7 +56,10 @@ const userSchema = new mongoose.Schema({
         committees:[String]
     },
     supervisor_details:{
-        projects:{type:ObjectId, ref:"Projects"}
+        projects:[{
+            projectId:{type:ObjectId, ref:"Projects"},
+            title:String
+        }]
     },
     chairman_details:{}
 });

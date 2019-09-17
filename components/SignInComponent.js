@@ -50,6 +50,7 @@ const SignInComponent = () => {
                     })
                 }else {
                     setLoading(false)
+                    console.log(data)
                     authenticate(data)
                 }
 

@@ -36,7 +36,7 @@ export const useDrawerStyles = makeStyles(theme => ({
     toolbar: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent:'space-between',
         padding: '0 8px',
         ...theme.mixins.toolbar,
     },
@@ -89,12 +89,15 @@ export const useDrawerStyles = makeStyles(theme => ({
         display:'flex',
         alignItems:'center',
         justifyContent:'center',
-        padding:theme.spacing(2)
+        paddingTop:theme.spacing(1.5)
+    },
+    avatarColor:{
+        backgroundColor:getRandomColor()
     },
     avatarSize:{
         width:100,
         height:100,
         fontSize:32,
-        backgroundColor:getRandomColor()
-    }
+    },
+
 }));

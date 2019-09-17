@@ -6,12 +6,15 @@ import {useListItemStyles} from "../../../../src/material-styles/listItemStyles"
 
 import {RenderListItemContent} from "../../common/RenderListItemContent";
 
-const VisionDocListItem = ({filter}) => {
+const VisionDocListItem = ({filter,fetchData}) => {
 
     const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
     const [open,setOpen] = useState(false);
     const handleClose = ()=>{
+        if (fetchData){
+            fetchData();
+        }
         setOpen(false)
         setCurrentDocument({})
     };

@@ -3,12 +3,11 @@ import CoordinatorLayout from "../../../components/Layouts/CoordinatorLayout";
 import VisionDocsState from "../../../context/visionDocs/VisionDocsState";
 import {fetchMeetingsAPI} from "../../../utils/apiCalls/visionDocs";
 import {makeStyles} from "@material-ui/styles";
-import Container from "@material-ui/core/Container";
 import {useEffect, useState} from "react";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {Assignment, Search} from "@material-ui/icons";
-import Typography from "@material-ui/core/Typography";
 import {
+    Container,
     Divider,
     FormControl,
     InputAdornment,
@@ -16,7 +15,8 @@ import {
     MenuItem,
     OutlinedInput,
     Select,
-    TextField
+    TextField,
+    Typography
 } from "@material-ui/core";
 import VisionDocListItem from "../../../components/visionDocument/higherAuthority/list/VisionDocListItem";
 import moment from "moment";
@@ -150,6 +150,7 @@ const Index = () => {
                                 !loading &&
                                 <VisionDocListItem
                                     filter={filter}
+                                    fetchData={fetchData}
                                 />
                             }
 

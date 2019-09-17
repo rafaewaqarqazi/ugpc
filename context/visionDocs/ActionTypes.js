@@ -3,3 +3,6 @@ export const DOCS_LOADING = 'DOCS_LOADING';
 export const DOCS_FAILED = 'DOCS_FAILED';
 export const REMOVE_DOCS = 'REMOVE_DOCS';
 export const ADD_MARKS = 'ADD_MARKS';
+export const ADD_ACCEPTANCE_LETTER = 'ADD_ACCEPTANCE_LETTER';
+export const ADD_SUPERVISOR = 'ADD_SUPERVISOR';
+export const CHANGE_STATUS = 'CHANGE_STATUS';

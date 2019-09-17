@@ -48,15 +48,12 @@ exports.createProject = (req, res) => {
 };
 
 
-
-
-
 exports.assignSupervisor = async (req,res)=>{
     try {
         const {projectId,title} = req.body;
         //Finding Supervisor with minimum Numbers of Projects
         const supervisors =await Users.aggregate([
-            {$match:{"additionalRole":'Supervisor'}},
+            {$match:{"role":'Supervisor'}},
             {
                 $project:{
                     email:1,
@@ -84,15 +81,21 @@ exports.assignSupervisor = async (req,res)=>{
         const supervisor = await _.sample(supervisors[0].details);
 
         //Assigning Supervisor-Updating Project
-        const project =await Projects.findOneAndUpdate(projectId,{"details.supervisor":supervisor._id})
-            .populate('students','-_id email student_details.regNo')
-            .select('students title');
+        const project =await Projects.findOneAndUpdate(projectId,
+            {"details.supervisor":supervisor._id},
+            {new:true}
+            ).populate('students','-_id email student_details.regNo')
+            .populate({path:'details.supervisor',model:'Users',select:'name supervisor_details.position'})
+            .select('students title details.supervisor');
         const studentEmails =await project.students.map(student => student.email);
 
-        //Assigning Supervisor-Updating Supervisor
+        //Adding Project to Supervisor Details
         const a = await Users.updateOne({_id:supervisor._id},{
             $push:{
-                "supervisor_details.projects":projectId
+                "supervisor_details.projects":{
+                    projectId,
+                    title
+                }
             }
         })
 
@@ -125,7 +128,7 @@ exports.assignSupervisor = async (req,res)=>{
         };
         await sendEmail(supervisorEmailData);
         await sendEmail(studentsEmailData);
-        await res.json({success:'Assigned'})
+        await res.json({success:'Assigned',supervisor:project.details.supervisor})
     }
     catch (e) {
         await res.json({error:e.message})

@@ -26,18 +26,18 @@ export const visionDocsReducer = (state, action) => {
             };
         case Actions.REMOVE_DOCS:
             return [];
-        case Actions.ADD_MARKS:
+        case Actions.ADD_MARKS:{
             const newState = state.visionDocs.map(doc =>({
                 ...doc,
                 projects:doc.projects.map(project =>{
-                    if(project._id === '5d4d7298c0f2d61f04d3254d'){
+                    if(project._id === action.payload.projectId){
                         return {
                             ...project,
                             details:{
                                 ...project.details,
                                 marks:{
                                     ...project.details.marks,
-                                    visionDocument:'9'
+                                    visionDocument:action.payload.marks
                                 }
                             }
                         }
@@ -54,7 +54,101 @@ export const visionDocsReducer = (state, action) => {
             return {
                 ...state,
                 visionDocs: newState
-            }
+            };
+        }
+        case Actions.ADD_ACCEPTANCE_LETTER:{
+            const modState = state.visionDocs.map(doc =>({
+                ...doc,
+                projects:doc.projects.map(project =>{
+                    if(project._id === action.payload.projectId){
+                        return {
+                            ...project,
+                            details:{
+                                ...project.details,
+                                acceptanceLetter:{
+                                    name:`${action.payload.regNo}.pdf`,
+                                    issueDate:action.payload.issueDate
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        return {
+                            ...project
+                        }
+                    }
+
+                })
+            }))
+
+            return {
+                ...state,
+                visionDocs: modState
+            };
+        }
+        case Actions.ADD_SUPERVISOR:{
+            const modState = state.visionDocs.map(doc =>({
+                ...doc,
+                projects:doc.projects.map(project =>{
+                    if(project._id === action.payload.projectId){
+                        return {
+                            ...project,
+                            details:{
+                                ...project.details,
+                                supervisor:action.payload.supervisor
+                            }
+                        }
+                    }
+                    else {
+                        return {
+                            ...project
+                        }
+                    }
+
+                })
+            }))
+
+            return {
+                ...state,
+                visionDocs: modState
+            };
+        }
+        case Actions.CHANGE_STATUS:{
+            const modState = state.visionDocs.map(doc =>({
+                ...doc,
+                projects:doc.projects.map(project =>{
+                    if(project._id === action.payload.projectId){
+                        return {
+                            ...project,
+                            documentation:{
+                                ...project.documentation,
+                                visionDocument:project.visionDocument.map(visionDoc =>{
+                                    if (visionDoc._id === action.payload.documentId){
+                                        return{
+                                            ...visionDoc,
+                                            status:action.payload.status
+                                        }
+                                    }else {
+                                        return {...visionDoc}
+                                    }
+                                })
+                            }
+                        }
+                    }
+                    else {
+                        return {
+                            ...project
+                        }
+                    }
+
+                })
+            }));
+
+            return {
+                ...state,
+                visionDocs: modState
+            };
+        }
         default:
             return state;
     }

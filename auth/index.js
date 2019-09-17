@@ -3,7 +3,6 @@ import {serverUrl} from "../utils/config";
 import cookie from 'js-cookie';
 import Router from 'next/router'
 import nextCookie from 'next-cookies';
-import router from "next/dist/client/router";
 
 export const signup = user =>{
     return  fetch(`${serverUrl}/auth/student/signup`,{
@@ -115,18 +114,18 @@ export const studentAuth = ctx => {
 };
 export const ugpcMemberAuth = (ctx, userRole) =>{
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:'',ugpc_details: {position: ''}}};
+    const user =token ? JSON.parse(token) : {user:{role:'',additionalRole:'',ugpc_details: {position: ''}}};
     if (ctx.req && !token) {
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role !== 'UGPC_Member'){
+    else if (ctx.req && token && user.user.additionalRole !== 'UGPC_Member' ){
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position !== userRole){
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position !== userRole){
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
@@ -135,14 +134,37 @@ export const ugpcMemberAuth = (ctx, userRole) =>{
     if (!token){
         Router.push('/sign-in')
     }
-    else if (token &&  user.user.role !== 'UGPC_Member') {
+    else if (token &&  user.user.additionalRole !== 'UGPC_Member') {
         Router.push('/sign-in')
     }
-    else if (token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position !== userRole){
+    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position !== userRole){
         Router.push('/sign-in')
     }
     return token
-}
+};
+export const supervisorAuth = ctx => {
+    const { token } = nextCookie(ctx);
+    const user =token ? JSON.parse(token) : {user:{role:''}};
+
+    if (ctx.req && !token) {
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.role !== 'Supervisor'){
+        ctx.res.writeHead(302, { Location: '/sign-in' });
+        ctx.res.end();
+        return
+    }
+
+    if (!token){
+        Router.push('/sign-in')
+    }
+    else if (token &&  user.user.role !== 'Supervisor') {
+        Router.push('/sign-in')
+    }
+    return token
+};
 
 export const chairmanAuth = ctx => {
     const { token } = nextCookie(ctx);
@@ -193,18 +215,23 @@ export const programOfficeAuth = ctx => {
 
 export const landingAuth = ctx => {
     const { token } = nextCookie(ctx);
-    const user =token ? JSON.parse(token) : {user:{role:'',ugpc_details:{position:'',committee:''}}};
+    const user =token ? JSON.parse(token) : {user:{role:'',additionalRole: '',ugpc_details:{position:'',committee:''}}};
     if (ctx.req && token && user.user.role === 'Student') {
         ctx.res.writeHead(302, { Location: '/student/roadmap' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
+    else if (ctx.req && token && user.user.role === 'Supervisor') {
+        ctx.res.writeHead(302, { Location: '/supervisor/overview' });
+        ctx.res.end();
+        return
+    }
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
         ctx.res.writeHead(302, { Location: '/UGPC_Member/overview' });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
         ctx.res.writeHead(302, { Location: `/coordinator/overview` });
         ctx.res.end();
         return
@@ -214,11 +241,7 @@ export const landingAuth = ctx => {
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role === 'Supervisor') {
-        ctx.res.writeHead(302, { Location: '/supervisor/overview' });
-        ctx.res.end();
-        return
-    }
+
     else if (ctx.req && token && user.user.role === 'Program_Office') {
         ctx.res.writeHead(302, { Location: '/program-office' });
         ctx.res.end();
@@ -230,10 +253,10 @@ export const landingAuth = ctx => {
     else if (token && user.user.role === 'Supervisor') {
         Router.push('/supervisor/overview')
     }
-    else if (token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
+    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
         Router.push('/UGPC_Member/overview')
     }
-    else if (token && user.user.role === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
+    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
         Router.push(`/coordinator/overview`)
     }
     else if (token && user.user.role === 'Chairman DCSSE') {

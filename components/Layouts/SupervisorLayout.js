@@ -14,14 +14,13 @@ import {
     Menu,
     MenuItem,
     Avatar,
-    Typography, Hidden, AppBar, Toolbar, InputLabel, Select, OutlinedInput, FormControl
+    Typography, Hidden, AppBar, Toolbar, FormControl, InputLabel, Select, OutlinedInput
 } from '@material-ui/core';
 
 import Link from "next/link";
 import {
     DashboardOutlined,
     Laptop,
-    SupervisorAccountOutlined,
     VisibilityOutlined,
     ChevronLeft,
     ChevronRight,
@@ -29,27 +28,37 @@ import {
     Face,
     PermIdentity,
     ExitToAppOutlined,
-    ScheduleOutlined,
     SettingsOutlined
 } from "@material-ui/icons";
-import { signout} from "../../auth";
+import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import MenuIcon from '@material-ui/icons/Menu';
-import {getRandomColor} from "../../src/material-styles/randomColors";
-
-const CoordinatorLayout = ({children})=> {
+const SupervisorLayout = ({children})=> {
     const userContext = useContext(UserContext);
-    useEffect(()=>{userContext.fetchUserById()},[])
+    useEffect(()=>{
+        userContext.fetchUserById();
+        getProjects();
+    },[])
+
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEl2, setAnchorEl2] = React.useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [projects,setProjects] = useState([]);
+    const [selectedProjectName,setSelectedProjectName] = useState('');
     const handleDrawerOpen = ()=> {
         setOpen(true);
     };
-
+    const getProjects = ()=>{
+        if (userContext.user.isLoading){
+            setSelectedProjectName('Loading...')
+        }else {
+            setProjects(userContext.user.user.supervisor_details.projects);
+            setSelectedProjectName(userContext.user.user.supervisor_details.projects.length > 0 ? userContext.user.user.supervisor_details.projects[0].title : 'No Projects')
+        }
+    }
     const handleDrawerClose =()=> {
         setOpen(false);
     };
@@ -70,11 +79,10 @@ const CoordinatorLayout = ({children})=> {
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
     };
-
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/coordinator/overview'>
+                <Link href='/supervisor/overview'>
                     <ListItem button >
                         <ListItemIcon>
                             <DashboardOutlined />
@@ -84,16 +92,7 @@ const CoordinatorLayout = ({children})=> {
 
                 </Link>
 
-                <Link href='/coordinator/vision-documents'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <Laptop />
-                        </ListItemIcon>
-                        <ListItemText primary={"Vision Docs"} />
-                    </ListItem>
-                </Link>
-
-                <Link href='/coordinator/projects'>
+                <Link href='/supervisor/projects'>
                     <ListItem button >
                         <ListItemIcon>
                             <Laptop />
@@ -101,17 +100,23 @@ const CoordinatorLayout = ({children})=> {
                         <ListItemText primary={"Projects"} />
                     </ListItem>
                 </Link>
-
-                <Link href='/coordinator/presentations'>
+                <Link href='/supervisor/backlog'>
                     <ListItem button >
                         <ListItemIcon>
-                            <ScheduleOutlined />
+                            <Laptop />
                         </ListItemIcon>
-                        <ListItemText primary={"Schedule Presentations"} style={{whiteSpace:'normal'}} />
+                        <ListItemText primary={"Backlog"} />
                     </ListItem>
                 </Link>
-
-                <Link href='/coordinator/meetings'>
+                <Link href='/supervisor/scrumBoard'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <Laptop />
+                        </ListItemIcon>
+                        <ListItemText primary={"Scrum Board"} />
+                    </ListItem>
+                </Link>
+                <Link href='/supervisor/meetings'>
                     <ListItem button >
                         <ListItemIcon>
                             <VisibilityOutlined />
@@ -119,20 +124,18 @@ const CoordinatorLayout = ({children})=> {
                         <ListItemText primary={"Meetings"} />
                     </ListItem>
                 </Link>
-
-                <Link href='/coordinator/supervisors'>
+                <Link href='/supervisor/progress'>
                     <ListItem button >
                         <ListItemIcon>
-                            <SupervisorAccountOutlined />
+                            <VisibilityOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Supervisors"} />
+                        <ListItemText primary={"Progress"} />
                     </ListItem>
                 </Link>
-
             </List>
             <Divider/>
             <List>
-                <Link href='/coordinator/settings'>
+                <Link href='/supervisor/settings'>
                     <ListItem button >
                         <ListItemIcon>
                             <SettingsOutlined />
@@ -145,13 +148,13 @@ const CoordinatorLayout = ({children})=> {
 
     );
     const addMenu = (
-        <Link href='/coordinator/presentation'>
+        <Link href='/supervisor/meetings'>
             <MenuItem>
                 <ListItemIcon>
-                    <SupervisorAccountOutlined />
+                    <VisibilityOutlined />
                 </ListItemIcon>
                 <Typography variant="inherit" noWrap>
-                    Presentation
+                    Meeting
                 </Typography>
             </MenuItem>
         </Link>
@@ -177,7 +180,7 @@ const CoordinatorLayout = ({children})=> {
                 </Typography>
             </MenuItem>
         </div>
-)
+    )
     return (
         <div >
             <CssBaseline />
@@ -210,11 +213,9 @@ const CoordinatorLayout = ({children})=> {
                                 {addMenu}
                             </Menu>
                             <Tooltip title='Your Profile & Settings' placement='right'>
-                                <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                    {
-                                        !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                    }
-                                </Avatar>
+                                <IconButton onClick={handleProfileMenuClick} size='small'>
+                                    <Face fontSize='large'/>
+                                </IconButton>
                             </Tooltip>
                             <Menu
                                 id="simple-menu"
@@ -240,36 +241,38 @@ const CoordinatorLayout = ({children})=> {
                             >
                                 <div style={{width:240}}>
                                     <div className={classes.avatarDrawer}>
-                                        <Avatar  className={`${classes.avatarSize} ${classes.avatarColor}`}>{!userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U' }</Avatar>
+                                        <Avatar  className={classes.avatarSize}>{!userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U' }</Avatar>
                                     </div>
                                     <div className={classes.avatarDrawer}>
                                         {
-                                            userContext.user.isLoading ? <div /> : userContext.user.user.role === 'Supervisor' ?
+                                            userContext.user.isLoading ? <div /> : userContext.user.user.additionalRole ?
                                                 <FormControl variant="outlined" margin='dense' >
                                                     <InputLabel htmlFor="accountSwitch">
                                                         Switch to
                                                     </InputLabel>
                                                     <Select
                                                         style={{fontSize:12}}
-                                                        value={userContext.user.user.ugpc_details.position}
-                                                        autoWidth
+                                                        value={userContext.user.user.role}
                                                         input={<OutlinedInput  labelWidth={67} fullWidth name="accountSwitch" id="accountSwitch" required/>}
                                                     >
-                                                        <MenuItem value={userContext.user.user.ugpc_details.position} style={{fontSize:14}}>Coordinator View</MenuItem>
-                                                        <MenuItem value='Supervisor View' style={{fontSize:14}}>
-                                                            <Link href='/supervisor/overview'>
-                                                                <a style={{textDecoration:'none',color:'inherit'}}>Supervisor View</a>
-                                                            </Link>
-                                                        </MenuItem>
+                                                        <MenuItem value={userContext.user.user.role} style={{fontSize:14}}>Supervisor View</MenuItem>
+                                                        {
+                                                            userContext.user.user.additionalRole && userContext.user.user.ugpc_details.position === 'Coordinator' &&
+                                                            <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                                                                <Link href='/coordinator/overview'>
+                                                                    <a style={{textDecoration:'none',color:'inherit'}}>Coordinator View</a>
+                                                                </Link>
+                                                            </MenuItem>
+                                                        }
+
 
 
                                                     </Select>
                                                 </FormControl>
                                                 :
-                                                <div/>
+                                                <div />
                                         }
                                     </div>
-
                                     <Divider/>
                                     {drawer}
                                 </div>
@@ -343,11 +346,9 @@ const CoordinatorLayout = ({children})=> {
 
                                     <div className={classes.menuRightTopContent}>
                                         <Tooltip title='Your Profile & Settings' placement='right'>
-                                            <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                                {
-                                                    !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                                }
-                                            </Avatar>
+                                            <IconButton onClick={handleProfileMenuClick} size='small'>
+                                                <Face fontSize='large' color='action'/>
+                                            </IconButton>
                                         </Tooltip>
                                         <Menu
                                             id="simple-menu"
@@ -361,34 +362,34 @@ const CoordinatorLayout = ({children})=> {
                                         </Menu>
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                             <div className={classes.list}>
                                 <div className={classes.toolbar}>
                                     {
-                                        userContext.user.isLoading ? <div style={{flexGrow:1}} /> : userContext.user.user.role === 'Supervisor' ?
-                                        <FormControl variant="outlined" margin='dense' >
-                                            <InputLabel htmlFor="accountSwitch">
-                                                Switch to
-                                            </InputLabel>
-                                            <Select
-                                                style={{fontSize:12}}
-                                                value={userContext.user.user.ugpc_details.position}
-                                                input={<OutlinedInput  labelWidth={67} fullWidth name="accountSwitch" id="accountSwitch" required/>}
-                                            >
-                                                <MenuItem value={userContext.user.user.ugpc_details.position} style={{fontSize:14}}>Coordinator View</MenuItem>
-                                                <MenuItem value='Supervisor View' style={{fontSize:14}}>
-                                                    <Link href='/supervisor/overview'>
-                                                        <a style={{textDecoration:'none',color:'inherit'}}>Supervisor View</a>
-                                                    </Link>
-                                                </MenuItem>
+                                        userContext.user.isLoading ? <div style={{flexGrow:1}} /> : userContext.user.user.additionalRole ?
+                                            <FormControl variant="outlined" margin='dense' >
+                                                <InputLabel htmlFor="accountSwitch">
+                                                    Switch to
+                                                </InputLabel>
+                                                <Select
+                                                    style={{fontSize:12}}
+                                                    value={userContext.user.user.role}
+                                                    input={<OutlinedInput  labelWidth={67} fullWidth name="accountSwitch" id="accountSwitch" required/>}
+                                                >
+                                                    <MenuItem value={userContext.user.user.role} style={{fontSize:14}}>Supervisor View</MenuItem>
+                                                    {
+                                                        userContext.user.user.additionalRole && userContext.user.user.ugpc_details.position === 'Coordinator' &&
+                                                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                                                            <Link href='/coordinator/overview'>
+                                                                <a style={{textDecoration:'none',color:'inherit'}}>Coordinator View</a>
+                                                            </Link>
+                                                        </MenuItem>
+                                                    }
 
 
-                                            </Select>
-                                        </FormControl>
+
+                                                </Select>
+                                            </FormControl>
                                             :
                                             <div style={{flexGrow:1}} />
                                     }
@@ -402,7 +403,31 @@ const CoordinatorLayout = ({children})=> {
                                     }
                                 </div>
                                 <Divider />
+                                <div className={classes.toolbar}>
+                                    {
+                                        userContext.user.isLoading ? <div style={{flexGrow:1}} /> : userContext.user.user.additionalRole ?
+                                            <FormControl variant="outlined" margin='dense' style={{flexGrow:1}}>
+                                                <InputLabel htmlFor="projectSwitch">
+                                                    Switch Project
+                                                </InputLabel>
+                                                <Select
+                                                    style={{fontSize:12}}
+                                                    value={selectedProjectName}
+                                                    input={<OutlinedInput  labelWidth={105} fullWidth name="projectSwitch" id="projectSwitch" required/>}
+                                                >
+                                                    {
+                                                        userContext.user.user.supervisor_details.projects.map((project,index) => (
+                                                            <MenuItem key={index} value={project.title} style={{fontSize:14}}>{project.title}</MenuItem>
+                                                        ))
+                                                    }
 
+                                                </Select>
+                                            </FormControl>
+                                            :
+                                            <div style={{flexGrow:1}} />
+                                    }
+                                </div>
+                                <Divider/>
                                 {drawer}
                             </div>
                         </div>
@@ -415,4 +440,4 @@ const CoordinatorLayout = ({children})=> {
         </div>
     );
 };
-export default CoordinatorLayout;
+export default SupervisorLayout;
