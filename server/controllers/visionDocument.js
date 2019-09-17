@@ -70,7 +70,7 @@ exports.changeStatus = (req, res)=>{
 
 exports.scheduleVisionDefence = async (req,res)=>{
     try {
-        const {projectIds,visionDocsIds,date} = req.body;
+        const {projectIds,visionDocsIds,date,venue} = req.body;
         const pIds = projectIds.map(id => mongoose.Types.ObjectId(id));
         const result = await Projects.updateMany(
             {"_id":{$in:projectIds},"documentation.visionDocument._id":{$in:visionDocsIds}},
@@ -79,6 +79,7 @@ exports.scheduleVisionDefence = async (req,res)=>{
                     "documentation.visionDocument.$.status":'Meeting Scheduled',
                     "documentation.visionDocument.$.updatedAt":Date.now(),
                     "documentation.visionDocument.$.meetingDate":date,
+                    "documentation.visionDocument.$.venue":venue,
                 }
             }
         );
@@ -99,9 +100,14 @@ exports.scheduleVisionDefence = async (req,res)=>{
             text: `Dear Student,\nYour Proposal Defence is scheduled on ${moment(date).format('LLL')}.\nYou need to upload Your presentation in ppt/pptx before ${moment(date).format('LLL')}.\nNote:Please be on time otherwise you will be placed at the end of the list`,
             html: `
                 <p>Dear Student,</p>
-                <p>Your Proposal Defence is Scheduled on ${moment(date).format('LLL')}.</p>
+                <p>Your Proposal Defence is Scheduled, please see details section for data and venue .</p>
                 <p>You need to upload Your presentation in ppt/pptx before ${moment(date).format('LLL')}</p>
+                <p><b>Details:</b></p>
+                <p>Venue: ${venue}</p>
+                <p>On: ${moment(date).format('LLL')}</p>
                 <p><b>Note:</b>Please be on time otherwise you will be placed at the end of the list</p>
+                </br>
+                <p>Regards</p>
             `
         };
 

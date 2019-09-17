@@ -7,10 +7,20 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle, LinearProgress,
-    Grid
+    DialogTitle,
+    LinearProgress,
+    Grid,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemIcon,
+    Collapse,
+    FormControl,
+    FormControlLabel,
+    RadioGroup,
+    Radio
 } from "@material-ui/core";
+import {ExpandLess,ExpandMore, LocationOnOutlined, MeetingRoomOutlined} from '@material-ui/icons'
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
@@ -21,6 +31,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {RenderListItemContent} from "../../visionDocument/common/RenderListItemContent";
+import {getClassRooms, getLabs, getOtherRooms} from "./rooms";
 
 const useStyles = makeStyles(theme =>({
     scheduleContainer:{
@@ -65,9 +76,6 @@ const useStyles = makeStyles(theme =>({
         flexGrow:1,
         marginTop:theme.spacing(2)
     },
-    list:{
-
-    },
     listItem:{
         backgroundColor:'rgba(255,255,255,0.5)',
         borderLeft:'4px solid #F57F17',
@@ -78,6 +86,23 @@ const useStyles = makeStyles(theme =>({
         display:'flex',
         borderRadius:2,
         alignItems:'center'
+    },
+    list:{
+        overflow: 'auto',
+        maxHeight: 300,
+        width:'100%'
+    },
+    mainList:{
+        overflow: 'auto',
+        maxHeight: 400,
+        width:'100%'
+    },
+    nested: {
+        paddingLeft: theme.spacing(4),
+    },
+    nestedList: {
+        paddingLeft: theme.spacing(6),
+
     },
 }));
 
@@ -95,6 +120,11 @@ const ListVisionDocsForPresentation = ({docs}) => {
     const [dialogLoading,setDialogLoading]=useState(false);
     const [finalIds,setFinalIds] = useState([]);
     const [openSnackBar,setOpenSnackbar] = useState(false);
+    const [openList,setOpenList] = useState(false);
+    const [openClassRooms,setOpenClassRooms] = useState(false);
+    const [openOtherRooms,setOpenOtherRooms] = useState(false);
+    const [openLabs,setOpenLabs] = useState(false);
+    const [venue,setVenue] = useState('Seminar Room');
     const handleCloseDialog = ()=>{
         setDialogOpen(false)
     }
@@ -163,7 +193,8 @@ const ListVisionDocsForPresentation = ({docs}) => {
         const data = {
             projectIds:finalIds,
             visionDocsIds:visionIds,
-            date:selectedDate
+            date:selectedDate,
+            venue
         }
         console.log(visionDocsContext)
         visionDocsContext.scheduleVisionDefence(data)
@@ -171,7 +202,6 @@ const ListVisionDocsForPresentation = ({docs}) => {
                 setOpenSnackbar(true);
                 setTimeout(()=>{
                     visionDocsContext.fetchByCommittee();
-                    // visionDocsContext.fetchMeetings();
                 },2000);
 
                 setDialogOpen(false);
@@ -279,10 +309,10 @@ const ListVisionDocsForPresentation = ({docs}) => {
                                                                 className={presentationClasses.listContainer}
                                                             >
                                                                 {projects.map((project,index )=>
-                                                                    <div key={project._id} className={presentationClasses.list}>
+                                                                    <div key={project._id}>
                                                                         <Draggable draggableId={project._id} index={index}>
                                                                             {
-                                                                                (provided, snapShot) =>(
+                                                                                (provided) =>(
                                                                                     <>
                                                                                         <div
                                                                                             {...provided.draggableProps}
@@ -332,6 +362,8 @@ const ListVisionDocsForPresentation = ({docs}) => {
 
             </DragDropContext>
             <Dialog
+                fullWidth
+                maxWidth='sm'
                 open={dialogOpen}
                 onClose={handleCloseDialog}
                 aria-labelledby="title"
@@ -339,18 +371,106 @@ const ListVisionDocsForPresentation = ({docs}) => {
                 {
                     dialogLoading && <LinearProgress color='secondary'/>
                 }
-                <DialogTitle id="title">Details</DialogTitle>
+                <DialogTitle id="title">Select Venue & Data</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id='description'>Please Select Date&Time</DialogContentText>
-                    <MuiPickersUtilsProvider  utils={DateFnsUtils}>
-                        <DateTimePicker
-                            label="DateTimePicker"
-                            inputVariant="outlined"
-                            value={selectedDate}
-                            onChange={handleDateChange}
-                            disablePast
-                        />
-                    </MuiPickersUtilsProvider>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} sm={6}>
+                            <List className={presentationClasses.mainList}>
+                                <ListItem button onClick={()=>setOpenList(!openList)}>
+                                    <ListItemIcon>
+                                        <LocationOnOutlined/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Show Venues" />
+                                    {openList ? <ExpandLess /> : <ExpandMore />}
+                                </ListItem>
+                                <Collapse in={openList} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                        <ListItem button onClick={()=>setOpenClassRooms(!openClassRooms)} className={presentationClasses.nested}>
+                                            <ListItemIcon>
+                                                <MeetingRoomOutlined/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Class Rooms" />
+                                            {openClassRooms ? <ExpandLess /> : <ExpandMore />}
+                                        </ListItem>
+                                        <Collapse in={openClassRooms} timeout="auto" unmountOnExit>
+                                            <List component="div" disablePadding className={presentationClasses.list}>
+                                                <FormControl component="fieldset" style={{width:'100%'}}>
+                                                    <RadioGroup name="venue" value={venue} onChange={(event => setVenue(event.target.value))}>
+                                                        {
+                                                            getClassRooms().map((classRoom,index) => (
+                                                                <ListItem key={index} button className={presentationClasses.nestedList}>
+                                                                    <FormControlLabel  value={classRoom} control={<Radio />} label={classRoom} />
+                                                                </ListItem>
+                                                            ))
+                                                        }
+                                                    </RadioGroup>
+                                                </FormControl>
+                                            </List>
+                                        </Collapse>
+
+                                        <ListItem button onClick={()=>setOpenLabs(!openLabs)} className={presentationClasses.nested}>
+                                            <ListItemIcon>
+                                                <MeetingRoomOutlined/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Labs" />
+                                            {openLabs ? <ExpandLess /> : <ExpandMore />}
+                                        </ListItem>
+                                        <Collapse in={openLabs} timeout="auto" unmountOnExit>
+                                            <List component="div" disablePadding className={presentationClasses.list}>
+                                                <FormControl component="fieldset" style={{width:'100%'}}>
+                                                    <RadioGroup name="venue" value={venue} onChange={(event => setVenue(event.target.value))}>
+                                                        {
+                                                            getLabs().map((lab,index) => (
+                                                                <ListItem key={index} button className={presentationClasses.nestedList}>
+                                                                    <FormControlLabel  value={lab} control={<Radio />} label={lab} />
+                                                                </ListItem>
+                                                            ))
+                                                        }
+                                                    </RadioGroup>
+                                                </FormControl>
+                                            </List>
+                                        </Collapse>
+
+                                        <ListItem button onClick={()=>setOpenOtherRooms(!openOtherRooms)} className={presentationClasses.nested}>
+                                            <ListItemIcon>
+                                                <MeetingRoomOutlined/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Other Rooms" />
+                                            {openOtherRooms ? <ExpandLess /> : <ExpandMore />}
+                                        </ListItem>
+                                        <Collapse in={openOtherRooms} timeout="auto" unmountOnExit>
+                                            <List component="div" disablePadding className={presentationClasses.list}>
+                                                <FormControl component="fieldset" style={{width:'100%'}}>
+                                                    <RadioGroup name="venue" value={venue} onChange={(event => setVenue(event.target.value))}>
+                                                        {
+                                                            getOtherRooms().map((other,index) => (
+                                                                <ListItem key={index} button className={presentationClasses.nestedList}>
+                                                                    <FormControlLabel  value={other} control={<Radio />} label={other} />
+                                                                </ListItem>
+                                                            ))
+                                                        }
+                                                    </RadioGroup>
+                                                </FormControl>
+                                            </List>
+                                        </Collapse>
+                                    </List>
+                                </Collapse>
+                            </List>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <MuiPickersUtilsProvider  utils={DateFnsUtils}>
+                                <DateTimePicker
+                                    label="Select Date&Time"
+                                    inputVariant="outlined"
+                                    value={selectedDate}
+                                    onChange={handleDateChange}
+                                    disablePast
+                                    fullWidth
+                                />
+                            </MuiPickersUtilsProvider>
+                        </Grid>
+                    </Grid>
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog} color="primary">
