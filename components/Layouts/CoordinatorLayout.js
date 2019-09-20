@@ -26,7 +26,6 @@ import {
     ChevronLeft,
     ChevronRight,
     Add,
-    Face,
     PermIdentity,
     ExitToAppOutlined,
     ScheduleOutlined,
@@ -36,7 +35,6 @@ import { signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import MenuIcon from '@material-ui/icons/Menu';
-import {getRandomColor} from "../../src/material-styles/randomColors";
 
 const CoordinatorLayout = ({children})=> {
     const userContext = useContext(UserContext);
@@ -89,7 +87,7 @@ const CoordinatorLayout = ({children})=> {
                         <ListItemIcon>
                             <Laptop />
                         </ListItemIcon>
-                        <ListItemText primary={"Vision Docs"} />
+                        <ListItemText primary={"Vision Documents"}  style={{whiteSpace:'normal'}} />
                     </ListItem>
                 </Link>
 
@@ -257,7 +255,7 @@ const CoordinatorLayout = ({children})=> {
                                                     >
                                                         <MenuItem value={userContext.user.user.ugpc_details.position} style={{fontSize:14}}>Coordinator View</MenuItem>
                                                         <MenuItem value='Supervisor View' style={{fontSize:14}}>
-                                                            <Link href='/supervisor/overview'>
+                                                            <Link href='/supervisor/dashboard'>
                                                                 <a style={{textDecoration:'none',color:'inherit'}}>Supervisor View</a>
                                                             </Link>
                                                         </MenuItem>
@@ -381,7 +379,7 @@ const CoordinatorLayout = ({children})=> {
                                             >
                                                 <MenuItem value={userContext.user.user.ugpc_details.position} style={{fontSize:14}}>Coordinator View</MenuItem>
                                                 <MenuItem value='Supervisor View' style={{fontSize:14}}>
-                                                    <Link href='/supervisor/overview'>
+                                                    <Link href='/supervisor/dashboard'>
                                                         <a style={{textDecoration:'none',color:'inherit'}}>Supervisor View</a>
                                                     </Link>
                                                 </MenuItem>

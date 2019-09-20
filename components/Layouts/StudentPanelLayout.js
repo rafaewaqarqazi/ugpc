@@ -13,7 +13,7 @@ import {ListAltOutlined, ChevronRight, ChevronLeft, Add,
     SettingsOutlined
 } from '@material-ui/icons';
 import Link from "next/link";
-import {isAuthenticated, signout} from "../../auth";
+import {signout} from "../../auth";
 import ProjectContext from '../../context/project/project-context';
 import UserContext from '../../context/user/user-context';
 import StudentRouter from "../routers/StudentRouter";
@@ -72,13 +72,13 @@ const StudentPanelLayout = ({children})=> {
                     </Typography>
                 </MenuItem>
             </Link>
-            <Link href='/student/project/backlogs/add'>
+            <Link href='/student/project/backlog'>
                 <MenuItem >
                     <ListItemIcon>
-                        <ViewColumnOutlined />
+                        <ListAltOutlined />
                     </ListItemIcon>
                     <Typography variant="inherit" noWrap>
-                        Backlogs
+                        Backlog
                     </Typography>
                 </MenuItem>
             </Link>

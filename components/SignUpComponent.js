@@ -70,7 +70,7 @@ const SignUpComponent = () => {
 
     const handleSuccess = ()=>{
         setResMessage({...resMessage,open:false, message:''});
-        router.push(`/student/verify-email?id=${resMessage.id}`, `/student/verify-email/${resMessage.id}`)
+        router.push(`/student/verify-email/[id]`, `/student/verify-email/${resMessage.id}`)
     };
     const handleError = ()=>{
         setError({open:false,message:''})

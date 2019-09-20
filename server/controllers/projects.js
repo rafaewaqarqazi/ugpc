@@ -38,7 +38,31 @@ exports.findByStudentId = (req,res,next,id)=>{
             next();
         })
 };
+exports.findByProjectId = (req,res,next,id)=>{
 
+    Projects.findById(id)
+        .populate('students','_id name department student_details')
+        .populate('documentation.visionDocument.comments.author','_id name role department')
+        .populate('details.supervisor','_id name supervisor_details.position')
+        .populate('details.backlog.assignee', '_id name department student_details')
+        .populate('details.backlog.createdBy', 'name')
+        .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
+        .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
+        .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
+        .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
+        .then(project => {
+            req.project = project;
+            next()
+        })
+        .catch(err => {
+            res.status(400).json({error:err});
+            next();
+        })
+};
 exports.createProject = (req, res) => {
 
     const project = new Projects(req.body);
@@ -93,7 +117,7 @@ exports.assignSupervisor = async (req,res)=>{
         const a = await Users.updateOne({_id:supervisor._id},{
             $push:{
                 "supervisor_details.projects":{
-                    projectId,
+                    project:projectId,
                     title
                 }
             }

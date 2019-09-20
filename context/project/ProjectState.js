@@ -14,7 +14,8 @@ import {
     createProjectAPI,
     fetchProjectByStudentIdAPI,
     uploadVisionAPI,
-    planSprintAPI
+    planSprintAPI,
+    fetchProjectByProjectIdAPI
 } from "../../utils/apiCalls/students";
 
 const ProjectState = (props) => {
@@ -50,6 +51,11 @@ const ProjectState = (props) => {
     const changePriorityDnD = async (data)=>{
         const result = await changePriorityDnDAPI(data);
         await dispatch(addBacklogAction(data.projectId,result.details.backlog))
+    };
+    const fetchByProjectId = async projectId=>{
+        dispatch(projectLoadingAction());
+        const project = await fetchProjectByProjectIdAPI(projectId);
+        dispatch(addProjectAction(await project));
     }
 useEffect(()=>{
     console.log('Project State:',state)
@@ -58,6 +64,7 @@ useEffect(()=>{
         <ProjectContext.Provider value={{
             project:state,
             fetchByStudentId,
+            fetchByProjectId,
             createProject:createProject,
             uploadVision:uploadVision,
             addTaskToBacklog,

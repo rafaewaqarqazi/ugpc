@@ -1,5 +1,5 @@
-import React, {useState, useEffect,useContext} from 'react';
-import PageLoading from "../loading/PageLoading";
+import React, {useContext} from 'react';
+
 import PendingEligibility from "../eligible/PendingEligibility";
 import NotEligible from "../eligible/NotEligible";
 import ProjectContext from '../../context/project/project-context';

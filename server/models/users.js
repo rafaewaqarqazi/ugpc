@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
     },
     supervisor_details:{
         projects:[{
-            projectId:{type:ObjectId, ref:"Projects"},
+            project:{type:ObjectId, ref:"Projects"},
             title:String
         }]
     },

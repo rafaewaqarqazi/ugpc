@@ -222,7 +222,7 @@ export const landingAuth = ctx => {
         return
     }
     else if (ctx.req && token && user.user.role === 'Supervisor') {
-        ctx.res.writeHead(302, { Location: '/supervisor/overview' });
+        ctx.res.writeHead(302, { Location: '/supervisor/dashboard' });
         ctx.res.end();
         return
     }
@@ -251,7 +251,7 @@ export const landingAuth = ctx => {
         Router.push('/student/roadmap')
     }
     else if (token && user.user.role === 'Supervisor') {
-        Router.push('/supervisor/overview')
+        Router.push('/supervisor/dashboard')
     }
     else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
         Router.push('/UGPC_Member/overview')

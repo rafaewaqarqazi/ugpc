@@ -28,7 +28,7 @@ export const createProjectAPI = async (data)=>{
 };
 
 export const fetchProjectByStudentIdAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/projects/by/${isAuthenticated().user._id}`,{
+    const res = await fetch(`${serverUrl}/projects/by/studentId/${isAuthenticated().user._id}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
@@ -39,6 +39,17 @@ export const fetchProjectByStudentIdAPI = async ()=>{
     return await res.json();
 };
 
+export const fetchProjectByProjectIdAPI = async projectId =>{
+    const res = await fetch(`${serverUrl}/projects/by/projectId/${projectId}`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
 export const uploadVisionAPI = async (data,projectId )=>{
     const res = await fetch(`${serverUrl}/students/project/vision-doc/pdf/${projectId}`,{
         method:'PUT',
