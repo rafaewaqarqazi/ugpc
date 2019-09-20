@@ -30,7 +30,7 @@ exports.findByStudentId = (req,res,next,id)=>{
         .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
         .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
         .then(project => {
-            req.project = project;
+            req.project = project[0];
             next()
         })
         .catch(err => {

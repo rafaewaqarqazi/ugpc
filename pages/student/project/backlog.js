@@ -1,10 +1,10 @@
 import StudentPanelLayout from "../../../components/Layouts/StudentPanelLayout";
 import ProjectState from "../../../context/project/ProjectState";
 import {withStudentAuthSync} from "../../../components/routers/studentAuth";
-import ApprovalChecker from "../../../components/project/ApprovalChecker";
 import ProjectContext from '../../../context/project/project-context';
 import { LinearProgress} from "@material-ui/core";
 import ListBacklog from "../../../components/project/backlogs/ListBacklog";
+import BacklogAndSprintContainer from "../../../components/project/BacklogAndSprintContainer";
 
 
 const Backlog = () => {
@@ -13,7 +13,7 @@ const Backlog = () => {
         <ProjectState>
             <StudentPanelLayout>
 
-                    <ApprovalChecker title={'Backlogs'}>
+                    <BacklogAndSprintContainer title={'Backlog'}>
                             <ProjectContext.Consumer>
                                 {
                                     ({project})=>{
@@ -24,14 +24,14 @@ const Backlog = () => {
                                         }
                                         if (!project.isLoading){
                                             return (
-                                                <ListBacklog backlog={project.project[0].details.backlog} />
+                                                <ListBacklog backlog={project.project.details.backlog} />
                                             )
                                         }
 
                                     }
                                 }
                             </ProjectContext.Consumer>
-                    </ApprovalChecker>
+                    </BacklogAndSprintContainer>
 
             </StudentPanelLayout>
         </ProjectState>

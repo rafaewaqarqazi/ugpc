@@ -27,40 +27,26 @@ export const projectReducer = (state, action) => {
         case Actions.REMOVE_PROJECT:
             return {};
         case Actions.ADD_BACKLOG:{
-            const newState = state.project.map(project => {
-                if (project._id === action.payload.projectId){
-                    return {
-                        ...project,
-                        details:{
-                            ...project.details,
-                            backlog:action.payload.backlog,
-                        }
-                    }
+            const newState = {
+                ...state.project,
+                details:{
+                    ...state.project.details,
+                    backlog:action.payload.backlog,
                 }
-                else {
-                    return {...project}
-                }
-            });
+            };
             return {
                 ...state,
                 project: newState
             };
         }
         case Actions.ADD_SPRINT:{
-            const modState = state.project.map(project => {
-                if (project._id === action.payload.projectId){
-                    return {
-                        ...project,
-                        details:{
-                            ...project.details,
-                            sprint:action.payload.sprint,
-                        }
-                    }
+            const modState = {
+                ...state.project,
+                details:{
+                    ...state.project.details,
+                    sprint:action.payload.sprint,
                 }
-                else {
-                    return {...project}
-                }
-            });
+            };
             return {
                 ...state,
                 project: modState

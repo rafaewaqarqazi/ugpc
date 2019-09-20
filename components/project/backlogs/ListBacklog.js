@@ -188,7 +188,7 @@ const ListBacklog = ({backlog}) => {
             const task = state.tasks[newTaskIds[source.index]];
             const data = {
                 taskId:task._id,
-                projectId:projectContext.project.project[0]._id,
+                projectId:projectContext.project.project._id,
                 priority:newPriority
             };
             projectContext.changePriorityDnD(data)
@@ -251,7 +251,7 @@ const ListBacklog = ({backlog}) => {
                 name:data.name,
                 startDate:selectedDate,
                 endDate,
-                projectId:projectContext.project.project[0]._id,
+                projectId:projectContext.project.project._id,
                 tasksIds:finalIds
             };
             projectContext.planSprint(sprintData)

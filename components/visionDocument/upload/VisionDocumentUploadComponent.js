@@ -2,11 +2,6 @@ import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {DropzoneArea} from 'material-ui-dropzone';
 import {
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
-    Button,
     Typography,
     Grid, LinearProgress,
 } from '@material-ui/core';
@@ -18,9 +13,6 @@ import TitleComponent from "../../title/TitleComponent";
 import DetailsComponent from "./DetailsComponent";
 import OverviewComponent from "./OverviewComponent";
 import StepperComponent from "../../stepper/StepperComponent";
-
-
-
 
 const styles = theme => ({
     root: {
@@ -156,7 +148,7 @@ class VisionDocumentUploadComponent extends Component{
             });
             this.formData.set('majorModules',JSON.stringify(mod));
 
-            this.context.uploadVision(this.formData,this.context.project.project[0]._id)
+            this.context.uploadVision(this.formData,this.context.project.project._id)
                 .then(res=>{
                     this.setState({
                         success:true

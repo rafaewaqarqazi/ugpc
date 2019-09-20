@@ -128,7 +128,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                 task,
                 sprintId,
                 taskId:task._id,
-                projectId:projectContext.project.project[0]._id
+                projectId:projectContext.project.project._id
             }
             projectContext.changeColumn(data)
                 .then(result => {

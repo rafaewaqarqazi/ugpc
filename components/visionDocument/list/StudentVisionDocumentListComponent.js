@@ -38,7 +38,7 @@ const StudentVisionDocumentListComponent = () => {
                             </div>
                         </div>
                         {
-                            context.project.project[0].details.acceptanceLetter && (
+                            context.project.project.details.acceptanceLetter && (
                                 <div>
 
                                 </div>
@@ -54,7 +54,7 @@ const StudentVisionDocumentListComponent = () => {
                         <Divider/>
 
                         <StudentVisionListItem
-                            project={context.project.project[0]}
+                            project={context.project.project}
                         />
                     </div>
                 </Container>
