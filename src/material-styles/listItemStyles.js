@@ -8,9 +8,11 @@ export const useListItemStyles = makeStyles(theme =>({
         borderRadius:5,
         width:'100%',
         padding:theme.spacing(5),
+        height:'100%'
     },
     emptyList:{
         display:'flex',
+        flexDirection:'column',
         alignItems:'center',
         justifyContent:'center',
         textAlign:'center'

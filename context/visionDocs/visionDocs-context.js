@@ -5,6 +5,7 @@ export default React.createContext({
     errMess:null,
     visionDocs:[],
     fetchByCommittee: committee =>{},
+    fetchBySupervisor: () =>{},
     scheduleVisionDefence:data =>{},
     submitAdditionFilesVisionDoc:(formData,type) =>{},
     addMarks:marks=>{},

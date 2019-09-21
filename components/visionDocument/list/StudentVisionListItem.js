@@ -24,9 +24,7 @@ const StudentVisionListItem = ({project}) => {
             {
                 project.length === 0?
                     <div className={classes.emptyList}>
-                        <div
-                            className={classes.emptyListContainer}
-                        >
+                        <div className={classes.emptyListContainer}>
                             <div className={classes.emptyList}>
                                 <Typography variant='subtitle2' color='textSecondary'>
                                     No Document Found

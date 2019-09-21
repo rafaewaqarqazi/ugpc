@@ -14,6 +14,17 @@ export const fetchDocsByCommitteeAPI = async ()=>{
     });
     return await res.json();
 };
+export const fetchBySupervisorAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/bySupervisor/${isAuthenticated().user._id}`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+    });
+    return await res.json();
+}
 export const commentOnVisionAPI = async comment =>{
     const res = await fetch(`${serverUrl}/visionDocument/comment`,{
         method:'PUT',

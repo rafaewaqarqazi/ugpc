@@ -6,13 +6,15 @@ const {
     changeStatus,
     scheduleVisionDefence,
     fetchMeetings,
-    addMarks
+    addMarks,
+    fetchBySupervisor
 } = require('../controllers/visionDocument');
 const {requireSignin} = require('../controllers/auth');
 
 
 
-router.get('/fetch/byMeetings',fetchMeetings)
+router.get('/fetch/byMeetings',fetchMeetings);
+router.get('/fetch/bySupervisor/:supervisorId',fetchBySupervisor);
 router.get('/fetch/byCommittees',fetchVisionDocsByCommitteeCoordinator);
 router.put('/comment',commentOnVision);
 router.put('/changeStatus',changeStatus);

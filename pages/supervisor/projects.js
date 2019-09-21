@@ -15,14 +15,14 @@ import {
     TableBody,
     Zoom,
     Tooltip,
-    Avatar
+    Avatar, LinearProgress
 } from "@material-ui/core";
 
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import CircularLoading from "../../components/loading/CircularLoading";
 import {makeStyles} from "@material-ui/styles";
 import {getRandomColor} from "../../src/material-styles/randomColors";
-import {query} from "express-validator/check";
+import moment from "moment";
 
 const useStyles = makeStyles(theme =>({
     tableRow:{
@@ -53,6 +53,16 @@ const Projects = () => {
         console.log(projectId)
         router.push(`/supervisor/project/[projectId]/roadmap`,`/supervisor/project/${projectId}/roadmap`)
     };
+    const getCompletionPercentage = details =>{
+        let completed = 0;
+        let total = 0;
+        total += details.backlog.length;
+        details.sprint.map(sprint => {
+            total +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
+            completed +=sprint.done.length;
+        });
+        return parseFloat(((completed / total) * 100).toFixed(2));
+    };
     return (
         <ProjectState>
             <SupervisorLayout>
@@ -76,9 +86,10 @@ const Projects = () => {
                                                 <TableRow>
                                                     <TableCell align="left">Title</TableCell>
                                                     <TableCell align="left">Department</TableCell>
-                                                    <TableCell align="left">Status</TableCell>
+                                                    <TableCell align="left">Completion Status</TableCell>
                                                     <TableCell align="left">students</TableCell>
-                                                    <TableCell align="left">Expected Deadline</TableCell>
+                                                    <TableCell align="left">Started On</TableCell>
+                                                    <TableCell align="left">Deadline</TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody >
@@ -90,7 +101,11 @@ const Projects = () => {
                                                                     {title}
                                                                 </TableCell>
                                                                 <TableCell align="left">{project.department}</TableCell>
-                                                                <TableCell align="left">{project.department}</TableCell>
+                                                                <TableCell >
+                                                                    <Tooltip  title={`${getCompletionPercentage(project.details)}%`} placement="top" TransitionComponent={Zoom}>
+                                                                        <LinearProgress variant='determinate' value={getCompletionPercentage(project.details)} style={{height:8,borderRadius:10}}/>
+                                                                    </Tooltip>
+                                                                </TableCell>
                                                                 <TableCell align="left">{
                                                                     project.students.map((student,index) =>
                                                                         <div key={index} style={{display:'flex'}}>
@@ -100,10 +115,8 @@ const Projects = () => {
                                                                         </div>
                                                                     )
                                                                 }</TableCell>
-                                                                <TableCell align="left">
-
-
-                                                                </TableCell>
+                                                                <TableCell align="left">{moment(project.details.acceptanceLetter.issueDate).format('LL')}</TableCell>
+                                                                <TableCell align="left">{moment(project.details.estimatedDeadline).format('LL')}</TableCell>
                                                             </TableRow>
                                                         </Tooltip>
                                                     ))

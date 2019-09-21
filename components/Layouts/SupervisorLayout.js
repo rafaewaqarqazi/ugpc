@@ -48,8 +48,6 @@ const SupervisorLayout = ({children})=> {
     const [open, setOpen] = useState(true);
     const [anchorEl2, setAnchorEl2] = React.useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [selectedProject,setSelectedProject] = useState('Select');
-
     const handleDrawerOpen = ()=> {
         setOpen(true);
     };
@@ -156,7 +154,7 @@ const SupervisorLayout = ({children})=> {
             </FormControl>
             :
             <div />
-    )
+    );
     return (
         <div >
             <CssBaseline />

@@ -132,3 +132,76 @@ export const formatScrumBoard = sprint => {
     return data;
 
 };
+
+export const formatRoadmapSprintData = details =>{
+    console.log(details.sprint)
+    let sprintData = details.sprint.map(spr => {
+        const total = spr.todos.length + spr.inProgress.length + spr.inReview.length + spr.done.length;
+        const percentage = parseFloat(((spr.done.length / total) * 100).toFixed(2))
+        return [spr._id,spr.name,new Date(spr.startDate), new Date(spr.endDate),null,percentage,null]
+    });
+    // let completed = 0;
+    // let totaltasks = 0;
+    // totaltasks += details.backlog.length;
+    // details.sprint.map(sprint => {
+    //     totaltasks +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
+    //     completed +=sprint.done.length;
+    // });
+    // const project = [
+    //     'Project',
+    //     'Implemetation',
+    //     new Date(details.acceptanceLetter.issueDate),
+    //     new Date(details.estimatedDeadline),
+    //     null,
+    //     parseFloat(((completed / totaltasks) * 100).toFixed(2)),
+    //     null,
+    // ]
+    const data = [
+        [
+            { type: 'string', label: 'Sprint ID' },
+            { type: 'string', label: 'Spring Name' },
+            { type: 'date', label: 'Start Date' },
+            { type: 'date', label: 'End Date' },
+            { type: 'number', label: 'Duration' },
+            { type: 'number', label: 'Percent Complete' },
+            { type: 'string', label: 'Dependencies' },
+        ],
+        ...sprintData
+    ];
+
+    return data
+};
+export const formatRoadmapProjectData = details =>{
+    console.log(details.sprint)
+
+    let completed = 0;
+    let totaltasks = 0;
+    totaltasks += details.backlog.length;
+    details.sprint.map(sprint => {
+        totaltasks +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
+        completed +=sprint.done.length;
+    });
+    const project = [
+        'Project',
+        'Implemetation',
+        new Date(details.acceptanceLetter.issueDate),
+        new Date(details.estimatedDeadline),
+        null,
+        parseFloat(((completed / totaltasks) * 100).toFixed(2)),
+        null,
+    ]
+    const data = [
+        [
+            { type: 'string', label: 'Sprint ID' },
+            { type: 'string', label: 'Spring Name' },
+            { type: 'date', label: 'Start Date' },
+            { type: 'date', label: 'End Date' },
+            { type: 'number', label: 'Duration' },
+            { type: 'number', label: 'Percent Complete' },
+            { type: 'string', label: 'Dependencies' },
+        ],
+        project
+    ];
+
+    return data
+}

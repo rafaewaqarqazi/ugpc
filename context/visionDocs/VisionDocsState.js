@@ -4,15 +4,14 @@ import {visionDocsReducer} from "./visionDocsReducer";
 import {
     getDocsByCommittee,
     commentOnVision,
-    changeStatusAction,
     scheduleVisionDefenceAction,
     submitAdditionFilesVisionDocAction,
     addMarksAction,
     generateAcceptanceLetterAction,
-    assignSupervisorAction
+    assignSupervisorAction, docsLoading, addDocs
 } from "./ActionCreators";
 import {assignSupervisorAutoAPI, generateAcceptanceLetterAPI} from "../../utils/apiCalls/projects";
-import {changeStatusAPI} from "../../utils/apiCalls/visionDocs";
+import {changeStatusAPI,fetchBySupervisorAPI} from "../../utils/apiCalls/visionDocs";
 
 const VisionDocsState = (props) => {
     const [state, dispatch] = useReducer(visionDocsReducer,{
@@ -51,6 +50,11 @@ const VisionDocsState = (props) => {
         const result = await assignSupervisorAutoAPI(projectId,title);
         dispatch(assignSupervisorAction(projectId,await result.supervisor));
         return await result
+    };
+    const fetchBySupervisor = async ()=>{
+        dispatch(docsLoading());
+        const result = await fetchBySupervisorAPI();
+        dispatch(addDocs(result));
     }
 useEffect(()=>{
     console.log('Vision Docs State:',state)
@@ -65,7 +69,8 @@ useEffect(()=>{
             submitAdditionFilesVisionDoc,
             addMarks,
             generateAcceptanceLetter,
-            assignSupervisorAuto
+            assignSupervisorAuto,
+            fetchBySupervisor
         }}>
             {props.children}
         </VisionDocsContext.Provider>

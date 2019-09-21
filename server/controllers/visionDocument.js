@@ -32,7 +32,31 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
         res.status(400).json(err.message)
     }
 };
+exports.fetchBySupervisor = async (req,res)=>{
+    try {
+        const {supervisorId} = req.params;
 
+        const results= await Projects.aggregate([
+            {$match:{"details.supervisor":mongoose.Types.ObjectId(supervisorId)}},
+            {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1,"details.marks":1}},
+            {$unwind:"$documentation.visionDocument"},
+            {
+                $match:{$or:[{"documentation.visionDocument.status":"Approved"},{"documentation.visionDocument.status":"Approved With Changes"}]}
+            },
+            {$sort:{"documentation.visionDocument.updatedAt":1}}
+        ]);
+        const result = await Projects.populate(results,[
+            {path:"students",model:'Users',select:'_id name department student_details.regNo'},
+            {path:"documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
+            {path:"details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
+        ])
+
+        await res.json(result)
+    }
+    catch(err){
+        res.status(400).json(err.message)
+    }
+}
 exports.commentOnVision = (req, res) =>{
     const {text, projectId,documentId,author} = req.body;
     Projects.update(
