@@ -66,6 +66,24 @@ const useStyles = makeStyles(theme =>({
     columns:{
         display:'flex',
         flexDirection:'row'
+    },
+    actions:{
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'stretch',
+        padding: theme.spacing(1),
+        marginTop: theme.spacing(2),
+
+        [theme.breakpoints.up('sm')]: {
+            display:'flex',
+            flexDirection:'row',
+            justifyContent:'space-between',
+            alignItems:'center',
+            padding: theme.spacing(1),
+            marginTop: theme.spacing(2),
+
+        }
     }
 }));
 
@@ -165,33 +183,52 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         const data = sprint;
         const filter = data.filter(d => d.name === event.target.value)[0]
         setState(formatScrumBoard(filter));
+    };
+    const handleCompleteSprint = ()=>{
+        const data = sprint;
+        const currentSprint = data.filter(d => d.name === selectedSprint)[0];
+        const complete = currentSprint.done.length;
+        const inComplete = currentSprint.todos.length + currentSprint.inProgress.length + currentSprint.inReview.length;
+        if(inComplete > 0){
+            console.log('Sprint has remaining Tasks')
+            console.log('Completed Tasks',complete);
+            console.log('InComplete Tasks',inComplete)
+        }else {
+            console.log('Completed Tasks',complete);
+            console.log('InComplete Tasks',inComplete)
+        }
+
     }
     return (
         !loading &&
         <div>
             <InfoSnackBar message='Only supervisor can move to Done' open={openInfoSnackBar} setOpen={setOpenInfoSnackBar} />
-            <FormControl variant="outlined" margin='dense' style={{marginBottom:20,minWidth:160}}>
-                <InputLabel htmlFor="sprint">
-                    Select Sprint
-                </InputLabel>
-                <Select
+            <div className={classes.actions}>
+                <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
+                    <InputLabel htmlFor="sprint">
+                        Select Sprint
+                    </InputLabel>
+                    <Select
 
-                    value={selectedSprint}
-                    onChange={handleSelectSprint}
-                    input={<OutlinedInput labelWidth={95} name="sprint" id="sprint" />}
-                >
-                    {
-                        sprintNames.length === 0 &&
-                        <MenuItem value='No Sprint Created'>No Sprint Created</MenuItem>
-                    }
+                        value={selectedSprint}
+                        onChange={handleSelectSprint}
+                        input={<OutlinedInput labelWidth={95} name="sprint" id="sprint" />}
+                    >
+                        {
+                            sprintNames.length === 0 &&
+                            <MenuItem value='No Sprint Created'>No Sprint Created</MenuItem>
+                        }
 
-                    {
-                        sprintNames.map((name,index) => (
-                            <MenuItem key={index} value={name}>{name}</MenuItem>
-                        ))
-                    }
-                </Select>
-            </FormControl>
+                        {
+                            sprintNames.map((name,index) => (
+                                <MenuItem key={index} value={name}>{name}</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+                <Button variant='outlined' color='primary' onClick={handleCompleteSprint}>Complete Sprint</Button>
+            </div>
+
             <DragDropContext onDragEnd={onDragEnd}>
                 <Grid container spacing={1}>
                     {

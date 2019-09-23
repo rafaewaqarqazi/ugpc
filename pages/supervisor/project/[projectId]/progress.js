@@ -3,6 +3,7 @@ import SupervisorProjectLayout from "../../../../components/Layouts/SupervisorPr
 import {withSupervisorAuthSync} from "../../../../components/routers/supervisorAuth";
 import {useRouter} from "next/router";
 import ProjectState from "../../../../context/project/ProjectState";
+import ShowProgress from "../../../../components/project/ShowProgress";
 
 const Progress = () => {
     const router = useRouter();
@@ -10,7 +11,7 @@ const Progress = () => {
     return (
         <ProjectState>
             <SupervisorProjectLayout projectId={projectId}>
-
+                <ShowProgress/>
             </SupervisorProjectLayout>
         </ProjectState>
     );

@@ -134,7 +134,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
 
             <DialogTitle id="dialog-title">{currentDocument.title}</DialogTitle>
             {open && <>
-                <DialogContent>
+                <DialogContent dividers>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <div className={classes.detailsContent}>

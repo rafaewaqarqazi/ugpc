@@ -195,7 +195,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
             >
 
                 <DialogTitle id="dialog-title">{currentDocument.documentation.visionDocument.title}</DialogTitle>
-                <DialogContent>
+                <DialogContent dividers>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
 

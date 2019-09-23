@@ -5,9 +5,10 @@ export const useListContainerStyles = makeStyles(theme=>({
     listContainer:{
         padding:theme.spacing(2,2,10,2),
         marginTop: theme.spacing(8),
-        boxShadow: theme.shadows[10],
+        boxShadow: theme.shadows[1],
         marginBottom: theme.spacing(5),
-        borderRadius:5
+        borderRadius:5,
+        backgroundColor: '#fff'
     },
     top:{
         display: 'flex',
@@ -24,16 +25,16 @@ export const useListContainerStyles = makeStyles(theme=>({
         }
     },
     topIconBox:{
-        width: theme.spacing(11),
-        height:theme.spacing(11),
+        minWidth: theme.spacing(11),
+        minHeight:theme.spacing(11),
         backgroundColor: getRandomColor(),
         color:'#fff',
         display:'flex',
         justifyContent:'center',
         alignItems:'center',
-        boxShadow:theme.shadows[10],
+        boxShadow:theme.shadows[2],
         marginTop:-theme.spacing(5),
-        borderRadius:2
+        borderRadius:5
     },
     topTitle:{
         flexGrow:1,
@@ -58,7 +59,7 @@ export const useListContainerStyles = makeStyles(theme=>({
         minWidth: 160,
     },
     headerIcon:{
-        width: theme.spacing(7),
-        height: theme.spacing(7)
+        width: 36,
+        height: 36
     }
 }));

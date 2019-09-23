@@ -10,7 +10,8 @@ import {
 } from '@material-ui/core';
 import {ListAltOutlined, ChevronRight, ChevronLeft, Add,
     DashboardOutlined, AssignmentOutlined, ViewColumnOutlined, Face, ExitToAppOutlined, PermIdentity,
-    SettingsOutlined
+    SettingsOutlined,
+    ShowChartOutlined
 } from '@material-ui/icons';
 import Link from "next/link";
 import {signout} from "../../auth";
@@ -140,6 +141,14 @@ const StudentPanelLayout = ({children})=> {
                             <ViewColumnOutlined />
                         </ListItemIcon>
                         <ListItemText primary={"Scrum Board"} />
+                    </ListItem>
+                </Link>
+                <Link href='/student/project/progress'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <ShowChartOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Progress"} />
                     </ListItem>
                 </Link>
             </List>

@@ -83,7 +83,7 @@ const SignUpComponent = () => {
                     <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
 
                     <Typography component="h1" variant="h5">
-                        Sign up
+                        Student Sign up
                     </Typography>
                 </div>
                 <div className={classes.root}>

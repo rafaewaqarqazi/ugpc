@@ -3,7 +3,7 @@ import {makeStyles} from "@material-ui/core";
 export const useSignInStyles = makeStyles(theme => ({
     '@global': {
         body: {
-            backgroundColor: theme.palette.common.white,
+            backgroundColor: theme.palette.background,
         },
     },
     paper: {
