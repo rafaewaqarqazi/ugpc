@@ -83,6 +83,7 @@ const projectsSchema = new mongoose.Schema({
             name:String,
             startDate:Date,
             endDate:Date,
+            status:String,
             todos:[{}],
             inProgress:[{}],
             inReview:[{}],

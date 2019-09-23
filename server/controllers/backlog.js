@@ -60,6 +60,7 @@ exports.planSprint = async (req,res)=>{
             "name":name,
             "startDate":startDate,
             "endDate":endDate,
+            "status":'InComplete',
             "todos":await filteredTasks
         };
         console.log(update)

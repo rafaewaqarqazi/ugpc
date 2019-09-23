@@ -24,9 +24,14 @@ const ScrumBoard = () => {
                                     )
                                 }
                                 if (!project.isLoading){
-                                    const sprintNames = project.project.details.sprint.map(sprint => sprint.name)
+                                    const sprintNames = project.project.details.sprint.map(sprint =>{
+                                        if (sprint.status === 'InComplete'){
+                                            return sprint.name
+                                        }else return
+                                    })
+                                    console.log(sprintNames)
                                     return (
-                                        <RenderScrumBoard sprint={project.project.details.sprint} sprintNames={sprintNames}/>
+                                        <RenderScrumBoard sprint={project.project.details.sprint} sprintNames={sprintNames.filter(name => name !== undefined)}/>
                                     )
                                 }
 

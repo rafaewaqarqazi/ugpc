@@ -10,7 +10,7 @@ import {
     Select,
     OutlinedInput,
     MenuItem,
-    FormControl, Dialog, DialogTitle, Tooltip, Zoom, IconButton, DialogContent, Hidden
+    FormControl, Dialog, DialogTitle, Tooltip, Zoom, IconButton, DialogContent, DialogActions
 } from "@material-ui/core";
 
 import {makeStyles} from "@material-ui/styles";
@@ -92,15 +92,20 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const userContext = useContext(UserContext);
     const [state,setState] = useState({});
     const classes = useStyles();
-    const [selectedSprint,setSelectedSprint] = useState(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
+    const [selectedSprint,setSelectedSprint] = useState(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0]);
     const [loading,setLoading] = useState(true);
     const [finalIds,setFinalIds] = useState([]);
     const [openInfoSnackBar,setOpenInfoSnackBar] = useState(false);
     const [openDetails,setOpenDetails] = useState(false);
     const [details,setDetails]= useState({});
+    const [completeSprintDialog,setCompleteSprintDialog] = useState(false);
+    const [sprintTasks,setSprintTasks] = useState({
+        completed:0,
+        inComplete:0
+    })
     useEffect(()=>{
         const data = sprint;
-        const filter = data.filter(d => d.name === selectedSprint)[0]
+        const filter = data.filter(d => d.name === selectedSprint && d.status === 'InComplete')[0]
         setState(formatScrumBoard(filter));
         setLoading(false)
     },[sprint]);
@@ -181,23 +186,40 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const handleSelectSprint = event => {
         setSelectedSprint(event.target.value)
         const data = sprint;
-        const filter = data.filter(d => d.name === event.target.value)[0]
+        const filter = data.filter(d => d.name === event.target.value && d.status === 'InComplete')[0]
         setState(formatScrumBoard(filter));
     };
     const handleCompleteSprint = ()=>{
         const data = sprint;
         const currentSprint = data.filter(d => d.name === selectedSprint)[0];
-        const complete = currentSprint.done.length;
+        const completed = currentSprint.done.length;
         const inComplete = currentSprint.todos.length + currentSprint.inProgress.length + currentSprint.inReview.length;
-        if(inComplete > 0){
-            console.log('Sprint has remaining Tasks')
-            console.log('Completed Tasks',complete);
-            console.log('InComplete Tasks',inComplete)
-        }else {
-            console.log('Completed Tasks',complete);
-            console.log('InComplete Tasks',inComplete)
-        }
+        setSprintTasks({
+            completed,
+            inComplete
+        });
+        setCompleteSprintDialog(true)
 
+    };
+    const completeSprint = ()=>{
+        const data = sprint;
+        const currentSprint = data.filter(d => d.name === selectedSprint)[0];
+        let tasks =[];
+        currentSprint.todos.map(todos => {
+            tasks = [...tasks,todos]
+        });
+        currentSprint.inProgress.map(inProgress => {
+            tasks = [...tasks,inProgress]
+        });
+        currentSprint.inReview.map(inReview => {
+            tasks = [...tasks,inReview]
+        });
+        console.log(tasks)
+        const completedData = {
+            tasks,
+            sprintId:currentSprint._id,
+            projectId:projectContext.project.project._id
+        }
     }
     return (
         !loading &&
@@ -363,6 +385,43 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                     }
 
                 </DialogContent>
+            </Dialog>
+            <Dialog fullWidth maxWidth='xs' open={completeSprintDialog} onClose={()=>setCompleteSprintDialog(false)}>
+                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
+                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Complete Sprint</Typography>
+                    <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
+                        <IconButton size='small' onClick={()=>setCompleteSprintDialog(false)}>
+                            <Close/>
+                        </IconButton>
+                    </Tooltip>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <div>
+                        <Typography variant='subtitle1' display='inline'>{sprintTasks.completed}</Typography>
+                        <Typography variant='body2' display='inline' color='textSecondary' style={{marginLeft:5}}>
+                            Tasks were Completed
+                        </Typography>
+                    </div>
+                   <div>
+                       <Typography variant='subtitle1' display='inline'>{sprintTasks.inComplete}</Typography>
+                       <Typography variant='body2' display='inline' color='textSecondary' style={{marginLeft:5}}>
+                           Tasks were incomplete
+                       </Typography>
+                   </div>
+                    {
+                        sprintTasks.inComplete > 0 &&
+                        <div>
+                            <Typography variant='subtitle2' display='inline'>Note:</Typography>
+                            <Typography variant='body2' display='inline' color='textSecondary' style={{marginLeft:5}}>
+                                InComplete Tasks will be moved to backlog again
+                            </Typography>
+                        </div>
+                    }
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=>setCompleteSprintDialog(false)} variant='contained'>Cancel</Button>
+                    <Button variant='outlined' color='secondary' onClick={completeSprint}>Complete</Button>
+                </DialogActions>
             </Dialog>
         </div>
     );
