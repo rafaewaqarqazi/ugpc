@@ -1,8 +1,10 @@
+
 const Users = require('../models/users');
 require('dotenv').config();
 const Projects = require('../models/projects');
 const path = require('path');
 const {sendEmail} = require("../helpers");
+const mongoose = require('mongoose');
 
 exports.changeEligibility = (req, res)=>{
     Users.findOneAndUpdate({_id:req.params.userId},
@@ -58,7 +60,7 @@ exports.uploadVisionDocument = (req, res) => {
                             "documents":[{
                                 "originalname":req.file.originalname,
                                 "filename":req.file.filename,
-                                "type":req.file.mimetype
+                                "type":req.file.mimetype,
                             }]
 
               }
@@ -73,6 +75,53 @@ exports.uploadVisionDocument = (req, res) => {
 
 
 };
+
+exports.uploadFinalDocumentation =  (req,res)=>{
+
+    const update = {
+        $push:{
+            "documentation.finalDocumentation":{
+                "status":'Waiting for Approval',
+                "uploadedAt":Date.now(),
+                "document":{
+                    "originalname":req.file.originalname,
+                    "filename":req.file.filename,
+                    "type":req.file.mimetype,
+                }
+            }
+        }
+    };
+
+    Projects.findByIdAndUpdate(req.body.projectId,update,{new:true})
+        .select('documentation.finalDocumentation')
+    .populate('details.supervisor','email')
+        .populate('students','name student-details.regNo')
+        .then(project =>{
+            const emailData = {
+                from: "noreply@node-react.com",
+                to: project.details.supervisor.email,
+                subject: "Final Documentation Upload | Review",
+                text: `Dear Supervisor,\n ${project.students[0].name}, ${project.students[0].student_details.regNo} has uploaded his Project's Final Documentation,\n Please Review it for further actions`,
+                html:  `
+                    <p>Dear Supervisor,</p>
+                    <p>Name: ${project.students[0].name}</p>
+                    <p>Reg No: ${project.students[0].student_details.regNo}</p>
+                    <p>has uploaded his Project's Final Documentation, Please review it for further actions</p>
+                    <br/>
+                    <p>Regards,</p>
+                `,
+                attachments:[{filename:req.file.originalname,path:`${process.env.CLIENT_URL}/static/pdf/${req.file.filename}`}]
+            };
+
+            sendEmail(emailData)
+                .then(()=>{
+                    return res.json(project);
+                });
+        })
+        .catch(err => console.log(err.message));
+
+
+}
 exports.getNotEnrolledStudents =async (req, res)=>{
    const projects = await Projects.aggregate([
         {
@@ -118,22 +167,28 @@ exports.fetchForProgramOffice =async (req, res)=>{
     }
 };
 
-exports.resubmitVisionDoc = (req,res)=>{
-    const {projectId,documentId} = req.body;
-    console.log('File',req.file)
-    Projects.updateOne(
-        {"_id":projectId, "documentation.visionDocument._id":documentId},
-        {
-            $push:{
-                "documentation.visionDocument.$.documents":{
-                    "originalname":req.file.originalname,
-                    "filename":req.file.filename,
-                    "type":req.file.mimetype
+exports.resubmitVisionDoc =async (req,res)=>{
+    try {
+        const {projectId,documentId} = req.body;
+        console.log('File',req.file);
+
+        const result = await Projects.updateOne(
+            {"_id":projectId, "documentation.visionDocument._id":documentId},
+            {
+                $push:{
+                    "documentation.visionDocument.$.documents":{
+                        "originalname":req.file.originalname,
+                        "filename":req.file.filename,
+                        "type":req.file.mimetype
+                    }
                 }
             }
-        }
-    ).then(result => {
-        res.json(result)
-    })
-        .catch(err => res.json(err))
+        )
+
+        await res.json(result)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+
+
 }

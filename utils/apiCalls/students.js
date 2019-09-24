@@ -61,6 +61,18 @@ export const uploadVisionAPI = async (data,projectId )=>{
     });
     return await res.json();
 };
+
+export const uploadFinalDocumentationAPI = async (data)=>{
+    const res = await fetch(`${serverUrl}/students/project/finalDocumentation/pdf`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:data
+    });
+    return await res.json();
+}
 export const addTaskToBacklogAPI = async (projectId,task)=>{
     const res = await fetch(`${serverUrl}/backlog/task/add`,{
         method:'PUT',
@@ -75,7 +87,7 @@ export const addTaskToBacklogAPI = async (projectId,task)=>{
 };
 
 export const planSprintAPI = async data =>{
-    const res = await fetch(`${serverUrl}/backlog/planSprint`,{
+    const res = await fetch(`${serverUrl}/backlog/sprint/plan`,{
         method:'PUT',
         headers:{
             Accept:'application/json',
@@ -102,6 +114,19 @@ export const changeColumnAPI = async data =>{
 
 export const changePriorityDnDAPI = async data =>{
     const res = await fetch(`${serverUrl}/backlog/task/change/priority`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+
+export const completeSprintAPI = async data =>{
+    const res = await fetch(`${serverUrl}/backlog/sprint/complete`,{
         method:'PUT',
         headers:{
             Accept:'application/json',

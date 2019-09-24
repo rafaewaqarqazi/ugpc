@@ -5,7 +5,8 @@ const {
     findByStudentId,
     assignSupervisor,
     generateAcceptanceLetter,
-    findByProjectId
+    findByProjectId,
+    fetchFinalDocumentationsBySupervisor
 } = require('../controllers/projects');
 const {requireSignin} = require('../controllers/auth');
 
@@ -17,7 +18,8 @@ router.get('/by/projectId/:projectId',(req,res)=>{
 });
 router.get('/all',getAllProjects);
 router.put('/supervisor/assign',assignSupervisor);
-router.put('/generate/acceptanceLetter',generateAcceptanceLetter)
+router.put('/generate/acceptanceLetter',generateAcceptanceLetter);
+router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',fetchFinalDocumentationsBySupervisor)
 router.param('byStudentId',findByStudentId);
 router.param('projectId',findByProjectId);
 module.exports = router;

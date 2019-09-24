@@ -31,6 +31,11 @@ const projectsSchema = new mongoose.Schema({
             uploadedAt:Date,
             updatedAt:Date,
             meetingDate:Date
+        }],
+        finalDocumentation:[{
+            uploadedAt:Date,
+            status:String,
+            document:{}
         }]
     },
     details:{
@@ -84,6 +89,7 @@ const projectsSchema = new mongoose.Schema({
             startDate:Date,
             endDate:Date,
             status:String,
+            completedOn:Date,
             todos:[{}],
             inProgress:[{}],
             inReview:[{}],

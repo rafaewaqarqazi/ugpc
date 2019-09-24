@@ -12,7 +12,8 @@ const {changeEligibility,
     uploadVisionDocument,
     getNotEnrolledStudents,
     fetchForProgramOffice,
-    resubmitVisionDoc
+    resubmitVisionDoc,
+    uploadFinalDocumentation
 } = require('../controllers/students');
 const upload = require('../upload');
 const router = express.Router();
@@ -22,6 +23,7 @@ router.get('/fetch/programOffice',fetchForProgramOffice);
 router.put('/additionalFile/vision-doc/:type',upload.single('file'),resubmitVisionDoc)
 router.post('/project/new',requireSignin,isStudent,createProjectValidator,createProject);
 router.put("/project/vision-doc/:type/:id",upload.single('file'), uploadVisionDocument);
+router.put('/project/finalDocumentation/:type',upload.single('file'),uploadFinalDocumentation)
 router.get('/notEnrolled/:userId',requireSignin,isStudent,getNotEnrolledStudents);
 
 router.param("userId", userById);

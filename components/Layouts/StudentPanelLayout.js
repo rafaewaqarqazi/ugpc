@@ -119,12 +119,12 @@ const StudentPanelLayout = ({children})=> {
                         <ListItemText primary={"Roadmap"} />
                     </ListItem>
                 </Link>
-                <Link href='/student/project/vision-document'>
+                <Link href='/student/project/documentation'>
                     <ListItem button >
                         <ListItemIcon>
                             <AssignmentOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Vision Docs"} />
+                        <ListItemText primary={"Documentation"} />
                     </ListItem>
                 </Link>
                 <Link href='/student/project/backlog'>

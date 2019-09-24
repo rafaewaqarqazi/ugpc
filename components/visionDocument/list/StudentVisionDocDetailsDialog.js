@@ -156,7 +156,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                                     aria-controls="attachment-menu"
                                     aria-haspopup="true"
                                     onClick={handleClickAttachDocumentMenu}
-
+                                    style={{borderRadius:0,backgroundColor:'#eee'}}
                                 >
                                     <AttachFile/>
                                 </IconButton>

@@ -40,11 +40,25 @@ export const projectReducer = (state, action) => {
             };
         }
         case Actions.ADD_SPRINT:{
+            console.log(action.payload.sprint)
             const modState = {
                 ...state.project,
                 details:{
                     ...state.project.details,
                     sprint:action.payload.sprint,
+                }
+            };
+            return {
+                ...state,
+                project: modState
+            };
+        }
+        case Actions.ADD_FINAL_DOCUMENTATION:{
+            const modState = {
+                ...state.project,
+                documentation:{
+                    ...state.project.documentation,
+                    finalDocumentation:action.payload,
                 }
             };
             return {

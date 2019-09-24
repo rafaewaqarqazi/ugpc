@@ -5,7 +5,8 @@ import {
     addProjectAction,
     projectLoadingAction,
     addBacklogAction,
-    addSprintAction
+    addSprintAction,
+    addFinalDocumentationAction
 } from "./ActionCreators";
 import {
     addTaskToBacklogAPI,
@@ -15,7 +16,9 @@ import {
     fetchProjectByStudentIdAPI,
     uploadVisionAPI,
     planSprintAPI,
-    fetchProjectByProjectIdAPI
+    fetchProjectByProjectIdAPI,
+    completeSprintAPI,
+    uploadFinalDocumentationAPI
 } from "../../utils/apiCalls/students";
 
 const ProjectState = (props) => {
@@ -56,6 +59,17 @@ const ProjectState = (props) => {
         dispatch(projectLoadingAction());
         const project = await fetchProjectByProjectIdAPI(projectId);
         dispatch(addProjectAction(await project));
+    };
+    const completeSprint = async data =>{
+        const result = await completeSprintAPI(data);
+       await dispatch(addSprintAction(data.projectId, result.details.sprint))
+    };
+    const uploadFinalDocumentation = async (data) =>{
+        uploadFinalDocumentationAPI(data).then(result =>{
+            console.log(result)
+            dispatch(addFinalDocumentationAction(result.documentation.finalDocumentation))
+        });
+
     }
 useEffect(()=>{
     console.log('Project State:',state)
@@ -70,7 +84,9 @@ useEffect(()=>{
             addTaskToBacklog,
             planSprint,
             changeColumn,
-            changePriorityDnD
+            changePriorityDnD,
+            completeSprint,
+            uploadFinalDocumentation
         }}>
             {props.children}
         </ProjectContext.Provider>

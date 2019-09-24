@@ -179,4 +179,15 @@ exports.generateAcceptanceLetter = async (req, res)=>{
     if (result.ok){
         await res.json({issueDate:date})
     }
+};
+
+exports.fetchFinalDocumentationsBySupervisor = async (req,res)=>{
+    try {
+        const {supervisorId} = req.params;
+        const result = await Projects.find({"details.supervisor":supervisorId})
+            .select('documentation.finalDocumentation');
+        await res.json(result)
+    }catch (e) {
+        await res.json(e.message)
+    }
 }

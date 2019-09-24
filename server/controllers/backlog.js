@@ -134,12 +134,6 @@ exports.changeTaskStatus = async (req,res)=>{
 exports.changeTaskPriority = async (req, res) =>{
     try {
         const {projectId,taskId,priority} = req.body;
-        //Removing Task from Existing Column
-        const result = await Projects.updateOne(
-
-        );
-
-        //Adding Task to New Column
 
         const updatedResult = await Projects.findOneAndUpdate(
             {"_id":projectId,"details.backlog._id":taskId},
@@ -156,4 +150,38 @@ exports.changeTaskPriority = async (req, res) =>{
     }catch (e) {
         await res.json(e.message)
     }
-}
+};
+
+exports.completeSprint = async (req,res) =>{
+
+    try {
+        const {tasks,projectId,sprintId} = req.body;
+
+        const result = await Projects.findOneAndUpdate(
+            {"_id":projectId,"details.sprint._id":sprintId},
+            {
+                $push:{
+                    "details.backlog":tasks
+                },
+                $set:{
+                    "details.sprint.$.status":"Completed",
+                    "details.sprint.$.completedOn":Date.now()
+                }
+            }, {new:true})
+            .select('details.backlog details.sprint')
+            .populate({path:'details.backlog.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.backlog.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
+            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'});
+        await res.json(result)
+    }catch (e) {
+        await res.json(e.message)
+    }
+
+};

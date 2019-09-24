@@ -21,7 +21,7 @@ export const RenderListItemContent = ({doc,project})=>{
                         }
                     </div>
                     <Tooltip title='Updated On' placement="top" TransitionComponent={Zoom}>
-                        <Typography variant="body2" style={{textAlign:'center'}}>{moment(doc.updatedAt).format('ddd MMM D, YYYY') }</Typography>
+                        <Typography variant="body2" style={{textAlign:'center'}}>{moment(doc.updatedAt).format('MMM D, YYYY') }</Typography>
                     </Tooltip>
                 </div>
             </Grid>

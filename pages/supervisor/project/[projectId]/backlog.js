@@ -3,7 +3,7 @@ import SupervisorProjectLayout from "../../../../components/Layouts/SupervisorPr
 import {withSupervisorAuthSync} from "../../../../components/routers/supervisorAuth";
 import {useRouter} from "next/router";
 import ProjectState from "../../../../context/project/ProjectState";
-import {LinearProgress} from "@material-ui/core";
+import {Container, LinearProgress} from "@material-ui/core";
 import ListBacklog from "../../../../components/project/backlogs/ListBacklog";
 import ProjectContext from "../../../../context/project/project-context";
 import BacklogAndSprintContainer from "../../../../components/project/BacklogAndSprintContainer";
@@ -33,7 +33,6 @@ const Backlog = () => {
                         }
                     </ProjectContext.Consumer>
                 </BacklogAndSprintContainer>
-
             </SupervisorProjectLayout>
         </ProjectState>
     );

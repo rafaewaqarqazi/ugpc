@@ -10,7 +10,7 @@ import {
     Select,
     OutlinedInput,
     MenuItem,
-    FormControl, Dialog, DialogTitle, Tooltip, Zoom, IconButton, DialogContent, DialogActions
+    FormControl, Dialog, DialogTitle, Tooltip, Zoom, IconButton, DialogContent, DialogActions, LinearProgress
 } from "@material-ui/core";
 
 import {makeStyles} from "@material-ui/styles";
@@ -21,6 +21,8 @@ import RenderTaskDetails from "../common/RenderTaskDetails";
 import ProjectContext from '../../../context/project/project-context';
 import UserContext from '../../../context/user/user-context';
 import InfoSnackBar from "../../snakbars/InfoSnackBar";
+import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
+import moment from "moment";
 const useStyles = makeStyles(theme =>({
     container:{
         border:'1.7px dashed grey',
@@ -98,14 +100,25 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const [openInfoSnackBar,setOpenInfoSnackBar] = useState(false);
     const [openDetails,setOpenDetails] = useState(false);
     const [details,setDetails]= useState({});
+    const [dates,setDates] = useState({
+        startDate:'',
+        endDate:''
+    })
     const [completeSprintDialog,setCompleteSprintDialog] = useState(false);
+    const [openSuccessSnackBar,setOpenSuccessSnackBar] = useState(false);
+    const [completeSprintLoading,setCompleteSprintLoading] = useState(false);
     const [sprintTasks,setSprintTasks] = useState({
         completed:0,
         inComplete:0
     })
     useEffect(()=>{
+        setSelectedSprint(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
         const data = sprint;
-        const filter = data.filter(d => d.name === selectedSprint && d.status === 'InComplete')[0]
+        const filter = data.filter(d => d.name === sprintNames[0] && d.status === 'InComplete')[0];
+        setDates({
+            startDate: filter.startDate,
+            endDate: filter.endDate
+        })
         setState(formatScrumBoard(filter));
         setLoading(false)
     },[sprint]);
@@ -186,7 +199,11 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const handleSelectSprint = event => {
         setSelectedSprint(event.target.value)
         const data = sprint;
-        const filter = data.filter(d => d.name === event.target.value && d.status === 'InComplete')[0]
+        const filter = data.filter(d => d.name === event.target.value && d.status === 'InComplete')[0];
+        setDates({
+            startDate: filter.startDate,
+            endDate: filter.endDate
+        })
         setState(formatScrumBoard(filter));
     };
     const handleCompleteSprint = ()=>{
@@ -202,6 +219,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
 
     };
     const completeSprint = ()=>{
+        setCompleteSprintLoading(true);
         const data = sprint;
         const currentSprint = data.filter(d => d.name === selectedSprint)[0];
         let tasks =[];
@@ -214,16 +232,23 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         currentSprint.inReview.map(inReview => {
             tasks = [...tasks,inReview]
         });
-        console.log(tasks)
         const completedData = {
             tasks,
             sprintId:currentSprint._id,
             projectId:projectContext.project.project._id
-        }
-    }
+        };
+        projectContext.completeSprint(completedData)
+            .then(result =>{
+                setCompleteSprintLoading(false);
+                setOpenSuccessSnackBar(true);
+                setCompleteSprintDialog(false)
+            })
+            .catch(error => console.log(error))
+    };
     return (
         !loading &&
         <div>
+            <SuccessSnackBar message='Sprint Completed' open={openSuccessSnackBar} handleClose={()=>setOpenSuccessSnackBar(false)} />
             <InfoSnackBar message='Only supervisor can move to Done' open={openInfoSnackBar} setOpen={setOpenInfoSnackBar} />
             <div className={classes.actions}>
                 <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
@@ -248,7 +273,14 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                         }
                     </Select>
                 </FormControl>
-                <Button variant='outlined' color='primary' onClick={handleCompleteSprint}>Complete Sprint</Button>
+                {
+                    sprintNames.length !== 0 &&
+                    <Typography variant='subtitle1' color='textSecondary'>{`${moment(dates.startDate).format('MMM DD, YYYY')} - ${moment(dates.endDate).format('MMM DD, YYYY')}`}</Typography>
+                }
+                {
+                    sprintNames.length !== 0 &&
+                    <Button variant='outlined' color='primary' onClick={handleCompleteSprint}>Complete Sprint</Button>
+                }
             </div>
 
             <DragDropContext onDragEnd={onDragEnd}>
@@ -387,6 +419,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                 </DialogContent>
             </Dialog>
             <Dialog fullWidth maxWidth='xs' open={completeSprintDialog} onClose={()=>setCompleteSprintDialog(false)}>
+                {completeSprintLoading && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Complete Sprint</Typography>
                     <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
@@ -427,4 +460,4 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     );
 };
 
-export default RenderScrumBoard;
+export default React.memo(RenderScrumBoard);

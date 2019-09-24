@@ -30,10 +30,13 @@ const RenderBacklogTaskItem = ({task}) => {
     return (
         <div className={classes.listItem} style={getBacklogTaskPriorityColor(task.priority)} >
             <Grid container spacing={1} alignItems='center'>
-                <Grid item xs={3} sm={5}>
+                <Grid item xs={2} sm={2}>
                     <Typography variant='body1' color='textSecondary' className={classes.title} noWrap>{task.title}</Typography>
                 </Grid>
                 <Grid item xs={4} sm={4}>
+                    <Typography variant='body1' color='textSecondary' className={classes.title} noWrap>{task.description}</Typography>
+                </Grid>
+                <Grid item xs={3} sm={3}>
                     {
                         task.createdBy && (
                             <Tooltip  title='Created By' placement="top" TransitionComponent={Zoom}>
@@ -46,7 +49,7 @@ const RenderBacklogTaskItem = ({task}) => {
                         )
                     }
                 </Grid>
-                <Grid item xs={4} sm={2} style={{display:'flex'}}>
+                <Grid item xs={2} sm={2} style={{display:'flex'}}>
                     {
                         task.assignee.map((student,index) =>(
                             <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>

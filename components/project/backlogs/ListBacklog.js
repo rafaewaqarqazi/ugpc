@@ -267,164 +267,169 @@ const ListBacklog = ({backlog}) => {
         handleEndDateChange(moment(date).add(data.duration,'w'))
     }
     return (
+
         !loading &&
-        <Grid container spacing={1}>
-            <Grid item xs={12} sm={openDetails ? 6 : 12}>
-                <DragDropContext onDragEnd={onDragEnd}>
-                    {
-                        state.columnOrder.map(columnId => {
-                            const column = state.columns[columnId];
-                            const tasks = column.tasksIds.map(taskId => state.tasks[taskId]);
-                            const disabledButton = column.tasksIds.length <= 0;
-                            return (
-                                <div key={column.id}>
-                                    <div className={classes.actions}>
-                                        <Typography variant='subtitle1' >{column.title}</Typography>
-                                        <Typography variant='caption' color='textSecondary' className={classes.title}>{`${column.tasksIds.length} issues`}</Typography>
-                                        {
-                                            column.title==='Create Sprint' &&
-                                            <>
+        <div>
+        <DragDropContext onDragEnd={onDragEnd}>
+            <Grid container spacing={1}>
+                <Grid item xs={12} sm={openDetails ? 6 : 12}>
+
+                        {
+                            state.columnOrder.map(columnId => {
+                                const column = state.columns[columnId];
+                                const tasks = column.tasksIds.map(taskId => state.tasks[taskId]);
+                                const disabledButton = column.tasksIds.length <= 0;
+                                return (
+                                    <div key={column.id}>
+                                        <div className={classes.actions}>
+                                            <Typography variant='subtitle1' >{column.title}</Typography>
+                                            <Typography variant='caption' color='textSecondary' className={classes.title}>{`${column.tasksIds.length} issues`}</Typography>
+                                            {
+                                                column.title==='Create Sprint' &&
+                                                <>
+                                                    <Button
+                                                        variant='outlined'
+                                                        style={{borderRadius:0}}
+                                                        size='small'
+                                                        disabled={disabledButton}
+                                                        onClick={handleCancelSprint}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        variant='contained'
+                                                        style={{marginLeft:5,borderRadius:0}}
+                                                        color='secondary' size='small'
+                                                        disabled={disabledButton}
+                                                        onClick={()=>setOpenPlanSprintDialog(true)}
+                                                    >
+                                                        Plan Sprint
+                                                    </Button>
+                                                </>
+                                            }
+                                            {
+                                                column.title==='Backlog' &&
                                                 <Button
                                                     variant='outlined'
-                                                    style={{borderRadius:0}}
+                                                    color='secondary'
                                                     size='small'
-                                                    disabled={disabledButton}
-                                                    onClick={handleCancelSprint}
+                                                    onClick={()=>setOpenCreateTask(true)}
                                                 >
-                                                    Cancel
+                                                    <Add style={{fontSize: 20}}/>
+                                                    Create Task
                                                 </Button>
-                                                <Button
-                                                    variant='contained'
-                                                    style={{marginLeft:5,borderRadius:0}}
-                                                    color='secondary' size='small'
-                                                    disabled={disabledButton}
-                                                    onClick={()=>setOpenPlanSprintDialog(true)}
-                                                >
-                                                    Plan Sprint
-                                                </Button>
-                                            </>
-                                        }
-                                        {
-                                            column.title==='Backlog' &&
-                                            <Button
-                                                variant='outlined'
-                                                color='secondary'
-                                                size='small'
-                                                onClick={()=>setOpenCreateTask(true)}
-                                            >
-                                                <Add style={{fontSize: 20}}/>
-                                                Create Task
-                                            </Button>
-                                        }
-                                    </div>
-                                    <Divider/>
-                                    <Droppable droppableId={column.id}>
-                                        {
-                                            (provided, snapShot) =>{
-                                                if (column.title === 'Create Sprint' && column.tasksIds.length === 0){
+                                            }
+                                        </div>
+                                        <Divider/>
+                                        <Droppable droppableId={column.id}>
+                                            {
+                                                (provided, snapShot) =>{
+                                                    if (column.title === 'Create Sprint' && column.tasksIds.length === 0){
 
-                                                    return(
-                                                        <div
-                                                            className={classes.backlogContainer}
-                                                            {...provided.droppableProps}
-                                                            ref={provided.innerRef}
-                                                            style={getListStyle(snapShot.isDraggingOver)}
-                                                        >
-                                                            <div className={classes.emptyContainer}>
-                                                                <Typography variant='subtitle2' color='textSecondary'>
-                                                                    Drag and drop Tasks from list given below
-                                                                </Typography>
-                                                            </div>
-                                                            {provided.placeholder}
-                                                        </div>
-                                                    )
-                                                }else{
-                                                    if (column.tasksIds.length === 0){
                                                         return(
                                                             <div
                                                                 className={classes.backlogContainer}
                                                                 {...provided.droppableProps}
                                                                 ref={provided.innerRef}
+                                                                style={getListStyle(snapShot.isDraggingOver)}
                                                             >
                                                                 <div className={classes.emptyContainer}>
                                                                     <Typography variant='subtitle2' color='textSecondary'>
-                                                                        No Tasks Created Yet
+                                                                        Drag and drop Tasks from list given below
                                                                     </Typography>
                                                                 </div>
                                                                 {provided.placeholder}
                                                             </div>
                                                         )
                                                     }else{
-                                                        return (
-                                                            <>
+                                                        if (column.tasksIds.length === 0){
+                                                            return(
                                                                 <div
+                                                                    className={classes.backlogContainer}
                                                                     {...provided.droppableProps}
                                                                     ref={provided.innerRef}
-                                                                    className={classes.listContainer}
                                                                 >
-                                                                    {tasks.map((task,index )=>
-                                                                        <div key={task._id} >
-                                                                            <Draggable draggableId={task._id} index={index}>
-                                                                                {
-                                                                                    (provided) =>(
-                                                                                        <>
-                                                                                            <div
-                                                                                                {...provided.draggableProps}
-                                                                                                {...provided.dragHandleProps}
-                                                                                                ref={provided.innerRef}
-                                                                                                onClick={()=>handleOpenDetails(task)}
-                                                                                            >
-
-                                                                                                <RenderBacklogTaskItem task={task}/>
-                                                                                            </div>
-                                                                                            <Divider/>
-                                                                                        </>
-                                                                                    )
-                                                                                }
-
-                                                                            </Draggable>
-                                                                        </div>
-                                                                    )}
+                                                                    <div className={classes.emptyContainer}>
+                                                                        <Typography variant='subtitle2' color='textSecondary'>
+                                                                            No Tasks Created Yet
+                                                                        </Typography>
+                                                                    </div>
                                                                     {provided.placeholder}
                                                                 </div>
-                                                            </>
-                                                        )
-                                                    }
+                                                            )
+                                                        }else{
+                                                            return (
+                                                                <>
+                                                                    <div
+                                                                        {...provided.droppableProps}
+                                                                        ref={provided.innerRef}
+                                                                        className={classes.listContainer}
+                                                                    >
+                                                                        {tasks.map((task,index )=>
+                                                                            <div key={task._id} >
+                                                                                <Draggable draggableId={task._id} index={index}>
+                                                                                    {
+                                                                                        (provided) =>(
+                                                                                            <>
+                                                                                                <div
+                                                                                                    {...provided.draggableProps}
+                                                                                                    {...provided.dragHandleProps}
+                                                                                                    ref={provided.innerRef}
+                                                                                                    onClick={()=>handleOpenDetails(task)}
+                                                                                                >
 
+                                                                                                    <RenderBacklogTaskItem task={task}/>
+                                                                                                </div>
+                                                                                                <Divider/>
+                                                                                            </>
+                                                                                        )
+                                                                                    }
+
+                                                                                </Draggable>
+                                                                            </div>
+                                                                        )}
+                                                                        {provided.placeholder}
+                                                                    </div>
+                                                                </>
+                                                            )
+                                                        }
+
+                                                    }
                                                 }
                                             }
-                                        }
-                                    </Droppable>
-                                </div>
-                            )
-                        })
-                    }
+                                        </Droppable>
+                                    </div>
+                                )
+                            })
+                        }
 
-                </DragDropContext>
-            </Grid>
-            <Grid item xs={12} sm={openDetails ? 6 : false}>
-                <Hidden xsDown>
-                    {
-                        openDetails &&
-                        <div  className={classes.detailsContainer}>
-                            <div className={classes.detailsHeader}>
-                                <Tooltip  title='Title' placement="top-start" TransitionComponent={Zoom}>
-                                    <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
-                                </Tooltip>
-                                <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
-                                    <IconButton size='small' onClick={closeDetails}>
-                                        <Close/>
-                                    </IconButton>
-                                </Tooltip>
+
+                </Grid>
+                <Grid item sm={openDetails ? 6 : false}>
+                    <Hidden xsDown>
+                        {
+                            openDetails &&
+                            <div  className={classes.detailsContainer}>
+                                <div className={classes.detailsHeader}>
+                                    <Tooltip  title='Title' placement="top-start" TransitionComponent={Zoom}>
+                                        <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
+                                    </Tooltip>
+                                    <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
+                                        <IconButton size='small' onClick={closeDetails}>
+                                            <Close/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                                {
+                                    openDetails &&
+                                    <RenderTaskDetails details={details}/>
+                                }
                             </div>
-                            {
-                                openDetails &&
-                                <RenderTaskDetails details={details}/>
-                            }
-                        </div>
-                    }
-                </Hidden>
+                        }
+                    </Hidden>
+                </Grid>
             </Grid>
+        </DragDropContext>
             <Hidden smUp>
                 <Dialog fullScreen style={{marginTop:48,marginBottom:48}} open={openDetails} onClose={closeDetails}>
                     <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
@@ -509,7 +514,7 @@ const ListBacklog = ({backlog}) => {
                 />
             }
 
-        </Grid>
+        </div>
     );
 };
 

@@ -1,4 +1,5 @@
 import * as Actions from './ActionTypes';
+import finalDocumentations from "../../pages/supervisor/finalDocumentations";
 
 //Action
 export const addProjectAction = (project)=>({
@@ -16,10 +17,15 @@ export const addBacklogAction = (projectId,backlog)=>({
     }
 });
 
-export const addSprintAction = async (projectId,sprint) =>({
+export const addSprintAction = (projectId,sprint) =>({
     type:Actions.ADD_SPRINT,
     payload:{
         projectId,
         sprint
     }
+});
+
+export const addFinalDocumentationAction= (finalDocumentation)=>({
+    type:Actions.ADD_FINAL_DOCUMENTATION,
+    payload: finalDocumentation
 })

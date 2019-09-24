@@ -106,10 +106,10 @@ const ShowProgress = () => {
                                                    </div>
                                                </div>
                                                <div className={progressClasses.containerContent}>
-                                                   <Typography variant='body2' color='textSecondary' style={{marginBottom:5}}> Tasks</Typography>
-                                                   <Tooltip  title={`${getCompletionPercentage(project.project.details)}%`} placement="top" TransitionComponent={Zoom}>
-                                                       <LinearProgress className={progressClasses.progressBar} variant='determinate' value={getCompletionPercentage(project.project.details)}/>
-                                                   </Tooltip>
+                                                   <Typography variant='body2' color='textSecondary' > Tasks</Typography>
+                                                   <Typography variant='h5' color='textSecondary'>{`${getCompletionPercentage(project.project.details)}%`}</Typography>
+                                                   <LinearProgress className={progressClasses.progressBar} variant='determinate' value={getCompletionPercentage(project.project.details)}/>
+
                                                </div>
                                            </div>
                                            <Divider/>
@@ -145,10 +145,10 @@ const ShowProgress = () => {
                                                </div>
                                                <div className={progressClasses.containerContent}>
 
-                                                   <Typography variant='body2' color='textSecondary' style={{marginBottom:5}}>Sprints</Typography>
-                                                   <Tooltip  title={`${getSprintsPercentage(project.project.details)}%`} placement="top" TransitionComponent={Zoom}>
-                                                       <LinearProgress className={progressClasses.progressBar} variant='determinate' value={getSprintsPercentage(project.project.details)}/>
-                                                   </Tooltip>
+                                                   <Typography variant='body2' color='textSecondary' >Sprints</Typography>
+                                                   <Typography variant='h5' color='textSecondary'>{`${getSprintsPercentage(project.project.details)}%`}</Typography>
+                                                   <LinearProgress className={progressClasses.progressBar} variant='determinate' value={getSprintsPercentage(project.project.details)}/>
+
                                                </div>
                                            </div>
                                            <Divider/>

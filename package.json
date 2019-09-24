@@ -61,6 +61,7 @@
     "react-chartjs-2": "2.8.0",
     "react-dom": "16.9.0",
     "react-google-charts": "3.0.15",
+    "react-swipeable-views": "0.13.3",
     "react-window": "1.8.5",
     "uuid": "3.3.2"
   }
