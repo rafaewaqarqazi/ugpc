@@ -18,12 +18,14 @@ import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import Typography from "@material-ui/core/Typography";
 import UserState from "../../context/user/UserState";
+import NewUserComponent from "../chairman/add/NewUserComponent";
 
 const ChairmanPanelLayout = ({children})=> {
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [anchorEl2, setAnchorEl2] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl2, setAnchorEl2] = useState(null);
+    const [openAddUser,setOpenAddUser] = useState(false)
     const handleDrawerOpen = ()=> {
         setOpen(true);
     };
@@ -99,8 +101,8 @@ const ChairmanPanelLayout = ({children})=> {
                                         open={Boolean(anchorEl)}
                                         onClose={handleAddMenuClose}
                                     >
-                                        <Link href='/chairman/add/user'>
-                                            <MenuItem>
+                                        {/*<Link href='/chairman/add/user'>*/}
+                                            <MenuItem onClick={()=>setOpenAddUser(true)}>
                                                 <ListItemIcon>
                                                     <SupervisorAccountOutlined />
                                                 </ListItemIcon>
@@ -108,7 +110,7 @@ const ChairmanPanelLayout = ({children})=> {
                                                     User
                                                 </Typography>
                                             </MenuItem>
-                                        </Link>
+                                        {/*</Link>*/}
                                         <Link href='/chairman/add/committee'>
                                             <MenuItem >
                                                 <ListItemIcon>
@@ -223,6 +225,13 @@ const ChairmanPanelLayout = ({children})=> {
                     {children}
                 </UserState>
             </main>
+
+            {
+                openAddUser &&
+                <NewUserComponent open={openAddUser} onClose={()=>setOpenAddUser(false)}/>
+            }
+
+
         </div>
     );
 };

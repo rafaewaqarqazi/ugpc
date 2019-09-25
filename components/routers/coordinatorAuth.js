@@ -9,8 +9,7 @@ export const withCoordinatorAuthSync = WrappedComponent =>
         static displayName = `withAuthSync(${getDisplayName(WrappedComponent)})`;
 
         static async getInitialProps (ctx) {
-            const token = ugpcMemberAuth(ctx, 'Coordinator');
-
+            const token = ugpcMemberAuth(ctx, 'Coordinator','Defence');
             const componentProps =
                 WrappedComponent.getInitialProps &&
                 (await WrappedComponent.getInitialProps(ctx));

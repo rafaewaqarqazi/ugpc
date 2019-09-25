@@ -136,7 +136,7 @@ const SupervisorLayout = ({children})=> {
                     {
                         userContext.user.user.additionalRole && userContext.user.user.ugpc_details.position === 'Coordinator' &&
                         <MenuItem value='Coordinator View'  style={{fontSize:14}}>
-                            <Link href='/coordinator/overview'>
+                            <Link href='/committee/defence/coordinator/overview'>
                                 <a style={{textDecoration:'none',color:'inherit'}}>Coordinator View</a>
                             </Link>
                         </MenuItem>

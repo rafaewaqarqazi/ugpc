@@ -1,10 +1,7 @@
-import {withCoordinatorAuthSync} from "../../../components/routers/coordinatorAuth";
-import CoordinatorLayout from "../../../components/Layouts/CoordinatorLayout";
-import VisionDocsState from "../../../context/visionDocs/VisionDocsState";
-import {fetchMeetingsAPI} from "../../../utils/apiCalls/visionDocs";
+
 import {makeStyles} from "@material-ui/styles";
 import {useEffect, useState} from "react";
-import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
+
 import {Assignment, Search} from "@material-ui/icons";
 import {
     Container,
@@ -18,8 +15,13 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import VisionDocListItem from "../../../components/visionDocument/higherAuthority/list/VisionDocListItem";
+
 import moment from "moment";
+import {useListContainerStyles} from "../../../../../src/material-styles/listContainerStyles";
+import {fetchMeetingsAPI} from "../../../../../utils/apiCalls/visionDocs";
+import VisionDocsState from "../../../../../context/visionDocs/VisionDocsState";
+import CoordinatorLayout from "../../../../../components/Layouts/CoordinatorLayout";
+import {withCoordinatorAuthSync} from "../../../../../components/routers/coordinatorAuth";
 const useStyles = makeStyles(theme => ({
     container:{
         marginTop:theme.spacing(4),

@@ -40,20 +40,27 @@ exports.studentSignup = async (req, res)=>{
 };
 
 exports.ugpcSignup = async (req, res)=>{
-    const {name, email, role, committee,position} = req.body;
+    const {name, email, role, committee,position,committeeType,supervisorPosition,additionalRole} = req.body;
     const userExists = await User.findOne({email: email});
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
     });
-    if (role === 'UGPC_Member' && position === 'Chairman_Committee'){
-        console.log('Inside Chairman Check')
-        const chairmanExists = await User.findOne({$and:[{"ugpc_details.committee": committee},{"ugpc_details.position":'Chairman_Committee'}]});
+    if (role === 'UGPC_Member' && position === 'Chairman_Committee' && committeeType === 'Defence'){
+        console.log('Inside Defence Chairman Check')
+        const chairmanExists = await User.findOne({$and:[{"ugpc_details.committees":{ $in: [committee]}},{"ugpc_details.position":'Chairman_Committee'},{"ugpc_details.committeeType":'Defence'}]});
         if (chairmanExists) return res.status(403).json({
-            error: "Committee Already has a Chairman"
+            error: "Defence Committee Already has a Chairman"
         });
     }
-    if (req.body.role === 'UGPC_Member' && req.body.position === 'Coordinator'){
-        const coordinatorExists = await User.findOne({$and:[{"ugpc_details.committee":committee},{"ugpc_details.position":'Coordinator'}]});
+    if (role === 'UGPC_Member' && position === 'Chairman_Committee' && committeeType === 'Evaluation'){
+        console.log('Inside Defence Chairman Check')
+        const chairmanExists = await User.findOne({$and:[{"ugpc_details.committees":{ $in: [committee]}},{"ugpc_details.position":'Chairman_Committee'},{"ugpc_details.committeeType":'Evaluation'}]});
+        if (chairmanExists) return res.status(403).json({
+            error: "Defence Committee Already has a Chairman"
+        });
+    }
+    if (req.body.role === 'UGPC_Member' && position === 'Coordinator'){
+        const coordinatorExists = await User.findOne({$and:[{"ugpc_details.committees":{ $in: [committee]}},{"ugpc_details.position":'Coordinator'}]});
         if (coordinatorExists) return res.status(403).json({
             error: "Committee Already has a Coordinator"
         });
@@ -69,12 +76,15 @@ exports.ugpcSignup = async (req, res)=>{
         name,
         email,
         role,
+        additionalRole,
         password,
         isEmailVerified: true,
-        ugpc_details:role === 'UGPC_Member'?{
-            committee,
-            position
+        ugpc_details:additionalRole === 'UGPC_Member'?{
+            committees:[committee],
+            position,
+            committeeType
         }:undefined,
+        supervisor_details:role === 'Supervisor' ? {position:supervisorPosition} : undefined,
         chairman_details: role === 'Chairman DCSSE'?{}:undefined
     });
     const newUser = await user.save();

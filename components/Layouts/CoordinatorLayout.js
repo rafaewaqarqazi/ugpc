@@ -72,7 +72,7 @@ const CoordinatorLayout = ({children})=> {
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/coordinator/overview'>
+                <Link href='/committee/defence/coordinator/overview'>
                     <ListItem button >
                         <ListItemIcon>
                             <DashboardOutlined />
@@ -82,7 +82,7 @@ const CoordinatorLayout = ({children})=> {
 
                 </Link>
 
-                <Link href='/coordinator/vision-documents'>
+                <Link href='/committee/defence/coordinator/vision-documents'>
                     <ListItem button >
                         <ListItemIcon>
                             <Laptop />
@@ -91,7 +91,7 @@ const CoordinatorLayout = ({children})=> {
                     </ListItem>
                 </Link>
 
-                <Link href='/coordinator/projects'>
+                <Link href='/committee/defence/coordinator/projects'>
                     <ListItem button >
                         <ListItemIcon>
                             <Laptop />
@@ -100,7 +100,7 @@ const CoordinatorLayout = ({children})=> {
                     </ListItem>
                 </Link>
 
-                <Link href='/coordinator/presentations'>
+                <Link href='/committee/defence/coordinator/presentations'>
                     <ListItem button >
                         <ListItemIcon>
                             <ScheduleOutlined />
@@ -109,7 +109,7 @@ const CoordinatorLayout = ({children})=> {
                     </ListItem>
                 </Link>
 
-                <Link href='/coordinator/meetings'>
+                <Link href='/committee/defence/coordinator/meetings'>
                     <ListItem button >
                         <ListItemIcon>
                             <VisibilityOutlined />
@@ -118,7 +118,7 @@ const CoordinatorLayout = ({children})=> {
                     </ListItem>
                 </Link>
 
-                <Link href='/coordinator/supervisors'>
+                <Link href='/committee/defence/coordinator/supervisors'>
                     <ListItem button >
                         <ListItemIcon>
                             <SupervisorAccountOutlined />
@@ -130,7 +130,7 @@ const CoordinatorLayout = ({children})=> {
             </List>
             <Divider/>
             <List>
-                <Link href='/coordinator/settings'>
+                <Link href='/committee/defence/coordinator/settings'>
                     <ListItem button >
                         <ListItemIcon>
                             <SettingsOutlined />
@@ -143,7 +143,7 @@ const CoordinatorLayout = ({children})=> {
 
     );
     const addMenu = (
-        <Link href='/coordinator/presentation'>
+        <Link href='/committee/defence/coordinator/presentation'>
             <MenuItem>
                 <ListItemIcon>
                     <SupervisorAccountOutlined />
