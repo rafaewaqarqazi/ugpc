@@ -185,8 +185,55 @@ exports.fetchFinalDocumentationsBySupervisor = async (req,res)=>{
     try {
         const {supervisorId} = req.params;
         const result = await Projects.find({"details.supervisor":supervisorId})
-            .select('documentation.finalDocumentation');
+            .select('documentation.finalDocumentation documentation.visionDocument.title documentation.visionDocument.status students details.estimatedDeadline department')
+            .populate('students','name student_details');
         await res.json(result)
+    }catch (e) {
+        await res.json(e.message)
+    }
+};
+
+exports.changeFDStatus = async (req,res)=>{
+    try {
+        const {status,projectId,documentId,comment} = req.body;
+        const result = await Projects.findOneAndUpdate({"_id":projectId,"documentation.finalDocumentation._id":documentId},
+            {
+                $set:{
+                    "documentation.finalDocumentation.$.status":status,
+                }
+            })
+            .select('students')
+            .populate('students','email')
+        //Sending Emails
+        const emails = await result.students.map(student => student.email);
+        const studentEmailData = {
+            from: "noreply@node-react.com",
+            to: emails,
+            subject: "Final Documentation Status Changed",
+            text: `Dear Student,\nYour Final Documentation status has changed to ${status},\nRegards`,
+            html: `
+                <p>Dear Student,</p>
+                <p>Your Final Documentation status has changed to <b>${status}</b></p>
+                ${comment !== undefined ? `<p><b>Comments:</b> ${comment}</p>` :''}
+                <br/>
+                <p>Regards!</p>
+            `
+        };
+        // const studentsEmailData = {
+        //     from: "noreply@node-react.com",
+        //     to: studentEmails,
+        //     subject: "Supervisor Assigned",
+        //     text: `Dear Student,\n Name: ${supervisor.name}\n email:${supervisor.email}\n is assigned to your Project as a Supervisor`,
+        //     html: `
+        //         <p>Dear Student,</p>
+        //         <p><b>Name: </b> ${supervisor.name}</p>
+        //         <p><b>Email: </b> ${supervisor.email}</p>
+        //         <p>is Assigned to your Project as a Supervisor </p>
+        //     `
+        // };
+        await sendEmail(studentEmailData);
+        // await sendEmail(studentsEmailData);
+        await res.json({message:'Success'})
     }catch (e) {
         await res.json(e.message)
     }
