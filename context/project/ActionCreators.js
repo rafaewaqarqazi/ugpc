@@ -1,5 +1,4 @@
 import * as Actions from './ActionTypes';
-import finalDocumentations from "../../pages/supervisor/finalDocumentations";
 
 //Action
 export const addProjectAction = (project)=>({

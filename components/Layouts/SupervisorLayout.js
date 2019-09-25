@@ -87,21 +87,12 @@ const SupervisorLayout = ({children})=> {
             </List>
             <Divider/>
             <List>
-                <Link href='/supervisor/visionDocuments'>
+                <Link href='/supervisor/documentation'>
                     <ListItem button >
                         <ListItemIcon>
                             <AssignmentOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Vision Documents"}  style={{whiteSpace:'normal'}} />
-                    </ListItem>
-                </Link>
-
-                <Link href='/supervisor/finalDocumentations'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <BallotOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Final Documentation"}  style={{whiteSpace:'normal'}} />
+                        <ListItemText primary={"Documentation"}  style={{whiteSpace:'normal'}} />
                     </ListItem>
                 </Link>
             </List>

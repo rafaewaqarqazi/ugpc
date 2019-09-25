@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react';
-import SupervisorLayout from "../../components/Layouts/SupervisorLayout";
-import {withSupervisorAuthSync} from "../../components/routers/supervisorAuth";
-import {fetchFinalDocumentationsBySupervisorAPI} from "../../utils/apiCalls/projects";
+import React, { useEffect, useState} from 'react';
+
+
+import {fetchFinalDocumentationsBySupervisorAPI} from "../../../utils/apiCalls/projects";
 import {
     Container,
     LinearProgress,
@@ -31,12 +31,12 @@ import {
     ThumbUpAltOutlined,
     SendOutlined, Close
 } from "@material-ui/icons";
-import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
+import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
 import moment from "moment";
-import {serverUrl} from "../../utils/config";
+import {serverUrl} from "../../../utils/config";
 import Button from "@material-ui/core/Button";
-import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
+import {changeFinalDocumentationStatusAPI} from "../../../utils/apiCalls/users";
 
 
 const useStyles = makeStyles(theme => ({
@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
 }));
-const FinalDocumentations = () => {
+const SupervisorFinalDocumentation = () => {
     const [filterDepartment,setFilterDepartment] = useState('All');
     const [loading,setLoading]=useState({
         main:true,
@@ -94,7 +94,7 @@ const FinalDocumentations = () => {
         if (event.target.value === 'All'){
             setFilteredDocs(documents)
         }else {
-           setFilteredDocs(data.filter(d => d.department === event.target.value))
+            setFilteredDocs(data.filter(d => d.department === event.target.value))
         }
 
     };
@@ -132,19 +132,11 @@ const FinalDocumentations = () => {
             });
     }
     return (
-        <SupervisorLayout>
+        <div>
             {
                 loading.main ? <LinearProgress/> :
-                    <Container className={classes.container}>
-                        <div className={listContainerStyles.listContainer}>
-                            <div className={listContainerStyles.top}>
-                                <div className={listContainerStyles.topIconBox}>
-                                    <Assignment className={listContainerStyles.headerIcon}/>
-                                </div>
-                                <div className={listContainerStyles.topTitle}>
-                                    <Typography variant='h5'>Final Documentations</Typography>
-                                </div>
-                            </div>
+
+                        <div >
                             <div>
                                 <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
                                     <InputLabel htmlFor="depSwitch">
@@ -184,35 +176,35 @@ const FinalDocumentations = () => {
                                                     }
                                                 })
                                                 return(
-                                                doc.documentation.finalDocumentation.map(finalDoc => (
-                                                    <TableRow  key={index} className={classes.tableRow} >
-                                                        <TableCell align="left" >{title}</TableCell>
-                                                        <TableCell align="left" >{doc.department}</TableCell>
-                                                        <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
-                                                            <TableCell align="left" >{doc.students[0].name}</TableCell>
-                                                        </Tooltip>
-                                                        <TableCell >{finalDoc.status}</TableCell>
-                                                        <TableCell align="left">{moment(finalDoc.uploadedAt).format('MMM DD, YYYY')}</TableCell>
-                                                        <TableCell >
-                                                            <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.document.filename}`} target="_blank" >
-                                                                <PictureAsPdfOutlined />
-                                                            </a>
-                                                        </TableCell>
-                                                        <TableCell >
-                                                            <Tooltip title='Click for Actions' placement='top'>
-                                                                <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
-                                                                    <MoreVertOutlined/>
-                                                                </IconButton>
+                                                    doc.documentation.finalDocumentation.map(finalDoc => (
+                                                        <TableRow  key={index} className={classes.tableRow} >
+                                                            <TableCell align="left" >{title}</TableCell>
+                                                            <TableCell align="left" >{doc.department}</TableCell>
+                                                            <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
+                                                                <TableCell align="left" >{doc.students[0].name}</TableCell>
                                                             </Tooltip>
-                                                            <Menu
-                                                                id="simple-menu"
-                                                                anchorEl={anchorEl}
-                                                                keepMounted
-                                                                open={Boolean(anchorEl)}
-                                                                onClose={()=>setAnchorEl(null)}
-                                                            >
-                                                                {
-                                                                    finalDoc.status === 'Waiting for Approval' &&
+                                                            <TableCell >{finalDoc.status}</TableCell>
+                                                            <TableCell align="left">{moment(finalDoc.uploadedAt).format('MMM DD, YYYY')}</TableCell>
+                                                            <TableCell >
+                                                                <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.document.filename}`} target="_blank" >
+                                                                    <PictureAsPdfOutlined />
+                                                                </a>
+                                                            </TableCell>
+                                                            <TableCell >
+                                                                <Tooltip title='Click for Actions' placement='top'>
+                                                                    <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
+                                                                        <MoreVertOutlined/>
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                                <Menu
+                                                                    id="simple-menu"
+                                                                    anchorEl={anchorEl}
+                                                                    keepMounted
+                                                                    open={Boolean(anchorEl)}
+                                                                    onClose={()=>setAnchorEl(null)}
+                                                                >
+                                                                    {
+                                                                        finalDoc.status === 'Waiting for Approval' &&
                                                                         <div>
                                                                             <MenuItem onClick={()=>handleClickChangeStatusMenu('Approved',doc._id,finalDoc._id)}>
                                                                                 <ListItemIcon>
@@ -231,39 +223,38 @@ const FinalDocumentations = () => {
                                                                                 </Typography>
                                                                             </MenuItem>
                                                                         </div>
-                                                                }
-                                                                {
-                                                                    finalDoc.status === 'Approved' && !moment(Date.now()).isBefore(doc.details.estimatedDeadline) &&
-                                                                    <MenuItem onClick={()=>handleClickChangeStatusMenu('Available for Internal',doc._id,finalDoc._id)}>
+                                                                    }
+                                                                    {
+                                                                        finalDoc.status === 'Approved' && !moment(Date.now()).isBefore(doc.details.estimatedDeadline) &&
+                                                                        <MenuItem onClick={()=>handleClickChangeStatusMenu('Available for Internal',doc._id,finalDoc._id)}>
+                                                                            <ListItemIcon>
+                                                                                <SendOutlined />
+                                                                            </ListItemIcon>
+                                                                            <Typography variant="inherit" noWrap>
+                                                                                Send for Internal
+                                                                            </Typography>
+                                                                        </MenuItem>
+                                                                    }
+                                                                    <MenuItem onClick={()=>setAnchorEl(null)}>
                                                                         <ListItemIcon>
-                                                                            <SendOutlined />
+                                                                            <Close />
                                                                         </ListItemIcon>
                                                                         <Typography variant="inherit" noWrap>
-                                                                            Send for Internal
+                                                                            Cancel
                                                                         </Typography>
                                                                     </MenuItem>
-                                                                }
-                                                                <MenuItem onClick={()=>setAnchorEl(null)}>
-                                                                    <ListItemIcon>
-                                                                        <Close />
-                                                                    </ListItemIcon>
-                                                                    <Typography variant="inherit" noWrap>
-                                                                        Cancel
-                                                                    </Typography>
-                                                                </MenuItem>
 
-                                                            </Menu>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
-)
+                                                                </Menu>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                )
                                             })
                                         }
                                     </TableBody>
                                 </Table>
                             </div>
                         </div>
-                    </Container>
             }
             <Dialog fullWidth maxWidth='xs' open={confirmDialog} onClose={()=>setConfirmDialog(false)} >
                 {loading.dialog && <LinearProgress/>}
@@ -306,16 +297,16 @@ const FinalDocumentations = () => {
                         error={comment.error}
                         helperText={comment.error && 'Please write a comment'}
                         label='Comment'
-                        />
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button variant='contained' onClick={()=>setNotApprovedDialog(false)}>Cancel</Button>
                     <Button variant='outlined' color='secondary' onClick={handleConfirm}>Confirm</Button>
                 </DialogActions>
             </Dialog>
-        </SupervisorLayout>
+        </div>
     );
 };
 
 
-export default withSupervisorAuthSync(FinalDocumentations);
+export default SupervisorFinalDocumentation;
