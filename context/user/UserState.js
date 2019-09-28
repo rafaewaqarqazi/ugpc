@@ -2,7 +2,7 @@ import React, {useReducer, useEffect} from 'react';
 import UserContext from './user-context';
 import {userReducer} from "./userReducer";
 import {getUserById, createNewUser} from "./ActionCreators";
-
+import {marksDistributionAPI} from '../../utils/apiCalls/users';
 
 const UserState = (props) => {
     const [state, dispatch] = useReducer(userReducer,{
@@ -17,6 +17,10 @@ const UserState = (props) => {
     const createUser =async user=>{
         return await createNewUser(user,dispatch);
     };
+    const distributeMarks = async (marks)=>{
+        const user = await marksDistributionAPI(marks);
+
+    }
     useEffect(()=>{
         console.log('User State:',state)
     },[state]);
@@ -24,7 +28,8 @@ const UserState = (props) => {
         <UserContext.Provider value={{
             user:state,
             fetchUserById,
-            createUser
+            createUser,
+            distributeMarks
         }}>
             {props.children}
         </UserContext.Provider>

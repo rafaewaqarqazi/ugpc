@@ -1,11 +1,6 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState,  useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
-    Button,
     Typography,
     TextField,
     Grid, LinearProgress,
@@ -13,7 +8,6 @@ import {
 import {isValid} from "../../utils/clientSideValidators/createProjectValidator";
 import CreateProjectDetailsComponent from "./CreateProjectDetailsComponent";
 import ProjectContext from '../../context/project/project-context';
-import {isAuthenticated} from "../../auth";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import router from 'next/router';
 import StepperComponent from "../stepper/StepperComponent";

@@ -249,8 +249,12 @@ export const landingAuth = ctx => {
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member') {
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member' && user.user.ugpc_details.committeeType === 'Defence') {
         ctx.res.writeHead(302, { Location: '/committee/defence/UGPC_Member/overview' });
+        ctx.res.end();
+        return
+    } else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member' && user.user.ugpc_details.committeeType === 'Evaluation') {
+        ctx.res.writeHead(302, { Location: '/committee/evaluation/UGPC_Member/overview' });
         ctx.res.end();
         return
     }
@@ -259,12 +263,12 @@ export const landingAuth = ctx => {
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman' && user.user.ugpc_details.committeeType === 'Defence') {
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman_Committee' && user.user.ugpc_details.committeeType === 'Defence') {
         ctx.res.writeHead(302, { Location: `/committee/defence/chairman/overview` });
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman' && user.user.ugpc_details.committeeType === 'Evaluation') {
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman_Committee' && user.user.ugpc_details.committeeType === 'Evaluation') {
         ctx.res.writeHead(302, { Location: `/committee/evaluation/chairman/overview` });
         ctx.res.end();
         return
@@ -293,11 +297,11 @@ export const landingAuth = ctx => {
     else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Coordinator') {
         Router.push(`/committee/defence/coordinator/overview`)
     }
-    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman' && user.user.ugpc_details.committeeType === 'Defence') {
+    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman_Committee' && user.user.ugpc_details.committeeType === 'Defence') {
         Router.push(`/committee/defence/chairman/overview`)
     }
-    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman' && user.user.ugpc_details.committeeType === 'Evaluation') {
-        Router.push(`/committee/defence/chairman/overview`)
+    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman_Committee' && user.user.ugpc_details.committeeType === 'Evaluation') {
+        Router.push(`/committee/evaluation/chairman/overview`)
     }
 
 

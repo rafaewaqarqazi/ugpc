@@ -32,7 +32,6 @@ import {
     ChevronRight,
     PermIdentity,
     ExitToAppOutlined, AssignmentOutlined,
-    BallotOutlined
 } from "@material-ui/icons";
 import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";

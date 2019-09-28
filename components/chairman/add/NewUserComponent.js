@@ -302,7 +302,11 @@ const NewUserComponent = ({open,onClose}) => {
                                                         input={<OutlinedInput  labelWidth={145} fullWidth name="position" id="position" required/>}
                                                     >
                                                         <MenuItem value='Chairman_Committee'>Chairman</MenuItem>
-                                                        <MenuItem value='Coordinator'>Coordinator</MenuItem>
+                                                        {
+                                                            data.committeeType === 'Defence' &&
+                                                            <MenuItem value='Coordinator'>Coordinator</MenuItem>
+                                                        }
+
                                                         <MenuItem value='Member'>Member</MenuItem>
                                                     </Select>
                                                 </FormControl>

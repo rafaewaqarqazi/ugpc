@@ -7,5 +7,6 @@ export default React.createContext({
     users:[],
     createUser: user => {},
     fetchUserById: () =>{},
+    distributeMarks:marks=>{},
     removeUser: ()=>{},
 })

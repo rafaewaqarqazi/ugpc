@@ -92,7 +92,10 @@ export const useDrawerStyles = makeStyles(theme => ({
         paddingTop:theme.spacing(1.5)
     },
     avatarColor:{
-        backgroundColor:getRandomColor()
+        backgroundColor:getRandomColor(),
+        width:32,
+        height:32,
+        fontSize:16
     },
     avatarSize:{
         width:100,

@@ -7,13 +7,14 @@ const AuthRouter = require('./routes/auth');
 const ProjectsRouter = require('./routes/projects');
 const visionDocumentRouter = require('./routes/visionDocument');
 const backlogRouter = require('./routes/backlog');
+const userRouter = require('./routes/users');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
-const compression = require('compression')
+const compression = require('compression');
 const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
-console.log(dev)
+
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -44,6 +45,7 @@ app.prepare()
         server.use('/api/projects',ProjectsRouter);
         server.use('/api/visionDocument',visionDocumentRouter);
         server.use('/api/backlog',backlogRouter);
+        server.use('/api/users',userRouter);
         //Unauthorized Handler
         server.use(function (err,req,res,next) {
             if (err.name === 'UnauthorizedError'){
