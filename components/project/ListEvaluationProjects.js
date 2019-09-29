@@ -23,6 +23,7 @@ import Button from "@material-ui/core/Button";
 import SchedulingDialogContent from "../coordinator/presentations/SchedulingDialogContent";
 import {scheduleExternalAPI, scheduleInternalAPI} from "../../utils/apiCalls/projects";
 import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
+import ErrorSnackBar from "../snakbars/ErrorSnackBar";
 const useStyles = makeStyles(theme =>({
     tableRow:{
         "&:hover":{
@@ -48,6 +49,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
     const [venue,setVenue] = useState('Seminar Room');
     const [selectedDate, handleDateChange] = useState(new Date());
     const [documentId,setDocumentId] = useState('');
+    const [openError,setOpenError] = useState(false);
     const [data,setData] = useState({
         projectId:'',
         filename:'',
@@ -85,9 +87,17 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
         };
         scheduleInternalAPI(sData)
             .then(result =>{
-                console.log(result);
                 if (result.error){
-                    console.log(result.error);
+                    setLoading({
+                        ...loading,
+                        internal:false
+                    });
+
+                    setOpenDialog({
+                        ...openDialog,
+                        internal:false
+                    });
+                    setOpenError(true);
                     return
                 }else {
                     const statusData = {
@@ -124,9 +134,17 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
         };
         scheduleExternalAPI(sData)
             .then(result =>{
-                console.log(result);
                 if (result.error){
-                    console.log(result.error);
+                    setLoading({
+                        ...loading,
+                        external:false
+                    });
+
+                    setOpenDialog({
+                        ...openDialog,
+                        external:false
+                    });
+                    setOpenError(true);
                     return
                 }else {
                     const statusData = {
@@ -152,6 +170,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
     };
     return (
         <div>
+            <ErrorSnackBar open={openError} handleSnackBar={()=>setOpenError(false)} message={'Examiner Not Found!'}/>
             {
                 filter.length === 0  ?
                     <div className={emptyStyles.emptyListContainer}>
@@ -216,7 +235,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                                                     }
                                                     {
                                                         project.documentation.finalDocumentation.status === 'Available for External' &&
-                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,'external')}>
+                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'external')}>
                                                             <ListItemIcon>
                                                                 <AccessTimeOutlined />
                                                             </ListItemIcon>

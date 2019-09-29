@@ -40,7 +40,7 @@ exports.studentSignup = async (req, res)=>{
 };
 
 exports.ugpcSignup = async (req, res)=>{
-    const {name, email, role, committee,position,committeeType,supervisorPosition,additionalRole} = req.body;
+    const {name, email, role, committee,position,committeeType,additionalRole,designation} = req.body;
     const userExists = await User.findOne({email: email});
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
@@ -70,8 +70,6 @@ exports.ugpcSignup = async (req, res)=>{
         length: 10,
         numbers: true
     });
-
-
     const user = await new User({
         name,
         email,
@@ -82,9 +80,10 @@ exports.ugpcSignup = async (req, res)=>{
         ugpc_details:additionalRole === 'UGPC_Member'?{
             committees:[committee],
             position,
-            committeeType
+            committeeType,
+            designation
         }:undefined,
-        supervisor_details:role === 'Supervisor' ? {position:supervisorPosition} : undefined,
+        supervisor_details:role === 'Supervisor' ? {position:designation} : undefined,
         chairman_details: role === 'Chairman DCSSE'?{}:undefined
     });
     const newUser = await user.save();

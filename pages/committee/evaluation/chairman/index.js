@@ -21,7 +21,7 @@ import {fetchForEvaluationProjectsAPI} from "../../../../utils/apiCalls/projects
 
 const Index = () => {
     const classes = useListContainerStyles();
-    const [status, setStatus] = useState('Available for Internal');
+    const [status, setStatus] = useState('All');
     const [projects,setProjects]=useState([]);
     const [filter,setFilter] = useState([]);
     const [loading,setLoading] = useState(true);
@@ -31,12 +31,8 @@ const Index = () => {
             .then(result =>{
                 console.log(result);
                 setProjects(result);
-                const filterData = result.map(project => {
-                    if(project.documentation.finalDocumentation.status === 'Available for Internal'){
-                        return project
-                    }
-                });
-                setFilter(filterData);
+                setStatus('All')
+                setFilter(result);
                 setLoading(false)
             })
     };

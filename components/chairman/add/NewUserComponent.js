@@ -36,7 +36,7 @@ const NewUserComponent = ({open,onClose}) => {
         email:'',
         role:'',
         additionalRole:'None',
-        supervisorPosition:'',
+        designation:'',
         committeeType:'',
         position:'',
         committee:''
@@ -47,7 +47,7 @@ const NewUserComponent = ({open,onClose}) => {
         role:false,
         position:false,
         committee:false,
-        supervisorPosition:false,
+        designation:false,
         committeeType:false
     });
     const handleSuccess = ()=>{
@@ -65,8 +65,8 @@ const NewUserComponent = ({open,onClose}) => {
             setErrors({...errors,role:true})
             return false
         }
-        else if (data.role === 'Supervisor' && data.supervisorPosition === ''){
-            setErrors({...errors,supervisorPosition:true})
+        else if (data.designation === ''){
+            setErrors({...errors,designation:true})
             return false
         }else if (data.additionalRole === 'UGPC_Member' && data.committeeType === ''){
             setErrors({...errors,committeeType:true})
@@ -104,7 +104,7 @@ const NewUserComponent = ({open,onClose}) => {
                             email:'',
                             role:'',
                             additionalRole:'None',
-                            supervisorPosition:'',
+                            designation:'',
                             committeeType:'',
                             position:'',
                             committee:''
@@ -206,43 +206,23 @@ const NewUserComponent = ({open,onClose}) => {
                             </Grid>
                             {
                                 data.role === 'Supervisor' &&
-                                <>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth required error={errors.additionalRole} variant="outlined" className={classes.formControl}>
-                                            <InputLabel htmlFor="additionalRole">
-                                                Additional Role
-                                            </InputLabel>
-                                            <Select
-                                                value={data.additionalRole}
-                                                onChange={handleChange}
-                                                autoWidth
-                                                input={<OutlinedInput  labelWidth={115} fullWidth name="additionalRole" id="additionalRole" required/>}
-                                            >
-                                                <MenuItem value='UGPC_Member'>UGPC_Member</MenuItem>
-                                                <MenuItem value='None'>None</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                        {errors.additionalRole && <Typography variant='caption' color='error'>Required*</Typography>}
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth required error={errors.supervisorPosition} variant="outlined" className={classes.formControl}>
-                                            <InputLabel  htmlFor="supervisorPosition">
-                                                Supervisor Position
-                                            </InputLabel>
-                                            <Select
-                                                value={data.supervisorPosition}
-                                                onChange={handleChange}
-                                                autoWidth
-                                                input={<OutlinedInput  labelWidth={155} fullWidth name="supervisorPosition" id="supervisorPosition" required/>}
-                                            >
-                                                <MenuItem value='Lecturer'>Lecturer</MenuItem>
-                                                <MenuItem value='Assistant Professor'>Assistant Professor</MenuItem>
-                                                <MenuItem value='Professor'>Professor</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                        {errors.supervisorPosition && <Typography variant='caption' color='error'>Required*</Typography>}
-                                    </Grid>
-                                </>
+                                <Grid item xs={12} >
+                                    <FormControl fullWidth required error={errors.additionalRole} variant="outlined" className={classes.formControl}>
+                                        <InputLabel htmlFor="additionalRole">
+                                            Additional Role
+                                        </InputLabel>
+                                        <Select
+                                            value={data.additionalRole}
+                                            onChange={handleChange}
+                                            autoWidth
+                                            input={<OutlinedInput  labelWidth={115} fullWidth name="additionalRole" id="additionalRole" required/>}
+                                        >
+                                            <MenuItem value='UGPC_Member'>UGPC_Member</MenuItem>
+                                            <MenuItem value='None'>None</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    {errors.additionalRole && <Typography variant='caption' color='error'>Required*</Typography>}
+                                </Grid>
                             }
                             {
                                 (data.role === 'Chairman DCSSE' || data.role === 'Program_Office') ? (
@@ -255,7 +235,7 @@ const NewUserComponent = ({open,onClose}) => {
                                     (
                                         data.role !== '' && data.additionalRole === 'UGPC_Member' &&
                                         <>
-                                            <Grid item xs={12} >
+                                            <Grid item xs={12} sm={6}>
                                                 <FormControl fullWidth required error={errors.committeeType} variant="outlined" className={classes.formControl}>
                                                     <InputLabel htmlFor="committeeType">
                                                         Committee Type
@@ -271,6 +251,24 @@ const NewUserComponent = ({open,onClose}) => {
                                                     </Select>
                                                 </FormControl>
                                                 {errors.committeeType && <Typography variant='caption' color='error'>Required*</Typography>}
+                                            </Grid>
+                                            <Grid item xs={12} sm={6}>
+                                                <FormControl fullWidth required error={errors.designation} variant="outlined" className={classes.formControl}>
+                                                    <InputLabel  htmlFor="designation">
+                                                        Designation
+                                                    </InputLabel>
+                                                    <Select
+                                                        value={data.designation}
+                                                        onChange={handleChange}
+                                                        autoWidth
+                                                        input={<OutlinedInput  labelWidth={97} fullWidth name="designation" id="designation" required/>}
+                                                    >
+                                                        <MenuItem value='Lecturer'>Lecturer</MenuItem>
+                                                        <MenuItem value='Assistant Professor'>Assistant Professor</MenuItem>
+                                                        <MenuItem value='Professor'>Professor</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                                {errors.designation && <Typography variant='caption' color='error'>Required*</Typography>}
                                             </Grid>
                                             <Grid item xs={12} sm={6}>
                                                 <FormControl fullWidth required error={errors.committee} variant="outlined" className={classes.formControl}>

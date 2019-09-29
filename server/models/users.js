@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema({
         position:String,
         committeeType:String,
         committees:[String],
+        designation:String,
         projects:[{
             project:{type:ObjectId, ref:"Projects"},
             title:String
