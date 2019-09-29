@@ -51,7 +51,6 @@ const Projects = () => {
     const projectsClasses = useStyles();
 
     const handleClickProject = projectId=>{
-        console.log(projectId)
         router.push(`/supervisor/project/[projectId]/roadmap`,`/supervisor/project/${projectId}/roadmap`)
     };
 

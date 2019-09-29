@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
     container:{
         marginTop:theme.spacing(4),
     }
-}))
+}));
 const PresentationComponent = () => {
     const visionDocsContext = useContext(VisionDocsContext);
 
@@ -24,7 +24,7 @@ const PresentationComponent = () => {
             if (docs._id.status==='Approved for Meeting'){
                 documents = docs.projects
             }
-        })
+        });
         if (documents.length > 0){
             return  <Container className={classes.container}>
                 <ListVisionDocsForPresentation docs={documents}/>

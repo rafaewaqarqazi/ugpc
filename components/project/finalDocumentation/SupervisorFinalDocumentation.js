@@ -73,7 +73,6 @@ const SupervisorFinalDocumentation = () => {
         text:'',
         error:false
     });
-    const listContainerStyles = useListContainerStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const classes = useStyles();
     const fetchData =()=>{

@@ -32,6 +32,7 @@ import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {RenderListItemContent} from "../../visionDocument/common/RenderListItemContent";
 import {getClassRooms, getLabs, getOtherRooms} from "./rooms";
+import SchedulingDialogContent from "./SchedulingDialogContent";
 
 const useStyles = makeStyles(theme =>({
     scheduleContainer:{
@@ -86,24 +87,7 @@ const useStyles = makeStyles(theme =>({
         display:'flex',
         borderRadius:2,
         alignItems:'center'
-    },
-    list:{
-        overflow: 'auto',
-        maxHeight: 300,
-        width:'100%'
-    },
-    mainList:{
-        overflow: 'auto',
-        maxHeight: 400,
-        width:'100%'
-    },
-    nested: {
-        paddingLeft: theme.spacing(4),
-    },
-    nestedList: {
-        paddingLeft: theme.spacing(6),
-
-    },
+    }
 }));
 
 
@@ -120,10 +104,6 @@ const ListVisionDocsForPresentation = ({docs}) => {
     const [dialogLoading,setDialogLoading]=useState(false);
     const [finalIds,setFinalIds] = useState([]);
     const [openSnackBar,setOpenSnackbar] = useState(false);
-    const [openList,setOpenList] = useState(false);
-    const [openClassRooms,setOpenClassRooms] = useState(false);
-    const [openOtherRooms,setOpenOtherRooms] = useState(false);
-    const [openLabs,setOpenLabs] = useState(false);
     const [venue,setVenue] = useState('Seminar Room');
     const handleCloseDialog = ()=>{
         setDialogOpen(false)
@@ -373,104 +353,12 @@ const ListVisionDocsForPresentation = ({docs}) => {
                 }
                 <DialogTitle id="title">Select Venue & Data</DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} sm={6}>
-                            <List className={presentationClasses.mainList}>
-                                <ListItem button onClick={()=>setOpenList(!openList)}>
-                                    <ListItemIcon>
-                                        <LocationOnOutlined/>
-                                    </ListItemIcon>
-                                    <ListItemText primary="Show Venues" />
-                                    {openList ? <ExpandLess /> : <ExpandMore />}
-                                </ListItem>
-                                <Collapse in={openList} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        <ListItem button onClick={()=>setOpenClassRooms(!openClassRooms)} className={presentationClasses.nested}>
-                                            <ListItemIcon>
-                                                <MeetingRoomOutlined/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Class Rooms" />
-                                            {openClassRooms ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItem>
-                                        <Collapse in={openClassRooms} timeout="auto" unmountOnExit>
-                                            <List component="div" disablePadding className={presentationClasses.list}>
-                                                <FormControl component="fieldset" style={{width:'100%'}}>
-                                                    <RadioGroup name="venue" value={venue} onChange={(event => setVenue(event.target.value))}>
-                                                        {
-                                                            getClassRooms().map((classRoom,index) => (
-                                                                <ListItem key={index} button className={presentationClasses.nestedList}>
-                                                                    <FormControlLabel  value={classRoom} control={<Radio />} label={classRoom} />
-                                                                </ListItem>
-                                                            ))
-                                                        }
-                                                    </RadioGroup>
-                                                </FormControl>
-                                            </List>
-                                        </Collapse>
-
-                                        <ListItem button onClick={()=>setOpenLabs(!openLabs)} className={presentationClasses.nested}>
-                                            <ListItemIcon>
-                                                <MeetingRoomOutlined/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Labs" />
-                                            {openLabs ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItem>
-                                        <Collapse in={openLabs} timeout="auto" unmountOnExit>
-                                            <List component="div" disablePadding className={presentationClasses.list}>
-                                                <FormControl component="fieldset" style={{width:'100%'}}>
-                                                    <RadioGroup name="venue" value={venue} onChange={(event => setVenue(event.target.value))}>
-                                                        {
-                                                            getLabs().map((lab,index) => (
-                                                                <ListItem key={index} button className={presentationClasses.nestedList}>
-                                                                    <FormControlLabel  value={lab} control={<Radio />} label={lab} />
-                                                                </ListItem>
-                                                            ))
-                                                        }
-                                                    </RadioGroup>
-                                                </FormControl>
-                                            </List>
-                                        </Collapse>
-
-                                        <ListItem button onClick={()=>setOpenOtherRooms(!openOtherRooms)} className={presentationClasses.nested}>
-                                            <ListItemIcon>
-                                                <MeetingRoomOutlined/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Other Rooms" />
-                                            {openOtherRooms ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItem>
-                                        <Collapse in={openOtherRooms} timeout="auto" unmountOnExit>
-                                            <List component="div" disablePadding className={presentationClasses.list}>
-                                                <FormControl component="fieldset" style={{width:'100%'}}>
-                                                    <RadioGroup name="venue" value={venue} onChange={(event => setVenue(event.target.value))}>
-                                                        {
-                                                            getOtherRooms().map((other,index) => (
-                                                                <ListItem key={index} button className={presentationClasses.nestedList}>
-                                                                    <FormControlLabel  value={other} control={<Radio />} label={other} />
-                                                                </ListItem>
-                                                            ))
-                                                        }
-                                                    </RadioGroup>
-                                                </FormControl>
-                                            </List>
-                                        </Collapse>
-                                    </List>
-                                </Collapse>
-                            </List>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <MuiPickersUtilsProvider  utils={DateFnsUtils}>
-                                <DateTimePicker
-                                    label="Select Date&Time"
-                                    inputVariant="outlined"
-                                    value={selectedDate}
-                                    onChange={handleDateChange}
-                                    disablePast
-                                    fullWidth
-                                />
-                            </MuiPickersUtilsProvider>
-                        </Grid>
-                    </Grid>
-
+                    <SchedulingDialogContent
+                        venue={venue}
+                        setVenue={setVenue}
+                        selectedDate={selectedDate}
+                        handleDateChange={handleDateChange}
+                        />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog} color="primary">

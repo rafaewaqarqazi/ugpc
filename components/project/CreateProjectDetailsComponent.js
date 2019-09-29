@@ -122,7 +122,7 @@ const CreateProjectDetailsComponent = ({data, setData,error, setErrors,value,set
                                 {
                                     studentsList.list.length === 0 ?
                                     <ListItem>
-                                        <Typography variant='h5'>No Students Found</Typography>
+                                        <Typography variant='h5' style={{textAlign:"center"}}>No Students Found</Typography>
                                     </ListItem>
                                        :
                                     studentsList.list.map((student,index)=>(

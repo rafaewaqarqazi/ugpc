@@ -72,7 +72,7 @@ export const uploadFinalDocumentationAPI = async (data)=>{
         body:data
     });
     return await res.json();
-}
+};
 export const addTaskToBacklogAPI = async (projectId,task)=>{
     const res = await fetch(`${serverUrl}/backlog/task/add`,{
         method:'PUT',
@@ -136,4 +136,4 @@ export const completeSprintAPI = async data =>{
         body:JSON.stringify(data)
     });
     return await res.json();
-}
+};

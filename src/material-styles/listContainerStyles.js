@@ -8,7 +8,8 @@ export const useListContainerStyles = makeStyles(theme=>({
         boxShadow: theme.shadows[1],
         marginBottom: theme.spacing(5),
         borderRadius:5,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        minHeight:450
     },
     top:{
         display: 'flex',

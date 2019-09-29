@@ -54,7 +54,11 @@ const userSchema = new mongoose.Schema({
     ugpc_details:{
         position:String,
         committeeType:String,
-        committees:[String]
+        committees:[String],
+        projects:[{
+            project:{type:ObjectId, ref:"Projects"},
+            title:String
+        }],
     },
     supervisor_details:{
         projects:[{

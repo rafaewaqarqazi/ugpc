@@ -70,10 +70,10 @@ const ProjectState = (props) => {
             dispatch(addFinalDocumentationAction(result.documentation.finalDocumentation))
         });
 
-    }
+    };
 useEffect(()=>{
     console.log('Project State:',state)
-},[state])
+},[state]);
     return (
         <ProjectContext.Provider value={{
             project:state,

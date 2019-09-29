@@ -50,11 +50,11 @@ const projectsSchema = new mongoose.Schema({
         },
         supervisor:{type:ObjectId, ref:"Users"},
         internal:{
-            examiners:[{type:ObjectId, ref:"Users"}],
+            examiner:{type:ObjectId, ref:"Users"},
             date:Date,
         },
         external:{
-            examiners:[{type:ObjectId, ref:"Users"}],
+            examiner:{type:ObjectId, ref:"Users"},
             date:Date,
         },
         acceptanceLetter:{

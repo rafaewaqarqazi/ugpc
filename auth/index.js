@@ -269,7 +269,7 @@ export const landingAuth = ctx => {
         return
     }
     else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman_Committee' && user.user.ugpc_details.committeeType === 'Evaluation') {
-        ctx.res.writeHead(302, { Location: `/committee/evaluation/chairman/overview` });
+        ctx.res.writeHead(302, { Location: `/committee/evaluation/chairman` });
         ctx.res.end();
         return
     }
@@ -301,7 +301,7 @@ export const landingAuth = ctx => {
         Router.push(`/committee/defence/chairman/overview`)
     }
     else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Chairman_Committee' && user.user.ugpc_details.committeeType === 'Evaluation') {
-        Router.push(`/committee/evaluation/chairman/overview`)
+        Router.push(`/committee/evaluation/chairman`)
     }
 
 
