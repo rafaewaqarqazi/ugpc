@@ -36,7 +36,7 @@ const a11yProps = index => {
         id: `full-width-tab-${index}`,
         'aria-controls': `full-width-tabpanel-${index}`,
     };
-}
+};
 const Documentation = () => {
     const listContainerStyles = useListContainerStyles();
     const classes = useStyles();

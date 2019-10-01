@@ -185,9 +185,11 @@ const SupervisorFinalDocumentation = () => {
                                                             <TableCell >{finalDoc.status}</TableCell>
                                                             <TableCell align="left">{moment(finalDoc.uploadedAt).format('MMM DD, YYYY')}</TableCell>
                                                             <TableCell >
-                                                                <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.document.filename}`} target="_blank" >
-                                                                    <PictureAsPdfOutlined />
-                                                                </a>
+                                                                <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
+                                                                    <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.document.filename}`} target="_blank" >
+                                                                        <PictureAsPdfOutlined />
+                                                                    </a>
+                                                                </Tooltip>
                                                             </TableCell>
                                                             <TableCell >
                                                                 <Tooltip title='Click for Actions' placement='top'>

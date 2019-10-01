@@ -10,7 +10,9 @@ const {
     changeFDStatus,
     fetchForEvaluation,
     scheduleInternal,
-    scheduleExternal
+    scheduleExternal,
+    fetchAssignedForEvaluation,
+    evaluateInternalExternal
 } = require('../controllers/projects');
 const {requireSignin} = require('../controllers/auth');
 
@@ -26,8 +28,10 @@ router.put('/generate/acceptanceLetter',generateAcceptanceLetter);
 router.put('/changeFDStatus',changeFDStatus);
 router.put('/schedule/internal',scheduleInternal);
 router.put('/schedule/external',scheduleExternal);
+router.put('/evaluate/internalExternal',evaluateInternalExternal);
 router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',fetchFinalDocumentationsBySupervisor);
 router.get('/fetch/forEvaluation',fetchForEvaluation);
+router.get('/fetch/assignedForEvaluation/:userId',fetchAssignedForEvaluation);
 router.param('byStudentId',findByStudentId);
 router.param('projectId',findByProjectId);
 module.exports = router;

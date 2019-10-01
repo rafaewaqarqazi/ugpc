@@ -10,12 +10,15 @@ import {
     Typography,
     AppBar,
     Toolbar,
+    Button,
+    IconButton
 } from '@material-ui/core';
 
 import Link from "next/link";
 import {
     PermIdentity,
     ExitToAppOutlined,
+    HomeOutlined
 } from "@material-ui/icons";
 import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
@@ -75,11 +78,26 @@ const EvaluationChairmanLayout = ({children})=> {
             <div style={{flexGrow:1}}>
                     <AppBar position="static" color="default">
                         <Toolbar>
+                            <Link href='/committee/evaluation/chairman'>
+                                <IconButton size='small' style={{marginRight:10}}>
+                                    <HomeOutlined style={{width:32,height:32}}/>
+                                </IconButton>
+                            </Link>
+                            <Tooltip title='UGPC-Software' placement='right'>
+                                <div style={{marginRight:20}}>
+                                    <Link href='/committee/evaluation/chairman'>
+                                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" style={{cursor:'pointer'}}/>
+                                    </Link>
+                                </div>
+                            </Tooltip>
                             <div style={{flexGrow:1}}>
-                                <Tooltip title='UGPC-Software' placement='right'>
-                                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
-                                </Tooltip>
+                                <Link href='/committee/evaluation/chairman/projects'>
+                                    <Button color='primary' >
+                                        My Projects
+                                    </Button>
+                                </Link>
                             </div>
+
                             {profileMenu}
                         </Toolbar>
                     </AppBar>

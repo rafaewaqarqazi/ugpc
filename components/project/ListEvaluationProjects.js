@@ -54,7 +54,8 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
         projectId:'',
         filename:'',
         originalname:'',
-        title:''
+        title:'',
+        supervisorId:''
     });
     const [openDialog,setOpenDialog] = useState({
         internal:false,
@@ -65,12 +66,18 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
         external:false
     });
     const emptyStyles = useListItemStyles();
-    const handleOpenDialog = (projectId,filename,originalname,title,docId,dialogType) =>{
+    const handleOpenDialog = (projectId,supervisorId,filename,originalname,title,docId,dialogType) =>{
+        setLoading({
+            ...loading,
+            internal:false,
+            external:false
+        });
         setData({
             projectId,
             filename,
             originalname,
-            title
+            title,
+            supervisorId
         });
         setDocumentId(docId);
         setOpenDialog({...openDialog,[dialogType]:true})
@@ -149,7 +156,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                 }else {
                     const statusData = {
                         projectId:data.projectId,
-                        status:'Internal Scheduled',
+                        status:'External Scheduled',
                         documentId
                     };
                     changeFinalDocumentationStatusAPI(statusData)
@@ -224,7 +231,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                                                 >
                                                     {
                                                         project.documentation.finalDocumentation.status === 'Available for Internal' &&
-                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'internal')}>
+                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.details.supervisor._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'internal')}>
                                                             <ListItemIcon>
                                                                 <AccessTimeOutlined />
                                                             </ListItemIcon>
@@ -235,7 +242,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                                                     }
                                                     {
                                                         project.documentation.finalDocumentation.status === 'Available for External' &&
-                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'external')}>
+                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.details.supervisor._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'external')}>
                                                             <ListItemIcon>
                                                                 <AccessTimeOutlined />
                                                             </ListItemIcon>

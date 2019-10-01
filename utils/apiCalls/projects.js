@@ -74,3 +74,39 @@ export const scheduleExternalAPI = async data =>{
     });
     return await res.json();
 };
+export const fetchAssignedForEvaluationProjects = async ()=>{
+    const res = await fetch(`${serverUrl}/projects/fetch/assignedForEvaluation/${isAuthenticated().user._id}`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+
+export const evaluateInternalExternalAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/evaluate/internalExternal`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+export const evaluateExternalAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/evaluate/external`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};

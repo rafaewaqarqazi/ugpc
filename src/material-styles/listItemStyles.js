@@ -40,6 +40,7 @@ export const useListItemStyles = makeStyles(theme =>({
     avatar:{
         width:30,
         height:30,
+        fontSize:16,
         margin:theme.spacing(1),
         backgroundColor:getRandomColor(),
     },
