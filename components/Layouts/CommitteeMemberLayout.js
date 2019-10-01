@@ -10,22 +10,23 @@ import {
     Typography,
     AppBar,
     Toolbar,
-    Button,
-    IconButton, FormControl, InputLabel, Select, OutlinedInput
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    Select
 } from '@material-ui/core';
 
 import Link from "next/link";
 import {
     PermIdentity,
     ExitToAppOutlined,
-    HomeOutlined
 } from "@material-ui/icons";
 import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 
 
-const EvaluationChairmanLayout = ({children})=> {
+const CommitteeMemberLayout = ({children})=> {
     const userContext = useContext(UserContext);
     useEffect(()=>{
         userContext.fetchUserById();
@@ -99,40 +100,26 @@ const EvaluationChairmanLayout = ({children})=> {
         <div >
             <CssBaseline />
             <div style={{flexGrow:1}}>
-                    <AppBar position="static" color="default">
-                        <Toolbar>
-                            <Link href='/committee/evaluation/chairman'>
-                                <IconButton size='small' style={{marginRight:10}}>
-                                    <HomeOutlined style={{width:32,height:32}}/>
-                                </IconButton>
-                            </Link>
+                <AppBar position="static" color="default">
+                    <Toolbar>
+                        <div style={{marginRight:10}}>
                             <Tooltip title='UGPC-Software' placement='right'>
-                                <div style={{marginRight:10}}>
-                                    <Link href='/committee/evaluation/chairman'>
-                                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" style={{cursor:'pointer'}}/>
-                                    </Link>
-                                </div>
+                                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" style={{cursor:'pointer'}}/>
                             </Tooltip>
-                            <div style={{marginRight:10}}>
-                                {accountSwitch}
-                            </div>
-                            <div style={{flexGrow:1}}>
-                                <Link href='/committee/evaluation/chairman/projects'>
-                                    <Button color='primary' >
-                                        My Projects
-                                    </Button>
-                                </Link>
-                            </div>
+                        </div>
+                        <div style={{flexGrow:1}}>
+                            {accountSwitch}
+                        </div>
 
-                            {profileMenu}
-                        </Toolbar>
-                    </AppBar>
-                    <div>
-                        {children}
-                    </div>
+                        {profileMenu}
+                    </Toolbar>
+                </AppBar>
+                <div>
+                    {children}
+                </div>
             </div>
 
         </div>
     );
 };
-export default EvaluationChairmanLayout;
+export default CommitteeMemberLayout;

@@ -140,6 +140,46 @@ const SupervisorLayout = ({children})=> {
                             </Link>
                         </MenuItem>
                     }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Member' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Defence' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/defence/member'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Member' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Evaluation' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/evaluation/member'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Chairman_Committee' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Defence' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/defence/chairman'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Chairman Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Chairman_Committee' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Evaluation' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/evaluation/chairman'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Chairman Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
                 </Select>
             </FormControl>
             :
