@@ -22,6 +22,7 @@ import {fetchMeetingsAPI} from "../../../../../utils/apiCalls/visionDocs";
 import VisionDocsState from "../../../../../context/visionDocs/VisionDocsState";
 import CoordinatorLayout from "../../../../../components/Layouts/CoordinatorLayout";
 import {withCoordinatorAuthSync} from "../../../../../components/routers/coordinatorAuth";
+import VisionDocListItem from "../../../../../components/visionDocument/higherAuthority/list/VisionDocListItem";
 const useStyles = makeStyles(theme => ({
     container:{
         marginTop:theme.spacing(4),

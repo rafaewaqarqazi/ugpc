@@ -4,12 +4,12 @@ import Router from 'next/router';
 const getDisplayName = Component =>
     Component.displayName || Component.name || 'Component';
 
-export const withProgramOfficeAuthSync = WrappedComponent =>
+export const withChairmanOfficeAuthSync = WrappedComponent =>
     class extends Component {
         static displayName = `withAuthSync(${getDisplayName(WrappedComponent)})`;
 
         static async getInitialProps (ctx) {
-            const token = officeAuth(ctx,'Program_Office');
+            const token = officeAuth(ctx,'Chairman_Office');
 
             const componentProps =
                 WrappedComponent.getInitialProps &&

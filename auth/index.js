@@ -197,7 +197,7 @@ export const chairmanAuth = ctx => {
     }
     return token
 };
-export const programOfficeAuth = ctx => {
+export const officeAuth = (ctx,role) => {
     const { token } = nextCookie(ctx);
     const user =token ? JSON.parse(token) : {user:{role:''}};
 
@@ -206,7 +206,7 @@ export const programOfficeAuth = ctx => {
         ctx.res.end();
         return
     }
-    else if (ctx.req && token && user.user.role !== 'Program_Office'){
+    else if (ctx.req && token && user.user.role !== role){
         ctx.res.writeHead(302, { Location: '/sign-in' });
         ctx.res.end();
         return
@@ -215,7 +215,7 @@ export const programOfficeAuth = ctx => {
     if (!token){
         Router.push('/sign-in')
     }
-    else if (token &&  user.user.role !== 'Program_Office') {
+    else if (token &&  user.user.role !== role) {
         Router.push('/sign-in')
     }
     return token
@@ -240,7 +240,7 @@ export const landingAuth = ctx => {
         return
     }
     else if (ctx.req && token && user.user.role === 'Chairman_Office') {
-        ctx.res.writeHead(302, { Location: '/chairmanOffice/overview' });
+        ctx.res.writeHead(302, { Location: '/chairmanOffice/letter/approval' });
         ctx.res.end();
         return
     }
@@ -286,7 +286,7 @@ export const landingAuth = ctx => {
         Router.push('/chairman/overview')
     }
     else if (token && user.user.role === 'Chairman_Office') {
-        Router.push('/chairmanOffice/overview')
+        Router.push('/chairmanOffice/letter/approval')
     }
     else if (token && user.user.role === 'Program_Office') {
         Router.push('/program-office')

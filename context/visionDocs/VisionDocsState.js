@@ -45,9 +45,9 @@ const VisionDocsState = (props) => {
         dispatch(generateAcceptanceLetterAction(projectId,await result.issueDate,regNo))
         return await result;
     };
-    const assignSupervisorAuto = async (projectId,title)=>{
+    const assignSupervisorAuto = async (projectId,title,regNo)=>{
         console.log('Title',title);
-        const result = await assignSupervisorAutoAPI(projectId,title);
+        const result = await assignSupervisorAutoAPI(projectId,title,regNo);
         dispatch(assignSupervisorAction(projectId,await result.supervisor));
         return await result
     };

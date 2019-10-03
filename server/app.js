@@ -24,6 +24,8 @@ app.prepare()
         const server = express();
         server.use(compression())
         //MongoDB Connection
+        mongoose.set('useNewUrlParser', true);
+        mongoose.set('useFindAndModify', false);
         mongoose.connect(process.env.MONGO_URI)
             .then(()=>{
                 console.log('Connected to database');

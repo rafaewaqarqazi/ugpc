@@ -153,7 +153,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
         }
         visionDocsContext.changeStatus(statusDetails)
             .then(res =>{
-                visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title)
+                visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title,currentDocument.students[0].student_details.regNo)
                     .then(result => {
                         if (result.error){
                             console.log(result.error)

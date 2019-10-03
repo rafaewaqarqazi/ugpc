@@ -74,7 +74,7 @@ exports.createProject = (req, res) => {
 
 exports.assignSupervisor = async (req,res)=>{
     try {
-        const {projectId,title} = req.body;
+        const {projectId,title,regNo} = req.body;
         //Finding Supervisor with minimum Numbers of Projects
         const supervisors =await Users.aggregate([
             {$match:{"role":'Supervisor'}},
@@ -106,14 +106,24 @@ exports.assignSupervisor = async (req,res)=>{
             await res.json({error:'Seems like no Supervisor has been registered Yet!'})
         }
         const supervisor = await _.sample(supervisors[0].details);
-
+        const date = Date.now();
+        const estimatedDeadline =  moment(date).add(4,'M').add(1,'d').startOf('d');
         //Assigning Supervisor-Updating Project
-        const project =await Projects.findOneAndUpdate(projectId,
-            {"details.supervisor":supervisor._id},
-            {new:true}
-            ).populate('students','-_id email student_details.regNo')
-            .populate({path:'details.supervisor',model:'Users',select:'name supervisor_details.position'})
-            .select('students title details.supervisor');
+        const result = await Projects.updateOne({_id:projectId},
+            {
+                $set:{
+                    "details.supervisor": supervisor._id,
+                    "details.acceptanceLetter":{
+                        name:`${regNo}.pdf`,
+                        issueDate:date
+                    },
+                    "details.estimatedDeadline":estimatedDeadline
+                }
+            });
+        const project =await Projects.findOne({_id:projectId}).populate('students','-_id email student_details.regNo')
+            .select('students title details.supervisor')
+            .populate({path:'details.supervisor',model:'Users',select:'name supervisor_details.position'});
+
         const studentEmails =await project.students.map(student => student.email);
 
         //Adding Project to Supervisor Details
@@ -545,3 +555,32 @@ exports.evaluateInternalExternal = async (req,res) =>{
         await res.json({error:e.message})
     }
 };
+exports.fetchForApprovalLetter = async (req,res)=>{
+    try {
+        const result = await Projects.aggregate([
+            {$unwind:"$documentation.visionDocument"},
+            {$match:{
+                    $or:[{"documentation.visionDocument.status":'Approved'},{"documentation.visionDocument.status":'Approved With Changes'}]
+                }
+            },
+            {
+                $project:{
+                    "department":1,
+                    "documentation.visionDocument.title":1,
+                    "details.supervisor":1,
+                    "details.acceptanceLetter":1,
+                    "students":1
+                }
+            },
+        ]);
+        const projects = await Projects.populate(result,[
+            {path:"details.supervisor",model:"Users",select:"name supervisor_details.position"},
+            {path:"students",model:"Users",select:"name student_details.regNo"}
+        ]);
+        const chairman = await Users.findOne({role:'Chairman DCSSE'})
+            .select('-_id name');
+        await res.json({projects,chairman})
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+}

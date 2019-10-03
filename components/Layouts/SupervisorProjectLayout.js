@@ -41,6 +41,7 @@ import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import ProjectContext from '../../context/project/project-context';
 import MenuIcon from '@material-ui/icons/Menu';
+import router from "next/dist/client/router";
 
 const SupervisorProjectLayout = ({children,projectId})=> {
     const userContext = useContext(UserContext);
@@ -48,7 +49,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     useEffect(()=>{
         userContext.fetchUserById();
         projectContext.fetchByProjectId(projectId)
-    },[]);
+    },[projectId]);
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -57,7 +58,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     const [selectedProject,setSelectedProject] = useState(projectId);
     const handleSwitchProject = event=>{
         setSelectedProject(event.target.value);
-        projectContext.fetchByProjectId(event.target.value)
+        router.push(`/supervisor/project/[projectId]/roadmap`,`/supervisor/project/${event.target.value}/roadmap`)
     }
     const handleDrawerOpen = ()=> {
         setOpen(true);
@@ -190,7 +191,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                     {
                         userContext.user.user.additionalRole && userContext.user.user.ugpc_details.position === 'Coordinator' &&
                         <MenuItem value='Coordinator View'  style={{fontSize:14}}>
-                            <Link href='/coordinator/overview'>
+                            <Link href='/committee/defence/coordinator/overview'>
                                 <a style={{textDecoration:'none',color:'inherit'}}>Coordinator View</a>
                             </Link>
                         </MenuItem>
@@ -199,7 +200,8 @@ const SupervisorProjectLayout = ({children,projectId})=> {
             </FormControl>
             :
             <div style={{flexGrow:1}}/>
-    )
+    );
+
     const projectSwitch = (
             <div className={classes.toolbar}>
                 <FormControl variant="outlined" margin='dense' style={{flexGrow:1}}>
@@ -215,9 +217,11 @@ const SupervisorProjectLayout = ({children,projectId})=> {
 
                         {
                             !userContext.user.isLoading && userContext.user.user.supervisor_details.projects.map((project) =>
-                                <MenuItem key={project._id} value={project.project._id} style={{fontSize:14}}>
+
+                                <MenuItem key={project._id} value={project.project._id} style={{fontSize:14}} >
                                     {project.title}
                                 </MenuItem>
+
                             )
 
                         }

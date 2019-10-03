@@ -164,7 +164,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                 ...state,
                 createdBy:isAuthenticated().user._id
             }
-            projectContext.addTaskToBacklog(projectContext.project.project[0]._id,data)
+            projectContext.addTaskToBacklog(projectContext.project.project._id,data)
                 .then(result =>{
                     handleCreateTaskClose()
                 })
@@ -219,7 +219,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 Assignee
                             </Typography>
                             {
-                                projectContext.project.project[0].students.map((student) => (
+                               !projectContext.project.isLoading && projectContext.project.project.students.map((student) => (
                                     <Fragment key={student._id}>
                                     <Tooltip title={student.student_details.regNo} placement='right'>
                                         <Chip

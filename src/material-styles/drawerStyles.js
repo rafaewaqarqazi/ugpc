@@ -1,4 +1,4 @@
-import {makeStyles} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
 import {blue} from "@material-ui/core/colors";
 import {getRandomColor} from "./randomColors";
 

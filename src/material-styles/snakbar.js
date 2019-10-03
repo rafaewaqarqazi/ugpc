@@ -1,4 +1,4 @@
-import {makeStyles} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
 import {green} from "@material-ui/core/colors";
 
 export const useSnakBarStyles = makeStyles(theme => ({
