@@ -18,10 +18,11 @@ import {AssignmentTurnedInOutlined, Close, MoreVertOutlined, PictureAsPdfOutline
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import {makeStyles} from "@material-ui/styles";
 import {serverUrl} from "../../utils/config";
-import {evaluateInternalExternalAPI} from "../../utils/apiCalls/projects";
+import {evaluateInternalExternalAPI, scheduleExternalDateAPI} from "../../utils/apiCalls/projects";
 import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
+import SchedulingDialogContent from "../coordinator/presentations/SchedulingDialogContent";
 const useStyles = makeStyles(theme =>({
     tableRow:{
         "&:hover":{
@@ -41,9 +42,14 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
     const [filter,setFilter] = useState(projects);
     const emptyStyles = useListItemStyles();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [loading,setLoading]= useState(false);
+    const [loading,setLoading]= useState({
+        evaluation:false,
+        schedule:false
+    });
     const [filtered,setFiltered] = useState(projects);
     const [department,setDepartment] = useState('All');
+    const [venue,setVenue] = useState('Seminar Room');
+    const [selectedDate, handleDateChange] = useState(new Date());
     const [success,setSuccess] = useState({
         open:false,
         message:''
@@ -57,14 +63,33 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
         show:false,
         message:''
     });
-    const [evaluationDialog,setEvaluationDialog] = useState(false);
+    const [dialog,setDialog] = useState({
+        evaluation:false,
+        schedule:false
+    });
     const handleClickEvaluate = (documentId,projectId)=>{
         setError({show:false,message:''});
         setData({
+            ...data,
             documentId,
             projectId
         });
-        setEvaluationDialog(true)
+        setDialog({
+            ...dialog,
+            evaluation:true
+        })
+    };
+    const handleClickScheduleExternal = (documentId,projectId)=>{
+        setError({show:false,message:''});
+        setData({
+            ...data,
+            projectId,
+            documentId
+        });
+        setDialog({
+            ...dialog,
+            schedule:true
+        })
     };
     const handleChangeMarksObtained = event =>{
 
@@ -79,29 +104,47 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
         if (data.marks < 0 || data.marks > marks.internal){
             setError({show:true,message:`Provide Marks in 0-${marks.internal} Limit`})
         }else {
-            setLoading(true);
+            setLoading({
+                ...loading,
+                evaluation:true
+            });
             evaluateInternalExternalAPI({projectId:data.projectId,marks:data.marks,type})
                 .then(result =>{
                     if (result.error){
                         console.log(result.error)
-                        setLoading(false);
+                        setLoading({
+                            ...loading,
+                            evaluation:false
+                        });
                         return;
                     }
                     const sData = {
                         projectId:data.projectId,
                         documentId:data.documentId,
-                        status:type === 'internal' ? 'Available for External' : 'Complete'
+                        status:type === 'internal' ? 'Available for External' : 'Completed'
                     };
 
                     changeFinalDocumentationStatusAPI(sData)
                         .then(res => {
                             if (res.error){
                                 console.log(res.error);
-                                setLoading(false);
-                                setEvaluationDialog(false)
+                                setLoading({
+                                    ...loading,
+                                    evaluation:false
+                                });
+                                setDialog({
+                                    ...dialog,
+                                    evaluation:false
+                                })
                             }
-                            setLoading(false);
-                            setEvaluationDialog(false);
+                            setLoading({
+                                ...loading,
+                                evaluation:false
+                            });
+                            setDialog({
+                                ...dialog,
+                                evaluation:false
+                            });
                             setSuccess({
                                 open:true,
                                 message:result.success
@@ -110,6 +153,56 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                         })
                 })
         }
+    };
+    const handleExternalSchedule = ()=>{
+        setLoading({
+            ...loading,
+            schedule:true
+        });
+        scheduleExternalDateAPI({venue,selectedDate,projectId:data.projectId})
+            .then(result =>{
+                if (result.error){
+                    console.log(result.error)
+                    setLoading({
+                        ...loading,
+                        schedule:false
+                    });
+                    return;
+                }
+                const sData = {
+                    projectId:data.projectId,
+                    documentId:data.documentId,
+                    status:'External Scheduled'
+                };
+
+                changeFinalDocumentationStatusAPI(sData)
+                    .then(res => {
+                        if (res.error){
+                            console.log(res.error);
+                            setLoading({
+                                ...loading,
+                                schedule:false
+                            });
+                            setDialog({
+                                ...dialog,
+                                schedule:false
+                            })
+                        }
+                        setLoading({
+                            ...loading,
+                            schedule:false
+                        });
+                        setDialog({
+                            ...dialog,
+                            schedule:false
+                        });
+                        setSuccess({
+                            open:true,
+                            message:result.success
+                        });
+                        fetchData();
+                    })
+            })
     };
     const handleChange = event =>{
         setDepartment(event.target.value);
@@ -191,6 +284,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                     <TableCell align="left">Status</TableCell>
                                     <TableCell align="left">Date</TableCell>
                                     <TableCell align="left">Document</TableCell>
+                                    <TableCell align="left">Marks</TableCell>
                                     <TableCell align="left">Actions</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -219,7 +313,12 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                                     <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
                                                 </Tooltip>
                                                 <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
-                                                <TableCell align="left">{project.details.internal.date ? moment(project.details.internal.date).format('MMM DD, YYYY')  : 'Not Assigned'}</TableCell>
+                                                <TableCell align="left">{
+                                                    type === 'internal' ?
+                                                    project.details.internal.date ? moment(project.details.internal.date).format('LLL')  : 'Not Assigned'
+                                                        :
+                                                        project.details.external.date ? moment(project.details.external.date).format('LLL')  : 'Not Assigned'
+                                                }</TableCell>
                                                 <TableCell align="left">
                                                     <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
                                                         <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${project.documentation.finalDocumentation.document.filename}`} target="_blank" >
@@ -227,6 +326,12 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                                         </a>
                                                     </Tooltip>
                                                 </TableCell>
+                                                <TableCell align="left">{
+                                                    type === 'internal' ?
+                                                    project.details.marks.internal ? project.details.marks.internal  : 'Not Assigned'
+                                                        :
+                                                    project.details.marks.external ? project.details.marks.external  : 'Not Assigned'
+                                                }</TableCell>
                                                 <TableCell align="left">
                                                     <Tooltip title='Click for Actions' placement='top'>
                                                         <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
@@ -248,6 +353,17 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                                                 </ListItemIcon>
                                                                 <Typography variant="inherit" noWrap>
                                                                     Evaluate
+                                                                </Typography>
+                                                            </MenuItem>
+                                                        }
+                                                        {
+                                                            project.documentation.finalDocumentation.status === 'External Assigned' && type === 'external' &&
+                                                            <MenuItem onClick={()=>handleClickScheduleExternal(project.documentation.finalDocumentation._id,project._id)}>
+                                                                <ListItemIcon>
+                                                                    <AssignmentTurnedInOutlined />
+                                                                </ListItemIcon>
+                                                                <Typography variant="inherit" noWrap>
+                                                                    Schedule External
                                                                 </Typography>
                                                             </MenuItem>
                                                         }
@@ -282,16 +398,16 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                     </div>
             }
             <Dialog
-                open={evaluationDialog}
-                onClose={()=>setEvaluationDialog(false)}
+                open={dialog.evaluation}
+                onClose={()=> setDialog({...dialog, evaluation:false})}
                 fullWidth
                 maxWidth='xs'
             >
-                {loading && <LinearProgress/>}
+                {loading.evaluation && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Evaluate</Typography>
                     <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=>setEvaluationDialog(false)}>
+                        <IconButton size='small' onClick={()=> setDialog({...dialog, evaluation:false})}>
                             <Close/>
                         </IconButton>
                     </Tooltip>
@@ -311,8 +427,36 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                         />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={()=>setEvaluationDialog(false)}>Cancel</Button>
+                    <Button onClick={()=> setDialog({...dialog, evaluation:false})}>Cancel</Button>
                     <Button variant='contained' color='secondary' onClick={handleConfirmEvaluation}>Confirm</Button>
+                </DialogActions>
+            </Dialog>
+
+        {/*External Scheduling Dialog*/}
+            <Dialog fullWidth maxWidth='sm' open={dialog.schedule} onClose={()=> setDialog({...dialog, schedule:false})}>
+                {loading.schedule && <LinearProgress/>}
+                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
+                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Schedule Internal</Typography>
+                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
+                        <IconButton size='small' onClick={()=> setDialog({...dialog, schedule:false})}>
+                            <Close/>
+                        </IconButton>
+                    </Tooltip>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <SchedulingDialogContent
+                        venue={venue}
+                        handleDateChange={handleDateChange}
+                        selectedDate={selectedDate}
+                        setVenue={setVenue}
+                    />
+
+                </DialogContent>
+                <DialogActions>
+                    <DialogActions>
+                        <Button onClick={()=> setDialog({...dialog, schedule:false})}>Cancel</Button>
+                        <Button variant='outlined' color='secondary' onClick={handleExternalSchedule}>Confirm</Button>
+                    </DialogActions>
                 </DialogActions>
             </Dialog>
         </div>

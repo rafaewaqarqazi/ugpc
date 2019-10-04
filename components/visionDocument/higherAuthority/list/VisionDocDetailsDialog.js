@@ -19,7 +19,6 @@ import { Send} from "@material-ui/icons";
 import VisionDocsContext from "../../../../context/visionDocs/visionDocs-context";
 
 import {getVisionDocsStatusChipColor} from "../../../../src/material-styles/visionDocsListBorderColor";
-import {assignSupervisorAuto, generateAcceptanceLetter} from "../../../../utils/apiCalls/projects";
 import SuccessSnackBar from "../../../snakbars/SuccessSnackBar";
 import ApprovalLetter from "../../../approvalLetter/ApprovalLetter";
 import CloseIcon from '@material-ui/icons/Close';

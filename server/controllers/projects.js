@@ -383,7 +383,7 @@ exports.scheduleInternal = async (req,res)=>{
                 <p>is Assigned to your Project as an Internal Examiner. Venue and Date is given below.</p>
                 <br/>
                 <p><b>Venue: </b>${venue}</p>
-                <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
+                <p><b>Date: </b> ${moment(selectedDate).format('LLL')}</p>
                 <p>Regard!</p>
             `
         };
@@ -421,10 +421,10 @@ exports.scheduleExternalDate = async (req,res)=>{
             text: `Dear Student,\n Your External is scheduled by examiner on ${selectedDate} at ${venue}`,
             html: `
                 <p>Dear Student,</p>
-                <p>Your External Viva-Voce is scheduled by you Examiner, details are given below.</p>
+                <p>Your External Viva-Voce is scheduled by your Examiner, details are given below.</p>
                 <br/>
                 <p><b>Venue: </b>${venue}</p>
-                <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
+                <p><b>Date: </b> ${moment(selectedDate).format('LLL')}</p>
                 <p>Regard!</p>
             `
         };
@@ -662,6 +662,8 @@ exports.fetchAssignedForEvaluation = async (req,res) =>{
                     "details.supervisor":1,
                     "details.internal":1,
                     "details.external":1,
+                    "details.marks.internal":1,
+                    "details.marks.external":1,
                     "students":1
                 }
             },
