@@ -264,6 +264,7 @@ exports.fetchForEvaluation = async (req,res) =>{
                     "department":1,
                     "documentation.visionDocument.title":1,
                     "documentation.finalDocumentation":1,
+                    "details.marks":1,
                     "details.internal":1,
                     "details.external":1,
                     "details.supervisor":1
@@ -290,7 +291,7 @@ exports.fetchForEvaluation = async (req,res) =>{
 exports.scheduleInternal = async (req,res)=>{
     try {
         const {venue,selectedDate,projectId,originalname,filename,title,supervisorId} = req.body;
-        //Finding Supervisor with minimum Numbers of Projects
+        //Finding Examiner with minimum Numbers of Projects
         const examiners =await Users.aggregate([
             {$match:{
                 $and:[
@@ -321,7 +322,7 @@ exports.scheduleInternal = async (req,res)=>{
             },
         ]);
 
-        //Choosing Supervisor Randomly from minimum Numbers
+        //Choosing Examiner Randomly from minimum Numbers
         if (examiners.length === 0){
             await res.json({error:'Seems like no Examiner has been registered Yet!'})
         }
@@ -334,18 +335,17 @@ exports.scheduleInternal = async (req,res)=>{
                 "details.internal.date":selectedDate
             },
             {new:true}
-        ).populate('students','-_id email student_details.regNo')
+        ).populate('students','-_id name email student_details.regNo')
             .populate({path:'details.internal.examiner',model:'Users',select:'name ugpc_details.designation'})
             .populate({path:'details.external.examiner',model:'Users',select:'name ugpc_details.designation'})
             .select('students title details.supervisor');
         const studentEmails =await project.students.map(student => student.email);
 
-        //Adding Project to Supervisor Details
+        //Adding Project to Examiner Details
         const a = await Users.updateOne({_id:examiner._id},{
             $push:{
                 "ugpc_details.projects":{
-                    project:projectId,
-                    title
+                    project:projectId
                 }
             }
         });
@@ -358,14 +358,15 @@ exports.scheduleInternal = async (req,res)=>{
             subject: "Project Assigned | Internal Evaluation",
             text: `Dear Examiner,\nProject named as ${title} And students with Registration Numbers: ${project.students.map(student => student.student_details.regNo)}, is assign to You for Internal Evaluation`,
             html: `
-                <p>Dear Examiner,</p>
-                <p>The Project named as: ${title}</p>
-                <p>And students with Registration Numbers:</p>
-                ${project.students.map(student => `<p>${student.student_details.regNo}</p>`)}
-                <p>is assigned to you for Internal Evaluation, venue and date is given below.</p>
+                <p>Dear Sir,</p>
+                <p>We are pleased to inform you that you have been appointed as Internal examiner for the evaluation of the project submitted by,</p>
+                 ${project.students.map((student,index) => `<p><b>Mr, ${student.name}, Registration No. ${student.student_details.regNo} ${index === 1 ? '&' :''}</b></p>`)}
+                <p>The Title of Project is: ${title}</p>
                 <br/>
+                <p> Venue and Date is given below.</p>
                 <p><b>Venue: </b>${venue}</p>
                 <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
+                <br/>
                 <p>Regard!</p>
             `,
             attachments:[{filename:originalname,path:`${process.env.CLIENT_URL}/static/pdf/${filename}`}]
@@ -393,10 +394,50 @@ exports.scheduleInternal = async (req,res)=>{
         await res.json({error:e.message})
     }
 };
-exports.scheduleExternal = async (req,res)=>{
+
+exports.scheduleExternalDate = async (req,res)=>{
     try {
-        const {venue,selectedDate,projectId,originalname,filename,title,supervisorId} = req.body;
-        //Finding Supervisor with minimum Numbers of Projects
+        const {venue,selectedDate,projectId} = req.body;
+
+        //Assigning ExternalDate Project
+        const project =await Projects.findOneAndUpdate(projectId,
+            {
+                "details.external.date":selectedDate
+            },
+            {new:true}
+        ).populate('students','-_id email student_details.regNo')
+            .populate({path:'details.internal.examiner',model:'Users',select:'name ugpc_details.designation'})
+            .populate({path:'details.external.examiner',model:'Users',select:'name ugpc_details.designation'})
+            .select('students title details.supervisor');
+        const studentEmails =await project.students.map(student => student.email);
+
+
+        //Sending Emails
+
+        const studentsEmailData = {
+            from: "noreply@node-react.com",
+            to: studentEmails,
+            subject: "External Scheduled",
+            text: `Dear Student,\n Your External is scheduled by examiner on ${selectedDate} at ${venue}`,
+            html: `
+                <p>Dear Student,</p>
+                <p>Your External Viva-Voce is scheduled by you Examiner, details are given below.</p>
+                <br/>
+                <p><b>Venue: </b>${venue}</p>
+                <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
+                <p>Regard!</p>
+            `
+        };
+        await sendEmail(studentsEmailData);
+        await res.json({success:'Scheduled'})
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.assignExternalAuto = async (req,res)=>{
+    try {
+        const {projectId,originalname,filename,title,supervisorId} = req.body;
+        //Finding Examiner with minimum Numbers of Projects
         const examiners =await Users.aggregate([
             {$match:{
                 $and:[
@@ -428,7 +469,7 @@ exports.scheduleExternal = async (req,res)=>{
             },
         ]);
 
-        //Choosing Supervisor Randomly from minimum Numbers
+        //Choosing Examiner Randomly from minimum Numbers
         if (examiners.length === 0){
             await res.json({error:'Seems like no Examiner has been registered Yet!'});
             return;
@@ -439,11 +480,10 @@ exports.scheduleExternal = async (req,res)=>{
             //Assigning ExternalExaminer-Updating Project
             const project =await Projects.findOneAndUpdate(projectId,
                 {
-                    "details.external.examiner":examiner._id,
-                    "details.external.date":selectedDate
+                    "details.external.examiner":examiner._id
                 },
                 {new:true}
-            ).populate('students','-_id email student_details.regNo')
+            ).populate('students','-_id name email student_details.regNo')
                 .populate({path:'details.internal.examiner',model:'Users',select:'name ugpc_details.designation'})
                 .populate({path:'details.external.examiner',model:'Users',select:'name ugpc_details.designation'})
                 .select('students title details.supervisor');
@@ -453,8 +493,7 @@ exports.scheduleExternal = async (req,res)=>{
             const a = await Users.updateOne({_id:examiner._id},{
                 $push:{
                     "ugpc_details.projects":{
-                        project:projectId,
-                        title
+                        project:projectId
                     }
                 }
             });
@@ -467,14 +506,13 @@ exports.scheduleExternal = async (req,res)=>{
                 subject: "Project Assigned | External Evaluation",
                 text: `Dear Examiner,\nProject named as ${title} And students with Registration Numbers: ${project.students.map(student => student.student_details.regNo)}, is assign to You for External Evaluation`,
                 html: `
-                <p>Dear Examiner,</p>
-                <p>The Project named as: ${title}</p>
-                <p>And students with Registration Numbers:</p>
-                ${project.students.map(student => `<p>${student.student_details.regNo}</p>`)}
-                <p>is assigned to you for External Evaluation, venue and date is given below.</p>
+                <p>Dear Sir,</p>
+                <p>We are pleased to inform you that you have been appointed as External examiner for the evaluation of the project submitted by,</p>
+                 ${project.students.map((student,index) => `<p><b>Mr, ${student.name}, Registration No. ${student.student_details.regNo} ${index === 1 ? '&' :''}</b></p>`)}
+                <p>The Title of Project is: ${title}</p>
                 <br/>
-                <p><b>Venue: </b>${venue}</p>
-                <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
+                <p>It will be appreciated if you kindly fix a suitable date for the Viva-Voce Examination of the students.</p>
+                <br/>
                 <p>Regard!</p>
             `,
                 attachments:[{filename:originalname,path:`${process.env.CLIENT_URL}/static/pdf/${filename}`}]
@@ -482,16 +520,14 @@ exports.scheduleExternal = async (req,res)=>{
             const studentsEmailData = {
                 from: "noreply@node-react.com",
                 to: studentEmails,
-                subject: "External Scheduled",
+                subject: "External Assigned",
                 text: `Dear Student,\n Name: ${examiner.name}\n email:${examiner.email}\n is assigned to your Project as an External Examiner`,
                 html: `
                 <p>Dear Student,</p>
                 <p><b>Name: </b> ${examiner.name}</p>
                 <p><b>Email: </b> ${examiner.email}</p>
-                <p>is Assigned to your Project as an External Examiner. Venue and Date is given below.</p>
+                <p>is Assigned to your Project as an External Examiner. Venue and date will be specified by Your Examiner.</p>
                 <br/>
-                <p><b>Venue: </b>${venue}</p>
-                <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
                 <p>Regard!</p>
             `
             };
@@ -504,7 +540,108 @@ exports.scheduleExternal = async (req,res)=>{
         await res.json({error:e.message})
     }
 };
+exports.fetchExternalExaminers = async (req,res)=>{
+    try {
+        const {projectId,supervisorId} = req.body;
+        //Finding Examiner with minimum Numbers of Projects
+        const examiners =await Users.aggregate([
+            {$match:{
+                    $and:[
+                        {"ugpc_details.committeeType":'Evaluation'},
+                        {"ugpc_details.projects.project":{$ne:mongoose.Types.ObjectId(projectId)}},
+                        {"_id":{$ne:mongoose.Types.ObjectId(supervisorId)}}
+                    ]
+                }},
+            {
+                $project:{
+                    email:1,
+                    name:1,
+                    "ugpc_details.designation":1,
+                    projectsCount:{
+                        $cond: {
+                            if: {
+                                $isArray: "$ugpc_details.projects"
+                            }, then: {
+                                $size: "$ugpc_details.projects"
+                            }, else: "0"
+                        }}
+                }
+            },
+            {$sort:{projectsCount: -1}}
+        ]);
+        await res.json(examiners)
 
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.assignExternalManual = async (req,res)=>{
+    try {
+        const {projectId,originalname,filename,title,examinerId} = req.body;
+        const examiner = await Users.findOne({"_id":examinerId})
+            .select('name email -_id');
+        //Assigning ExternalExaminer-Updating Project
+        const project =await Projects.findOneAndUpdate(projectId,
+            {
+                "details.external.examiner":examinerId
+            },
+            {new:true}
+        ).populate('students','-_id name email student_details.regNo')
+            .populate({path:'details.internal.examiner',model:'Users',select:'name ugpc_details.designation'})
+            .populate({path:'details.external.examiner',model:'Users',select:'name ugpc_details.designation'})
+            .select('students title details.supervisor');
+        const studentEmails =await project.students.map(student => student.email);
+
+        //Adding Project to Examiner Details
+        const a = await Users.updateOne({_id:examinerId},{
+            $push:{
+                "ugpc_details.projects":{
+                    project:projectId
+                }
+            }
+        });
+
+        //Sending Emails
+
+        const examinerEmailData = {
+            from: "noreply@node-react.com",
+            to: examiner.email,
+            subject: "Project Assigned | External Evaluation",
+            text: `Dear Examiner,\nProject named as ${title} And students with Registration Numbers: ${project.students.map(student => student.student_details.regNo)}, is assign to You for External Evaluation`,
+            html: `
+            <p>Dear Sir,</p>
+            <p>We are pleased to inform you that you have been appointed as External examiner for the evaluation of the project submitted by,</p>
+             ${project.students.map((student,index) => `<p><b>Mr, ${student.name}, Registration No. ${student.student_details.regNo} ${index === 1 ? '&' :''}</b></p>`)}
+            <p>The Title of Project is: ${title}</p>
+            <br/>
+            <p>It will be appreciated if you kindly fix a suitable date for the Viva-Voce Examination of the students.</p>
+            <br/>
+            <p>Regard!</p>
+        `,
+            attachments:[{filename:originalname,path:`${process.env.CLIENT_URL}/static/pdf/${filename}`}]
+        };
+        const studentsEmailData = {
+            from: "noreply@node-react.com",
+            to: studentEmails,
+            subject: "External Assigned",
+            text: `Dear Student,\n Name: ${examiner.name}\n email:${examiner.email}\n is assigned to your Project as an External Examiner`,
+            html: `
+            <p>Dear Student,</p>
+            <p><b>Name: </b> ${examiner.name}</p>
+            <p><b>Email: </b> ${examiner.email}</p>
+            <p>is Assigned to your Project as an External Examiner. Venue and date will be specified by Your Examiner.</p>
+            <br/>
+            <p>Regard!</p>
+        `
+        };
+        await sendEmail(examinerEmailData);
+        await sendEmail(studentsEmailData);
+        await res.json({success:'Assigned',examiner:project.details.external.examiner})
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
 exports.fetchAssignedForEvaluation = async (req,res) =>{
     try {
         const {userId} = req.params;
@@ -537,10 +674,10 @@ exports.fetchAssignedForEvaluation = async (req,res) =>{
             ]);
         const marks = await Users.findOne({"role":"Chairman DCSSE"})
             .select('chairman_details.settings.marksDistribution.internal chairman_details.settings.marksDistribution.external -_id')
-        await res.json({projects,marks:marks.chairman_details.settings.marksDistribution})
+        await res.json({projects,marks:marks?marks.chairman_details.settings.marksDistribution: {proposal: 10,supervisor: 10,internal: 30,external: 50}})
     }
     catch (e) {
-        await res.json(e.message)
+        await res.json({error:e.message})
     }
 };
 
@@ -575,7 +712,7 @@ exports.fetchForApprovalLetter = async (req,res)=>{
         ]);
         const projects = await Projects.populate(result,[
             {path:"details.supervisor",model:"Users",select:"name supervisor_details.position"},
-            {path:"students",model:"Users",select:"name student_details.regNo"}
+            {path:"students",model:"Users",select:"name student_details.regNo student_details.batch"}
         ]);
         const chairman = await Users.findOne({role:'Chairman DCSSE'})
             .select('-_id name');
@@ -583,4 +720,85 @@ exports.fetchForApprovalLetter = async (req,res)=>{
     }catch (e) {
         await res.json({error:e.message})
     }
-}
+};
+
+exports.fetchForExternalLetter = async (req,res)=>{
+    try {
+        const result = await Projects.aggregate([
+            {$unwind:"$documentation.visionDocument"},
+            {$match:{
+                    $or:[{"documentation.visionDocument.status":'Approved'},{"documentation.visionDocument.status":'Approved With Changes'}]
+                }
+            },
+            {
+                $project:{
+                    "department":1,
+                    "documentation.visionDocument.title":1,
+                    "documentation.finalDocumentation":1,
+                    "details.supervisor":1,
+                    "details.internal":1,
+                    "details.external":1,
+                    "details.acceptanceLetter":1,
+                    "students":1
+                }
+            },
+            {$unwind:"$documentation.finalDocumentation"},
+            {$match:{
+                    "documentation.finalDocumentation.status":{$in:['Available for External','External Assigned','External Scheduled']}
+                }
+            },
+            {
+                $sort:{"details.external.date":1}
+            }
+        ]);
+        const projects = await Projects.populate(result,[
+            {path:"details.supervisor",model:"Users",select:"name supervisor_details.position"},
+            {path:"details.internal.examiner",model:"Users",select:"name ugpc_details.designation"},
+            {path:"details.external.examiner",model:"Users",select:"name ugpc_details.designation"},
+            {path:"students",model:"Users",select:"name student_details.regNo student_details.batch"}
+        ]);
+
+        await res.json(projects)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.fetchCompleted = async (req,res)=>{
+    try {
+        const result = await Projects.aggregate([
+            {$unwind:"$documentation.visionDocument"},
+            {$match:{
+                    $or:[{"documentation.visionDocument.status":'Approved'},{"documentation.visionDocument.status":'Approved With Changes'}]
+                }
+            },
+            {
+                $project:{
+                    "department":1,
+                    "documentation.visionDocument.title":1,
+                    "documentation.finalDocumentation":1,
+                    "details.supervisor":1,
+                    "details.internal":1,
+                    "details.external":1,
+                    "details.marks":1,
+                    "details.acceptanceLetter":1,
+                    "students":1
+                }
+            },
+            {$unwind:"$documentation.finalDocumentation"},
+            {$match:{
+                    "documentation.finalDocumentation.status":'Completed'
+                }
+            }
+        ]);
+        const projects = await Projects.populate(result,[
+            {path:"details.supervisor",model:"Users",select:"name supervisor_details.position"},
+            {path:"details.internal.examiner",model:"Users",select:"name ugpc_details.designation"},
+            {path:"details.external.examiner",model:"Users",select:"name ugpc_details.designation"},
+            {path:"students",model:"Users",select:"name student_details.regNo student_details.batch"}
+        ]);
+
+        await res.json(projects)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};

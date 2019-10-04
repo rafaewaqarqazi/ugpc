@@ -89,4 +89,82 @@ export const getVisionDocsStatusChipColor = status =>{
             color:'white'
         }
     }
-}
+};
+
+export const getEvaluationListBorderColor = status =>{
+    if (status === 'Available for Internal'){
+        return {
+            borderLeft:'6px solid #1A237E'
+        }
+    }
+    else if (status === 'Internal Scheduled'){
+        return {
+            borderLeft:'6px solid #ff9800'
+        }
+    }
+    else if (status === 'Available for External'){
+        return {
+            borderLeft:'6px solid #ffc107'
+        }
+    }
+    else if (status === 'External Scheduled'){
+        return {
+            borderLeft:'6px solid #03a9f4'
+        }
+    }
+    else if (status === 'Completed'){
+        return {
+            borderLeft:'6px solid #4caf50',
+        }
+    }
+};
+
+export const getGradeChipColor = grade =>{
+    if (grade === 'A'){
+        return {
+            backgroundColor:'#2e7d32',
+            color:'white'
+        }
+    }
+    else if (grade === 'B+'){
+        return {
+            backgroundColor:'#004D40',
+
+            color:'white'
+        }
+    }
+    else if (grade === 'B'){
+        return {
+            backgroundColor:'#FBC02D',
+            color:'white'
+        }
+    }
+    else if (grade === 'C+'){
+        return {
+            backgroundColor:'#1565C0',
+            color:'white'
+        }
+    }
+    else if (grade === 'C'){
+        return {
+            backgroundColor:'#1A237E',
+            color:'white'
+        }
+    }
+    else if (grade === 'D+'){
+        return {
+            backgroundColor:'#b71c1c',
+            color:'white'
+        }
+    } else if (grade === 'D'){
+        return {
+            backgroundColor:'#b71c1c',
+            color:'white'
+        }
+    } else if (grade === 'F'){
+        return {
+            backgroundColor:'#b71c1c',
+            color:'white'
+        }
+    }
+};

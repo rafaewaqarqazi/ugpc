@@ -12,6 +12,7 @@ import {
 import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import React from "react";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
+import RenderStudents from "./RenderStudents";
 
 export const RenderDocBasicDetails = ({currentDocument,project}) =>{
     const classes = useDocDetailsDialogStyles();
@@ -45,39 +46,7 @@ export const RenderDocBasicDetails = ({currentDocument,project}) =>{
 
             </div>
             <div className={classes.detailsContent}>
-                <Typography variant='subtitle2'>
-                    Students
-                </Typography>
-                {
-                    project.students.map((student)=>
-                        <Container key={student._id}>
-                            <List>
-                                <ListItem alignItems="flex-start">
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={student.name}
-                                        secondary={
-                                            <React.Fragment>
-                                                <Typography
-                                                    component="span"
-                                                    variant="body2"
-                                                    display='inline'
-                                                    color="textPrimary"
-                                                >
-                                                    {student.department}
-                                                </Typography>
-                                                {` — ${student.student_details.regNo}`}
-                                            </React.Fragment>
-                                        }
-                                    />
-                                </ListItem>
-                            </List>
-                        </Container>
-                    )
-                }
-
+               <RenderStudents students={project.students}/>
             </div>
         </div>
     )

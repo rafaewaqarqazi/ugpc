@@ -41,6 +41,7 @@ const projectsSchema = new mongoose.Schema({
     details:{
         marks:{
           visionDocument: String,
+            supervisor:String,
           internal: String,
           external: String
         },

@@ -2,6 +2,11 @@ import {makeStyles} from "@material-ui/styles";
 import {getRandomColor} from "./randomColors";
 
 export const useListContainerStyles = makeStyles(theme=>({
+    root: {
+        position: 'relative',
+        overflow: 'auto',
+        maxHeight: 300,
+    },
     listContainer:{
         padding:theme.spacing(2,2,10,2),
         marginTop: theme.spacing(8),
@@ -58,6 +63,7 @@ export const useListContainerStyles = makeStyles(theme=>({
     },
     formControl: {
         minWidth: 160,
+        marginRight:theme.spacing(0.2)
     },
     headerIcon:{
         width: 36,

@@ -62,8 +62,8 @@ export const scheduleInternalAPI = async data =>{
     });
     return await res.json();
 };
-export const scheduleExternalAPI = async data =>{
-    const res = await fetch(`${serverUrl}/projects/schedule/external`,{
+export const assignExternalAutoAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/assign/external/auto`,{
         method:'PUT',
         headers:{
             Accept:'application/json',
@@ -71,6 +71,41 @@ export const scheduleExternalAPI = async data =>{
             Authorization:`Bearer ${isAuthenticated().token}`
         },
         body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+export const assignExternalManualAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/assign/external/manual`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+export const scheduleExternalDateAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/schedule/external/date`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+export const fetchExternalExaminersAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/projects/fetch/externalExaminers`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
     });
     return await res.json();
 };
@@ -112,6 +147,41 @@ export const evaluateExternalAPI = async data =>{
 };
 export const fetchForApprovalLetterAPI = async ()=>{
     const res = await fetch(`${serverUrl}/projects/fetch/forApprovalLetter`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+
+export const fetchForExternalLetterAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/projects/fetch/forExternalLetter`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+export const fetchCompletedProjectsAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/projects/fetch/completed`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+
+export const fetchExaminersAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/projects/fetch/externalExaminers`,{
         method:'GET',
         headers:{
             Accept:'application/json',

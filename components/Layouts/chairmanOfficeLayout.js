@@ -43,9 +43,7 @@ const ChairmanOfficeLayout = ({children})=> {
     },[]);
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
-    const [anchorEl, setAnchorEl] = useState(null);
     const [anchorEl2, setAnchorEl2] = useState(null);
-    const [openAddUser,setOpenAddUser] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerOpen = ()=> {
         setOpen(true);
@@ -108,15 +106,19 @@ const ChairmanOfficeLayout = ({children})=> {
                     </ListItem>
                 </Link>
 
-                <Link href='/chairmanOffice/letter/internalExternal'>
+                <Link href='/chairmanOffice/externals'>
                     <ListItem button >
                         <ListItemIcon>
                             <AssignmentOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Internal/External Letters"}  style={{whiteSpace:'normal'}}/>
+                        <ListItemText primary={"Externals"}/>
                     </ListItem>
                 </Link>
 
+
+            </List>
+            <Divider/>
+            <List>
                 <Link href='/chairmanOffice/completed'>
                     <ListItem button >
                         <ListItemIcon>

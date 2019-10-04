@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import ChairmanOfficeLayout from "../../../components/Layouts/chairmanOfficeLayout";
 import {
     AppBar,
-    Avatar,
     Container, Dialog, DialogContent, Divider,
     FormControl, IconButton, InputAdornment,
     InputLabel, ListItemIcon, Menu,
@@ -22,31 +21,20 @@ import {useListContainerStyles} from "../../../src/material-styles/listContainer
 import {withChairmanOfficeAuthSync} from "../../../components/routers/chairmanOfficeAuth";
 import {fetchForApprovalLetterAPI} from "../../../utils/apiCalls/projects";
 
-import {makeStyles} from "@material-ui/styles";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 import CloseIcon from "@material-ui/icons/Close";
 import ApprovalLetter from "../../../components/approvalLetter/ApprovalLetter";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
 import CircularLoading from "../../../components/loading/CircularLoading";
-const useStyles = makeStyles(theme =>({
-    tableRow:{
-        "&:hover":{
+import {useTableStyles} from "../../../src/material-styles/tableStyles";
 
-            boxShadow:theme.shadows[6]
-        }
-    },
-    tableWrapper:{
-        padding:theme.spacing(0.5),
-        overflow:'auto',
-        maxHeight:450
-    }
-}));
 const Approval = () => {
-    const projectsClasses = useStyles();
+    const tableClasses = useTableStyles();
     const documentClasses = useDocDetailsDialogStyles();
-    const classes = useListContainerStyles();
+    const containerClasses = useListContainerStyles();
     const styles = useListItemStyles();
     const [status, setStatus] = useState('All');
+    const [batch,setBatch] = useState('All');
     const [projects,setProjects]=useState([]);
     const [filteredProjects,setFilteredProjects] = useState([]);
     const [filter,setFilter] = useState([]);
@@ -65,31 +53,57 @@ const Approval = () => {
                 setFilteredProjects(result.projects);
                 setLoading(false);
             })
-    }
+    };
     useEffect(() =>{
         fetchData();
     }, []);
     const handleChange =(event)=> {
         setStatus(event.target.value);
-        switch (event.target.value) {
-            case 'All':
-                setFilteredProjects(projects);
-                setFilter(projects);
-                break;
-            case event.target.value :
-                let data = [];
-                projects.map(project => {
-                    if(project.department === event.target.value){
-                        data=[
-                            ...data,
-                            project
-                        ]
-                    }
-                });
-                setFilteredProjects(data);
-                setFilter(data);
-                break;
+        filterData(event.target.value,batch)
+    };
+    const filterData =(department,sBatch)=>{
+        let data = [];
+        if(department === 'All' && sBatch === 'All'){
+            setFilteredProjects(projects);
+            setFilter(projects);
+        }else if (department === 'All' && sBatch !== 'All'){
+            projects.map(project => {
+                if(project.students[0].student_details.batch === sBatch){
+                    data=[
+                        ...data,
+                        project
+                    ]
+                }
+            });
+            setFilteredProjects(data);
+            setFilter(data);
+        }else if (department !== 'All' && sBatch === 'All'){
+            projects.map(project => {
+                if(project.department === department){
+                    data=[
+                        ...data,
+                        project
+                    ]
+                }
+            });
+            setFilteredProjects(data);
+            setFilter(data);
+        }else {
+            projects.map(project => {
+                if(project.students[0].student_details.batch === sBatch && project.department === department){
+                    data=[
+                        ...data,
+                        project
+                    ]
+                }
+            });
+            setFilteredProjects(data);
+            setFilter(data);
         }
+    }
+    const handleChangeBatch =(event)=> {
+        setBatch(event.target.value);
+        filterData(status,event.target.value)
     };
     const handleChangeSearch = e =>{
         const data = filteredProjects;
@@ -102,26 +116,26 @@ const Approval = () => {
     return (
         <ChairmanOfficeLayout>
             <Container>
-                <div className={classes.listContainer}>
-                    <div className={classes.top}>
-                        <div className={classes.topIconBox} >
-                            <AssignmentOutlined className={classes.headerIcon}/>
+                <div className={containerClasses.listContainer}>
+                    <div className={containerClasses.top}>
+                        <div className={containerClasses.topIconBox} >
+                            <AssignmentOutlined className={containerClasses.headerIcon}/>
                         </div>
-                        <div className={classes.topTitle} >
+                        <div className={containerClasses.topTitle} >
                             <Typography variant='h5'>Approval Letters</Typography>
                         </div>
                     </div>
 
                     <div >
-                        <div className={classes.listHeader}>
-                            <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
+                        <div className={containerClasses.listHeader}>
+                            <FormControl variant="outlined"  margin='dense' className={containerClasses.formControl} >
                                 <InputLabel htmlFor="department">
                                     Department
                                 </InputLabel>
                                 <Select
                                     value={status}
                                     onChange={handleChange}
-                                    input={<OutlinedInput labelWidth={87} name="department" id="department" />}
+                                    input={<OutlinedInput labelWidth={87}  name="department" id="department" />}
                                 >
                                     <MenuItem value='All'>All</MenuItem>
                                     <MenuItem value='BSSE'>BSSE</MenuItem>
@@ -129,12 +143,30 @@ const Approval = () => {
                                     <MenuItem value='BSIT'>BSIT</MenuItem>
                                 </Select>
                             </FormControl>
+                            <FormControl variant="outlined" margin='dense' className={containerClasses.formControl}>
+                                <InputLabel htmlFor="batch">
+                                    Batch
+                                </InputLabel>
+                                <Select
+                                    value={batch}
+                                    onChange={handleChangeBatch}
+                                    input={<OutlinedInput labelWidth={42} name="batch" id="batch" />}
+                                >
+                                    <MenuItem value='All'>All</MenuItem>
+                                    <MenuItem value='F15'>F15</MenuItem>
+                                    <MenuItem value='F16'>F16</MenuItem>
+                                    <MenuItem value='F17'>F17</MenuItem>
+                                    <MenuItem value='F18'>F18</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <div style={{flexGrow:1}}/>
                             <TextField
                                 variant="outlined"
                                 label="Search"
                                 name='search'
                                 margin='dense'
-                                placeholder='Search For Projects'
+
+                                placeholder='Project Title here'
                                 onChange={handleChangeSearch}
                                 InputProps={{
                                     endAdornment: (
@@ -154,14 +186,15 @@ const Approval = () => {
                                         No Projects Found
                                     </div>
                                 </div>:
-                                <div className={projectsClasses.tableWrapper}>
+                                <div className={tableClasses.tableWrapper}>
 
                                     <Table size='small'>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell align="left">Title</TableCell>
                                                 <TableCell align="left">Department</TableCell>
-                                                <TableCell align="left">Students</TableCell>
+                                                <TableCell align="left">Batch</TableCell>
+                                                <TableCell align="left">RegistrationNo</TableCell>
                                                 <TableCell align="left">Supervisor</TableCell>
                                                 <TableCell align="left">Actions</TableCell>
                                             </TableRow>
@@ -171,19 +204,16 @@ const Approval = () => {
                                             {
                                                 filter.map((project,index) => (
                                                     <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
-                                                        <TableRow className={projectsClasses.tableRow} >
+                                                        <TableRow className={tableClasses.tableRow} >
                                                             <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
                                                             <TableCell align="left" >{project.department}</TableCell>
-                                                            <TableCell style={{display:'flex'}}>
+                                                            <TableCell align="left" >{project.students[0].student_details.batch}</TableCell>
+                                                            <TableCell >
                                                                 {
                                                                     project.students.map((student,index) =>
-                                                                        <Tooltip key={index} title={student.student_details.regNo} placement='top'>
-                                                                            <Avatar className={styles.avatar}>
-                                                                                {
-                                                                                    student.name.charAt(0).toUpperCase()
-                                                                                }
-                                                                            </Avatar>
-                                                                        </Tooltip>
+                                                                        <div key={index}>
+                                                                            {`${student.student_details.regNo.slice(0,4)} ${index === 1 ? '& ':''}`}
+                                                                        </div>
                                                                     )
                                                                 }
                                                             </TableCell>

@@ -24,6 +24,7 @@ const Index = () => {
     const [status, setStatus] = useState('All');
     const [projects,setProjects]=useState([]);
     const [filter,setFilter] = useState([]);
+    const [filteredProjects,setFilteredProjects] = useState([]);
     const [loading,setLoading] = useState(true);
     const fetchData =()=>{
         setLoading(true);
@@ -33,6 +34,7 @@ const Index = () => {
                 setProjects(result);
                 setStatus('All')
                 setFilter(result);
+                setFilteredProjects(result);
                 setLoading(false)
             })
     };
@@ -55,13 +57,14 @@ const Index = () => {
                         ]
                     }
                 });
+                setFilteredProjects(data);
                 setFilter(data);
                 break;
         }
     };
     const handleChangeSearch = e =>{
-        // const data = documents;
-        // setFilter(e.target.value !==''? data.filter(doc => doc.documentation.visionDocument.title.toLowerCase().includes(e.target.value.toLowerCase())) : documents)
+        const data = filteredProjects;
+        setFilter(e.target.value !==''? data.filter(doc => doc.documentation.visionDocument.title.toLowerCase().includes(e.target.value.toLowerCase())) : filteredProjects)
     };
     return (
         <EvaluationChairmanLayout>
@@ -103,7 +106,7 @@ const Index = () => {
                                         name='search'
                                         margin='dense'
                                         placeholder='Search For Projects'
-                                        // onChange={handleChangeSearch}
+                                        onChange={handleChangeSearch}
                                         InputProps={{
                                             endAdornment: (
                                                 <InputAdornment position="end">

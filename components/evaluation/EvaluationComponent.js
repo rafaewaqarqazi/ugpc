@@ -44,6 +44,11 @@ const EvaluationComponent = () => {
         fetchAssignedForEvaluationProjects()
             .then(result =>{
                 console.log(result)
+                if (result.error){
+                    console.log('Error: ',result.error);
+                    setLoading(false);
+                    return;
+                }
                 setProjects(result.projects);
                 setMarks(result.marks);
                 setLoading(false);

@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import {
+    Chip,
     Dialog, DialogActions, DialogContent, DialogTitle,
     IconButton, LinearProgress, ListItemIcon, Menu, MenuItem,
     Table,
@@ -21,9 +22,11 @@ import {
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import Button from "@material-ui/core/Button";
 import SchedulingDialogContent from "../coordinator/presentations/SchedulingDialogContent";
-import {scheduleExternalAPI, scheduleInternalAPI} from "../../utils/apiCalls/projects";
+import { scheduleInternalAPI} from "../../utils/apiCalls/projects";
 import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
 import ErrorSnackBar from "../snakbars/ErrorSnackBar";
+import {getGrade} from "../../utils";
+import {getEvaluationListBorderColor, getGradeChipColor} from "../../src/material-styles/visionDocsListBorderColor";
 const useStyles = makeStyles(theme =>({
     tableRow:{
         "&:hover":{
@@ -129,52 +132,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
 
             })
     };
-    const handleExternalSchedule = ()=>{
-        setLoading({
-            ...loading,
-            external:true
-        });
-        const sData = {
-            venue,
-            selectedDate,
-            ...data
-        };
-        scheduleExternalAPI(sData)
-            .then(result =>{
-                if (result.error){
-                    setLoading({
-                        ...loading,
-                        external:false
-                    });
 
-                    setOpenDialog({
-                        ...openDialog,
-                        external:false
-                    });
-                    setOpenError(true);
-                    return
-                }else {
-                    const statusData = {
-                        projectId:data.projectId,
-                        status:'External Scheduled',
-                        documentId
-                    };
-                    changeFinalDocumentationStatusAPI(statusData)
-                        .then(res =>{
-                            setLoading({
-                                ...loading,
-                                internal:false
-                            });
-
-                            setOpenDialog({
-                                ...openDialog,
-                                external:false
-                            });
-                            fetchData();
-                        })
-                }
-            })
-    };
     return (
         <div>
             <ErrorSnackBar open={openError} handleSnackBar={()=>setOpenError(false)} message={'Examiner Not Found!'}/>
@@ -197,6 +155,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                                 <TableCell align="left">OnDate</TableCell>
                                 <TableCell align="left">External</TableCell>
                                 <TableCell align="left">OnDate</TableCell>
+                                <TableCell align="left">Grade</TableCell>
                                 <TableCell align="left">Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -205,17 +164,22 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                             {
                                 filter.map((project,index) => (
                                     <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
-                                        <TableRow className={projectsClasses.tableRow} >
+                                        <TableRow className={projectsClasses.tableRow} style={getEvaluationListBorderColor(project.documentation.finalDocumentation.status)}>
                                             <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
                                             <TableCell >{project.department}</TableCell>
                                             <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
                                                 <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
                                             </Tooltip>
                                             <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
-                                            <TableCell align="left">{project.details.internal.examiner ? project.details.internal.examiner.name : 'Not Assigned'}</TableCell>
+                                            <Tooltip  title={project.details.internal.examiner ? project.details.internal.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                                <TableCell align="left">{project.details.internal.examiner ? project.details.internal.examiner.name : 'Not Assigned'}</TableCell>
+                                            </Tooltip>
                                             <TableCell align="left">{project.details.internal.date ? moment(project.details.internal.date).format('MMM DD, YYYY')  : 'Not Assigned'}</TableCell>
-                                            <TableCell align="left">{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
+                                            <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                                <TableCell align="left">{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
+                                            </Tooltip>
                                             <TableCell align="left">{project.details.external.date ? moment(project.details.external.date).format('MMM DD, YYYY') : 'Not Assigned'}</TableCell>
+                                            <TableCell align="left">{project.documentation.finalDocumentation.status === 'Completed' ?  <Chip  label={getGrade(project.details.marks)} style={getGradeChipColor(getGrade(project.details.marks))}  size="small"/>  : 'Not Specified'}</TableCell>
                                             <TableCell align="left">
                                                 <Tooltip title='Click for Actions' placement='top'>
                                                     <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
@@ -240,17 +204,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                                                             </Typography>
                                                         </MenuItem>
                                                     }
-                                                    {
-                                                        project.documentation.finalDocumentation.status === 'Available for External' &&
-                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.details.supervisor._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'external')}>
-                                                            <ListItemIcon>
-                                                                <AccessTimeOutlined />
-                                                            </ListItemIcon>
-                                                            <Typography variant="inherit" noWrap>
-                                                                Schedule External
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    }
+
                                                     <MenuItem onClick={()=>setAnchorEl(null)}>
                                                         <ListItemIcon>
                                                             <Close />
@@ -306,41 +260,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                     </DialogActions>
                 </DialogActions>
             </Dialog>
-
-            {/*External Dialog*/}
-            <Dialog fullWidth maxWidth='sm' open={openDialog.external} onClose={()=>setOpenDialog({...openDialog,external:false})}>
-                {loading.external && <LinearProgress/>}
-                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Schedule External</Typography>
-                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=>setOpenDialog({...openDialog,external:false})}>
-                            <Close/>
-                        </IconButton>
-                    </Tooltip>
-                </DialogTitle>
-                <DialogContent dividers>
-                    <SchedulingDialogContent
-                        venue={venue}
-                        handleDateChange={handleDateChange}
-                        selectedDate={selectedDate}
-                        setVenue={setVenue}
-                        />
-                    <Typography variant='subtitle2' display='inline'>Note: </Typography>
-                    <Typography
-                        variant='subtitle1'
-                        color='textSecondary'
-                        display='inline'
-                    >
-                        Examiner Will be assigned Automatically based on his load
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <DialogActions>
-                        <Button  onClick={()=>setOpenDialog({...openDialog,external:false})}>Cancel</Button>
-                        <Button variant='outlined' color='secondary' onClick={handleExternalSchedule}>Confirm</Button>
-                    </DialogActions>
-                </DialogActions>
-            </Dialog>
+            
         </div>
     );
 };
