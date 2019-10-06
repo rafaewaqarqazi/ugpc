@@ -9,4 +9,7 @@ export default React.createContext({
     fetchUserById: () =>{},
     distributeMarks:marks=>{},
     removeUser: ()=>{},
+    uploadProfileImage:image=>{},
+    changeName:data=>{},
+    changePassword:data=>{}
 })

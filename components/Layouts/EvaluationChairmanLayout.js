@@ -48,7 +48,7 @@ const EvaluationChairmanLayout = ({children})=> {
                 open={Boolean(anchorEl2)}
                 onClose={()=> setAnchorEl2(null)}
             >
-                <Link href='/user/profile'>
+                <Link href='/committee/evaluation/profile'>
                     <MenuItem>
                         <ListItemIcon>
                             <PermIdentity />

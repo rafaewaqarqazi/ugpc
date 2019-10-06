@@ -11,10 +11,8 @@ import {
     ListItemText,
     ListItemIcon,
     Tooltip,
-    Menu,
     MenuItem,
     Avatar,
-    Typography,
     Hidden,
     AppBar,
     Toolbar,
@@ -30,14 +28,15 @@ import {
     Laptop,
     ChevronLeft,
     ChevronRight,
-    PermIdentity,
-    ExitToAppOutlined, AssignmentOutlined,
+    AssignmentOutlined,
 } from "@material-ui/icons";
-import {signout} from "../../auth";
+
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import MenuIcon from '@material-ui/icons/Menu';
 
+import Router from 'next/router';
+import ProfileMenu from "../profile/ProfileMenu";
 const SupervisorLayout = ({children})=> {
     const userContext = useContext(UserContext);
     useEffect(()=>{
@@ -45,19 +44,12 @@ const SupervisorLayout = ({children})=> {
     },[]);
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
-    const [anchorEl2, setAnchorEl2] = React.useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerOpen = ()=> {
         setOpen(true);
     };
     const handleDrawerClose =()=> {
         setOpen(false);
-    };
-    const handleProfileMenuClose = ()=>{
-        setAnchorEl2(null);
-    };
-    const handleProfileMenuClick = event =>{
-        setAnchorEl2(event.currentTarget)
     };
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
@@ -98,28 +90,10 @@ const SupervisorLayout = ({children})=> {
         </Fragment>
 
     );
-    const profileMenu = (
-        <div>
-            <Link href='/user/profile'>
-                <MenuItem>
-                    <ListItemIcon>
-                        <PermIdentity />
-                    </ListItemIcon>
-                    <Typography variant="inherit" noWrap>
-                        Profile
-                    </Typography>
-                </MenuItem>
-            </Link>
-            <MenuItem onClick={()=>signout()}>
-                <ListItemIcon>
-                    <ExitToAppOutlined />
-                </ListItemIcon>
-                <Typography variant="inherit" noWrap>
-                    Sign Out
-                </Typography>
-            </MenuItem>
-        </div>
-    );
+    const handleClickProfile = ()=>{
+        Router.push('/supervisor/profile')
+    };
+
     const accountSwitch = (
         userContext.user.isLoading ? <div /> : userContext.user.user.additionalRole ?
             <FormControl variant="outlined" margin='dense' >
@@ -203,22 +177,8 @@ const SupervisorLayout = ({children})=> {
                                 </Tooltip>
                             </div>
 
-                            <Tooltip title='Your Profile & Settings' placement='right'>
-                                <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                    {
-                                        !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                    }
-                                </Avatar>
-                            </Tooltip>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl2}
-                                keepMounted
-                                open={Boolean(anchorEl2)}
-                                onClose={handleProfileMenuClose}
-                            >
-                                {profileMenu}
-                            </Menu>
+                            <ProfileMenu handleClickProfile={handleClickProfile}/>
+
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -293,23 +253,7 @@ const SupervisorLayout = ({children})=> {
                                     </div>
 
                                     <div className={classes.menuRightTopContent}>
-                                        <Tooltip title='Your Profile & Settings' placement='right'>
-                                            <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                                {
-                                                    !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                                }
-                                            </Avatar>
-                                        </Tooltip>
-                                        <Menu
-                                            id="simple-menu"
-                                            anchorEl={anchorEl2}
-                                            keepMounted
-                                            open={Boolean(anchorEl2)}
-                                            onClose={handleProfileMenuClose}
-                                        >
-                                            {profileMenu}
-
-                                        </Menu>
+                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
                                 </div>
                             </div>

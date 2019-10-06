@@ -76,7 +76,7 @@ const ChairmanPanelLayout = ({children})=> {
                 onClose={()=>setAnchorEl2(null)}
             >
                 <div>
-                    <Link href='/user/profile'>
+                    <Link href='/chairman/profile'>
                         <MenuItem>
                             <ListItemIcon>
                                 <PermIdentity />

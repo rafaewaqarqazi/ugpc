@@ -73,7 +73,7 @@ const ProgramOfficeLayout =  props => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <Link href='/user/profile'>
+            <Link href='/program-office/profile'>
                 <MenuItem onClick={handleMenuClose}>
                     <ListItemIcon>
                         <PermIdentity />

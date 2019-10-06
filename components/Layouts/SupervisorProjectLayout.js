@@ -151,7 +151,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     );
     const profileMenu = (
         <div>
-            <Link href='/user/profile'>
+            <Link href='/supervisor/profile'>
                 <MenuItem>
                     <ListItemIcon>
                         <PermIdentity />

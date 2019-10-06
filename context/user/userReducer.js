@@ -24,6 +24,24 @@ export const userReducer = (state, action) => {
                 errMess: action.payload,
                 user: {}
             };
+        case Actions.ADD_PROFILE_IMAGE:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    profileImage:{
+                        filename:action.payload
+                    }
+                }
+            };
+        case Actions.CHANGE_NAME:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    name:action.payload
+                }
+            };
         case Actions.REMOVE_USER:
             return {};
         default:

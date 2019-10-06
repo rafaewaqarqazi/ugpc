@@ -156,7 +156,7 @@ const CoordinatorLayout = ({children})=> {
     );
     const profileMenu = (
         <div>
-            <Link href='/user/profile'>
+            <Link href='/committee/defence/coordinator/profile'>
                 <MenuItem>
                     <ListItemIcon>
                         <PermIdentity />

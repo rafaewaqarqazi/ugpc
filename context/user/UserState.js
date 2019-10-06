@@ -1,8 +1,13 @@
 import React, {useReducer, useEffect} from 'react';
 import UserContext from './user-context';
 import {userReducer} from "./userReducer";
-import {getUserById, createNewUser} from "./ActionCreators";
-import {marksDistributionAPI} from '../../utils/apiCalls/users';
+import {getUserById, createNewUser,uploadProfileImageAction,changeNameAction} from "./ActionCreators";
+import {
+    marksDistributionAPI,
+    uploadProfileImageAPI,
+    changeNameAPI,
+    changePasswordAPI
+} from '../../utils/apiCalls/users';
 
 const UserState = (props) => {
     const [state, dispatch] = useReducer(userReducer,{
@@ -20,7 +25,21 @@ const UserState = (props) => {
     const distributeMarks = async (marks)=>{
         const user = await marksDistributionAPI(marks);
 
-    }
+    };
+    const uploadProfileImage = async image =>{
+        const result = await uploadProfileImageAPI(image);
+       await dispatch(uploadProfileImageAction(result));
+       return await result
+    };
+    const changeName = async data =>{
+        const result = await changeNameAPI(data);
+         dispatch(changeNameAction(data.name));
+        return await result
+    };
+    const changePassword = async data =>{
+        const result = await changePasswordAPI(data);
+        return await result
+    };
     useEffect(()=>{
         console.log('User State:',state)
     },[state]);
@@ -29,7 +48,10 @@ const UserState = (props) => {
             user:state,
             fetchUserById,
             createUser,
-            distributeMarks
+            distributeMarks,
+            uploadProfileImage,
+            changeName,
+            changePassword
         }}>
             {props.children}
         </UserContext.Provider>

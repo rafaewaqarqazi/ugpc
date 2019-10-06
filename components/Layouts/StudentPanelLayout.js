@@ -9,12 +9,12 @@ import {
     Hidden, Toolbar, Button, AppBar
 } from '@material-ui/core';
 import {ListAltOutlined, ChevronRight, ChevronLeft, Add,
-    DashboardOutlined, AssignmentOutlined, ViewColumnOutlined, Face, ExitToAppOutlined, PermIdentity,
+    DashboardOutlined, AssignmentOutlined, ViewColumnOutlined,
     SettingsOutlined,
     ShowChartOutlined
 } from '@material-ui/icons';
 import Link from "next/link";
-import {signout} from "../../auth";
+
 import ProjectContext from '../../context/project/project-context';
 import UserContext from '../../context/user/user-context';
 import StudentRouter from "../routers/StudentRouter";
@@ -22,7 +22,8 @@ import clsx from "clsx";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from '@material-ui/icons/Menu';
-
+import Router from 'next/router'
+import ProfileMenu from "../profile/ProfileMenu";
 
 const StudentPanelLayout = ({children})=> {
     const classes = useDrawerStyles();
@@ -31,7 +32,6 @@ const StudentPanelLayout = ({children})=> {
     const [open, setOpen] = useState(true);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [anchorEl2, setAnchorEl2] = React.useState(null);
     useEffect(()=>{
         projectContext.fetchByStudentId();
         userContext.fetchUserById()
@@ -50,13 +50,6 @@ const StudentPanelLayout = ({children})=> {
         setAnchorEl(event.currentTarget)
     };
 
-
-    const handleProfileMenuClose = ()=>{
-        setAnchorEl2(null);
-    };
-    const handleProfileMenuClick = event =>{
-        setAnchorEl2(event.currentTarget)
-    };
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
     };
@@ -85,29 +78,6 @@ const StudentPanelLayout = ({children})=> {
             </Link>
         </div>
     );
-    const profileMenu = (
-        <div>
-            <Link href='/user/profile'>
-                <MenuItem>
-                    <ListItemIcon>
-                        <PermIdentity />
-                    </ListItemIcon>
-                    <Typography variant="inherit" noWrap>
-                        Profile
-                    </Typography>
-                </MenuItem>
-            </Link>
-            <MenuItem onClick={()=>signout()}>
-                <ListItemIcon>
-                    <ExitToAppOutlined />
-                </ListItemIcon>
-                <Typography variant="inherit" noWrap>
-                    Sign Out
-                </Typography>
-            </MenuItem>
-
-        </div>
-    )
     const drawer = (
         <Fragment>
             <List>
@@ -165,7 +135,10 @@ const StudentPanelLayout = ({children})=> {
             </List>
         </Fragment>
 
-    )
+    );
+     const handleClickProfile = ()=>{
+         Router.push('/student/profile');
+     };
     return (
         <div >
             <CssBaseline />
@@ -197,20 +170,7 @@ const StudentPanelLayout = ({children})=> {
                                 >
                                     {addMenu}
                                 </Menu>
-                            <Tooltip title='Your Profile & Settings' placement='right'>
-                                <IconButton onClick={handleProfileMenuClick} size='small'>
-                                    <Face fontSize='large'/>
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl2}
-                                keepMounted
-                                open={Boolean(anchorEl2)}
-                                onClose={handleProfileMenuClose}
-                            >
-                                {profileMenu}
-                            </Menu>
+                            <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -301,21 +261,7 @@ const StudentPanelLayout = ({children})=> {
                                     </div>
 
                                     <div className={classes.menuRightTopContent}>
-                                        <Tooltip title='Your Profile & Settings' placement='right'>
-                                            <IconButton onClick={handleProfileMenuClick} size='small'>
-                                                <Face fontSize='large'/>
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Menu
-                                            id="simple-menu"
-                                            anchorEl={anchorEl2}
-                                            keepMounted
-                                            open={Boolean(anchorEl2)}
-                                            onClose={handleProfileMenuClose}
-                                        >
-                                            {profileMenu}
-
-                                        </Menu>
+                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
                                 </div>
                             </div>

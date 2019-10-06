@@ -5,14 +5,16 @@ exports.userById =(req,res,next,id)=>{
         .populate('supervisor_details.projects.project','department students details.backlog details.sprint details.estimatedDeadline details.acceptanceLetter.issueDate')
         .then( user=> {
             User.populate(user,{path:'supervisor_details.projects.project.students',model:'Users',select:'name student_details.regNo'}).then(result =>{
-                const {_id, name, email, role,additionalRole,department,isEmailVerified,student_details,ugpc_details,chairman_details,supervisor_details} = result;
+                const {_id, name, email, role,additionalRole,department,isEmailVerified,student_details,ugpc_details,chairman_details,supervisor_details,createdAt,profileImage} = result;
                 const loggedInUser = {
                     _id,
                     email,
                     name,
                     role,
+                    createdAt,
                     additionalRole,
                     department,
+                    profileImage,
                     isEmailVerified,
                     student_details:role==='Student'? student_details :undefined,
                     ugpc_details: additionalRole==='UGPC_Member'? ugpc_details :undefined,
@@ -42,4 +44,62 @@ exports.marksDistribution = async (req, res) =>{
     }catch (e) {
         await res.json(e.message)
     }
-}
+};
+
+exports.uploadProfileImage = async (req, res)=>{
+    try {
+        const result = await User.updateOne({"_id":req.body.userId},{
+            $set:{"profileImage.filename":req.file.filename}
+        });
+        if(result.ok){
+            await res.json(req.file.filename)
+        }
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+
+};
+
+exports.changeName = async (req,res)=>{
+    try {
+        const {name,userId} = req.body;
+        const result = await User.updateOne({"_id":userId},{
+            $set:{"name":name}
+        });
+        if(result.ok){
+            await res.json({message:'Successfully Updated'})
+        }
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.changePassword = async (req,res)=>{
+    try {
+        const {oldPassword,newPassword,userId} = req.body;
+        const user = await User.findOne({"_id":userId});
+        if (!user.authenticate(oldPassword)){
+            return res.status(401).json({
+                error:"Old Password is incorrect"
+            })
+        }
+        const updatedFields = {
+            password: newPassword
+        };
+
+        Object.assign(user,updatedFields);
+        user.updated = Date.now();
+
+        user.save((err, result) => {
+            if (err) {
+                return res.status(400).json({
+                    error: err
+                });
+            }
+            res.json({
+                message: `Password Changed Successfully`
+            });
+        });
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};

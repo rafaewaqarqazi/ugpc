@@ -39,7 +39,8 @@ export const useListContainerStyles = makeStyles(theme=>({
         justifyContent:'center',
         alignItems:'center',
         boxShadow:theme.shadows[2],
-        marginTop:-theme.spacing(5),
+        marginTop:-theme.spacing(6),
+        marginLeft:theme.spacing(3),
         borderRadius:5
     },
     topTitle:{

@@ -24,8 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     updatedAt:Date,
     profileImage:{
-        data:Buffer,
-        contentType:String
+        filename:String
     },
     role:{
         type:String,

@@ -14,6 +14,7 @@ export const useDrawerStyles = makeStyles(theme => ({
         width: drawerWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
+
     },
     drawerOpen: {
         width: drawerWidth,
@@ -96,6 +97,10 @@ export const useDrawerStyles = makeStyles(theme => ({
         width:32,
         height:32,
         fontSize:16
+    },
+    imageAvatar:{
+        width:32,
+        height:32,
     },
     avatarSize:{
         width:100,

@@ -57,6 +57,7 @@
     "nodemon": "1.19.1",
     "random-material-color": "1.0.5",
     "react": "16.9.0",
+    "react-avatar-editor": "11.0.7",
     "react-beautiful-dnd": "11.0.5",
     "react-chartjs-2": "2.8.0",
     "react-dom": "16.9.0",

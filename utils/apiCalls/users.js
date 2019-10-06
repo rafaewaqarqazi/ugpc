@@ -58,4 +58,40 @@ export const marksDistributionAPI = async marks =>{
         body:JSON.stringify({marks,userId:isAuthenticated().user._id})
     });
     return await res.json();
-}
+};
+export const uploadProfileImageAPI = async image =>{
+    const res = await fetch(`${serverUrl}/users/profile/upload/images`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:image
+    });
+    return await res.json();
+};
+
+export const changeNameAPI = async data =>{
+    const res = await fetch(`${serverUrl}/users/change/name`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+export const changePasswordAPI = async data =>{
+    const res = await fetch(`${serverUrl}/users/change/password`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
