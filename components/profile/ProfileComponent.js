@@ -344,7 +344,11 @@ const ProfileComponent = () => {
 
 
                                                 <div className={profileClasses.marginTop}>
-                                                    <ProfileImageUpload userId={userContext.user.user._id} uploadProfileImage={userContext.uploadProfileImage}/>
+                                                    <ProfileImageUpload
+                                                        userId={userContext.user.user._id}
+                                                        uploadProfileImage={userContext.uploadProfileImage}
+                                                        oldImage={userContext.user.user.profileImage.filename}
+                                                    />
                                                 </div>
                                                 <Typography variant='subtitle1' color='textSecondary' className={profileClasses.marginTop}>Joined On {moment(userContext.user.user.createdAt).format('MMM DD, YYYY')}</Typography>
                                                 <Chip

@@ -1,5 +1,7 @@
 const User = require('../models/users');
-
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config()
 exports.userById =(req,res,next,id)=>{
     User.findById(id)
         .populate('supervisor_details.projects.project','department students details.backlog details.sprint details.estimatedDeadline details.acceptanceLetter.issueDate')
@@ -46,17 +48,23 @@ exports.marksDistribution = async (req, res) =>{
     }
 };
 
-exports.uploadProfileImage = async (req, res)=>{
-    try {
-        const result = await User.updateOne({"_id":req.body.userId},{
-            $set:{"profileImage.filename":req.file.filename}
-        });
-        if(result.ok){
-            await res.json(req.file.filename)
+exports.uploadProfileImage = (req, res)=>{
+    const {oldImage,userId} = req.body;
+    fs.unlink(`static/images/${oldImage}`,err => {
+        if(err){
+            console.log(err)
         }
-    }catch (e) {
-        await res.json({error:e.message})
-    }
+        User.updateOne({"_id":userId},{
+            $set:{"profileImage.filename":req.file.filename}
+        }).then(result =>{
+            if(result.ok){
+               res.json(req.file.filename)
+            }
+        }).catch(error => console.log({error:error.message}))
+
+    });
+
+
 
 };
 

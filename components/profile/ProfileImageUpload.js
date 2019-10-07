@@ -50,6 +50,7 @@ class ProfileImageUpload extends Component {
                 .then(blob => {
                     this.formData.set('file',blob,this.state.image.fileName);
                     this.formData.set('userId',this.props.userId);
+                    this.formData.set('oldImage',this.props.oldImage)
                     this.props.uploadProfileImage(this.formData)
                         .then(result => {
                             if (result.error){
