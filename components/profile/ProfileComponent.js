@@ -3,11 +3,9 @@ import UserContext from '../../context/user/user-context';
 import {
     LinearProgress,
     Typography,
-    Container,
     Grid,
     Paper,
     Avatar,
-    Tooltip,
     Chip,
     Button,
     ExpansionPanelSummary,
@@ -15,21 +13,17 @@ import {
     CircularProgress,
     ExpansionPanel,
     TextField,
-    Dialog,
-    DialogContent,
-    DialogTitle, Zoom, IconButton, DialogActions
 } from "@material-ui/core";
-import {AccountCircleOutlined, BackupOutlined, Close, Edit, ExpandMore} from "@material-ui/icons";
+import {AccountCircleOutlined, ExpandMore} from "@material-ui/icons";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
 import {green} from "@material-ui/core/colors";
 import {getRandomColor} from "../../src/material-styles/randomColors";
 import moment from "moment";
-import AvatarEditor from 'react-avatar-editor';
-import {DropzoneArea} from 'material-ui-dropzone';
 import ProfileImageUpload from "./ProfileImageUpload";
 import {serverUrl} from "../../utils/config";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
+import ProfileStudentDetails from "./ProfileStudentDetails";
 const useProfileStyles = makeStyles(theme =>({
     innerContainer:{
         margin:theme.spacing(1)
@@ -94,6 +88,9 @@ const useProfileStyles = makeStyles(theme =>({
         marginTop: -12,
         marginLeft: -12,
     },
+    studentDetails:{
+        padding:theme.spacing(2)
+    }
 }));
 const ProfileComponent = () => {
     const userContext = useContext(UserContext);
@@ -103,9 +100,6 @@ const ProfileComponent = () => {
     const [success,setSuccess]= useState({
         show:false,
         message:''
-    })
-    const [dialog,setDialog] = useState({
-        profileImage:false
     });
     const [loading,setLoading] = useState({
         name:false,
@@ -478,10 +472,21 @@ const ProfileComponent = () => {
                                 </div>
 
                             </div>
-
+                            {
+                                userContext.user.user.role === 'Student' &&
                             <div className={`${profileClasses.innerContainer} ${profileClasses.marginTop}`}>
                                 <Typography variant='h5' color='textSecondary'>Details</Typography>
+
+                                    <Paper className={`${profileClasses.studentDetails} ${profileClasses.marginTop}`}>
+                                        <ProfileStudentDetails
+                                            studentDetails={userContext.user.user.student_details}
+                                            department={userContext.user.user.department}
+                                            />
+                                    </Paper>
+
                             </div>
+                            }
+
                         </div>
                     </div>
 

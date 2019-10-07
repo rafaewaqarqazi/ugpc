@@ -6,7 +6,7 @@ import {
     ListItem, ListItemIcon,
     Avatar, Tooltip, Menu,
     MenuItem,
-    Hidden, Toolbar, Button, AppBar
+    Hidden, Toolbar, AppBar
 } from '@material-ui/core';
 import {ListAltOutlined, ChevronRight, ChevronLeft, Add,
     DashboardOutlined, AssignmentOutlined, ViewColumnOutlined,

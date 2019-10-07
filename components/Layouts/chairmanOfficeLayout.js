@@ -11,13 +11,10 @@ import {
     ListItemText,
     ListItemIcon,
     Tooltip,
-    Menu,
-    MenuItem,
     Hidden,
     AppBar,
     Toolbar,
     Avatar,
-    Typography
 } from '@material-ui/core';
 import Link from "next/link";
 import {
@@ -26,16 +23,12 @@ import {
 
     ChevronLeft,
     ChevronRight,
-    PermIdentity,
-    ExitToAppOutlined,
 } from "@material-ui/icons";
-import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
-import UserState from "../../context/user/UserState";
-
 import MenuIcon from "@material-ui/icons/Menu";
 import UserContext from "../../context/user/user-context";
-
+import ProfileMenu from "../profile/ProfileMenu";
+import Router from 'next/router';
 const ChairmanOfficeLayout = ({children})=> {
     const userContext = useContext(UserContext);
     useEffect(()=>{
@@ -54,46 +47,9 @@ const ChairmanOfficeLayout = ({children})=> {
     const handleDrawerClose =()=> {
         setOpen(false);
     };
-    const profileMenu = (
-        <div >
-            <Tooltip title='Your Profile & Settings' placement='right'>
-                <Avatar  onClick={event =>  setAnchorEl2(event.currentTarget)}  className={classes.avatarColor}>
-                    {
-                        !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                    }
-                </Avatar>
-            </Tooltip>
-            <Menu
-                id="simple-menu"
-                anchorEl={anchorEl2}
-                keepMounted
-                open={Boolean(anchorEl2)}
-                onClose={()=>setAnchorEl2(null)}
-            >
-                <div>
-                    <Link href='/chairmanOffice/profile'>
-                        <MenuItem>
-                            <ListItemIcon>
-                                <PermIdentity />
-                            </ListItemIcon>
-                            <Typography variant="inherit" noWrap>
-                                Profile
-                            </Typography>
-                        </MenuItem>
-                    </Link>
-                    <MenuItem onClick={()=>signout()}>
-                        <ListItemIcon>
-                            <ExitToAppOutlined />
-                        </ListItemIcon>
-                        <Typography variant="inherit" noWrap>
-                            Sign Out
-                        </Typography>
-                    </MenuItem>
-                </div>
-            </Menu>
-        </div>
-
-    );
+    const handleClickProfile = ()=>{
+        Router.push('/chairmanOffice/profile');
+    };
     const drawer = (
         <Fragment>
             <List>
@@ -149,7 +105,7 @@ const ChairmanOfficeLayout = ({children})=> {
                                 </Tooltip>
                             </div>
 
-                            {profileMenu}
+                           <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -222,7 +178,7 @@ const ChairmanOfficeLayout = ({children})=> {
                                         </div>
                                     </div>
                                     <div className={classes.menuRightTopContent}>
-                                        {profileMenu}
+                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
 
                                 </div>
@@ -247,9 +203,7 @@ const ChairmanOfficeLayout = ({children})=> {
                         </div>
                     </Drawer>
                     <main className={classes.content}>
-                        <UserState>
-                            {children}
-                        </UserState>
+                        {children}
                     </main>
                 </Hidden>
             </div>

@@ -31,17 +31,15 @@ import {
     VisibilityOutlined,
     ChevronLeft,
     ChevronRight,
-    Add,
-    PermIdentity,
-    ExitToAppOutlined, ViewColumnOutlined, ListAltOutlined,
+    Add, ViewColumnOutlined, ListAltOutlined,
     BarChartOutlined
 } from "@material-ui/icons";
-import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import ProjectContext from '../../context/project/project-context';
 import MenuIcon from '@material-ui/icons/Menu';
-import router from "next/dist/client/router";
+import Router from 'next/router';
+import ProfileMenu from "../profile/ProfileMenu";
 
 const SupervisorProjectLayout = ({children,projectId})=> {
     const userContext = useContext(UserContext);
@@ -53,12 +51,11 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [anchorEl2, setAnchorEl2] = React.useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [selectedProject,setSelectedProject] = useState(projectId);
     const handleSwitchProject = event=>{
         setSelectedProject(event.target.value);
-        router.push(`/supervisor/project/[projectId]/roadmap`,`/supervisor/project/${event.target.value}/roadmap`)
+        Router.push(`/supervisor/project/[projectId]/roadmap`,`/supervisor/project/${event.target.value}/roadmap`)
     }
     const handleDrawerOpen = ()=> {
         setOpen(true);
@@ -71,14 +68,6 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     };
     const handleAddMenuClick = event =>{
         setAnchorEl(event.currentTarget)
-    };
-
-
-    const handleProfileMenuClose = ()=>{
-        setAnchorEl2(null);
-    };
-    const handleProfileMenuClick = event =>{
-        setAnchorEl2(event.currentTarget)
     };
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
@@ -149,28 +138,9 @@ const SupervisorProjectLayout = ({children,projectId})=> {
             </MenuItem>
         </Link>
     );
-    const profileMenu = (
-        <div>
-            <Link href='/supervisor/profile'>
-                <MenuItem>
-                    <ListItemIcon>
-                        <PermIdentity />
-                    </ListItemIcon>
-                    <Typography variant="inherit" noWrap>
-                        Profile
-                    </Typography>
-                </MenuItem>
-            </Link>
-            <MenuItem onClick={()=>signout()}>
-                <ListItemIcon>
-                    <ExitToAppOutlined />
-                </ListItemIcon>
-                <Typography variant="inherit" noWrap>
-                    Sign Out
-                </Typography>
-            </MenuItem>
-        </div>
-    );
+    const handleClickProfile = ()=>{
+        Router.push('/supervisor/profile')
+    };
     const accountSwitch = (
         userContext.user.isLoading ? <div style={{flexGrow:1}}/> : userContext.user.user.additionalRole ?
             <FormControl variant="outlined" margin='dense' >
@@ -266,22 +236,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                                 </Fragment>
                             }
 
-                            <Tooltip title='Your Profile & Settings' placement='right'>
-                                <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                    {
-                                        !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                    }
-                                </Avatar>
-                            </Tooltip>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl2}
-                                keepMounted
-                                open={Boolean(anchorEl2)}
-                                onClose={handleProfileMenuClose}
-                            >
-                                {profileMenu}
-                            </Menu>
+                            <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -380,23 +335,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                                     </div>
 
                                     <div className={classes.menuRightTopContent}>
-                                        <Tooltip title='Your Profile & Settings' placement='right'>
-                                            <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                                {
-                                                    !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                                }
-                                            </Avatar>
-                                        </Tooltip>
-                                        <Menu
-                                            id="simple-menu"
-                                            anchorEl={anchorEl2}
-                                            keepMounted
-                                            open={Boolean(anchorEl2)}
-                                            onClose={handleProfileMenuClose}
-                                        >
-                                            {profileMenu}
-
-                                        </Menu>
+                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
                                 </div>
                             </div>

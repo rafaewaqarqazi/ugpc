@@ -35,6 +35,8 @@ import { signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import MenuIcon from '@material-ui/icons/Menu';
+import Router from "next/router";
+import ProfileMenu from "../profile/ProfileMenu";
 
 const CoordinatorLayout = ({children})=> {
     const userContext = useContext(UserContext);
@@ -154,28 +156,9 @@ const CoordinatorLayout = ({children})=> {
             </MenuItem>
         </Link>
     );
-    const profileMenu = (
-        <div>
-            <Link href='/committee/defence/coordinator/profile'>
-                <MenuItem>
-                    <ListItemIcon>
-                        <PermIdentity />
-                    </ListItemIcon>
-                    <Typography variant="inherit" noWrap>
-                        Profile
-                    </Typography>
-                </MenuItem>
-            </Link>
-            <MenuItem onClick={()=>signout()}>
-                <ListItemIcon>
-                    <ExitToAppOutlined />
-                </ListItemIcon>
-                <Typography variant="inherit" noWrap>
-                    Sign Out
-                </Typography>
-            </MenuItem>
-        </div>
-)
+    const handleClickProfile = ()=>{
+        Router.push('/committee/defence/coordinator/profile');
+    };
     return (
         <div >
             <CssBaseline />
@@ -207,22 +190,7 @@ const CoordinatorLayout = ({children})=> {
                             >
                                 {addMenu}
                             </Menu>
-                            <Tooltip title='Your Profile & Settings' placement='right'>
-                                <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                    {
-                                        !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                    }
-                                </Avatar>
-                            </Tooltip>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl2}
-                                keepMounted
-                                open={Boolean(anchorEl2)}
-                                onClose={handleProfileMenuClose}
-                            >
-                                {profileMenu}
-                            </Menu>
+                            <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -340,23 +308,7 @@ const CoordinatorLayout = ({children})=> {
                                     </div>
 
                                     <div className={classes.menuRightTopContent}>
-                                        <Tooltip title='Your Profile & Settings' placement='right'>
-                                            <Avatar  onClick={handleProfileMenuClick} className={classes.avatarColor}>
-                                                {
-                                                    !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                                                }
-                                            </Avatar>
-                                        </Tooltip>
-                                        <Menu
-                                            id="simple-menu"
-                                            anchorEl={anchorEl2}
-                                            keepMounted
-                                            open={Boolean(anchorEl2)}
-                                            onClose={handleProfileMenuClose}
-                                        >
-                                            {profileMenu}
-
-                                        </Menu>
+                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
                                 </div>
 

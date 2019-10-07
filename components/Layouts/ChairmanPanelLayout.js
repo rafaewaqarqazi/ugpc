@@ -28,17 +28,14 @@ import {
     ChevronLeft,
     ChevronRight,
     Add,
-    PermIdentity,
-    ExitToAppOutlined,
     SettingsOutlined
 } from "@material-ui/icons";
-import {signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
-import UserState from "../../context/user/UserState";
 import NewUserComponent from "../chairman/add/NewUserComponent";
 import MenuIcon from "@material-ui/icons/Menu";
 import UserContext from "../../context/user/user-context";
-
+import ProfileMenu from "../profile/ProfileMenu";
+import Router from 'next/router';
 const ChairmanPanelLayout = ({children})=> {
     const userContext = useContext(UserContext);
     useEffect(()=>{
@@ -47,7 +44,6 @@ const ChairmanPanelLayout = ({children})=> {
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [anchorEl2, setAnchorEl2] = useState(null);
     const [openAddUser,setOpenAddUser] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerOpen = ()=> {
@@ -59,46 +55,9 @@ const ChairmanPanelLayout = ({children})=> {
     const handleDrawerClose =()=> {
         setOpen(false);
     };
-    const profileMenu = (
-        <div >
-            <Tooltip title='Your Profile & Settings' placement='right'>
-                <Avatar  onClick={event =>  setAnchorEl2(event.currentTarget)}  className={classes.avatarColor}>
-                    {
-                        !userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U'
-                    }
-                </Avatar>
-            </Tooltip>
-            <Menu
-                id="simple-menu"
-                anchorEl={anchorEl2}
-                keepMounted
-                open={Boolean(anchorEl2)}
-                onClose={()=>setAnchorEl2(null)}
-            >
-                <div>
-                    <Link href='/chairman/profile'>
-                        <MenuItem>
-                            <ListItemIcon>
-                                <PermIdentity />
-                            </ListItemIcon>
-                            <Typography variant="inherit" noWrap>
-                                Profile
-                            </Typography>
-                        </MenuItem>
-                    </Link>
-                    <MenuItem onClick={()=>signout()}>
-                        <ListItemIcon>
-                            <ExitToAppOutlined />
-                        </ListItemIcon>
-                        <Typography variant="inherit" noWrap>
-                            Sign Out
-                        </Typography>
-                    </MenuItem>
-                </div>
-            </Menu>
-        </div>
-
-    );
+    const handleClickProfile = ()=>{
+        Router.push('/chairman/profile');
+    };
     const drawer = (
         <Fragment>
             <List>
@@ -199,8 +158,7 @@ const ChairmanPanelLayout = ({children})=> {
                             <div style={{color:'grey'}}>
                                 {addMenu}
                             </div>
-
-                            {profileMenu}
+                            <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -277,7 +235,7 @@ const ChairmanPanelLayout = ({children})=> {
 
                                     </div>
                                     <div className={classes.menuRightTopContent}>
-                                        {profileMenu}
+                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
 
                                 </div>
@@ -302,20 +260,14 @@ const ChairmanPanelLayout = ({children})=> {
                         </div>
                     </Drawer>
                     <main className={classes.content}>
-                        <UserState>
-                            {children}
-                        </UserState>
+                        {children}
                     </main>
                 </Hidden>
             </div>
-
-
             {
                 openAddUser &&
                 <NewUserComponent open={openAddUser} onClose={()=>setOpenAddUser(false)}/>
             }
-
-
         </div>
     );
 };
