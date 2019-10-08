@@ -44,7 +44,7 @@ exports.marksDistribution = async (req, res) =>{
 
         await res.json(user)
     }catch (e) {
-        await res.json(e.message)
+        await res.json({error:e.message})
     }
 };
 
@@ -60,12 +60,9 @@ exports.uploadProfileImage = (req, res)=>{
             if(result.ok){
                res.json(req.file.filename)
             }
-        }).catch(error => console.log({error:error.message}))
+        }).catch(error => res.json({error:error.message}))
 
     });
-
-
-
 };
 
 exports.changeName = async (req,res)=>{
@@ -107,6 +104,35 @@ exports.changePassword = async (req,res)=>{
                 message: `Password Changed Successfully`
             });
         });
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.addNewBatch = async (req,res)=>{
+    try {
+        const {newBatch,userId} = req.body;
+        const result = await User.findByIdAndUpdate(userId,{
+            $addToSet:{
+                "chairman_details.settings.batches":newBatch
+            }
+        },{new:true})
+            .select('chairman_details.settings.batches');
+        await res.json(result)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.removeBatch = async (req,res)=>{
+    try {
+        const {batch,userId} = req.body;
+        const result = await User.findByIdAndUpdate(userId,{
+            $pull:{
+                "chairman_details.settings.batches":batch
+            }
+        },{new:true})
+            .select('chairman_details.settings.batches');
+        await res.json(result)
     }catch (e) {
         await res.json({error:e.message})
     }

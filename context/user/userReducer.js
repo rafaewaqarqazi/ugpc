@@ -42,6 +42,33 @@ export const userReducer = (state, action) => {
                     name:action.payload
                 }
             };
+        case Actions.ADD_NEW_BATCH:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    chairman_details:{
+                        ...state.user.chairman_details,
+                        settings: {
+                            ...state.user.chairman_details.settings,
+                            batches: action.payload
+                        }
+                    }
+                }
+            };
+        case Actions.ADD_MARKS:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    chairman_details:{
+                        settings: {
+                            ...state.user.chairman_details.settings,
+                            marksDistribution: action.payload
+                        }
+                    }
+                }
+            };
         case Actions.REMOVE_USER:
             return {};
         default:

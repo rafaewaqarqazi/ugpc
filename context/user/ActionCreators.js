@@ -27,4 +27,12 @@ export const uploadProfileImageAction = (filename) => ({
 export const changeNameAction = name =>({
     type:Actions.CHANGE_NAME,
     payload:name
+});
+export const addNewBatchAction = batches =>({
+    type:Actions.ADD_NEW_BATCH,
+    payload:batches
+});
+export const marksDistributionAction = marks =>({
+    type:Actions.ADD_MARKS,
+    payload:marks
 })

@@ -1,12 +1,14 @@
 import React, {useReducer, useEffect} from 'react';
 import UserContext from './user-context';
 import {userReducer} from "./userReducer";
-import {getUserById, createNewUser,uploadProfileImageAction,changeNameAction} from "./ActionCreators";
+import {getUserById, createNewUser,uploadProfileImageAction,changeNameAction,addNewBatchAction,marksDistributionAction} from "./ActionCreators";
 import {
     marksDistributionAPI,
     uploadProfileImageAPI,
     changeNameAPI,
-    changePasswordAPI
+    changePasswordAPI,
+    addNewBatchAPI,
+    removeBatchAPI
 } from '../../utils/apiCalls/users';
 
 const UserState = (props) => {
@@ -24,7 +26,8 @@ const UserState = (props) => {
     };
     const distributeMarks = async (marks)=>{
         const user = await marksDistributionAPI(marks);
-
+       await dispatch(marksDistributionAction(user.chairman_details.settings.marksDistribution))
+        return await user;
     };
     const uploadProfileImage = async image =>{
         const result = await uploadProfileImageAPI(image);
@@ -37,9 +40,18 @@ const UserState = (props) => {
         return await result
     };
     const changePassword = async data =>{
-        const result = await changePasswordAPI(data);
-        return await result
+        return  await changePasswordAPI(data);
     };
+    const addNewBatch = async newBatch =>{
+        const result = await addNewBatchAPI(newBatch);
+       await dispatch(addNewBatchAction(result.chairman_details.settings.batches));
+        return await result;
+    };
+    const removeBatch = async batch =>{
+        const result =await removeBatchAPI(batch);
+        await dispatch(addNewBatchAction(result.chairman_details.settings.batches));
+        return await result;
+    }
     useEffect(()=>{
         console.log('User State:',state)
     },[state]);
@@ -51,7 +63,9 @@ const UserState = (props) => {
             distributeMarks,
             uploadProfileImage,
             changeName,
-            changePassword
+            changePassword,
+            addNewBatch,
+            removeBatch
         }}>
             {props.children}
         </UserContext.Provider>

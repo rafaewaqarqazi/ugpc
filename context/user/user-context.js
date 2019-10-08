@@ -11,5 +11,7 @@ export default React.createContext({
     removeUser: ()=>{},
     uploadProfileImage:image=>{},
     changeName:data=>{},
-    changePassword:data=>{}
+    changePassword:data=>{},
+    addNewBatch:newBatch=>{},
+    removeBatch:batch=>{}
 })
