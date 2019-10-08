@@ -21,7 +21,6 @@ import {
 } from '@material-ui/core';
 import Link from "next/link";
 import {
-    DashboardOutlined,
     Laptop,
     SupervisorAccountOutlined,
     VisibilityOutlined,
@@ -61,15 +60,6 @@ const ChairmanPanelLayout = ({children})=> {
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/chairman/overview'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <DashboardOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Overview"} />
-                    </ListItem>
-                </Link>
-
                 <Link href='/chairman/projects'>
                     <ListItem button >
                         <ListItemIcon>

@@ -137,3 +137,30 @@ exports.removeBatch = async (req,res)=>{
         await res.json({error:e.message})
     }
 };
+
+exports.fetchAllUsers = async (req,res)=>{
+    try {
+        const users = await User.aggregate([
+            {
+              $project:{"hashed_password":0,"salt":0,"resetPasswordLink":0,"emailVerificationCode":0}
+            },
+            {
+                $group:{
+                    "_id":"$role",
+                    users:{$push:"$$ROOT"}
+                }
+            }
+        ]);
+        await res.json(users);
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.removeUser = async (req,res)=>{
+    try {
+        const result = await User.remove({"_id":req.params.userId});
+        await res.json(result);
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+}

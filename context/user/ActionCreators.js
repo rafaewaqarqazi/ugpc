@@ -35,4 +35,15 @@ export const addNewBatchAction = batches =>({
 export const marksDistributionAction = marks =>({
     type:Actions.ADD_MARKS,
     payload:marks
-})
+});
+export const addAllUsersAction = users =>({
+    type:Actions.ADD_ALL_USERS,
+    payload:users
+});
+export const allUsersLoadingAction = ()=>({
+    type:Actions.ALL_USERS_LOADING
+});
+export const removeUserAction = (userId,type)=>({
+    type:Actions.REMOVE_USER,
+    payload:{userId,type}
+});

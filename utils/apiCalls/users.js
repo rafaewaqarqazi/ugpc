@@ -121,3 +121,24 @@ export const removeBatchAPI = async batch =>{
     });
     return await res.json();
 };
+
+export const fetchAllUsersAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/fetchAll`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+export const removeUserAPI = async userId=>{
+    const res = await fetch(`${serverUrl}/users/remove/${userId}`,{
+        method:'DELETE',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+}

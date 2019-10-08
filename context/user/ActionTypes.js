@@ -6,3 +6,5 @@ export const ADD_PROFILE_IMAGE = 'ADD_PROFILE_IMAGE';
 export const CHANGE_NAME = 'CHANGE_NAME';
 export const ADD_NEW_BATCH = 'ADD_NEW_BATCH';
 export const ADD_MARKS = 'ADD_MARKS';
+export const ADD_ALL_USERS = 'ADD_ALL_USERS';
+export const ALL_USERS_LOADING = 'ALL_USERS_LOADING';

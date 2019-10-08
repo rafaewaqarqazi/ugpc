@@ -1,14 +1,26 @@
 import React, {useReducer, useEffect} from 'react';
 import UserContext from './user-context';
 import {userReducer} from "./userReducer";
-import {getUserById, createNewUser,uploadProfileImageAction,changeNameAction,addNewBatchAction,marksDistributionAction} from "./ActionCreators";
+import {
+    getUserById,
+    createNewUser,
+    uploadProfileImageAction,
+    changeNameAction,
+    addNewBatchAction,
+    marksDistributionAction,
+    addAllUsersAction,
+    allUsersLoadingAction,
+    removeUserAction
+} from "./ActionCreators";
 import {
     marksDistributionAPI,
     uploadProfileImageAPI,
     changeNameAPI,
     changePasswordAPI,
     addNewBatchAPI,
-    removeBatchAPI
+    removeBatchAPI,
+    fetchAllUsersAPI,
+    removeUserAPI
 } from '../../utils/apiCalls/users';
 
 const UserState = (props) => {
@@ -16,7 +28,10 @@ const UserState = (props) => {
         isLoading:true,
         errMess:null,
         user:{},
-        users:[]
+        users:{
+            isLoading:true,
+            allUsers:[]
+        }
     });
     const fetchUserById =async ()=>{
         return await getUserById(dispatch);
@@ -51,6 +66,16 @@ const UserState = (props) => {
         const result =await removeBatchAPI(batch);
         await dispatch(addNewBatchAction(result.chairman_details.settings.batches));
         return await result;
+    };
+    const fetchAllUsers = async ()=>{
+        dispatch(allUsersLoadingAction())
+        const users = await fetchAllUsersAPI();
+        dispatch(addAllUsersAction(users))
+    };
+    const removeUser = async (userId,type)=>{
+        const result =await removeUserAPI(userId);
+        dispatch(removeUserAction(userId,type))
+        return await result
     }
     useEffect(()=>{
         console.log('User State:',state)
@@ -65,7 +90,9 @@ const UserState = (props) => {
             changeName,
             changePassword,
             addNewBatch,
-            removeBatch
+            removeBatch,
+            fetchAllUsers,
+            removeUser
         }}>
             {props.children}
         </UserContext.Provider>

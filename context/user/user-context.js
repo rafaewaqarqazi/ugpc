@@ -8,10 +8,11 @@ export default React.createContext({
     createUser: user => {},
     fetchUserById: () =>{},
     distributeMarks:marks=>{},
-    removeUser: ()=>{},
     uploadProfileImage:image=>{},
     changeName:data=>{},
     changePassword:data=>{},
     addNewBatch:newBatch=>{},
-    removeBatch:batch=>{}
+    removeBatch:batch=>{},
+    fetchAllUsers:()=>{},
+    removeUser:(userId,type)=>{}
 })

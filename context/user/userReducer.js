@@ -69,8 +69,43 @@ export const userReducer = (state, action) => {
                     }
                 }
             };
+        case Actions.ALL_USERS_LOADING:
+            return {
+                ...state,
+                users: {
+                    isLoading:true,
+                    allUsers:[]
+                }
+            };
+        case Actions.ADD_ALL_USERS:
+            return {
+                ...state,
+                users: {
+                    isLoading:false,
+                    allUsers:action.payload
+                }
+            };
         case Actions.REMOVE_USER:
-            return {};
+            const newState = state.users.allUsers.map(users =>{
+                if (users._id === action.payload.type){
+                    return {
+                        ...users,
+                        users:users.users.filter(user => user._id !== action.payload.userId)
+                    }
+                }else {
+                    return{
+                        ...users
+                    }
+                }
+            });
+
+            return {
+                ...state,
+                users:{
+                    ...state.users,
+                    allUsers:newState
+                }
+            };
         default:
             return state;
     }
