@@ -21,13 +21,13 @@ import {
 } from '@material-ui/core';
 import Link from "next/link";
 import {
-    Laptop,
+    GroupOutlined,
     SupervisorAccountOutlined,
-    VisibilityOutlined,
     ChevronLeft,
     ChevronRight,
     Add,
-    SettingsOutlined
+    SettingsOutlined,
+    DashboardOutlined
 } from "@material-ui/icons";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import NewUserComponent from "../chairman/add/NewUserComponent";
@@ -60,12 +60,12 @@ const ChairmanPanelLayout = ({children})=> {
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/chairman/projects'>
+                <Link href='/chairman/dashboard'>
                     <ListItem button >
                         <ListItemIcon>
-                            <Laptop />
+                            <DashboardOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Projects"} />
+                        <ListItemText primary={"Dashboard"} />
                     </ListItem>
                 </Link>
 
@@ -81,7 +81,7 @@ const ChairmanPanelLayout = ({children})=> {
                 <Link href='/chairman/committees'>
                     <ListItem button >
                         <ListItemIcon>
-                            <VisibilityOutlined />
+                            <GroupOutlined />
                         </ListItemIcon>
                         <ListItemText primary={"Committees"} />
                     </ListItem>

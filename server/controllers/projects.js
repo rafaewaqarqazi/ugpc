@@ -6,12 +6,25 @@ const moment = require('moment');
 const _ = require('lodash');
 
 exports.getAllProjects = (req, res)=>{
-    Projects.find()
-        .populate('students','_id name')
-        .then(projects => {
-            res.json(projects);
-        })
-        .catch(err => res.status(400).json({error:err}))
+    Projects.aggregate([
+        {$unwind:"$documentation.visionDocument"},
+        {
+            $match:{$or:[{"documentation.visionDocument.status":"Approved"},{"documentation.visionDocument.status":"Approved With Changes"}]}
+        },
+        {
+            $project:{
+                "documentation.visionDocument.title":1,
+                "details.backlog":1,
+                "details.sprint":1,
+                "details.acceptanceLetter.issueDate":1,
+                "details.estimatedDeadline":1
+            }
+        }
+    ])
+    .then(projects => {
+        res.json(projects);
+    })
+    .catch(err => res.status(400).json({error:err}))
 };
 exports.findByStudentId = (req,res,next,id)=>{
 

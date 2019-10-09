@@ -1,48 +1,18 @@
 import React from 'react';
 import ProjectContext from '../../context/project/project-context'
-import {Container, Grid, LinearProgress, Tooltip, Typography, Zoom} from "@material-ui/core";
+import {Container, Grid, LinearProgress, Typography} from "@material-ui/core";
 import {DirectionsRunOutlined, FormatListBulletedOutlined} from "@material-ui/icons";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
-import {makeStyles} from "@material-ui/styles";
 import Divider from "@material-ui/core/Divider";
 import {getCompletionPercentage} from "./helpers";
 import {Pie} from 'react-chartjs-2';
 import { defaults } from 'react-chartjs-2';
+import {useProgressStyles} from "../../src/material-styles/ProgressStyles";
 defaults.global.legend.position = 'right'
-const useStyles = makeStyles(theme => ({
-    title:{
-        marginTop:theme.spacing(2),
-        marginBottom:theme.spacing(2),
-        fontSize:24
-    },
-    container:{
-        padding:theme.spacing(2),
-        marginTop: theme.spacing(2),
-        boxShadow: theme.shadows[1],
-        borderRadius:5,
-        backgroundColor: '#fff'
-    },
-    containerContent:{
-        flexGrow:1,
-        paddingLeft:theme.spacing(1),
-        textAlign:'right'
-    },
-    top:{
-        display:'flex',
-        marginBottom: theme.spacing(1)
-    },
-    topProgressBarContainer:{
-        padding: theme.spacing(2,0),
 
-    },
-    progressBar:{
-        height:10,
-        borderRadius: 10
-    }
-}))
 const ShowProgress = () => {
     const classes = useListContainerStyles();
-    const progressClasses = useStyles();
+    const progressClasses = useProgressStyles();
     const getTotalTasksCount = details =>{
         let totaltasks = 0;
 

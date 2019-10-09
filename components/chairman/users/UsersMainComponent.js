@@ -7,8 +7,7 @@ import {useTheme} from "@material-ui/styles";
 import RenderStudents from "./RenderStudents";
 import RenderSupervisors from "./RenderSupervisors";
 import RenderUGPCMembers from "./RenderUGPCMembers";
-import RenderChairmanOffice from "./RenderChairmanOffice";
-import RenderProgramOffice from "./RenderProgramOffice";
+import RenderOfficeUsers from "./RenderOfficeUsers";
 import UserContext from '../../../context/user/user-context';
 import CircularLoading from "../../loading/CircularLoading";
 
@@ -99,7 +98,7 @@ const UsersMainComponent = () => {
                     <TabPanel value={value} index={3} dir={theme.direction}>
                         {
                             userContext.user.users.isLoading ? <CircularLoading/>  :
-                                <RenderChairmanOffice chairmanOffice={userContext.user.users.allUsers.map(users => {
+                                <RenderOfficeUsers chairmanOffice={userContext.user.users.allUsers.map(users => {
                                     if (users._id === 'Chairman DCSSE' || users._id === 'Chairman_Office' || users._id === 'Program_Office'){
                                         return users
                                     }

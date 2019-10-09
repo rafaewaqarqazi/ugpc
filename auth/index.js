@@ -235,7 +235,7 @@ export const landingAuth = ctx => {
         return
     }
     else if (ctx.req && token && user.user.role === 'Chairman DCSSE') {
-        ctx.res.writeHead(302, { Location: '/chairman/users' });
+        ctx.res.writeHead(302, { Location: '/chairman/dashboard' });
         ctx.res.end();
         return
     }
@@ -283,7 +283,7 @@ export const landingAuth = ctx => {
         Router.push('/supervisor/dashboard')
     }
     else if (token && user.user.role === 'Chairman DCSSE') {
-        Router.push('/chairman/users')
+        Router.push('/chairman/dashboard')
     }
     else if (token && user.user.role === 'Chairman_Office') {
         Router.push('/chairmanOffice/letter/approval')

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Avatar, Chip,
-    Container,
+    Avatar,
     InputAdornment,
     Table,
     TableBody,
@@ -19,7 +18,7 @@ import {serverUrl} from "../../../utils/config";
 import moment from "moment";
 import RemoveUserComponent from "./RemoveUserComponent";
 
-const RenderChairmanOffice = ({chairmanOffice}) => {
+const RenderOfficeUsers = ({chairmanOffice}) => {
     const userClasses = useChairmanUsersStyles();
     const avatarClasses = useDrawerStyles();
     const [users,setUsers] = useState([]);
@@ -116,4 +115,4 @@ const RenderChairmanOffice = ({chairmanOffice}) => {
     );
 };
 
-export default RenderChairmanOffice;
+export default RenderOfficeUsers;

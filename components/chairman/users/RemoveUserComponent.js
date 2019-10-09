@@ -11,7 +11,6 @@ import {
     Button
 } from "@material-ui/core";
 import {Close, Delete} from "@material-ui/icons";
-import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import UserContext from "../../../context/user/user-context";
 const RemoveUserComponent = ({userId,type,setSuccess}) => {
