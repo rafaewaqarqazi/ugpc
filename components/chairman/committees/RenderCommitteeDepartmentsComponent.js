@@ -151,16 +151,16 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
         setUsersList([...newMembers,...otherMembers]);
     };
     const handleAddMember = ()=>{
-        setLoading({
-            ...loading,
-            addMember:true
-        });
         if(selectedIndex === undefined){
             setError({
                 emptyUser: true
             });
             return
         }
+        setLoading({
+            ...loading,
+            addMember:true
+        });
         const data = {
             userId:usersList[selectedIndex]._id,
             committeeType,
@@ -183,6 +183,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
                     addMember:false
                 });
                 setDialog({
+                    ...dialog,
                     addMember:false
                 });
                 setSuccess({show:true,message:result.message});

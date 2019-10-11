@@ -79,23 +79,16 @@ const CommitteesComponent = () => {
                     onChangeIndex={handleChangeIndex}
                 >
                     <TabPanel value={value} index={0} dir={theme.direction}>
-                        {
-                            userContext.user.committees.isLoading ? <CircularLoading/> :
-                                <CommitteeTypeComponent
-                                    committeeType={userContext.user.committees.committeeType.filter(committee => committee._id === 'Defence')[0]}
-                                    setSuccess={setSuccess}
-                                />
-                        }
-
+                        <CommitteeTypeComponent
+                            type='Defence'
+                            setSuccess={setSuccess}
+                        />
                     </TabPanel>
                     <TabPanel value={value} index={1} dir={theme.direction}>
-                        {
-                            userContext.user.committees.isLoading ? <CircularLoading/> :
-                                <CommitteeTypeComponent
-                                    committeeType={userContext.user.committees.committeeType.filter(committee => committee._id === 'Evaluation')[0]}
-                                    setSuccess={setSuccess}
-                                />
-                        }
+                        <CommitteeTypeComponent
+                            type='Evaluation'
+                            setSuccess={setSuccess}
+                        />
 
                     </TabPanel>
                 </SwipeableViews>

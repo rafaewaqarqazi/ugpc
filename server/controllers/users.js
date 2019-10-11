@@ -1,6 +1,6 @@
 const User = require('../models/users');
 const fs = require('fs');
-const path = require('path');
+const {sendEmail} = require("../helpers");
 require('dotenv').config()
 exports.userById =(req,res,next,id)=>{
     User.findById(id)
@@ -214,39 +214,69 @@ exports.addMemberToCommittee = async (req,res)=>{
                 });
             }
         }
-        const result = await User.updateOne({"_id":userId},
+        const result = await User.findOneAndUpdate({"_id":userId},
             {
                 $addToSet:{
                     "ugpc_details.committees":department
                 },
                 "ugpc_details.position":position,
                 "ugpc_details.committeeType":committeeType
-            }
-            );
-        if (result.ok){
-            await res.json({message:'Member Added Successfully'})
-        }else {
-            await res.json({error:'Something went wrong while adding new Member'})
-        }
+            })
+            .select('email');
+
+            const emailData = {
+                from: "noreply@node-react.com",
+                to: result.email,
+                subject: `UGPC | Added In ${committeeType} Committee`,
+                text: `Dear Teacher,\nChairman DCS&SE added you in ${committeeType} committee as a ${position} of committee for department ${department}.`,
+                html: `
+                <p>Dear Teacher,</p>
+                <p>Chairman DCS&SE added you in UGPC-${committeeType} committee for department ${department}.</p>
+                <p>Your Position in Committee is: ${position}</p>
+                </br>
+                <p>Regards</p>
+            `
+            };
+
+            sendEmail(emailData)
+                .then(()=>{
+                    return res.json({message:'Member Added Successfully'});
+                });
+
     }catch (e) {
         await res.json({error:e.message})
     }
 };
 exports.removeFromCommitteeDepartment = async (req,res) =>{
     try {
-        const {userId,department} = req.body;
+        const {userId,department,committeeType} = req.body;
 
-        const result = await User.updateOne({"_id":userId},
+        const result = await User.findOneAndUpdate({"_id":userId},
             {
                 $pull:{
                     "ugpc_details.committees":department
                 }
+            })
+            .select('email');
+        const emailData = {
+            from: "noreply@node-react.com",
+            to: result.email,
+            subject: `UGPC | Removed from ${committeeType} Committee's Department ${department}`,
+            text: `Dear Teacher,\nChairman DCS&SE added removed you from UGPC-${committeeType} committee's department ${department}.`,
+            html: `
+                <p>Dear Teacher,</p>
+                <p>Chairman DCS&SE removed you from UGPC-${committeeType} committee's department ${department}.</p>
+                </br>
+                <p>Regards</p>
+            `
+        };
+
+        sendEmail(emailData)
+            .then(()=>{
+                return res.json({message:'Member Removed Successfully'})
             });
-        if (result.ok){
-            await res.json({message:'Member Removed Successfully'})
-        }else {
-            await res.json({error:'Something went wrong while removing Member'})
-        }
+
+
     }catch (e) {
         await res.json({error:e.message})
     }
@@ -254,21 +284,34 @@ exports.removeFromCommitteeDepartment = async (req,res) =>{
 
 exports.removeFromCommittee = async (req,res) =>{
     try {
-        const {userId} = req.body;
+        const {userId,committeeType} = req.body;
 
-        const result = await User.updateOne({"_id":userId},
+        const result = await User.findOneAndUpdate({"_id":userId},
             {
                 $set:{
                     "ugpc_details.committees":[],
                     "ugpc_details.committeeType":'None',
                     "ugpc_details.position":undefined
                 },
+            }) .select('email');
+        const emailData = {
+            from: "noreply@node-react.com",
+            to: result.email,
+            subject: `UGPC | Removed from ${committeeType} Committee`,
+            text: `Dear Teacher,\nChairman DCS&SE added removed you from UGPC-${committeeType} committee.`,
+            html: `
+                <p>Dear Teacher,</p>
+                <p>Chairman DCS&SE removed you from UGPC-${committeeType} committee.</p>
+                </br>
+                <p>Regards</p>
+            `
+        };
+
+        sendEmail(emailData)
+            .then(()=>{
+                return res.json({message:'Member Removed Successfully'})
             });
-        if (result.ok){
-            await res.json({message:'Member Removed Successfully'})
-        }else {
-            await res.json({error:'Something went wrong while removing Member'})
-        }
+
     }catch (e) {
         await res.json({error:e.message})
     }

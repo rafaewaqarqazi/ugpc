@@ -4,6 +4,7 @@ import {Tabs,Tab,Box} from '@material-ui/core';
 import RenderCommitteeDepartmentsComponent from "./RenderCommitteeDepartmentsComponent";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import UserContext from "../../../context/user/user-context";
+import CircularLoading from "../../loading/CircularLoading";
 
 
 function TabPanel(props) {
@@ -42,58 +43,65 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const CommitteeTypeComponent = ({committeeType,setSuccess}) => {
+const CommitteeTypeComponent = ({setSuccess,type}) => {
     const userContext = useContext(UserContext);
     const classes = useStyles();
     const [value, setValue] = useState(0);
-    const [members,setMembers] = useState(committeeType ? committeeType.members : [])
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     return (
-        <div>
 
+        <div className={classes.root}>
+            <Tabs
+                orientation="vertical"
+                variant="standard"
+                value={value}
+                onChange={handleChange}
+                className={classes.tabs}
+            >
+                <Tab label="BSSE" {...a11yProps(0)} />
+                <Tab label="BSCS" {...a11yProps(1)} />
+                <Tab label="BSIT" {...a11yProps(2)} />
+            </Tabs>
+            <TabPanel value={value} index={0} style={{flexGrow:1}}>
+                {
+                    userContext.user.committees.isLoading ? <CircularLoading/> :
+                        <RenderCommitteeDepartmentsComponent
+                            department='BSSE'
+                            members={userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
+                            committeeType={type}
+                            setSuccess={setSuccess}
+                        />
+                }
 
-            <div className={classes.root}>
-                <Tabs
-                    orientation="vertical"
-                    variant="standard"
-                    value={value}
-                    onChange={handleChange}
-                    className={classes.tabs}
-                >
-                    <Tab label="BSSE" {...a11yProps(0)} />
-                    <Tab label="BSCS" {...a11yProps(1)} />
-                    <Tab label="BSIT" {...a11yProps(2)} />
-                </Tabs>
-                <TabPanel value={value} index={0} style={{flexGrow:1}}>
-                    <RenderCommitteeDepartmentsComponent
-                        department='BSSE'
-                        members={members}
-                        committeeType={committeeType._id}
-                        setSuccess={setSuccess}
-                    />
-                </TabPanel>
-                <TabPanel value={value} index={1} style={{flexGrow:1}}>
-                    <RenderCommitteeDepartmentsComponent
-                        department='BSCS'
-                        members={members}
-                        committeeType={committeeType._id}
-                        setSuccess={setSuccess}
-                    />
-                </TabPanel>
-                <TabPanel value={value} index={2} style={{flexGrow:1}}>
-                    <RenderCommitteeDepartmentsComponent
-                        department='BSIT'
-                        members={members}
-                        committeeType={committeeType._id}
-                        setSuccess={setSuccess}
-                    />
-                </TabPanel>
-            </div>
+            </TabPanel>
+            <TabPanel value={value} index={1} style={{flexGrow:1}}>
+                {
+                    userContext.user.committees.isLoading ? <CircularLoading/> :
+                        <RenderCommitteeDepartmentsComponent
+                            department='BSCS'
+                            members={userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
+                            committeeType={type}
+                            setSuccess={setSuccess}
+                        />
+                }
+
+            </TabPanel>
+            <TabPanel value={value} index={2} style={{flexGrow:1}}>
+                {
+                    userContext.user.committees.isLoading ? <CircularLoading/> :
+                        <RenderCommitteeDepartmentsComponent
+                            department='BSIT'
+                            members={userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
+                            committeeType={type}
+                            setSuccess={setSuccess}
+                        />
+                }
+
+            </TabPanel>
         </div>
-
     );
 };
 
