@@ -532,7 +532,7 @@ const Externals = () => {
                                                                     <Fragment key={index}>
                                                                         <ListItem alignItems="flex-start"
                                                                                   selected={selectedIndex === index}
-                                                                                  onClick={handleListItemClick(index)}
+                                                                                  onClick={()=>handleListItemClick(index)}
                                                                         >
                                                                             <ListItemAvatar>
                                                                                 <Avatar className={detailsClasses.avatar}>{examiner.name.charAt(0)}</Avatar>

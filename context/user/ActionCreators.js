@@ -40,8 +40,15 @@ export const addAllUsersAction = users =>({
     type:Actions.ADD_ALL_USERS,
     payload:users
 });
+export const addCommitteesAction = committees =>({
+    type:Actions.ADD_COMMITTEES,
+    payload:committees
+});
 export const allUsersLoadingAction = ()=>({
     type:Actions.ALL_USERS_LOADING
+});
+export const committeesLoadingAction = ()=>({
+    type:Actions.COMMITTEES_LOADING
 });
 export const removeUserAction = (userId,type)=>({
     type:Actions.REMOVE_USER,

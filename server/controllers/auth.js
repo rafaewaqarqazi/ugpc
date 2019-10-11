@@ -40,34 +40,13 @@ exports.studentSignup = async (req, res)=>{
 };
 
 exports.ugpcSignup = async (req, res)=>{
-    const {name, email, role, committee,position,committeeType,additionalRole,designation} = req.body;
+    const {name, email, role,additionalRole,designation} = req.body;
     const userExists = await User.findOne({email: email});
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
     });
-    if (role === 'UGPC_Member' && position === 'Chairman_Committee' && committeeType === 'Defence'){
-        console.log('Inside Defence Chairman Check')
-        const chairmanExists = await User.findOne({$and:[{"ugpc_details.committees":{ $in: [committee]}},{"ugpc_details.position":'Chairman_Committee'},{"ugpc_details.committeeType":'Defence'}]});
-        if (chairmanExists) return res.status(403).json({
-            error: "Defence Committee Already has a Chairman"
-        });
-    }
-    if (role === 'UGPC_Member' && position === 'Chairman_Committee' && committeeType === 'Evaluation'){
-        console.log('Inside Defence Chairman Check')
-        const chairmanExists = await User.findOne({$and:[{"ugpc_details.committees":{ $in: [committee]}},{"ugpc_details.position":'Chairman_Committee'},{"ugpc_details.committeeType":'Evaluation'}]});
-        if (chairmanExists) return res.status(403).json({
-            error: "Defence Committee Already has a Chairman"
-        });
-    }
-    if (req.body.role === 'UGPC_Member' && position === 'Coordinator'){
-        const coordinatorExists = await User.findOne({$and:[{"ugpc_details.committees":{ $in: [committee]}},{"ugpc_details.position":'Coordinator'}]});
-        if (coordinatorExists) return res.status(403).json({
-            error: "Committee Already has a Coordinator"
-        });
-    }
-
     const password = generator.generate({
-        length: 10,
+        length: 8,
         numbers: true
     });
     const user = await new User({
@@ -78,13 +57,11 @@ exports.ugpcSignup = async (req, res)=>{
         password,
         isEmailVerified: true,
         ugpc_details:additionalRole === 'UGPC_Member'?{
-            committees:[committee],
-            position,
-            committeeType,
-            designation
+            designation,
+            committeeType:'None'
         }:undefined,
-        supervisor_details:role === 'Supervisor' ? {position:designation} : undefined,
-        chairman_details: role === 'Chairman DCSSE'?{}:undefined
+        supervisor_details:role === 'Supervisor' ? {position:designation} : null,
+        chairman_details: role === 'Chairman DCSSE'?{}:null
     });
     const newUser = await user.save();
     if (newUser){

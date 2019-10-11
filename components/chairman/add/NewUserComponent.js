@@ -36,19 +36,13 @@ const NewUserComponent = ({open,onClose}) => {
         email:'',
         role:'',
         additionalRole:'None',
-        designation:'',
-        committeeType:'',
-        position:'',
-        committee:''
+        designation:''
     });
     const [errors,setErrors] = useState({
         name:false,
         email:false,
         role:false,
-        position:false,
-        committee:false,
-        designation:false,
-        committeeType:false
+        designation:false
     });
     const handleSuccess = ()=>{
         setSuccess({open:false});
@@ -65,21 +59,8 @@ const NewUserComponent = ({open,onClose}) => {
             setErrors({...errors,role:true})
             return false
         }
-        else if (data.designation === ''){
+        else if (data.designation === '' && data.role !== 'Program_Office'){
             setErrors({...errors,designation:true})
-            return false
-        }else if (data.additionalRole === 'UGPC_Member' && data.committeeType === ''){
-            setErrors({...errors,committeeType:true})
-            return false
-        }
-        else if (data.additionalRole === 'UGPC_Member' && data.committee === ''){
-            setErrors({...errors,committee:true})
-            return false
-        }else if (data.additionalRole === 'UGPC_Member' && data.position === ''){
-            setErrors({...errors,position:true})
-            return false
-        }else if (data.additionalRole === 'UGPC_Member' && data.committeeType === ''){
-            setErrors({...errors,committeeType:true})
             return false
         }
         return true
@@ -104,10 +85,7 @@ const NewUserComponent = ({open,onClose}) => {
                             email:'',
                             role:'',
                             additionalRole:'None',
-                            designation:'',
-                            committeeType:'',
-                            position:'',
-                            committee:''
+                            designation:''
                         })
                     }
                 });
@@ -123,13 +101,9 @@ const NewUserComponent = ({open,onClose}) => {
             setData({...data, [e.target.name]: e.target.value, additionalRole: 'UGPC_Member'})
         }else if (e.target.name === 'role' && (e.target.value === 'Program_Office' || e.target.value === 'Chairman DCSSE')) {
             setData({...data, [e.target.name]: e.target.value,additionalRole:'None'})
-        }else if (e.target.name === 'additionalRole' && e.target.value === 'None') {
-            setData({...data, [e.target.name]: e.target.value,commitee:'',committeeType:'',position:''})
-        }
-        else {
+        } else {
             setData({...data, [e.target.name]: e.target.value})
         }
-
     };
 
     return (
@@ -154,8 +128,6 @@ const NewUserComponent = ({open,onClose}) => {
                             User Details
                         </Typography>
                     </div>
-
-
                         <Grid container spacing={2} >
                             <Grid item xs={12}>
                                 <TextField
@@ -225,7 +197,7 @@ const NewUserComponent = ({open,onClose}) => {
                                 </Grid>
                             }
                             {
-                                (data.role === 'Chairman DCSSE' || data.role === 'Program_Office') ? (
+                                data.role === 'Program_Office' ? (
                                         <Grid item xs={12} sm={12}>
                                             <Typography variant='h5'style={{textAlign:'center'}}  color='textSecondary'>
                                                 No Further Details
@@ -233,26 +205,8 @@ const NewUserComponent = ({open,onClose}) => {
                                         </Grid>
                                     ):
                                     (
-                                        data.role !== '' && data.additionalRole === 'UGPC_Member' &&
-                                        <>
-                                            <Grid item xs={12} sm={6}>
-                                                <FormControl fullWidth required error={errors.committeeType} variant="outlined" className={classes.formControl}>
-                                                    <InputLabel htmlFor="committeeType">
-                                                        Committee Type
-                                                    </InputLabel>
-                                                    <Select
-                                                        value={data.committeeType}
-                                                        onChange={handleChange}
-                                                        autoWidth
-                                                        input={<OutlinedInput  labelWidth={120} fullWidth name="committeeType" id="committeeType" required/>}
-                                                    >
-                                                        <MenuItem value='Defence'>Defence</MenuItem>
-                                                        <MenuItem value='Evaluation'>Evaluation</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                                {errors.committeeType && <Typography variant='caption' color='error'>Required*</Typography>}
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
+                                        data.role !== '' &&
+                                            <Grid item xs={12} >
                                                 <FormControl fullWidth required error={errors.designation} variant="outlined" className={classes.formControl}>
                                                     <InputLabel  htmlFor="designation">
                                                         Designation
@@ -270,47 +224,6 @@ const NewUserComponent = ({open,onClose}) => {
                                                 </FormControl>
                                                 {errors.designation && <Typography variant='caption' color='error'>Required*</Typography>}
                                             </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <FormControl fullWidth required error={errors.committee} variant="outlined" className={classes.formControl}>
-                                                    <InputLabel htmlFor="committee">
-                                                        For Department
-                                                    </InputLabel>
-                                                    <Select
-                                                        value={data.committee}
-                                                        onChange={handleChange}
-                                                        autoWidth
-                                                        input={<OutlinedInput  labelWidth={120} fullWidth name="committee" id="committee" required/>}
-                                                    >
-                                                        <MenuItem value='BSSE'>BSSE</MenuItem>
-                                                        <MenuItem value='BSCS'>BSCS</MenuItem>
-                                                        <MenuItem value='BSIT'>BSIT</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                                {errors.committee && <Typography variant='caption' color='error'>Required*</Typography>}
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <FormControl fullWidth required error={errors.position} variant="outlined" className={classes.formControl}>
-                                                    <InputLabel  htmlFor="position">
-                                                       Committee Position
-                                                    </InputLabel>
-                                                    <Select
-                                                        value={data.position}
-                                                        onChange={handleChange}
-                                                        autoWidth
-                                                        input={<OutlinedInput  labelWidth={145} fullWidth name="position" id="position" required/>}
-                                                    >
-                                                        <MenuItem value='Chairman_Committee'>Chairman</MenuItem>
-                                                        {
-                                                            data.committeeType === 'Defence' &&
-                                                            <MenuItem value='Coordinator'>Coordinator</MenuItem>
-                                                        }
-
-                                                        <MenuItem value='Member'>Member</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                                {errors.position && <Typography variant='caption' color='error'>Required*</Typography>}
-                                            </Grid>
-                                        </>
                                     )
                             }
 

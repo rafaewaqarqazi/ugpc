@@ -85,6 +85,22 @@ export const userReducer = (state, action) => {
                     allUsers:action.payload
                 }
             };
+        case Actions.COMMITTEES_LOADING:
+            return {
+                ...state,
+                committees: {
+                    isLoading:true,
+                    committeeType:[]
+                }
+            };
+        case Actions.ADD_COMMITTEES:
+            return {
+                ...state,
+                committees: {
+                    isLoading:false,
+                    committeeType:action.payload
+                }
+            };
         case Actions.REMOVE_USER:
             const newState = state.users.allUsers.map(users =>{
                 if (users._id === action.payload.type){

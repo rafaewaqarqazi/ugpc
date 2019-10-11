@@ -7,7 +7,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    TextField
+    TextField, Typography
 } from "@material-ui/core";
 import {useChairmanUsersStyles} from "../../../src/material-styles/chairmanUsersStyles";
 import {useDrawerStyles} from "../../../src/material-styles/drawerStyles";
@@ -36,7 +36,7 @@ const RenderSupervisors = ({supervisors}) => {
     return (
         <div >
             <SuccessSnackBar open={success} message='User Removed!' handleClose={handleSuccess}/>
-            <div className={userClasses.search}>
+            <div className={userClasses.header}>
                 <TextField
                     variant="outlined"
                     label="Search"
@@ -52,6 +52,7 @@ const RenderSupervisors = ({supervisors}) => {
                         ),
                     }}
                 />
+                <Typography className={userClasses.userNumbers} variant='body2' color='textSecondary'>{filter.length} {filter.length === 1 ? 'User' : 'Users'} Found</Typography>
             </div>
             <div className={`${tableClasses.tableWrapper} ${userClasses.table}`}>
                 <Table >

@@ -112,4 +112,4 @@ const UsersMainComponent = () => {
     );
 };
 
-export default React.memo(UsersMainComponent);
+export default UsersMainComponent;

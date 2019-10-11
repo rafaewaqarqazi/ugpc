@@ -14,5 +14,6 @@ export default React.createContext({
     addNewBatch:newBatch=>{},
     removeBatch:batch=>{},
     fetchAllUsers:()=>{},
-    removeUser:(userId,type)=>{}
+    removeUser:(userId,type)=>{},
+    fetchCommittees:()=>{}
 })

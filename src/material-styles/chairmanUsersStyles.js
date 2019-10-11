@@ -16,5 +16,13 @@ export const useChairmanUsersStyles = makeStyles(theme => ({
     dangerChip:{
         backgroundColor: theme.palette.error.dark,
         color:'#fff'
+    },
+    header:{
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    userNumbers:{
+        marginLeft:theme.spacing(2)
     }
 }));

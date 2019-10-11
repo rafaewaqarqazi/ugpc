@@ -92,5 +92,14 @@ export const useListItemStyles = makeStyles(theme =>({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.standard
         })
+    },
+    listItemHoverColor:{
+        '&:hover':{
+            backgroundColor:'#eee'
+        }
+    },
+    usersListItem:{
+        display:'flex',
+        justifyContent:'flex-start'
     }
 }))

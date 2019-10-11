@@ -141,4 +141,39 @@ export const removeUserAPI = async userId=>{
         }
     });
     return await res.json();
+};
+
+export const fetchCommitteesAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/fetchCommittees`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+
+export const fetchNotInCommitteeMembersAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/fetchNotInCommittee`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+
+export const addMemberToCommitteeAPI = async data =>{
+    const res = await fetch(`${serverUrl}/users/committee/addMember`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
 }

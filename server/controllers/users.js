@@ -163,4 +163,72 @@ exports.removeUser = async (req,res)=>{
     }catch (e) {
         await res.json({error:e.message})
     }
-}
+};
+exports.fetchCommittees = async (req,res)=>{
+    try {
+        const result = await User.aggregate([
+            {
+                $match:{$or:[{"ugpc_details.committeeType":'Defence'},{"ugpc_details.committeeType":"Evaluation"}]}
+            },
+            {
+                $project:{"hashed_password":0,"salt":0,"resetPasswordLink":0,"emailVerificationCode":0}
+            },
+            {
+                $group:{
+                    "_id":"$ugpc_details.committeeType",
+                    members:{$push:"$$ROOT"}
+                }
+            }
+
+        ])
+        await res.json(result);
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.fetchNotInCommittee = async (req,res)=>{
+    try {
+        const result = await User.aggregate([
+            {
+                $match:{$and:[{"ugpc_details.committeeType":'None'},{"additionalRole":"UGPC_Member"}]}
+            },
+            {
+                $project:{"hashed_password":0,"salt":0,"resetPasswordLink":0,"emailVerificationCode":0}
+            },
+        ])
+        await res.json(result);
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.addMemberToCommittee = async (req,res)=>{
+    try {
+        const {userId,department,position,committeeType} = req.body;
+        if (position === 'Chairman_Committee' || position === 'Coordinator'){
+            const userExists = await User.find({$and:[{"ugpc_details.position":position},{"ugpc_details.committees":{$in:[department]}},{"ugpc_details.committeeType":committeeType}]});
+            if (userExists.length > 0) {
+                return res.status(403).json({
+                    error: "Committee Already has a Member on this Position"
+                });
+            }
+        }
+        const result = await User.updateOne({"_id":userId},
+            {
+                $addToSet:{
+                    "ugpc_details.committees":department
+                },
+                "ugpc_details.position":position,
+                "ugpc_details.committeeType":committeeType
+            }
+            );
+        if (result.ok){
+            await res.json({message:'Member Added Successfully'})
+        }else {
+            await res.json({error:'Something went wrong while adding new Member'})
+        }
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};

@@ -10,7 +10,8 @@ import {
     marksDistributionAction,
     addAllUsersAction,
     allUsersLoadingAction,
-    removeUserAction
+    removeUserAction,
+    addCommitteesAction, committeesLoadingAction
 } from "./ActionCreators";
 import {
     marksDistributionAPI,
@@ -20,7 +21,8 @@ import {
     addNewBatchAPI,
     removeBatchAPI,
     fetchAllUsersAPI,
-    removeUserAPI
+    removeUserAPI,
+    fetchCommitteesAPI
 } from '../../utils/apiCalls/users';
 
 const UserState = (props) => {
@@ -31,6 +33,10 @@ const UserState = (props) => {
         users:{
             isLoading:true,
             allUsers:[]
+        },
+        committees:{
+            isLoading:true,
+            committeeType: []
         }
     });
     const fetchUserById =async ()=>{
@@ -76,7 +82,12 @@ const UserState = (props) => {
         const result =await removeUserAPI(userId);
         dispatch(removeUserAction(userId,type))
         return await result
-    }
+    };
+    const fetchCommittees = async ()=>{
+        dispatch(committeesLoadingAction());
+        const result= await fetchCommitteesAPI();
+        dispatch(addCommitteesAction(result))
+    };
     useEffect(()=>{
         console.log('User State:',state)
     },[state]);
@@ -92,7 +103,8 @@ const UserState = (props) => {
             addNewBatch,
             removeBatch,
             fetchAllUsers,
-            removeUser
+            removeUser,
+            fetchCommittees
         }}>
             {props.children}
         </UserContext.Provider>

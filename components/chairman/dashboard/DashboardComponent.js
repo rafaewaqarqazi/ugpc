@@ -10,7 +10,6 @@ import CircularLoading from "../../loading/CircularLoading";
 import {formatProjectsData, getTotalNoUsers, getUsersChartData, getUsersLabel} from "./values";
 import 'chartjs-plugin-colorschemes';
 import {Chart} from "react-google-charts";
-import {formatRoadmapSprintData} from "../../coordinator/presentations/formatData";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 defaults.global.legend.position = 'right';
