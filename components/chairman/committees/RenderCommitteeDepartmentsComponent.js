@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useContext, useState} from 'react';
 import {
     Avatar,
     Chip,
@@ -29,18 +29,24 @@ import {
     FormControl,
     InputLabel,
     Select,
-    OutlinedInput
+    OutlinedInput, DialogContentText
 } from "@material-ui/core";
 import {serverUrl} from "../../../utils/config";
 import {Add, Delete, Close, MoreVertOutlined, ExpandLess, ExpandMore} from "@material-ui/icons";
 import {useTableStyles} from "../../../src/material-styles/tableStyles";
 import {useDrawerStyles} from "../../../src/material-styles/drawerStyles";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
-import {addMemberToCommitteeAPI, fetchNotInCommitteeMembersAPI} from "../../../utils/apiCalls/users";
+import {
+    addMemberToCommitteeAPI,
+    fetchNotInCommitteeMembersAPI, removeFromCommitteeAPI,
+    removeFromCommitteeDepartmentAPI
+} from "../../../utils/apiCalls/users";
 import CircularLoading from "../../loading/CircularLoading";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
+import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 
-const RenderCommitteeDepartmentsComponent = ({members,department,committeeType}) => {
+const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,setSuccess}) => {
+
     const tableClasses = useTableStyles();
     const avatarClasses = useDrawerStyles();
     const emptyStyles = useListItemStyles();
@@ -51,41 +57,78 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
     const [openList,setOpenList] = useState(false);
     const [position,setPosition] = useState('Member');
     const [selectedIndex,setSelectedIndex]=useState();
+    const [removeData,setRemoveData] = useState({
+        userId:'',
+        committees:[],
+        removeType:''
+    });
+
+
     const [error,setError] = useState({
         emptyUser:false,
-        response:false
+        addMember:{
+            show:false,
+            message:''
+        },
+        remove:{
+            show:false,
+            message:''
+        },
+        response:{
+            show:false,
+            message:''
+        }
     });
     const [dialog,setDialog] = useState({
         addMember:false,
-        removeDep:false,
-        removeCom:false
+        removeMember:false
     });
     const [loading,setLoading] = useState({
         addMember:false,
-        removeDep:false,
-        removeCom:false,
+        remove:false,
         newMembers:true
     });
     const [anchorEl, setAnchorEl] = useState(null);
     const handleListItemClick = index=>{
         setError({
+            ...error,
             emptyUser: false
         });
         setSelectedIndex(index);
     };
-    const removeFromDepartment = (userId,committees)=>{
-        if(committees.length === 1){
-            removeFromCommittee(userId)
-        }else {
-            console.log(userId);
-            console.log(committees)
+    const removeRes = result =>{
+        if (result.error){
+            setLoading({
+                ...loading,
+                remove:false
+            });
+            setError({...error,remove: {show:true,message:result.error}});
+            return;
         }
+        setLoading({
+            ...loading,
+            remove:false
+        });
+        setDialog({...dialog,removeMember:false});
+        setSuccess({show:true,message:result.message});
 
     };
-    const removeFromCommittee = userId =>{
-        console.log(userId);
+    const handleClickRemoveMember = (userId,committees,removeType)=>{
+        setRemoveData({
+            userId,
+            committees,
+            removeType
+        });
+        setDialog({
+            ...dialog,
+            removeMember:true
+        });
     };
     const handleClickAddMember = ()=>{
+        setLoading({
+            ...loading,
+            newMembers: true
+        });
         fetchNotInCommitteeMembersAPI()
             .then(result =>{
                 setLoading({
@@ -97,7 +140,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
                 setUsersList([...result,...otherMembers]);
             })
             .catch(err =>{
-                console.log(err.message)
+                setError({...error,addMember: {show:true,message:err.message}});
             });
         setDialog({...dialog, addMember:true})
     };
@@ -106,9 +149,12 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
         setPosition(event.target.value);
         const otherMembers = members.filter(member => !member.ugpc_details.committees.includes(department) && member.ugpc_details.position === event.target.value);
         setUsersList([...newMembers,...otherMembers]);
-        console.log(otherMembers);
     };
     const handleAddMember = ()=>{
+        setLoading({
+            ...loading,
+            addMember:true
+        });
         if(selectedIndex === undefined){
             setError({
                 emptyUser: true
@@ -120,17 +166,54 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
             committeeType,
             department,
             position
-        }
-        console.log(data);
+        };
         addMemberToCommitteeAPI(data)
             .then(result =>{
+
                 if (result.error){
-                    console.log(result.error)
+                    setLoading({
+                        ...loading,
+                        addMember:false
+                    });
+                    setError({...error,addMember: {show:true,message:result.error}});
+                    return;
                 }
+                setLoading({
+                    ...loading,
+                    addMember:false
+                });
+                setDialog({
+                    addMember:false
+                });
+                setSuccess({show:true,message:result.message});
             })
-    }
+            .catch(error1 => {
+                setError({...error,response: {show:true,message:error1.message}});
+            })
+    };
+    const handleRemoveMember = ()=>{
+        setLoading({
+            ...loading,
+            remove:true
+        });
+        if(removeData.committees.length === 1 || removeData.removeType === 'Committee'){
+            removeFromCommitteeAPI({userId:removeData.userId})
+                .then(removeRes)
+                .catch(error1 => {
+                    setError({...error,remove: {show:true,message:error1.message}});
+                });
+        }else {
+            removeFromCommitteeDepartmentAPI({userId:removeData.userId,department})
+                .then(removeRes)
+                .catch(error1 => {
+                    setError({...error,remove: {show:true,message:error1.message}});
+                })
+        }
+    };
+
     return (
         <div>
+
             <div style={{display:'flex',justifyContent:'flex-end'}}>
                 <Button startIcon={<Add/>} color='primary' onClick={handleClickAddMember}>Add Member</Button>
             </div>
@@ -193,7 +276,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
                                                     onClose={()=>setAnchorEl(null)}
                                                 >
 
-                                                    <MenuItem onClick={()=>removeFromDepartment(member._id,member.ugpc_details.committees)}>
+                                                    <MenuItem onClick={()=>handleClickRemoveMember(member._id,member.ugpc_details.committees,'Department')}>
                                                         <ListItemIcon>
                                                             <Delete color='error'/>
                                                         </ListItemIcon>
@@ -201,7 +284,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
                                                             Remove From Department only
                                                         </Typography>
                                                     </MenuItem>
-                                                    <MenuItem onClick={()=>removeFromCommittee(member._id)}>
+                                                    <MenuItem onClick={()=>handleClickRemoveMember(member._id,member.ugpc_details.committees,'Committee')}>
                                                         <ListItemIcon>
                                                             <Delete color='error'/>
                                                         </ListItemIcon>
@@ -229,6 +312,8 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
             }
             <Dialog open={dialog.addMember} onClose={()=>setDialog({...dialog,addMember: false})} fullWidth maxWidth='sm'>
                 {loading.addMember && <LinearProgress/>}
+
+                <ErrorSnackBar open={error.addMember.show} message={error.addMember.message} handleSnackBar={()=>setError({...error,addMember: {show:false,message:''}})}/>
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Add Member</Typography>
                     <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
@@ -313,8 +398,8 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
                                                                     color="textSecondary"
                                                                 >
                                                                     {
-                                                                        member.ugpc_details.committees.length === 0 || member.ugpc_details.committees[0] === null ? 'None' :
-                                                                            member.ugpc_details.committees.map((dep,i) => `${i>1?',':''}${dep}`)
+                                                                        member.ugpc_details.committees.length === 0 || (member.ugpc_details.committees.length === 1 && member.ugpc_details.committees[0] === null)? 'None' :
+                                                                            member.ugpc_details.committees.map((dep,index) => dep != null && `${ index > 1? ',':''}${dep}`)
                                                                     }
                                                                 </Typography>
 
@@ -335,6 +420,26 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType})
                 <DialogActions>
                     <Button onClick={()=> setDialog({...dialog, addMember:false})}>Cancel</Button>
                     <Button color='primary' onClick={handleAddMember}>Add</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={dialog.removeMember} onClose={()=>setDialog({...dialog,removeMember: false})} fullWidth maxWidth='xs'>
+                {loading.remove && <LinearProgress/>}
+                <ErrorSnackBar open={error.remove.show} message={error.remove.message} handleSnackBar={()=>setError({...error,remove: {show:false,message:''}})}/>
+
+                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
+                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Remove Member</Typography>
+                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
+                        <IconButton size='small' onClick={()=> setDialog({...dialog, removeMember:false})}>
+                            <Close/>
+                        </IconButton>
+                    </Tooltip>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText>Are You sure you want to Remove?</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=> setDialog({...dialog, removeMember:false})}>Cancel</Button>
+                    <Button color='primary' onClick={handleRemoveMember}>Remove</Button>
                 </DialogActions>
             </Dialog>
         </div>

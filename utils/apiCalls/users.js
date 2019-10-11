@@ -176,4 +176,30 @@ export const addMemberToCommitteeAPI = async data =>{
         body:JSON.stringify(data)
     });
     return await res.json();
-}
+};
+
+export const removeFromCommitteeDepartmentAPI = async data =>{
+    const res = await fetch(`${serverUrl}/users/committee/remove/department`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+export const removeFromCommitteeAPI = async data =>{
+    const res = await fetch(`${serverUrl}/users/committee/remove/committee`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
+

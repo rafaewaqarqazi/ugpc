@@ -11,7 +11,9 @@ const {
     removeUser,
     fetchCommittees,
     fetchNotInCommittee,
-    addMemberToCommittee
+    addMemberToCommittee,
+    removeFromCommitteeDepartment,
+    removeFromCommittee
 } = require('../controllers/users');
 const upload = require('../upload');
 const {requireSignin} = require('../controllers/auth');
@@ -25,6 +27,8 @@ router.get('/fetchCommittees',fetchCommittees);
 router.get('/fetchNotInCommittee',fetchNotInCommittee);
 router.put('/change/name',changeName);
 router.put('/change/password',changePassword);
-router.put('/committee/addMember',addMemberToCommittee)
+router.put('/committee/addMember',addMemberToCommittee);
+router.put('/committee/remove/department',removeFromCommitteeDepartment);
+router.put('/committee/remove/committee',removeFromCommittee);
 router.delete('/remove/:userId',removeUser);
 module.exports = router;

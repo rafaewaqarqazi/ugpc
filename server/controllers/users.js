@@ -209,7 +209,7 @@ exports.addMemberToCommittee = async (req,res)=>{
         if (position === 'Chairman_Committee' || position === 'Coordinator'){
             const userExists = await User.find({$and:[{"ugpc_details.position":position},{"ugpc_details.committees":{$in:[department]}},{"ugpc_details.committeeType":committeeType}]});
             if (userExists.length > 0) {
-                return res.status(403).json({
+                return res.status(200).json({
                     error: "Committee Already has a Member on this Position"
                 });
             }
@@ -227,6 +227,47 @@ exports.addMemberToCommittee = async (req,res)=>{
             await res.json({message:'Member Added Successfully'})
         }else {
             await res.json({error:'Something went wrong while adding new Member'})
+        }
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.removeFromCommitteeDepartment = async (req,res) =>{
+    try {
+        const {userId,department} = req.body;
+
+        const result = await User.updateOne({"_id":userId},
+            {
+                $pull:{
+                    "ugpc_details.committees":department
+                }
+            });
+        if (result.ok){
+            await res.json({message:'Member Removed Successfully'})
+        }else {
+            await res.json({error:'Something went wrong while removing Member'})
+        }
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.removeFromCommittee = async (req,res) =>{
+    try {
+        const {userId} = req.body;
+
+        const result = await User.updateOne({"_id":userId},
+            {
+                $set:{
+                    "ugpc_details.committees":[],
+                    "ugpc_details.committeeType":'None',
+                    "ugpc_details.position":undefined
+                },
+            });
+        if (result.ok){
+            await res.json({message:'Member Removed Successfully'})
+        }else {
+            await res.json({error:'Something went wrong while removing Member'})
         }
     }catch (e) {
         await res.json({error:e.message})

@@ -7,6 +7,7 @@ import {useListContainerStyles} from "../../../src/material-styles/listContainer
 import UserContext from "../../../context/user/user-context";
 import CircularLoading from "../../loading/CircularLoading";
 import CommitteeTypeComponent from "./CommitteeTypeComponent";
+import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 
 const TabPanel = props => {
     const { children, value, index, ...other } = props;
@@ -33,7 +34,10 @@ const CommitteesComponent = () => {
     const classes = useListContainerStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
-
+    const [success,setSuccess]=useState({
+        show:false,
+        message:''
+    });
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -41,50 +45,61 @@ const CommitteesComponent = () => {
     const handleChangeIndex = index => {
         setValue(index);
     };
+
+    const handleSuccess = ()=>{
+        setSuccess({show:false,message:''});
+        userContext.fetchCommittees();
+    };
     return (
         <div>
-
-                <div className={classes.listContainer} style={{backgroundColor:'inherit'}}>
-                    <div className={classes.top}>
-                        <div className={classes.topIconBox} >
-                            <SupervisorAccountOutlined className={classes.headerIcon}/>
-                        </div>
-                        <div className={classes.topTitle} >
-                            <Typography variant='h5'>Committees</Typography>
-                        </div>
+            <SuccessSnackBar open={success.show} message={success.message} handleClose={handleSuccess}/>
+            <div className={classes.listContainer} style={{backgroundColor:'inherit'}}>
+                <div className={classes.top}>
+                    <div className={classes.topIconBox} >
+                        <SupervisorAccountOutlined className={classes.headerIcon}/>
                     </div>
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        indicatorColor="primary"
-                        textColor="primary"
-                        variant="scrollable"
-                    >
-                        <Tab label="Defence" {...a11yProps(0)} />
-                        <Tab label="Evaluation" {...a11yProps(1)} />
-                    </Tabs>
-
-                    <SwipeableViews
-                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                        index={value}
-                        onChangeIndex={handleChangeIndex}
-                    >
-                        <TabPanel value={value} index={0} dir={theme.direction}>
-                            {
-                                userContext.user.committees.isLoading ? <CircularLoading/> :
-                                    <CommitteeTypeComponent committeeType={userContext.user.committees.committeeType.filter(committee => committee._id === 'Defence')[0]}/>
-                            }
-
-                        </TabPanel>
-                        <TabPanel value={value} index={1} dir={theme.direction}>
-                            {
-                                userContext.user.committees.isLoading ? <CircularLoading/> :
-                                    <CommitteeTypeComponent committeeType={userContext.user.committees.committeeType.filter(committee => committee._id === 'Evaluation')[0]}/>
-                            }
-
-                        </TabPanel>
-                    </SwipeableViews>
+                    <div className={classes.topTitle} >
+                        <Typography variant='h5'>Committees</Typography>
+                    </div>
                 </div>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    variant="scrollable"
+                >
+                    <Tab label="Defence" {...a11yProps(0)} />
+                    <Tab label="Evaluation" {...a11yProps(1)} />
+                </Tabs>
+
+                <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={value}
+                    onChangeIndex={handleChangeIndex}
+                >
+                    <TabPanel value={value} index={0} dir={theme.direction}>
+                        {
+                            userContext.user.committees.isLoading ? <CircularLoading/> :
+                                <CommitteeTypeComponent
+                                    committeeType={userContext.user.committees.committeeType.filter(committee => committee._id === 'Defence')[0]}
+                                    setSuccess={setSuccess}
+                                />
+                        }
+
+                    </TabPanel>
+                    <TabPanel value={value} index={1} dir={theme.direction}>
+                        {
+                            userContext.user.committees.isLoading ? <CircularLoading/> :
+                                <CommitteeTypeComponent
+                                    committeeType={userContext.user.committees.committeeType.filter(committee => committee._id === 'Evaluation')[0]}
+                                    setSuccess={setSuccess}
+                                />
+                        }
+
+                    </TabPanel>
+                </SwipeableViews>
+            </div>
 
         </div>
     );
