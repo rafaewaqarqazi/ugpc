@@ -30,11 +30,13 @@ router.put('/coordinator/settings/set/studentsCount',setStudentsCount);
 router.put('/coordinator/settings/set/startingDate',setStartingDate);
 
 router.put('/profile/upload/:type',upload.single('file'),uploadProfileImage);
+
 router.get('/fetchAll',fetchAllUsers);
 router.get('/fetch/studentsBarData',fetchStudentsBarData);
 router.get('/fetch/supervisors',fetchAllSupervisors);
 router.get('/fetchCommittees',fetchCommittees);
 router.get('/fetchNotInCommittee',fetchNotInCommittee);
+
 router.put('/change/name',changeName);
 router.put('/change/password',changePassword);
 router.put('/committee/addMember',addMemberToCommittee);

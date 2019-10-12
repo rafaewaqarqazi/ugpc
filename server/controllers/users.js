@@ -378,8 +378,10 @@ exports.fetchStudentsBarData = async (req,res)=>{
 
 exports.fetchAllSupervisors = async (req,res)=>{
     try {
+        const result = await User.find({"role":'Supervisor'})
+            .select('name email profileImage supervisor_details');
 
-
+        await res.json(result)
     }catch (e) {
         await res.json({error:e.message})
     }

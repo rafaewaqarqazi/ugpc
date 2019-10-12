@@ -4,7 +4,7 @@ import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/user/user-context";
 import {fetchAllProjectsAPI} from "../../../../utils/apiCalls/projects";
 import CoordinatorDashboard from "../../../../components/coordinator/dashboard/CoordinatorDashboard";
-import {fetchAllStudentsAPI, fetchVisionDocsDataForDashboardAPI} from "../../../../utils/apiCalls/users";
+import {fetchAllStudentsAPI} from "../../../../utils/apiCalls/users";
 import {fetchVisionDocsPieDataAPI} from "../../../../utils/apiCalls/visionDocs";
 const Dashboard = () => {
     const [projects,setProjects] = useState({
