@@ -13,7 +13,11 @@ const {
     fetchNotInCommittee,
     addMemberToCommittee,
     removeFromCommitteeDepartment,
-    removeFromCommittee
+    removeFromCommittee,
+    setStudentsCount,
+    setStartingDate,
+    fetchStudentsBarData,
+    fetchAllSupervisors
 } = require('../controllers/users');
 const upload = require('../upload');
 const {requireSignin} = require('../controllers/auth');
@@ -21,8 +25,14 @@ const {requireSignin} = require('../controllers/auth');
 router.put('/chairman/settings/marksDistribution',marksDistribution);
 router.put('/chairman/settings/batch/add',addNewBatch);
 router.put('/chairman/settings/batch/remove',removeBatch);
+
+router.put('/coordinator/settings/set/studentsCount',setStudentsCount);
+router.put('/coordinator/settings/set/startingDate',setStartingDate);
+
 router.put('/profile/upload/:type',upload.single('file'),uploadProfileImage);
 router.get('/fetchAll',fetchAllUsers);
+router.get('/fetch/studentsBarData',fetchStudentsBarData);
+router.get('/fetch/supervisors',fetchAllSupervisors);
 router.get('/fetchCommittees',fetchCommittees);
 router.get('/fetchNotInCommittee',fetchNotInCommittee);
 router.put('/change/name',changeName);

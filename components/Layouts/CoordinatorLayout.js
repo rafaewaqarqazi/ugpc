@@ -26,10 +26,8 @@ import {
     ChevronLeft,
     ChevronRight,
     Add,
-    PermIdentity,
-    ExitToAppOutlined,
-    ScheduleOutlined,
-    SettingsOutlined
+    AssignmentOutlined,
+    ScheduleOutlined
 } from "@material-ui/icons";
 import { signout} from "../../auth";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
@@ -44,7 +42,6 @@ const CoordinatorLayout = ({children})=> {
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [anchorEl2, setAnchorEl2] = React.useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerOpen = ()=> {
         setOpen(true);
@@ -59,14 +56,6 @@ const CoordinatorLayout = ({children})=> {
     const handleAddMenuClick = event =>{
         setAnchorEl(event.currentTarget)
     };
-
-
-    const handleProfileMenuClose = ()=>{
-        setAnchorEl2(null);
-    };
-    const handleProfileMenuClick = event =>{
-        setAnchorEl2(event.currentTarget)
-    };
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
     };
@@ -74,33 +63,36 @@ const CoordinatorLayout = ({children})=> {
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/committee/defence/coordinator/overview'>
+                <Link href='/committee/defence/coordinator/dashboard'>
                     <ListItem button >
                         <ListItemIcon>
                             <DashboardOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={"Overview"} />
+                        <ListItemText primary={"Dashboard"} />
                     </ListItem>
 
                 </Link>
-
+                <Link href='/committee/defence/coordinator/supervisors'>
+                    <ListItem button >
+                        <ListItemIcon>
+                            <SupervisorAccountOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={"Supervisors"} />
+                    </ListItem>
+                </Link>
+            </List>
+            <Divider/>
+            <List>
                 <Link href='/committee/defence/coordinator/vision-documents'>
                     <ListItem button >
                         <ListItemIcon>
-                            <Laptop />
+                            <AssignmentOutlined />
                         </ListItemIcon>
                         <ListItemText primary={"Vision Documents"}  style={{whiteSpace:'normal'}} />
                     </ListItem>
                 </Link>
 
-                <Link href='/committee/defence/coordinator/projects'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <Laptop />
-                        </ListItemIcon>
-                        <ListItemText primary={"Projects"} />
-                    </ListItem>
-                </Link>
+
 
                 <Link href='/committee/defence/coordinator/presentations'>
                     <ListItem button >
@@ -120,42 +112,40 @@ const CoordinatorLayout = ({children})=> {
                     </ListItem>
                 </Link>
 
-                <Link href='/committee/defence/coordinator/supervisors'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <SupervisorAccountOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Supervisors"} />
-                    </ListItem>
-                </Link>
 
-            </List>
-            <Divider/>
-            <List>
-                <Link href='/committee/defence/coordinator/settings'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <SettingsOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Settings"} />
-                    </ListItem>
-                </Link>
             </List>
         </Fragment>
 
     );
+    const handleAddPresentationClick = ()=>{
+        Router.push('/committee/defence/coordinator/presentation');
+    }
     const addMenu = (
-        <Link href='/committee/defence/coordinator/presentation'>
-            <MenuItem>
-                <ListItemIcon>
-                    <SupervisorAccountOutlined />
-                </ListItemIcon>
-                <Typography variant="inherit" noWrap>
-                    Presentation
-                </Typography>
-            </MenuItem>
-        </Link>
-    );
+        <div>
+            <Tooltip title='Add' placement='right'>
+                <IconButton onClick={handleAddMenuClick} style={{color:'inherit'}}  size='small'>
+                    <Add />
+                </IconButton>
+            </Tooltip>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleAddMenuClose}
+            >
+                <MenuItem onClick={handleAddPresentationClick}>
+                    <ListItemIcon>
+                        <SupervisorAccountOutlined />
+                    </ListItemIcon>
+                    <Typography variant="inherit" noWrap>
+                        Presentation
+                    </Typography>
+                </MenuItem>
+            </Menu>
+        </div>
+    )
+
     const handleClickProfile = ()=>{
         Router.push('/committee/defence/coordinator/profile');
     };
@@ -176,20 +166,10 @@ const CoordinatorLayout = ({children})=> {
                                     <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
                                 </Tooltip>
                             </div>
-                            <Tooltip title='Add' placement='right'>
-                                <IconButton onClick={handleAddMenuClick}  size='small'>
-                                    <Add/>
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleAddMenuClose}
-                            >
+                            <div style={{color:'grey'}}>
                                 {addMenu}
-                            </Menu>
+                            </div>
+
                             <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
@@ -289,21 +269,8 @@ const CoordinatorLayout = ({children})=> {
                                                 <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarMargin}/>
                                             </Tooltip>
                                         </div>
-                                        <div>
-                                            <Tooltip title='Add' placement='right'>
-                                                <IconButton onClick={handleAddMenuClick} style={{color:'#fff'}} size='small' >
-                                                    <Add/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Menu
-                                                id="add-menu"
-                                                anchorEl={anchorEl}
-                                                keepMounted
-                                                open={Boolean(anchorEl)}
-                                                onClose={handleAddMenuClose}
-                                            >
-                                                {addMenu}
-                                            </Menu>
+                                        <div style={{color:'#fff'}}>
+                                            {addMenu}
                                         </div>
                                     </div>
 
@@ -311,10 +278,6 @@ const CoordinatorLayout = ({children})=> {
                                         <ProfileMenu handleClickProfile={handleClickProfile}/>
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                             <div className={classes.list}>
                                 <div className={classes.toolbar}>

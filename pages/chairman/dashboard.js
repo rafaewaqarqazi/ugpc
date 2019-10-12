@@ -3,7 +3,7 @@ import {withChairmanAuthSync} from "../../components/routers/chairmanAuth";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../context/user/user-context";
 import DashboardComponent from "../../components/chairman/dashboard/DashboardComponent";
-import {fetchAllProjects} from "../../utils/apiCalls/projects";
+import {fetchAllProjectsAPI} from "../../utils/apiCalls/projects";
 const Dashboard = () => {
     const [projects,setProjects] = useState({
         isLoading:true,
@@ -12,7 +12,7 @@ const Dashboard = () => {
     const userContext = useContext(UserContext);
     useEffect(()=>{
         userContext.fetchAllUsers();
-        fetchAllProjects()
+        fetchAllProjectsAPI()
             .then(result =>{
                 setProjects({
                     isLoading: false,

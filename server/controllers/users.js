@@ -220,7 +220,8 @@ exports.addMemberToCommittee = async (req,res)=>{
                     "ugpc_details.committees":department
                 },
                 "ugpc_details.position":position,
-                "ugpc_details.committeeType":committeeType
+                "ugpc_details.committeeType":committeeType,
+
             })
             .select('email');
 
@@ -316,3 +317,70 @@ exports.removeFromCommittee = async (req,res) =>{
         await res.json({error:e.message})
     }
 };
+
+exports.setStudentsCount = async (req,res)=>{
+    try {
+        const {count,userId} = req.body;
+        const result = await User.updateOne({"_id":userId},{
+            "coordinator_details.settings.studentsCount":count
+        });
+        if (result.ok){
+            await res.json({message:'Students Count Changed'})
+        }else {
+            await res.json({error:"Couldn't Change Students Count"})
+        }
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.setStartingDate = async (req,res)=>{
+    try {
+        const {date,userId} = req.body;
+        const result = await User.updateOne({"_id":userId},{
+            "coordinator_details.settings.startingDate":date
+        });
+        if (result.ok){
+            await res.json({message:'Starting Date Changed'})
+        }else {
+            await res.json({error:"Couldn't Change Date"})
+        }
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.fetchStudentsBarData = async (req,res)=>{
+    try {
+        const result = await User.aggregate([
+            {
+                $match:  {$and:[{"role":'Student'},{"department":{$in:req.query.committees}}]}
+            },
+            {
+                $project:{"student_details.batch":1}
+            },
+            {
+                $group:{
+                    "_id":"$student_details.batch",
+                    students:{$sum:1}
+                }
+            }
+            ]);
+
+        await res.json(result)
+
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.fetchAllSupervisors = async (req,res)=>{
+    try {
+
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+}

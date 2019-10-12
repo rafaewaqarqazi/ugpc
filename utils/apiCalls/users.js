@@ -202,4 +202,26 @@ export const removeFromCommitteeAPI = async data =>{
     });
     return await res.json();
 };
+export const fetchAllStudentsAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/fetch/studentsBarData?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+}
+export const fetchAllSupervisorsAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/fetch/supervisors`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
 

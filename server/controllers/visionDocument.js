@@ -190,4 +190,31 @@ exports.addMarks = async (req,res)=>{
         res.status(400).json(e.message)
     }
 
+};
+exports.fetchVisionDocsPieData = async (req,res) =>{
+    try {
+        const result = await Projects.aggregate([
+            {
+                $match: { "department":{$in:req.query.committees}}
+            },
+            {
+                $unwind:"$documentation.visionDocument"
+            },
+            {
+                $project:{"documentation.visionDocument.status":1}
+            },
+            {
+                $group:{
+                    "_id":"$documentation.visionDocument.status",
+                    visionDocs:{$sum:1}
+                }
+            }
+        ]);
+
+        await res.json(result)
+
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
 }

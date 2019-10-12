@@ -22,7 +22,6 @@ export const getUsersChartData = allUsers =>{
 };
 
 export const formatProjectsData = projects =>{
-    console.log(projects)
     let projectsData = projects.map(project => {
         let totalTasks = project.details.backlog.length;
         let completedTasks = 0;
@@ -35,9 +34,6 @@ export const formatProjectsData = projects =>{
             }
         }):
             completedTasks = 0;
-
-        console.log('Total Tasks',totalTasks);
-        console.log('Completed Tasks',completedTasks)
         const percentage = parseFloat(((completedTasks / totalTasks) * 100).toFixed(2));
         return [project._id,project.documentation.visionDocument.title,new Date(project.details.acceptanceLetter.issueDate), new Date(project.details.estimatedDeadline),null,percentage,null]
     });

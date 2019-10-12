@@ -69,5 +69,8 @@ export const useListContainerStyles = makeStyles(theme=>({
     headerIcon:{
         width: 36,
         height: 36
+    },
+    footerMargin:{
+        marginBottom:theme.spacing(10)
     }
 }));

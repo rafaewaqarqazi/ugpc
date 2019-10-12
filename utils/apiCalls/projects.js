@@ -191,7 +191,7 @@ export const fetchExaminersAPI = async ()=>{
     });
     return await res.json();
 };
-export const fetchAllProjects = async ()=>{
+export const fetchAllProjectsAPI = async ()=>{
     const res = await fetch(`${serverUrl}/projects/all`,{
         method:'GET',
         headers:{

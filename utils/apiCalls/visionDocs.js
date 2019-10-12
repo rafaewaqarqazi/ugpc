@@ -102,6 +102,18 @@ export const addMarksAPI = async (marks,projectId) =>{
         })
     });
     return await res.json();
-}
+};
+export const fetchVisionDocsPieDataAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/visionDocsPieData?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};
+
 
 
