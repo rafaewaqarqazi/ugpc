@@ -24,6 +24,9 @@ import {makeStyles} from "@material-ui/styles";
 import {getRandomColor} from "../../src/material-styles/randomColors";
 import moment from "moment";
 import {getCompletionPercentage} from "../../components/project/helpers";
+import {serverUrl} from "../../utils/config";
+import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
+import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 
 const useStyles = makeStyles(theme =>({
     tableRow:{
@@ -47,9 +50,10 @@ const useStyles = makeStyles(theme =>({
 
 const Projects = () => {
     const classes = useListContainerStyles();
+    const avatarClasses = useDrawerStyles();
     const userContext = useContext(UserContext);
     const projectsClasses = useStyles();
-
+    const emptyStyles = useListItemStyles();
     const handleClickProject = projectId=>{
         router.push(`/supervisor/project/[projectId]/roadmap`,`/supervisor/project/${projectId}/roadmap`)
     };
@@ -85,6 +89,16 @@ const Projects = () => {
                                             </TableHead>
                                             <TableBody >
                                                 {
+                                                    userContext.user.user.supervisor_details.projects.length === 0 ?
+                                                    <TableRow key={index} >
+                                                        <TableCell colSpan={7}>
+                                                            <div className={emptyStyles.emptyListContainer}>
+                                                                <div className={emptyStyles.emptyList}>
+                                                                    No Projects Found
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>:
                                                     userContext.user.user.supervisor_details.projects.map(({title,project,_id},index) => (
                                                         <Tooltip key={index} title='Click to view Details' placement="top" TransitionComponent={Zoom}>
                                                             <TableRow className={projectsClasses.tableRow} onClick={()=>handleClickProject(project._id)}>
@@ -101,7 +115,17 @@ const Projects = () => {
                                                                     project.students.map((student,index) =>
                                                                         <div key={index} style={{display:'flex'}}>
                                                                             <Tooltip  title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                                                                <Avatar className={projectsClasses.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
+                                                                                {
+                                                                                    student.profileImage && student.profileImage.filename ?
+                                                                                        <Avatar
+                                                                                            className={avatarClasses.imageAvatar}
+                                                                                            src={`${serverUrl}/../static/images/${student.profileImage.filename}`}/>
+                                                                                        :
+                                                                                        <Avatar
+                                                                                            className={avatarClasses.avatarColor}>
+                                                                                            {student.name.charAt(0).toUpperCase()}
+                                                                                        </Avatar>
+                                                                                }
                                                                             </Tooltip>
                                                                         </div>
                                                                     )

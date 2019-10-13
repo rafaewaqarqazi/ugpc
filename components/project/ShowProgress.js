@@ -1,59 +1,45 @@
 import React from 'react';
 import ProjectContext from '../../context/project/project-context'
-import {Container, Grid, LinearProgress, Typography} from "@material-ui/core";
-import {DirectionsRunOutlined, FormatListBulletedOutlined} from "@material-ui/icons";
+import {
+    Container,
+    Grid,
+    Table, TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography,
+    LinearProgress
+} from "@material-ui/core";
+import {
+    DirectionsRunOutlined,
+    FormatListBulletedOutlined,
+} from "@material-ui/icons";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import Divider from "@material-ui/core/Divider";
-import {getCompletionPercentage} from "./helpers";
-import {Pie} from 'react-chartjs-2';
+import {
+    getCompletedStoryPoints,
+    getCompletedTasksCount,
+    getCompletionPercentage,
+    getSprintDataSet, getSprintLabels,
+    getSprintsPercentage, getSprintTableRowBorder, getSprintVelocity, getTotalStoryPoints,
+    getTotalTasksCount
+} from "./helpers";
+import {Bar, Pie} from 'react-chartjs-2';
 import { defaults } from 'react-chartjs-2';
 import {useProgressStyles} from "../../src/material-styles/ProgressStyles";
-defaults.global.legend.position = 'right'
+import {useListItemStyles} from "../../src/material-styles/listItemStyles";
+
+import 'chartjs-plugin-colorschemes';
+import moment from "moment";
+import {useTableStyles} from "../../src/material-styles/tableStyles";
+defaults.global.legend.position = 'right';
 
 const ShowProgress = () => {
     const classes = useListContainerStyles();
     const progressClasses = useProgressStyles();
-    const getTotalTasksCount = details =>{
-        let totaltasks = 0;
-
-        totaltasks += details.backlog.length;
-        details.sprint.map(sprint => {
-            totaltasks +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
-
-        });
-        return totaltasks
-    };
-    const getCompletedTasksCount = details =>{
-        let completed = 0;
-
-        details.sprint.map(sprint => {
-            completed +=sprint.done.length;
-        });
-        return completed
-    };
-    const getSprintsPercentage = details =>{
-        let count = 0;
-        details.sprint.map(sprint => {
-            if (sprint.todos.length === 0 && sprint.inProgress.length === 0 && sprint.inReview.length === 0 && sprint.done.length > 0)
-                count +=1;
-        });
-
-        return parseFloat(((count / details.sprint.length) * 100).toFixed(2))
-    };
-    const getSprintDataSet = details =>{
-        let todos = 0;
-        let inProgress = 0;
-        let inReview = 0;
-        let done = 0;
-        details.sprint.map(sprint => {
-            todos +=sprint.todos.length;
-            inProgress +=sprint.inProgress.length;
-            inReview +=sprint.inReview.length;
-            done +=sprint.done.length;
-        });
-
-        return [todos,inProgress,inReview,done]
-    }
+    const emptyStyles = useListItemStyles();
+    const tableClasses = useTableStyles();
     return (
         <ProjectContext.Consumer>
             {
@@ -63,7 +49,7 @@ const ShowProgress = () => {
                    }
                    if (!project.isLoading){
                        return (
-                           <Container>
+                           <Container className={classes.footerMargin}>
 
                                <Typography variant='subtitle1' className={progressClasses.title} color='textSecondary'>Progress</Typography>
                                <Grid container spacing={3}>
@@ -77,6 +63,7 @@ const ShowProgress = () => {
                                                </div>
                                                <div className={progressClasses.containerContent}>
                                                    <Typography variant='body2' color='textSecondary' > Tasks</Typography>
+
                                                    <Typography variant='h5' color='textSecondary'>{`${getCompletionPercentage(project.project.details)}%`}</Typography>
                                                    <LinearProgress className={progressClasses.progressBar} variant='determinate' value={getCompletionPercentage(project.project.details)}/>
 
@@ -84,23 +71,32 @@ const ShowProgress = () => {
                                            </div>
                                            <Divider/>
                                            <div className={progressClasses.topProgressBarContainer}>
-                                               <Pie width={50}
-                                                    height={150}
-                                                    options={{ maintainAspectRatio: false }}
-                                                    data={{
-                                                   labels:['Total','Completed'],
-                                                   datasets:[{
-                                                       data:[getTotalTasksCount(project.project.details),getCompletedTasksCount(project.project.details)],
-                                                       backgroundColor: [
-                                                           '#03a9f4',
-                                                           '#4caf50',
-                                                       ],
-                                                       hoverBackgroundColor: [
-                                                           '#039be5',
-                                                           '#43a047',
-                                                       ]
-                                                   }]
-                                               }} />
+                                               {
+                                                   getTotalTasksCount(project.project.details) === 0?
+                                                       <div className={emptyStyles.emptyListContainer}>
+                                                           <div className={emptyStyles.emptyList}>
+                                                               No Tasks created yet
+                                                           </div>
+                                                       </div>:
+                                                       <Pie width={50}
+                                                            height={150}
+                                                            options={{ maintainAspectRatio: false }}
+                                                            data={{
+                                                                labels:['Total','Completed'],
+                                                                datasets:[{
+                                                                    data:[getTotalTasksCount(project.project.details),getCompletedTasksCount(project.project.details)],
+                                                                    backgroundColor: [
+                                                                        '#03a9f4',
+                                                                        '#4caf50',
+                                                                    ],
+                                                                    hoverBackgroundColor: [
+                                                                        '#039be5',
+                                                                        '#43a047',
+                                                                    ]
+                                                                }]
+                                                            }} />
+                                               }
+
                                            </div>
 
                                        </div>
@@ -116,6 +112,7 @@ const ShowProgress = () => {
                                                <div className={progressClasses.containerContent}>
 
                                                    <Typography variant='body2' color='textSecondary' >Sprints</Typography>
+
                                                    <Typography variant='h5' color='textSecondary'>{`${getSprintsPercentage(project.project.details)}%`}</Typography>
                                                    <LinearProgress className={progressClasses.progressBar} variant='determinate' value={getSprintsPercentage(project.project.details)}/>
 
@@ -123,34 +120,165 @@ const ShowProgress = () => {
                                            </div>
                                            <Divider/>
                                            <div className={progressClasses.topProgressBarContainer}>
-                                               <Pie
-                                                   width={50}
-                                                   height={150}
-                                                   options={{ maintainAspectRatio: false }}
-                                                   data={{
-                                                   labels:['Todos','In Progress', 'In Review', 'Done'],
-                                                   datasets:[{
-                                                       data:getSprintDataSet(project.project.details),
-                                                       backgroundColor: [
-                                                           '#03a9f4',
-                                                           '#ffeb3b',
-                                                           '#ff9800',
-                                                           '#4caf50',
-                                                       ],
-                                                       hoverBackgroundColor: [
-                                                           '#039be5',
-                                                           '#fdd835',
-                                                           '#fb8c00',
-                                                           '#43a047',
-                                                       ]
-                                                   }]
-                                               }} />
+                                               {
+                                                   project.project.details.sprint.length === 0 ?
+                                                       <div className={emptyStyles.emptyListContainer}>
+                                                           <div className={emptyStyles.emptyList}>
+                                                               No Sprint created yet
+                                                           </div>
+                                                       </div>:
+                                                       <Pie
+                                                           width={50}
+                                                           height={150}
+                                                           options={{ maintainAspectRatio: false }}
+                                                           data={{
+                                                               labels:['Todos','In Progress', 'In Review', 'Done'],
+                                                               datasets:[{
+                                                                   data:getSprintDataSet(project.project.details),
+                                                                   backgroundColor: [
+                                                                       '#03a9f4',
+                                                                       '#ffeb3b',
+                                                                       '#ff9800',
+                                                                       '#4caf50',
+                                                                   ],
+                                                                   hoverBackgroundColor: [
+                                                                       '#039be5',
+                                                                       '#fdd835',
+                                                                       '#fb8c00',
+                                                                       '#43a047',
+                                                                   ]
+                                                               }]
+                                                           }} />
+                                               }
+
 
                                            </div>
                                        </div>
                                    </Grid>
-                               </Grid>
+                                   <Grid item xs={12} >
+                                       <div className={progressClasses.container}>
+                                           <div className={progressClasses.top}>
+                                               <div >
+                                                   <div className={classes.topIconBox}>
+                                                       <DirectionsRunOutlined className={classes.headerIcon}/>
+                                                   </div>
+                                               </div>
+                                               <div className={progressClasses.containerContent}>
+                                                   <Typography variant='body2' color='textSecondary' >Sprint Velocity</Typography>
+                                                   <Tooltip title='Average Story Points Completed / Sprint' placement='top'>
+                                                        <Typography variant='h5' color='textSecondary'>{getSprintVelocity(project.project.details.sprint)}</Typography>
+                                                   </Tooltip>
+                                               </div>
+                                           </div>
+                                           <Divider/>
+                                           <div className={progressClasses.topProgressBarContainer}>
+                                               {
+                                                   project.project.details.sprint.length === 0 ?
+                                                       <div className={emptyStyles.emptyListContainer}>
+                                                           <div className={emptyStyles.emptyList}>
+                                                               No Sprint created yet
+                                                           </div>
+                                                       </div>:
+                                                       <Bar width={3}
+                                                            height={1}
+                                                            options={{
+                                                                maintainAspectRatio: true,
+                                                                plugins: {
+                                                                    colorschemes: {
+                                                                        scheme: 'brewer.Paired12'
+                                                                    }
+                                                                },
+                                                                scales: {
+                                                                    xAxes: [{
+                                                                        barPercentage: 0.5,
+                                                                        barThickness: 20,
 
+                                                                    }]
+                                                                },
+                                                                legend:{
+                                                                    display:true,
+                                                                    position:'top'
+                                                                }
+                                                            }}
+                                                            data={{
+                                                                labels:getSprintLabels(project.project.details.sprint),
+                                                                datasets:[
+                                                                    {
+                                                                    label: 'Total Story points',
+                                                                    data:getTotalStoryPoints(project.project.details.sprint),
+                                                                    },
+                                                                    {
+                                                                        label: 'Completed Story Points',
+                                                                        data:getCompletedStoryPoints(project.project.details.sprint),
+                                                                    }
+                                                                ]
+                                                            }} />
+                                               }
+
+
+                                           </div>
+                                       </div>
+                                   </Grid>
+                                   <Grid item xs={12} >
+                                       <div className={progressClasses.container}>
+                                           <div className={progressClasses.top}>
+                                               <div >
+                                                   <div className={classes.topIconBox}>
+                                                       <DirectionsRunOutlined className={classes.headerIcon}/>
+                                                   </div>
+                                               </div>
+                                               <div className={progressClasses.containerContent}>
+                                                   <Typography variant='body2' color='textSecondary' >Sprints</Typography>
+                                                   <Typography variant='h5' color='textSecondary'>{project.project.details.sprint.length}</Typography>
+                                               </div>
+                                           </div>
+                                           <Divider/>
+                                           <div className={progressClasses.topProgressBarContainer}>
+                                               <div className={tableClasses.tableWrapper}>
+                                                   <Table >
+                                                       <TableHead>
+                                                           <TableRow>
+                                                               <TableCell align="left">Name</TableCell>
+                                                               <TableCell align="left">StartDate</TableCell>
+                                                               <TableCell align="left">EndDate</TableCell>
+                                                               <TableCell align="left">Status</TableCell>
+                                                               <TableCell align="left">TotalTasks</TableCell>
+                                                               <TableCell align="left">CompletedTasks</TableCell>
+                                                               <TableCell align="left">CompletedDate</TableCell>
+                                                           </TableRow>
+                                                       </TableHead>
+                                                       <TableBody >
+                                                           {
+
+                                                               project.project.details.sprint.length === 0?
+                                                                   <TableRow >
+                                                                       <TableCell colSpan={7}>
+                                                                           <div className={emptyStyles.emptyListContainer}>
+                                                                               <div className={emptyStyles.emptyList}>
+                                                                                   No Sprint created yet
+                                                                               </div>
+                                                                           </div>
+                                                                       </TableCell>
+                                                                   </TableRow>:
+                                                                   project.project.details.sprint.map((sprint,index) => (
+                                                                       <TableRow key={index} className={tableClasses.tableRow} style={getSprintTableRowBorder(sprint)}>
+                                                                           <TableCell align="left" >{sprint.name}</TableCell>
+                                                                           <TableCell align="left" >{moment(sprint.startDate).format('MM-DD-YY')}</TableCell>
+                                                                           <TableCell align="left" >{moment(sprint.endDate).format('MM-DD-YY')}</TableCell>
+                                                                           <TableCell >{sprint.status}</TableCell>
+                                                                           <TableCell align="left">{sprint.todos.length+sprint.inProgress.length+sprint.inReview.length+sprint.done.length}</TableCell>
+                                                                           <TableCell >{sprint.done.length}</TableCell>
+                                                                           <TableCell >{sprint.status === 'Completed' ? moment(sprint.completedOn).format('MM-DD-YY') :'InComplete'}</TableCell>
+                                                                       </TableRow>
+                                                                   ))
+                                                           }
+                                                       </TableBody>
+                                                   </Table>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </Grid>
+                               </Grid>
                            </Container>
                        )
                    }

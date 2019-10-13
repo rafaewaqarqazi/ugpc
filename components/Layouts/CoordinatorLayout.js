@@ -203,7 +203,7 @@ const CoordinatorLayout = ({children})=> {
                                                     >
                                                         <MenuItem value={userContext.user.user.ugpc_details.position} style={{fontSize:14}}>Coordinator View</MenuItem>
                                                         <MenuItem value='Supervisor View' style={{fontSize:14}}>
-                                                            <Link href='/supervisor/dashboard'>
+                                                            <Link href='/supervisor/projects'>
                                                                 <a style={{textDecoration:'none',color:'inherit'}}>Supervisor View</a>
                                                             </Link>
                                                         </MenuItem>

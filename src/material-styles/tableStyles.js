@@ -7,6 +7,7 @@ export const useTableStyles = makeStyles(theme =>({
         }
     },
     tableWrapper:{
+        flexGrow:1,
         padding:theme.spacing(0.5),
         overflow:'auto',
         maxHeight:450

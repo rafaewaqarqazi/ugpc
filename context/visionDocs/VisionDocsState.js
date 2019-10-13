@@ -2,16 +2,16 @@ import React, {useReducer, useEffect} from 'react';
 import VisionDocsContext from './visionDocs-context';
 import {visionDocsReducer} from "./visionDocsReducer";
 import {
-    getDocsByCommittee,
-    commentOnVision,
-    scheduleVisionDefenceAction,
-    submitAdditionFilesVisionDocAction,
-    addMarksAction,
-    generateAcceptanceLetterAction,
-    assignSupervisorAction, docsLoading, addDocs
+    docsLoadingAction, addDocsAction, docsFailedAction
 } from "./ActionCreators";
 import {assignSupervisorAutoAPI, generateAcceptanceLetterAPI} from "../../utils/apiCalls/projects";
-import {changeStatusAPI,fetchBySupervisorAPI} from "../../utils/apiCalls/visionDocs";
+import {
+    addMarksAPI,
+    changeStatusAPI,
+    commentOnVisionAPI,
+    fetchBySupervisorAPI, fetchDocsByCommitteeAPI, scheduleVisionDefenceAPI,
+    submitAdditionFilesVisionDocAPI
+} from "../../utils/apiCalls/visionDocs";
 
 const VisionDocsState = (props) => {
     const [state, dispatch] = useReducer(visionDocsReducer,{
@@ -20,42 +20,47 @@ const VisionDocsState = (props) => {
         visionDocs:[]
     });
     const fetchByCommittee =async ()=>{
-         return await getDocsByCommittee(dispatch);
+        try {
+            dispatch(docsLoadingAction());
+            const docs = await fetchDocsByCommitteeAPI();
+            dispatch(addDocsAction(docs));
+        }catch (e) {
+            await dispatch(docsFailedAction('Failed to load Projects'))
+        }
     };
     const comment = async comment =>{
-        return await commentOnVision(comment);
-    }
+        return await commentOnVisionAPI(comment);
+    };
     const changeStatus = async status =>{
         const res =await changeStatusAPI(status);
-        await getDocsByCommittee(dispatch);
         return await res;
     };
     const scheduleVisionDefence = async data =>{
-
-        return await scheduleVisionDefenceAction(data,dispatch);
+        return await scheduleVisionDefenceAPI(data);
     };
     const submitAdditionFilesVisionDoc = async (formData,type) =>{
-        return await submitAdditionFilesVisionDocAction(formData,type,dispatch);
+        return await submitAdditionFilesVisionDocAPI(formData,type);
     };
     const addMarks = async (marks,projectId) =>{
-        return await addMarksAction(marks,projectId,dispatch);
+        return await addMarksAPI(marks,projectId);
     };
     const generateAcceptanceLetter = async (projectId,regNo) =>{
         const result = await generateAcceptanceLetterAPI(projectId,regNo);
-        dispatch(generateAcceptanceLetterAction(projectId,await result.issueDate,regNo))
         return await result;
     };
     const assignSupervisorAuto = async (projectId,title,regNo)=>{
-        console.log('Title',title);
         const result = await assignSupervisorAutoAPI(projectId,title,regNo);
-        dispatch(assignSupervisorAction(projectId,await result.supervisor));
         return await result
     };
     const fetchBySupervisor = async ()=>{
-        dispatch(docsLoading());
-        const result = await fetchBySupervisorAPI();
-        dispatch(addDocs(result));
-    }
+        try {
+            dispatch(docsLoadingAction());
+            const result = await fetchBySupervisorAPI();
+            dispatch(addDocsAction(result));
+        }catch (e) {
+            await dispatch(docsFailedAction('Failed to load Documents'))
+        }
+    };
 useEffect(()=>{
     console.log('Vision Docs State:',state)
 },[state])

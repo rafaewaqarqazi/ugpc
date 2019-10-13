@@ -230,7 +230,7 @@ export const landingAuth = ctx => {
         return
     }
     else if (ctx.req && token && user.user.role === 'Supervisor') {
-        ctx.res.writeHead(302, { Location: '/supervisor/dashboard' });
+        ctx.res.writeHead(302, { Location: '/supervisor/projects' });
         ctx.res.end();
         return
     }
@@ -280,7 +280,7 @@ export const landingAuth = ctx => {
         Router.push('/student/roadmap')
     }
     else if (token && user.user.role === 'Supervisor') {
-        Router.push('/supervisor/dashboard')
+        Router.push('/supervisor/projects')
     }
     else if (token && user.user.role === 'Chairman DCSSE') {
         Router.push('/chairman/dashboard')

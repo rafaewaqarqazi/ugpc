@@ -1,8 +1,8 @@
 import React, {useContext, useEffect} from 'react';
-import {LinearProgress} from "@material-ui/core";
 import VisionDocsContext from '../../context/visionDocs/visionDocs-context';
 
 import VisionDocListItem from "./higherAuthority/list/VisionDocListItem";
+import CircularLoading from "../loading/CircularLoading";
 
 const SupervisorVisionDocs = () => {
     const visionDocsContext = useContext(VisionDocsContext);
@@ -11,9 +11,10 @@ const SupervisorVisionDocs = () => {
     },[]);
     return (
         <div >
-            {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :(
+            {visionDocsContext.visionDocs.isLoading ? <CircularLoading /> :(
                 <VisionDocListItem
                     filter={visionDocsContext.visionDocs.visionDocs}
+                    userType='Supervisor'
                 />
             )}
         </div>

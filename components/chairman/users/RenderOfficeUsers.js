@@ -86,7 +86,16 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
                     </TableHead>
                     <TableBody >
                         {
-
+                            filter.length === 0 ?
+                            <TableRow>
+                                <TableCell colSpan={5}>
+                                    <div className={emptyStyles.emptyListContainer}>
+                                        <div className={emptyStyles.emptyList}>
+                                            No Supervisor Found
+                                        </div>
+                                    </div>
+                                </TableCell>
+                            </TableRow>:
                             filter.map((office,index) => (
 
                                 <TableRow key={index} className={tableClasses.tableRow} >

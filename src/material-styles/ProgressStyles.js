@@ -23,7 +23,10 @@ export const useProgressStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(1)
     },
     topProgressBarContainer:{
-        paddingTop: theme.spacing(1)
+        paddingTop: theme.spacing(1),
+        display: 'flex',
+        flexDirection:'row',
+        flexGrow: 1
     },
     progressBar:{
         height:10,

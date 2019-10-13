@@ -57,16 +57,6 @@ const SupervisorLayout = ({children})=> {
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/supervisor/dashboard'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <DashboardOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Dashboard"} />
-                    </ListItem>
-
-                </Link>
-
                 <Link href='/supervisor/projects'>
                     <ListItem button >
                         <ListItemIcon>
@@ -109,7 +99,7 @@ const SupervisorLayout = ({children})=> {
                     {
                         userContext.user.user.additionalRole && userContext.user.user.ugpc_details.position === 'Coordinator' &&
                         <MenuItem value='Coordinator View'  style={{fontSize:14}}>
-                            <Link href='/committee/defence/coordinator/overview'>
+                            <Link href='/committee/defence/coordinator/dashboard'>
                                 <a style={{textDecoration:'none',color:'inherit'}}>Coordinator View</a>
                             </Link>
                         </MenuItem>

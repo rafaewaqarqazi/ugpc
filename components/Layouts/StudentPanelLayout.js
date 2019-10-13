@@ -267,6 +267,7 @@ const StudentPanelLayout = ({children})=> {
                             </div>
                             <div className={classes.list}>
                                 <div className={classes.toolbar}>
+                                    <div style={{flexGrow:1}}/>
                                     {
                                         open &&
                                         <Tooltip title='Collapse' placement='right'>

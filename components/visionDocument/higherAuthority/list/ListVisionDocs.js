@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 
 import {
     Typography,
@@ -13,9 +13,11 @@ import {
 import {Assignment, Search} from '@material-ui/icons';
 import {useListContainerStyles} from "../../../../src/material-styles/listContainerStyles";
 import VisionDocListItem from "./VisionDocListItem";
+import VisionDocsContext from "../../../../context/visionDocs/visionDocs-context";
 
 
 const ListVisionDocs = ({docs}) => {
+    const visionDocsContext = useContext(VisionDocsContext);
     const classes = useListContainerStyles();
     const [status, setStatus] = useState('All');
     const [documents,setDocuments]=useState([]);
@@ -39,7 +41,7 @@ const ListVisionDocs = ({docs}) => {
                     doc.projects.map(project => {
                         data = [...data, project]
                     })
-                })
+                });
                 setDocuments(data);
                 setFilter(data);
                 break;
@@ -50,7 +52,7 @@ const ListVisionDocs = ({docs}) => {
                             data = [...data, project]
                         })
                     }
-                })
+                });
                 setDocuments(data);
                 setFilter(data);
                 break;
@@ -109,9 +111,15 @@ const ListVisionDocs = ({docs}) => {
                     />
                 </div>
                 <Divider/>
-                <VisionDocListItem
-                    filter={filter}
-                />
+                {
+                    visionDocsContext.visionDocs.errMess === null ?
+                        <VisionDocListItem
+                            filter={filter}
+                        />
+                        :
+                        <Typography variant='h5' style={{textAlign:"center"}} color='error'>{visionDocsContext.visionDocs.errMess}</Typography>
+                }
+
             </div>
         </div>
 

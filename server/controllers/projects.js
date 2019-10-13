@@ -141,13 +141,13 @@ exports.assignSupervisor = async (req,res)=>{
 
         //Adding Project to Supervisor Details
         const a = await Users.updateOne({_id:supervisor._id},{
-            $push:{
+            $addToSet:{
                 "supervisor_details.projects":{
                     project:projectId,
                     title
                 }
             }
-        })
+        });
 
         //Sending Emails
 

@@ -115,10 +115,13 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         setSelectedSprint(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
         const data = sprint;
         const filter = data.filter(d => d.name === sprintNames[0] && d.status === 'InComplete')[0];
-        setDates({
-            startDate: filter.startDate,
-            endDate: filter.endDate
-        })
+        if (sprintNames.length !== 0){
+            setDates({
+                startDate: filter.startDate,
+                endDate: filter.endDate
+            });
+        }
+
         setState(formatScrumBoard(filter));
         setLoading(false)
     },[sprint]);

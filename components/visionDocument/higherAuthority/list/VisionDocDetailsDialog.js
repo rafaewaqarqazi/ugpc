@@ -28,6 +28,8 @@ import {RenderComments} from "../../common/RenderComments";
 import {useDocDetailsDialogStyles} from "../../../../src/material-styles/docDetailsDialogStyles";
 import {RenderDocBasicDetails} from "../../common/RenderDocBasicDetails";
 import {RenderDocumentAttachments} from "../../common/RenderDocumentAttachments";
+import ErrorSnackBar from "../../../snakbars/ErrorSnackBar";
+
 
 
 const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument}) => {
@@ -44,6 +46,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [chairmanName,setChairmanName]= useState('');
     const [marks,setMarks] = useState('');
     const [saveButton,setSaveButton]= useState(true);
+    const [resError,setResError] = useState({
+        show:false,
+        message:''
+    });
     const handleMarksChange = event =>{
         if (event.target.value === ''){
             setSaveButton(true)
@@ -52,11 +58,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
         }
 
         setMarks(event.target.value);
-    }
+    };
     const openLetterViewer = ()=>{
         getChairmanName()
             .then(result=>{
-                console.log(result);
                 if (result.name){
                     setChairmanName(result.name);
                 }
@@ -65,8 +70,15 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 }
                 setLetterViewer(true);
             })
+            .catch(error => {
+                setResError({
+                    show:true,
+                    message:'Error while fetching Chairman Info'
+                })
+            })
 
-    }
+
+    };
     const handleChangeStatus = e =>{
         setChangeStatus(e.target.value)
     };
@@ -83,7 +95,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
         visionDocsContext.addMarks(marks,currentDocument._id)
             .then(res => {
-                console.log(res)
                 setCurrentDocument({
                     ...currentDocument,
                     details: {
@@ -95,7 +106,13 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                     }
                 })
             })
-    }
+            .catch(err =>{
+                setResError({
+                    show:true,
+                    message:'Something went wrong please try again'
+                })
+            })
+    };
 
     const handleGenerateLetterButtonClick =()=> {
         setGenerateLetterLoading(true);
@@ -110,12 +127,18 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             issueDate: result.issueDate
                         }
                     }
-                })
+                });
                 setSuccess(true);
                 setGenerateLetterLoading(false);
             })
+            .catch(err =>{
+                setResError({
+                    show:true,
+                    message:'Something went wrong please try again'
+                })
+            })
 
-    }
+    };
     const handleComment = ()=>{
         if (commentText !== ''){
             const commentDetails = {
@@ -124,7 +147,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 documentId:currentDocument.documentation.visionDocument._id,
                 author:isAuthenticated().user._id
             };
-            console.log(commentDetails);
             visionDocsContext.comment(commentDetails)
                 .then(res =>{
                     const a = currentDocument.documentation.visionDocument.comments.push({
@@ -134,10 +156,16 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             name:isAuthenticated().user.name,
                             role:isAuthenticated().user.role
                         }
-                    })
+                    });
                     setCurrentDocument({
                         ...currentDocument,
                         a
+                    })
+                })
+                .catch(err =>{
+                    setResError({
+                        show:true,
+                        message:'Something went wrong please try again'
                     })
                 })
         }
@@ -149,30 +177,65 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
             status:changeStatus,
             projectId:currentDocument._id,
             documentId:currentDocument.documentation.visionDocument._id,
-        }
+        };
         visionDocsContext.changeStatus(statusDetails)
             .then(res =>{
-                visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title,currentDocument.students[0].student_details.regNo)
-                    .then(result => {
-                        if (result.error){
-                            console.log(result.error)
-                            return;
-                        }
+                if (changeStatus === 'Approved' || changeStatus === 'Approved With Changes'){
+                    visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title,currentDocument.students[0].student_details.regNo)
+                        .then(result => {
+                            if (result.error){
+                                setResError({
+                                    show:true,
+                                    message:result.error
+                                });
+                                return;
+                            }
 
-                        setCurrentDocument({...currentDocument,documentation:{
-                                ...currentDocument.documentation,
-                                visionDocument: {
-                                    ...currentDocument.documentation.visionDocument,
-                                    status:changeStatus
-                                }
-                            }});
-                        setChangeStatus('No Change');
-                        setSuccessSnackbar(true);
-                        setConfirmDialog(false);
-                        setConfirmDialogLoading(false);
-                    })
+                            setCurrentDocument({...currentDocument,
+                                details:{
+                                ...currentDocument.details,
+                                    supervisor:result.supervisor
+                                },
+                                documentation:{
+                                    ...currentDocument.documentation,
+                                    visionDocument: {
+                                        ...currentDocument.documentation.visionDocument,
+                                        status:changeStatus
+                                    }
+                                }});
+                            setChangeStatus('No Change');
+                            setSuccessSnackbar(true);
+                            setConfirmDialog(false);
+                            setConfirmDialogLoading(false);
+                        })
+                        .catch(err =>{
+                            setResError({
+                                show:true,
+                                message:'Something went wrong please try again'
+                            })
+                        })
+                }else {
+                    setCurrentDocument({...currentDocument,documentation:{
+                            ...currentDocument.documentation,
+                            visionDocument: {
+                                ...currentDocument.documentation.visionDocument,
+                                status:changeStatus
+                            }
+                        }});
+                    setChangeStatus('No Change');
+                    setSuccessSnackbar(true);
+                    setConfirmDialog(false);
+                    setConfirmDialogLoading(false);
+                }
 
 
+
+            })
+            .catch(err =>{
+                setResError({
+                    show:true,
+                    message:'Something went wrong please try again'
+                })
             })
     };
     const closeSnackbar = ()=>{
@@ -181,10 +244,11 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
     const closeLetterViewer = ()=>{
         setLetterViewer(false)
-    }
+    };
     return (
         <div>
             <SuccessSnackBar open={successSnackbar} message={'Success'} handleClose={closeSnackbar}/>
+            <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=>setResError({show:false,message:''})}/>
             <Dialog
                 fullWidth
                 maxWidth='lg'
@@ -232,6 +296,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                             {
                                                 currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
                                                 <MenuItem value='Approved'>Approve</MenuItem>
+                                            }
+                                            {
+                                                currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
+                                                <MenuItem value='Approved for Meeting'>Re Schedule</MenuItem>
                                             }
                                             {
                                                 currentDocument.documentation.visionDocument.status !== 'Approved' && currentDocument.documentation.visionDocument.status !== 'Approved With Changes' &&
@@ -291,7 +359,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
-                                                <IconButton size='small' >
+                                                <IconButton size='small' onClick={handleComment}>
                                                     <Send />
                                                 </IconButton>
 

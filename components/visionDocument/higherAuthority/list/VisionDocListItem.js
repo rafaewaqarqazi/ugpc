@@ -1,22 +1,32 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { Typography, } from "@material-ui/core";
 import VisionDocDetailsDialog from "./VisionDocDetailsDialog";
 import Divider from "@material-ui/core/Divider";
 import {useListItemStyles} from "../../../../src/material-styles/listItemStyles";
 
 import {RenderListItemContent} from "../../common/RenderListItemContent";
+import VisionDocsContext from "../../../../context/visionDocs/visionDocs-context";
 
-const VisionDocListItem = ({filter,fetchData}) => {
-
+const VisionDocListItem = ({filter,fetchData,userType}) => {
+    const visionDocsContext = useContext(VisionDocsContext);
     const classes = useListItemStyles();
     const [currentDocument,setCurrentDocument] = useState({});
     const [open,setOpen] = useState(false);
     const handleClose = ()=>{
         if (fetchData){
+            setOpen(false);
+            setCurrentDocument({});
             fetchData();
+        }else if (userType) {
+            setOpen(false);
+            setCurrentDocument({});
+            visionDocsContext.fetchBySupervisor();
+        }else {
+            setOpen(false);
+            setCurrentDocument({});
+            visionDocsContext.fetchByCommittee()
         }
-        setOpen(false)
-        setCurrentDocument({})
+
     };
     const openDetails = details =>{
         setCurrentDocument(details);

@@ -3,7 +3,6 @@ import React, { useEffect, useState} from 'react';
 
 import {fetchFinalDocumentationsBySupervisorAPI} from "../../../utils/apiCalls/projects";
 import {
-    Container,
     LinearProgress,
     Table,
     TableBody,
@@ -24,19 +23,19 @@ import {
     Dialog, DialogTitle, Zoom, DialogContent, DialogContentText, DialogActions
 } from "@material-ui/core";
 import {
-    Assignment,
     PictureAsPdfOutlined,
     MoreVertOutlined,
     ThumbDownAltOutlined,
     ThumbUpAltOutlined,
     SendOutlined, Close
 } from "@material-ui/icons";
-import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
 import moment from "moment";
 import {serverUrl} from "../../../utils/config";
 import Button from "@material-ui/core/Button";
 import {changeFinalDocumentationStatusAPI} from "../../../utils/apiCalls/users";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
+import CircularLoading from "../../loading/CircularLoading";
 
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +53,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 const SupervisorFinalDocumentation = () => {
+    const emptyStyles = useListItemStyles();
     const [filterDepartment,setFilterDepartment] = useState('All');
     const [loading,setLoading]=useState({
         main:true,
@@ -133,7 +133,7 @@ const SupervisorFinalDocumentation = () => {
     return (
         <div>
             {
-                loading.main ? <LinearProgress/> :
+                loading.main ? <CircularLoading/> :
 
                         <div >
                             <div>
@@ -175,6 +175,16 @@ const SupervisorFinalDocumentation = () => {
                                                     }
                                                 })
                                                 return(
+                                                    doc.documentation.finalDocumentation.length === 0?
+                                                    <TableRow key={index} >
+                                                        <TableCell colSpan={7}>
+                                                            <div className={emptyStyles.emptyListContainer}>
+                                                                <div className={emptyStyles.emptyList}>
+                                                                    No Documents Found
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>:
                                                     doc.documentation.finalDocumentation.map(finalDoc => (
                                                         <TableRow  key={index} className={classes.tableRow} >
                                                             <TableCell align="left" >{title}</TableCell>
