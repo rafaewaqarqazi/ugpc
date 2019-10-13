@@ -21,6 +21,7 @@ import {
     uploadFinalDocumentationAPI,
     removeTaskAPI
 } from "../../utils/apiCalls/students";
+import {addAttachmentsToTaskAPI} from "../../utils/apiCalls/projects";
 
 const ProjectState = (props) => {
     const [state, dispatch] = useReducer(projectReducer,{
@@ -75,6 +76,11 @@ const ProjectState = (props) => {
         const result = await removeTaskAPI(data);
         await dispatch(addBacklogAction(result.details.backlog))
     };
+    const addAttachmentsToTask = async data =>{
+        const result = await addAttachmentsToTaskAPI(data);
+        await dispatch(addBacklogAction(result.result.details.backlog));
+        return await result
+    };
 useEffect(()=>{
     console.log('Project State:',state)
 },[state]);
@@ -91,7 +97,8 @@ useEffect(()=>{
             changePriorityDnD,
             completeSprint,
             uploadFinalDocumentation,
-            removeTask
+            removeTask,
+            addAttachmentsToTask
         }}>
             {props.children}
         </ProjectContext.Provider>

@@ -1,7 +1,6 @@
 import React, {Fragment, useState} from 'react';
 import {
     Collapse,
-    Container,
     Divider,
     List,
     ListItem,
@@ -46,31 +45,12 @@ const RenderSubTasks = ({subTasks}) => {
                                 <Fragment key={index}>
                                     <ListItem alignItems="flex-start" key={index}>
                                         <ListItemText
-                                            primary={
-                                                <React.Fragment>
-                                                    <Typography
-                                                        component="span"
-                                                        variant="button"
-                                                        display='inline'
-                                                        color="textPrimary"
-                                                    >
-                                                        {subTask.title}
-                                                    </Typography>
-                                                    <div >
-                                                        <Typography variant='caption' color='textSecondary'>
-                                                            {subTask.status}
-                                                        </Typography>
-
-                                                    </div>
-
-                                                </React.Fragment>
-                                            }
+                                            primary={subTask.title}
                                             secondary={
                                                 <Typography
-                                                    component="span"
-                                                    variant="body2"
-                                                    display='inline'
-                                                    color="textPrimary"
+                                                    component='div'
+                                                    variant="caption"
+                                                    color="textSecondary"
                                                     className={classes.wrapText}
                                                 >
                                                     {subTask.description}

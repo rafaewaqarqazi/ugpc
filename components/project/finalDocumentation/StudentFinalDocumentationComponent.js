@@ -14,7 +14,6 @@ import {makeStyles} from "@material-ui/styles";
 import {Close} from "@material-ui/icons";
 import {DropzoneArea} from "material-ui-dropzone";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
-import {getCompletionPercentage} from "../helpers";
 import moment from "moment";
 
 const useStyles = makeStyles(theme => ({

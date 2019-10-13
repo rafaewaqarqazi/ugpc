@@ -29,18 +29,18 @@ exports.getAllProjects = (req, res)=>{
 exports.findByStudentId = (req,res,next,id)=>{
 
     Projects.find({students:id})
-        .populate('students','_id name department student_details')
-        .populate('documentation.visionDocument.comments.author','_id name role department')
-        .populate('details.supervisor','_id name supervisor_details.position')
-        .populate('details.backlog.assignee', '_id name department student_details')
+        .populate('students','_id name department student_details profileImage')
+        .populate('documentation.visionDocument.comments.author','_id name role department profileImage')
+        .populate('details.supervisor','_id name supervisor_details.position profileImage')
+        .populate('details.backlog.assignee', '_id name department student_details profileImage')
         .populate('details.backlog.createdBy', 'name')
-        .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
-        .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
-        .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
-        .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
         .then(project => {
             req.project = project[0];
@@ -54,18 +54,18 @@ exports.findByStudentId = (req,res,next,id)=>{
 exports.findByProjectId = (req,res,next,id)=>{
 
     Projects.findById(id)
-        .populate('students','_id name department student_details')
-        .populate('documentation.visionDocument.comments.author','_id name role department')
-        .populate('details.supervisor','_id name supervisor_details.position')
+        .populate('students','_id name department student_details profileImage')
+        .populate('documentation.visionDocument.comments.author','_id name role department profileImage')
+        .populate('details.supervisor','_id name supervisor_details.position profileImage')
         .populate('details.backlog.assignee', '_id name department student_details')
         .populate('details.backlog.createdBy', 'name')
-        .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
-        .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
-        .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
-        .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+        .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
         .then(project => {
             req.project = project;

@@ -76,8 +76,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
     });
     const [subTask,setSubTask] = useState({
         title:'',
-        description:'',
-        status:'Not Completed'
+        description:''
     });
     const [showSubTaskInput,setShowSubTaskInput] = useState(false)
     const handleClickChip = id => {

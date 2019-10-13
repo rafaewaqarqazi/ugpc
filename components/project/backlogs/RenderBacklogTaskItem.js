@@ -1,8 +1,9 @@
 import React from 'react';
 import {getBacklogTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
-import {Typography, Grid, Tooltip, Zoom, Chip, Avatar, Container} from "@material-ui/core";
+import {Typography, Grid, Tooltip, Zoom, Chip, } from "@material-ui/core";
 import {getRandomColor} from "../../../src/material-styles/randomColors";
 import {makeStyles} from "@material-ui/styles";
+import UserAvatarComponent from "../../UserAvatarComponent";
 
 const useStyles = makeStyles(theme=>({
     listItem:{
@@ -47,9 +48,7 @@ const RenderBacklogTaskItem = ({task}) => {
                 <Grid item xs={2} sm={2}>
                     {
                         task.assignee.map((student,index) =>(
-                            <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                <Avatar className={classes.avatar} >{student.name.charAt(0).toUpperCase()}</Avatar>
-                            </Tooltip>
+                            <UserAvatarComponent user={student} key={index}/>
                         ))
                     }
                 </Grid>

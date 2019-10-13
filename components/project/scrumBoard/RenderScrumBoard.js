@@ -416,7 +416,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                 <DialogContent dividers>
                     {
                         openDetails &&
-                        <RenderTaskDetails details={details}/>
+                        <RenderTaskDetails details={details} disableUpload={true}/>
                     }
 
                 </DialogContent>

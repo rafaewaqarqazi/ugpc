@@ -15,5 +15,6 @@ export default React.createContext({
     updateProject: project=>{},
     removeProject: ()=>{},
     uploadVision:(data,projectId)=>{},
-    removeTask:data=>{}
+    removeTask:data=>{},
+    addAttachmentsToTask:data=>{}
 })

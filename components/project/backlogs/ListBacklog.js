@@ -404,7 +404,7 @@ const ListBacklog = ({backlog}) => {
                                                                     <div
                                                                         {...provided.droppableProps}
                                                                         ref={provided.innerRef}
-                                                                        // className={classes.listContainer}
+                                                                        className={classes.listContainer}
                                                                     >
                                                                         {tasks.map((task,index )=>
                                                                             <div key={task._id} >
@@ -468,7 +468,7 @@ const ListBacklog = ({backlog}) => {
                                 </div>
                                 {
                                     openDetails &&
-                                    <RenderTaskDetails details={details}/>
+                                    <RenderTaskDetails details={details} projectId={projectContext.project.project._id} disableUpload={false} setDetails={setDetails}/>
                                 }
                             </div>
                         }
@@ -489,7 +489,7 @@ const ListBacklog = ({backlog}) => {
                     <DialogContent dividers>
                         {
                             openDetails &&
-                            <RenderTaskDetails details={details}/>
+                            <RenderTaskDetails details={details} disableUpload={false} setDetails={setDetails}/>
                         }
 
                     </DialogContent>

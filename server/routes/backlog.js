@@ -6,11 +6,14 @@ const {
     changeTaskStatus,
     changeTaskPriority,
     completeSprint,
-    removeTask
+    removeTask,
+    addAttachmentsToTask
 } = require('../controllers/backlog');
 const {requireSignin} = require('../controllers/auth');
+const upload = require('../upload');
 
 router.put('/task/add',addNewTask);
+router.put('/task/add/attachments/:type', upload.array('files'),addAttachmentsToTask);
 router.put('/task/remove',removeTask);
 router.put('/sprint/plan',planSprint);
 router.put('/task/change/column',changeTaskStatus);

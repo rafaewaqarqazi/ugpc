@@ -202,3 +202,15 @@ export const fetchAllProjectsAPI = async ()=>{
     });
     return await res.json();
 };
+
+export const addAttachmentsToTaskAPI = async data =>{
+    const res = await fetch(`${serverUrl}/backlog/task/add/attachments/images`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:data
+    });
+    return await res.json();
+}

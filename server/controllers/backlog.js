@@ -18,7 +18,7 @@ exports.addNewTask = async (req,res)=>{
             }
         },{new:true})
             .select('details.backlog details.sprint')
-            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.assignee','name department student_details email profileImage')
             .populate('details.backlog.createdBy','name')
             .sort({"details.backlog.priority":1})
 
@@ -71,7 +71,7 @@ exports.planSprint = async (req,res)=>{
                 }
             },{new:true})
             .select('details.backlog details.sprint')
-            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.assignee','name department student_details email profileImage')
             .populate('details.backlog.createdBy','name')
             .sort({"details.backlog.priority":1})
        await res.json(updatedResult)
@@ -115,13 +115,13 @@ exports.changeTaskStatus = async (req,res)=>{
                     [`details.sprint.$.${newColumn}`]:updatedTask
                 }
             },{new:true})
-            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
             // .sort({"details.backlog.priority":1})
         await res.json(updatedResult)
@@ -143,7 +143,7 @@ exports.changeTaskPriority = async (req, res) =>{
                 }
             },{new:true})
             .select('details.backlog details.sprint')
-            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.assignee','name department student_details email profileImage')
             .populate('details.backlog.createdBy','name')
             .sort({"details.backlog.priority":1})
         await res.json(updatedResult)
@@ -169,15 +169,15 @@ exports.completeSprint = async (req,res) =>{
                 }
             }, {new:true})
             .select('details.backlog details.sprint')
-            .populate({path:'details.backlog.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.backlog.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.backlog.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email'})
+            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'});
         await res.json(result)
     }catch (e) {
@@ -197,11 +197,40 @@ exports.removeTask = async (req,res)=>{
             }
         },{new:true})
             .select('details.backlog')
-            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.assignee','name department student_details email profileImage')
             .populate('details.backlog.createdBy','name')
             .sort({"details.backlog.priority":1});
 
         await res.json(result);
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.addAttachmentsToTask = async (req,res) =>{
+    try {
+        const {projectId,taskId} = req.body;
+        let files =[];
+            req.files.map(file => {
+                files=[...files,{
+                    filename:file.filename,
+                    originalname:file.originalname
+                }]
+            })
+        const result = await Projects.findOneAndUpdate({"_id":projectId,"details.backlog._id":taskId},{
+            $push:{
+                "details.backlog.$.attachments":{
+                    $each:files
+                }
+            }
+        },{new:true})
+            .select('details.backlog')
+            .populate('details.backlog.assignee','name department student_details email profileImage')
+            .populate('details.backlog.createdBy','name')
+            .sort({"details.backlog.priority":1});
+
+            await res.json({result,files})
+
     }catch (e) {
         await res.json({error:e.message})
     }
