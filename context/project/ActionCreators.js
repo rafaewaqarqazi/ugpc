@@ -8,18 +8,16 @@ export const addProjectAction = (project)=>({
 export const projectLoadingAction = ()=>({
     type:Actions.PROJECT_LOADING
 });
-export const addBacklogAction = (projectId,backlog)=>({
+export const addBacklogAction = (backlog)=>({
     type:Actions.ADD_BACKLOG,
     payload:{
-        projectId,
         backlog
     }
 });
 
-export const addSprintAction = (projectId,sprint) =>({
+export const addSprintAction = (sprint) =>({
     type:Actions.ADD_SPRINT,
     payload:{
-        projectId,
         sprint
     }
 });

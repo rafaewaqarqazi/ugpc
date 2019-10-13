@@ -1,8 +1,8 @@
 import React from 'react';
 import {getBacklogTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
-import {makeStyles, Typography, Grid, Tooltip, Zoom, Chip, Divider} from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
+import {Typography, Grid, Tooltip, Zoom, Chip, Avatar, Container} from "@material-ui/core";
 import {getRandomColor} from "../../../src/material-styles/randomColors";
+import {makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles(theme=>({
     listItem:{
@@ -11,12 +11,7 @@ const useStyles = makeStyles(theme=>({
         '&:hover':{
             boxShadow:theme.shadows[8]
         },
-        display:'flex',
         borderRadius:'4px 0 0 4px',
-        alignItems:'center'
-    },
-    title:{
-        flexGrow:1
     },
     avatar:{
         marginRight:theme.spacing(0.2),
@@ -31,12 +26,12 @@ const RenderBacklogTaskItem = ({task}) => {
         <div className={classes.listItem} style={getBacklogTaskPriorityColor(task.priority)} >
             <Grid container spacing={1} alignItems='center'>
                 <Grid item xs={2} sm={2}>
-                    <Typography variant='body1' color='textSecondary' className={classes.title} noWrap>{task.title}</Typography>
+                    <Typography variant='body1' color='textSecondary' noWrap>{task.title}</Typography>
                 </Grid>
                 <Grid item xs={4} sm={4}>
-                    <Typography variant='body1' color='textSecondary' className={classes.title} noWrap>{task.description}</Typography>
+                    <Typography variant='body1' color='textSecondary' noWrap>{task.description}</Typography>
                 </Grid>
-                <Grid item xs={3} sm={3}>
+                <Grid item xs={3} sm={2}>
                     {
                         task.createdBy && (
                             <Tooltip  title='Created By' placement="top" TransitionComponent={Zoom}>
@@ -49,7 +44,7 @@ const RenderBacklogTaskItem = ({task}) => {
                         )
                     }
                 </Grid>
-                <Grid item xs={2} sm={2} style={{display:'flex'}}>
+                <Grid item xs={2} sm={2}>
                     {
                         task.assignee.map((student,index) =>(
                             <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
@@ -71,7 +66,6 @@ const RenderBacklogTaskItem = ({task}) => {
             </Grid>
 
         </div>
-
     );
 };
 

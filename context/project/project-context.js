@@ -14,5 +14,6 @@ export default React.createContext({
     changePriorityDnD:data =>{},
     updateProject: project=>{},
     removeProject: ()=>{},
-    uploadVision:(data,projectId)=>{}
+    uploadVision:(data,projectId)=>{},
+    removeTask:data=>{}
 })

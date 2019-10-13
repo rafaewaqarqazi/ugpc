@@ -40,7 +40,6 @@ export const projectReducer = (state, action) => {
             };
         }
         case Actions.ADD_SPRINT:{
-            console.log(action.payload.sprint)
             const modState = {
                 ...state.project,
                 details:{

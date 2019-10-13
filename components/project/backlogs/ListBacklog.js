@@ -6,9 +6,9 @@ import {
     Divider,
     Typography,
     Grid, Tooltip, Zoom, Hidden, Dialog, DialogContent, DialogTitle,
-     DialogActions, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem
+    DialogActions, TextField, FormControl, InputLabel, Select, OutlinedInput, MenuItem, DialogContentText
 } from "@material-ui/core";
-import {Add,Close} from '@material-ui/icons'
+import {Add,Close,Delete} from '@material-ui/icons'
 import {makeStyles} from "@material-ui/styles";
 import CreateTaskDialog from "./CreateTaskDialog";
 import RenderBacklogTaskItem from "./RenderBacklogTaskItem";
@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme =>({
         border:'1px solid lightgrey',
         borderRadius: 5,
         minHeight:150,
-        flexGrow:1,
+
         marginTop:theme.spacing(2)
     },
     detailsContainer:{
@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme =>({
 }));
 
 const ListBacklog = ({backlog}) => {
-    const projectContext = useContext(ProjectContext)
+    const projectContext = useContext(ProjectContext);
     const [state,setState] = useState({});
     const classes = useStyles();
     const [loading,setLoading] = useState(true);
@@ -87,10 +87,13 @@ const ListBacklog = ({backlog}) => {
     const [selectedDate, handleDateChange] = useState(new Date());
     const [endDate, handleEndDateChange] = useState(moment(selectedDate).add(2,'w'));
     const [details,setDetails]= useState({});
+    const [lessWeekConfirmation,setLessWeekConfirmation] = useState(false);
+    const [planSprintError,setPlanSprintError] = useState(false);
+    const [removeTaskDialog,setRemoveTaskDialog] = useState(false);
     const [nameError,setNameError] = useState({
         show:false,
         message:''
-    })
+    });
     const [data,setData] = useState({
         name:'',
         duration:'2'
@@ -99,12 +102,12 @@ const ListBacklog = ({backlog}) => {
         setNameError({
             show:false,
             message:''
-        })
+        });
         setData({
             ...data,
             [event.target.name]:event.target.value
         })
-    }
+    };
     useEffect(()=>{
         setState(formatBacklog(backlog));
         setLoading(false)
@@ -219,7 +222,7 @@ const ListBacklog = ({backlog}) => {
                 [newFinish.id]:newFinish
             }
 
-        }
+        };
         setState(newState);
     };
     const handleCreateTaskClose = ()=>{
@@ -232,7 +235,7 @@ const ListBacklog = ({backlog}) => {
         backgroundColor: isDraggingOver ? '#C5E1A5' :'#fff'
     });
     const closeDetails = ()=>{
-        setOpenDetails(false)
+        setOpenDetails(false);
         setDetails({});
     };
     const isValid = (name)=>{
@@ -240,32 +243,70 @@ const ListBacklog = ({backlog}) => {
             setNameError({
                 show:true,
                 message:'Name should be between 5-50 Chars'
-            })
+            });
             return false
         }
         return true
-    }
+    };
     const handlePlanSprint = ()=>{
         if (isValid(data.name)){
-            const sprintData = {
-                name:data.name,
-                startDate:selectedDate,
-                endDate,
-                projectId:projectContext.project.project._id,
-                tasksIds:finalIds
-            };
-            projectContext.planSprint(sprintData)
-                .then(result =>{
-                    setOpenPlanSprintDialog(false)
-                })
+            if (getEstimatedWeeks() > 4){
+                setPlanSprintError(true);
+                return;
+            }else if (getEstimatedWeeks() < parseInt(data.duration)){
+                setLessWeekConfirmation(true);
+                return;
+            }
+           continuePlanSprint()
         }
-        console.log(finalIds)
+    };
+    const continuePlanSprint = ()=>{
+        const sprintData = {
+            name:data.name,
+            startDate:selectedDate,
+            endDate,
+            projectId:projectContext.project.project._id,
+            tasksIds:finalIds
+        };
+        projectContext.planSprint(sprintData)
+            .then(result =>{
+                setOpenPlanSprintDialog(false)
+            })
+    };
+    const getEstimatedWeeks = ()=>{
+        const tasks = finalIds.map(id => state.tasks[id]);
+        let totalStoryPoints =0;
+        tasks.map(task => {
+            totalStoryPoints+=parseInt(task.storyPoints)
+        });
+        const days = Math.ceil(totalStoryPoints/8);
+
+        return Math.ceil(days/7)
     };
     const changeDate = (date)=>{
-        console.log(date)
         handleDateChange(date);
         handleEndDateChange(moment(date).add(data.duration,'w'))
-    }
+    };
+    const handleCancelPlanSprint = ()=>{
+        setOpenPlanSprintDialog(false);
+        setData({
+            name:'',
+            duration: '2'
+        })
+    };
+    const handleRemoveTask = ()=>{
+        const data = {
+            projectId:projectContext.project.project._id,
+            taskId:details._id
+        };
+        projectContext.removeTask(data)
+            .then(result =>{
+                setRemoveTaskDialog(false);
+                setOpenDetails(false);
+                setDetails({});
+            })
+            .catch(error => console.log(error.message))
+    };
     return (
 
         !loading &&
@@ -363,7 +404,7 @@ const ListBacklog = ({backlog}) => {
                                                                     <div
                                                                         {...provided.droppableProps}
                                                                         ref={provided.innerRef}
-                                                                        className={classes.listContainer}
+                                                                        // className={classes.listContainer}
                                                                     >
                                                                         {tasks.map((task,index )=>
                                                                             <div key={task._id} >
@@ -414,6 +455,11 @@ const ListBacklog = ({backlog}) => {
                                     <Tooltip  title='Title' placement="top-start" TransitionComponent={Zoom}>
                                         <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
                                     </Tooltip>
+                                    <Tooltip  title='Remove Task' placement="top" TransitionComponent={Zoom}>
+                                        <IconButton size='small' onClick={()=>setRemoveTaskDialog(true)}>
+                                            <Delete color='error'/>
+                                        </IconButton>
+                                    </Tooltip>
                                     <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
                                         <IconButton size='small' onClick={closeDetails}>
                                             <Close/>
@@ -449,63 +495,108 @@ const ListBacklog = ({backlog}) => {
                     </DialogContent>
                 </Dialog>
             </Hidden>
-            <Dialog open={openPlanSprintDialog} onClose={()=>setOpenPlanSprintDialog(false)} fullWidth maxWidth='xs'>
-                <DialogTitle>Start Sprint</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label='Sprint Name'
-                        margin='dense'
-                        fullWidth
-                        required
-                        variant='outlined'
-                        name='name'
-                        value={data.name}
-                        onChange={handleChangeData}
-                        error={nameError.show}
-                        helperText={nameError.message}
-                    />
-                    <FormControl fullWidth variant="outlined" margin='dense'>
-                        <InputLabel htmlFor="duration">
-                            Duration
-                        </InputLabel>
-                        <Select
-                            value={data.duration}
+            {
+                openPlanSprintDialog &&
+                <Dialog open={openPlanSprintDialog} onClose={()=>setOpenPlanSprintDialog(false)} fullWidth maxWidth='xs'>
+                    <DialogTitle>Start Sprint</DialogTitle>
+                    <DialogContent dividers>
+                        <div>
+                            <Typography component='span' variant='caption'>Suggested Weeks: </Typography>
+                            <Typography component='span' variant='subtitle1'>{getEstimatedWeeks()}</Typography>
+                        </div>
+                        {
+                            planSprintError &&
+                            <Typography
+                                variant='caption'
+                                color='error'
+                                style={{textAlign:"center"}}
+                            >
+                                Tasks in sprint require more time to complete please remove some tasks and try again
+                            </Typography>
+                        }
+                       <TextField
+                            label='Sprint Name'
+                            margin='dense'
+                            fullWidth
+                            required
+                            variant='outlined'
+                            name='name'
+                            value={data.name}
                             onChange={handleChangeData}
-                            input={<OutlinedInput labelWidth={60} name="duration" id="duration" />}
-                        >
-                            <MenuItem value='2'>2 Weeks</MenuItem>
-                            <MenuItem value='3'>3 Weeks</MenuItem>
-                            <MenuItem value='4'>4 Weeks</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <MuiPickersUtilsProvider  utils={DateFnsUtils}>
-                        <DatePicker
-                            label="Start Date"
-                            inputVariant="outlined"
-                            value={selectedDate}
-                            onChange={changeDate}
-                            disablePast
-                            margin='dense'
-                            fullWidth
+                            error={nameError.show}
+                            helperText={nameError.message}
                         />
-                    </MuiPickersUtilsProvider>
-                    <MuiPickersUtilsProvider  utils={DateFnsUtils}>
-                        <DatePicker
-                            label="End Date"
-                            inputVariant="outlined"
-                            value={endDate}
-                            disabled
-                            margin='dense'
-                            fullWidth
+                        <FormControl fullWidth variant="outlined" margin='dense'>
+                            <InputLabel htmlFor="duration">
+                                Duration
+                            </InputLabel>
+                            <Select
+                                value={data.duration}
+                                onChange={handleChangeData}
+                                input={<OutlinedInput labelWidth={60} name="duration" id="duration" />}
+                            >
+                                <MenuItem value='2'>2 Weeks</MenuItem>
+                                <MenuItem value='3'>3 Weeks</MenuItem>
+                                <MenuItem value='4'>4 Weeks</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <MuiPickersUtilsProvider  utils={DateFnsUtils}>
+                            <DatePicker
+                                label="Start Date"
+                                inputVariant="outlined"
+                                value={selectedDate}
+                                onChange={changeDate}
+                                disablePast
+                                margin='dense'
+                                fullWidth
+                            />
+                        </MuiPickersUtilsProvider>
+                        <MuiPickersUtilsProvider  utils={DateFnsUtils}>
+                            <DatePicker
+                                label="End Date"
+                                inputVariant="outlined"
+                                value={endDate}
+                                disabled
+                                margin='dense'
+                                fullWidth
 
-                        />
-                    </MuiPickersUtilsProvider>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant='contained' onClick={()=>setOpenPlanSprintDialog(false)}>Cancel</Button>
-                    <Button variant='contained' color='secondary' onClick={handlePlanSprint}>Add</Button>
-                </DialogActions>
-            </Dialog>
+                            />
+                        </MuiPickersUtilsProvider>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='contained' onClick={handleCancelPlanSprint}>Cancel</Button>
+                        <Button variant='contained' color='secondary' onClick={handlePlanSprint}>Plan</Button>
+                    </DialogActions>
+                </Dialog>
+            }
+
+            {
+                lessWeekConfirmation &&
+                <Dialog open={lessWeekConfirmation} onClose={()=>setLessWeekConfirmation(false)} fullWidth maxWidth='xs'>
+                    <DialogTitle>Confirm</DialogTitle>
+                    <DialogContent dividers>
+                        <DialogContentText>Tasks in sprint require less time than specified weeks, do you want to continue?</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='contained' onClick={()=>setLessWeekConfirmation(false)}>Cancel</Button>
+                        <Button variant='contained' color='secondary' onClick={continuePlanSprint}>Continue</Button>
+                    </DialogActions>
+                </Dialog>
+            }
+            {
+                removeTaskDialog &&
+                <Dialog open={removeTaskDialog} onClose={()=>setRemoveTaskDialog(false)} fullWidth maxWidth='xs'>
+                    <DialogTitle>Confirm</DialogTitle>
+                    <DialogContent dividers>
+                        <DialogContentText>Are you sure you want to remove this task?</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant='contained' onClick={()=>setRemoveTaskDialog(false)}>Cancel</Button>
+                        <Button variant='contained' color='secondary' onClick={handleRemoveTask}>Remove</Button>
+                    </DialogActions>
+                </Dialog>
+            }
+
             {
                 openCreateTask &&
                 <CreateTaskDialog

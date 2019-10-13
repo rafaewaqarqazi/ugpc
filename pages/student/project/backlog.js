@@ -2,7 +2,7 @@ import StudentPanelLayout from "../../../components/Layouts/StudentPanelLayout";
 import ProjectState from "../../../context/project/ProjectState";
 import {withStudentAuthSync} from "../../../components/routers/studentAuth";
 import ProjectContext from '../../../context/project/project-context';
-import { LinearProgress} from "@material-ui/core";
+import {Container, LinearProgress} from "@material-ui/core";
 import ListBacklog from "../../../components/project/backlogs/ListBacklog";
 import BacklogAndSprintContainer from "../../../components/project/BacklogAndSprintContainer";
 
@@ -12,7 +12,7 @@ const Backlog = () => {
     return (
         <ProjectState>
             <StudentPanelLayout>
-
+                <Container maxWidth='md'>
                     <BacklogAndSprintContainer title={'Backlog'}>
                             <ProjectContext.Consumer>
                                 {
@@ -24,7 +24,9 @@ const Backlog = () => {
                                         }
                                         if (!project.isLoading){
                                             return (
-                                                <ListBacklog backlog={project.project.details.backlog} />
+
+                                                    <ListBacklog backlog={project.project.details.backlog} />
+
                                             )
                                         }
 
@@ -32,7 +34,7 @@ const Backlog = () => {
                                 }
                             </ProjectContext.Consumer>
                     </BacklogAndSprintContainer>
-
+                </Container>
             </StudentPanelLayout>
         </ProjectState>
     );

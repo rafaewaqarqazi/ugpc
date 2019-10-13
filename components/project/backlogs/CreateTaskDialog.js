@@ -44,7 +44,6 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
     const classes = useStyles();
     const projectContext = useContext(ProjectContext);
     const [state,setState] = useState({
-        title:'',
         description:'',
         assignee:[],
         priority:'3',
@@ -52,10 +51,6 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
         subTasks:[]
     });
     const [error,setError] = useState({
-        title:{
-            show:false,
-            message:''
-        },
         description:{
             show:false,
             message:''
@@ -78,12 +73,12 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                 message:''
             },
         }
-    })
+    });
     const [subTask,setSubTask] = useState({
         title:'',
         description:'',
         status:'Not Completed'
-    })
+    });
     const [showSubTaskInput,setShowSubTaskInput] = useState(false)
     const handleClickChip = id => {
         setError({
@@ -160,10 +155,21 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
     const handleCreateTask = ()=>{
 
         if(isTaskValid(state,error,setError)){
+
+            let taskNo = 0;
+            taskNo +=projectContext.project.project.details.backlog.length;
+            projectContext.project.project.details.sprint.map(sprint =>{
+                if (sprint.status === 'Completed'){
+                    taskNo += sprint.done.length
+                }else {
+                    taskNo += sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length
+                }
+            });
             const data = {
                 ...state,
+                title:`TS-${taskNo+1}`,
                 createdBy:isAuthenticated().user._id
-            }
+            };
             projectContext.addTaskToBacklog(projectContext.project.project._id,data)
                 .then(result =>{
                     handleCreateTaskClose()
@@ -186,18 +192,6 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <div className={classes.content}>
-                            <TextField
-                                label='Title'
-                                margin='dense'
-                                variant='outlined'
-                                fullWidth
-                                required
-                                name='title'
-                                value={state.title}
-                                onChange={handleChange}
-                                error={error.title.show}
-                                helperText={error.title.message}
-                                />
                             <TextField
                                 label='Detailed Description'
                                 margin='dense'

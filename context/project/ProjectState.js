@@ -18,7 +18,8 @@ import {
     planSprintAPI,
     fetchProjectByProjectIdAPI,
     completeSprintAPI,
-    uploadFinalDocumentationAPI
+    uploadFinalDocumentationAPI,
+    removeTaskAPI
 } from "../../utils/apiCalls/students";
 
 const ProjectState = (props) => {
@@ -41,19 +42,19 @@ const ProjectState = (props) => {
     };
     const addTaskToBacklog = async (projectId,task)=>{
         const result =  await addTaskToBacklogAPI(projectId,task);
-        await dispatch(addBacklogAction(projectId,result.details.backlog))
+        await dispatch(addBacklogAction(result.details.backlog))
     };
     const planSprint = async (data) =>{
         const result = await planSprintAPI(data);
-        await dispatch(addBacklogAction(data.projectId,result.details.backlog))
+        await dispatch(addBacklogAction(result.details.backlog))
     };
     const changeColumn = async (data)=>{
         const result = await changeColumnAPI(data);
-        await dispatch(addSprintAction(data.projectId,result.details.sprint))
+        await dispatch(addSprintAction(result.details.sprint))
     };
     const changePriorityDnD = async (data)=>{
         const result = await changePriorityDnDAPI(data);
-        await dispatch(addBacklogAction(data.projectId,result.details.backlog))
+        await dispatch(addBacklogAction(result.details.backlog))
     };
     const fetchByProjectId = async projectId=>{
         dispatch(projectLoadingAction());
@@ -62,14 +63,17 @@ const ProjectState = (props) => {
     };
     const completeSprint = async data =>{
         const result = await completeSprintAPI(data);
-       await dispatch(addSprintAction(data.projectId, result.details.sprint))
+       await dispatch(addSprintAction(result.details.sprint))
     };
     const uploadFinalDocumentation = async (data) =>{
         uploadFinalDocumentationAPI(data).then(result =>{
-            console.log(result)
             dispatch(addFinalDocumentationAction(result.documentation.finalDocumentation))
         });
 
+    };
+    const removeTask = async data =>{
+        const result = await removeTaskAPI(data);
+        await dispatch(addBacklogAction(result.details.backlog))
     };
 useEffect(()=>{
     console.log('Project State:',state)
@@ -86,7 +90,8 @@ useEffect(()=>{
             changeColumn,
             changePriorityDnD,
             completeSprint,
-            uploadFinalDocumentation
+            uploadFinalDocumentation,
+            removeTask
         }}>
             {props.children}
         </ProjectContext.Provider>

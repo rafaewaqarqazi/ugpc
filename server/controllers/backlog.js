@@ -185,3 +185,24 @@ exports.completeSprint = async (req,res) =>{
     }
 
 };
+
+exports.removeTask = async (req,res)=>{
+    try {
+        const {projectId,taskId} = req.body;
+        const result = await Projects.findByIdAndUpdate(projectId,{
+            $pull:{
+                "details.backlog":{
+                    _id:mongoose.Types.ObjectId(taskId)
+                }
+            }
+        },{new:true})
+            .select('details.backlog')
+            .populate('details.backlog.assignee','name department student_details email')
+            .populate('details.backlog.createdBy','name')
+            .sort({"details.backlog.priority":1});
+
+        await res.json(result);
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+}
