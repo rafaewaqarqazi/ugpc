@@ -18,6 +18,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import moment from "moment";
 import ProjectContext from '../../../context/project/project-context';
 import RenderTaskDetails from "../common/RenderTaskDetails";
+import DialogTitleComponent from "../../DialogTitleComponent";
 
 const useStyles = makeStyles(theme =>({
     backlogContainer:{
@@ -90,29 +91,15 @@ const ListBacklog = ({backlog}) => {
     const [lessWeekConfirmation,setLessWeekConfirmation] = useState(false);
     const [planSprintError,setPlanSprintError] = useState(false);
     const [removeTaskDialog,setRemoveTaskDialog] = useState(false);
-    const [nameError,setNameError] = useState({
-        show:false,
-        message:''
-    });
-    const [data,setData] = useState({
-        name:'',
-        duration:'2'
-    });
+    const [duration,setDuration] = useState(2);
     const handleChangeData = event => {
-        setNameError({
-            show:false,
-            message:''
-        });
-        setData({
-            ...data,
-            [event.target.name]:event.target.value
-        })
+        setDuration(event.target.value)
     };
     useEffect(()=>{
         setState(formatBacklog(backlog));
         setLoading(false)
     },[backlog])
-    const handleOpenDetails = detail => {
+    const handleOpenDetails = (detail) => {
         setDetails(detail);
         setOpenDetails(true);
     };
@@ -238,31 +225,21 @@ const ListBacklog = ({backlog}) => {
         setOpenDetails(false);
         setDetails({});
     };
-    const isValid = (name)=>{
-        if (name.length <=4 || name.length >=50){
-            setNameError({
-                show:true,
-                message:'Name should be between 5-50 Chars'
-            });
-            return false
-        }
-        return true
-    };
     const handlePlanSprint = ()=>{
-        if (isValid(data.name)){
-            if (getEstimatedWeeks() > 4){
-                setPlanSprintError(true);
-                return;
-            }else if (getEstimatedWeeks() < parseInt(data.duration)){
-                setLessWeekConfirmation(true);
-                return;
-            }
-           continuePlanSprint()
+
+        if (getEstimatedWeeks() > 4){
+            setPlanSprintError(true);
+            return;
+        }else if (getEstimatedWeeks() < parseInt(duration)){
+            setLessWeekConfirmation(true);
+            return;
         }
+       continuePlanSprint()
+
     };
     const continuePlanSprint = ()=>{
         const sprintData = {
-            name:data.name,
+            name:`SPR-${projectContext.project.project.details.sprint.length + 1}`,
             startDate:selectedDate,
             endDate,
             projectId:projectContext.project.project._id,
@@ -270,7 +247,10 @@ const ListBacklog = ({backlog}) => {
         };
         projectContext.planSprint(sprintData)
             .then(result =>{
-                setOpenPlanSprintDialog(false)
+
+                setOpenPlanSprintDialog(false);
+                setLessWeekConfirmation(false);
+
             })
     };
     const getEstimatedWeeks = ()=>{
@@ -285,14 +265,11 @@ const ListBacklog = ({backlog}) => {
     };
     const changeDate = (date)=>{
         handleDateChange(date);
-        handleEndDateChange(moment(date).add(data.duration,'w'))
+        handleEndDateChange(moment(date).add(duration,'w'))
     };
     const handleCancelPlanSprint = ()=>{
         setOpenPlanSprintDialog(false);
-        setData({
-            name:'',
-            duration: '2'
-        })
+        setDuration(2)
     };
     const handleRemoveTask = ()=>{
         const data = {
@@ -498,11 +475,15 @@ const ListBacklog = ({backlog}) => {
             {
                 openPlanSprintDialog &&
                 <Dialog open={openPlanSprintDialog} onClose={()=>setOpenPlanSprintDialog(false)} fullWidth maxWidth='xs'>
-                    <DialogTitle>Start Sprint</DialogTitle>
+                    <DialogTitleComponent title={'Plan Sprint'} handleClose={()=>setOpenPlanSprintDialog(false)}/>
                     <DialogContent dividers>
                         <div>
                             <Typography component='span' variant='caption'>Suggested Weeks: </Typography>
                             <Typography component='span' variant='subtitle1'>{getEstimatedWeeks()}</Typography>
+                        </div>
+                        <div>
+                            <Typography component='span' variant='caption'>Sprint Name: </Typography>
+                            <Typography component='span' variant='subtitle1'>{`SPR-${projectContext.project.project.details.sprint.length + 1}`}</Typography>
                         </div>
                         {
                             planSprintError &&
@@ -514,24 +495,12 @@ const ListBacklog = ({backlog}) => {
                                 Tasks in sprint require more time to complete please remove some tasks and try again
                             </Typography>
                         }
-                       <TextField
-                            label='Sprint Name'
-                            margin='dense'
-                            fullWidth
-                            required
-                            variant='outlined'
-                            name='name'
-                            value={data.name}
-                            onChange={handleChangeData}
-                            error={nameError.show}
-                            helperText={nameError.message}
-                        />
                         <FormControl fullWidth variant="outlined" margin='dense'>
                             <InputLabel htmlFor="duration">
                                 Duration
                             </InputLabel>
                             <Select
-                                value={data.duration}
+                                value={duration}
                                 onChange={handleChangeData}
                                 input={<OutlinedInput labelWidth={60} name="duration" id="duration" />}
                             >
@@ -573,7 +542,7 @@ const ListBacklog = ({backlog}) => {
             {
                 lessWeekConfirmation &&
                 <Dialog open={lessWeekConfirmation} onClose={()=>setLessWeekConfirmation(false)} fullWidth maxWidth='xs'>
-                    <DialogTitle>Confirm</DialogTitle>
+                    <DialogTitleComponent title={'Confirm'} handleClose={()=>setLessWeekConfirmation(false)}/>
                     <DialogContent dividers>
                         <DialogContentText>Tasks in sprint require less time than specified weeks, do you want to continue?</DialogContentText>
                     </DialogContent>
@@ -586,13 +555,13 @@ const ListBacklog = ({backlog}) => {
             {
                 removeTaskDialog &&
                 <Dialog open={removeTaskDialog} onClose={()=>setRemoveTaskDialog(false)} fullWidth maxWidth='xs'>
-                    <DialogTitle>Confirm</DialogTitle>
+                    <DialogTitleComponent title={'Confirm'} handleClose={()=>setRemoveTaskDialog(false)}/>
                     <DialogContent dividers>
                         <DialogContentText>Are you sure you want to remove this task?</DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button variant='contained' onClick={()=>setRemoveTaskDialog(false)}>Cancel</Button>
-                        <Button variant='contained' color='secondary' onClick={handleRemoveTask}>Remove</Button>
+                        <Button onClick={()=>setRemoveTaskDialog(false)}>Cancel</Button>
+                        <Button color='primary' onClick={handleRemoveTask}>Remove</Button>
                     </DialogActions>
                 </Dialog>
             }

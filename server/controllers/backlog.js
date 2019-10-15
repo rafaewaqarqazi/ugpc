@@ -3,7 +3,7 @@ const Projects = require('../models/projects');
 const mongoose = require('mongoose');
 
 const moment = require('moment');
-
+const fs = require('fs');
 
 exports.addNewTask = async (req,res)=>{
     try {
@@ -234,4 +234,32 @@ exports.addAttachmentsToTask = async (req,res) =>{
     }catch (e) {
         await res.json({error:e.message})
     }
+};
+
+exports.removeAttachmentFromTask = (req,res) =>{
+    const {projectId,taskId,filename} = req.body;
+    fs.unlink(`static/images/${filename}`,err => {
+        if(err){
+            res.json({error:err.message})
+        }
+
+        Projects.findOneAndUpdate({"_id":projectId,"details.backlog._id":taskId},{
+            $pull:{
+                "details.backlog.$.attachments":{
+                    filename:filename
+                }
+            }
+        },{new:true})
+            .select('details.backlog')
+            .populate('details.backlog.assignee','name department student_details email profileImage')
+            .populate('details.backlog.createdBy','name')
+            .sort({"details.backlog.priority":1})
+            .then(result =>{
+                res.json(result)
+            })
+            .catch(error => {
+                res.json({error:error.message})
+            });
+
+    });
 }

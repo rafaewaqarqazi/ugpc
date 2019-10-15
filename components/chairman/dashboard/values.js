@@ -50,5 +50,5 @@ export const formatProjectsData = projects =>{
         ...projectsData
     ];
 
-    return data
+    return {data,projectsData}
 }

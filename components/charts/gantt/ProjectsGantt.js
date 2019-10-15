@@ -42,8 +42,9 @@ const ProjectsGantt = ({projects}) => {
                         !empty ?
                             <Chart
                                 width={'100%'}
-                                height={'100%'}
+                                height={(formatProjectsData(projects.projects).projectsData.length + 1) * 32}
                                 chartType="Gantt"
+                                legendToggle
                                 loader={<CircularLoading/>}
                                 chartEvents={[
                                     {
@@ -51,9 +52,8 @@ const ProjectsGantt = ({projects}) => {
                                         callback:handleError
                                     }
                                 ]}
-                                data={formatProjectsData(projects.projects)}
+                                data={formatProjectsData(projects.projects).data}
                                 options={{
-                                    height:'100%',
                                     gantt: {
                                         trackHeight: 30,
                                         criticalPathEnabled: false,

@@ -20,6 +20,7 @@ export const usePendingStyles = makeStyles(theme => ({
     },
     message:{
         fontSize:30,
+        textAlign:'center',
         [theme.breakpoints.down('sm')]:{
             fontSize:20
         },

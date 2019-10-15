@@ -110,9 +110,9 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const [sprintTasks,setSprintTasks] = useState({
         completed:0,
         inComplete:0
-    })
-    useEffect(()=>{
-        setSelectedSprint(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0])
+    });
+    const sprintInit = ()=>{
+        setSelectedSprint(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0]);
         const data = sprint;
         const filter = data.filter(d => d.name === sprintNames[0] && d.status === 'InComplete')[0];
         if (sprintNames.length !== 0){
@@ -124,7 +124,10 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
 
         setState(formatScrumBoard(filter));
         setLoading(false)
-    },[sprint]);
+    };
+    useEffect(()=>{
+       sprintInit()
+    },[]);
     const getListStyle = isDraggingOver=>({
         backgroundColor: isDraggingOver ? '#C5E1A5' :'#fff'
     });
@@ -244,7 +247,8 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
             .then(result =>{
                 setCompleteSprintLoading(false);
                 setOpenSuccessSnackBar(true);
-                setCompleteSprintDialog(false)
+                setCompleteSprintDialog(false);
+                sprintInit();
             })
             .catch(error => console.log(error))
     };
@@ -463,4 +467,4 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     );
 };
 
-export default React.memo(RenderScrumBoard);
+export default RenderScrumBoard;

@@ -1,5 +1,5 @@
 import React, {useState,  useContext} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import {
     Typography,
     TextField,
@@ -37,8 +37,8 @@ const useStyles = makeStyles(theme => ({
     });
      const handleSuccess= ()=>{
          setSuccess(false);
-         router.push('/student/overview')
-     }
+         router.push('/student/roadmap')
+     };
     const [errors,setErrors] = useState({
         groupName:{
             show:false,
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
         setLoading(true);
         const phase = userContext.user.user.student_details.batch.slice(1,3);
         const projectData = {
-            groupName:data.title,
+            groupName:data.groupName,
             description:data.description,
             phase:phase>=17 ? 'Documentation':'Implementation',
             department:userContext.user.user.department,
@@ -81,7 +81,6 @@ const useStyles = makeStyles(theme => ({
                 data.partnerId
             ]
         };
-        console.log(projectData);
 
         context.createProject(projectData)
             .then(()=>{
@@ -107,10 +106,10 @@ const useStyles = makeStyles(theme => ({
                          <Grid item xs={12} sm={10} md={8}>
                              <TextField
                                  variant='outlined'
-                                 label='Title'
+                                 label='Group Name'
                                  fullWidth
-                                 name='title'
-                                 placeholder='Project Title here'
+                                 name='groupName'
+                                 placeholder='Your Group name here'
                                  required
                                  error={errors.groupName.show}
                                  helperText={errors.groupName.message}

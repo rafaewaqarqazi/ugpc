@@ -8,31 +8,26 @@ import {
     IconButton,
     Tooltip,
     Typography,
-    Button, GridListTileBar, LinearProgress
+    Button, GridListTileBar, LinearProgress, Zoom,
+    DialogTitle, DialogContentText
 } from "@material-ui/core";
-import {AttachFile} from "@material-ui/icons";
+import {AttachFile,Delete,Close} from "@material-ui/icons";
 import {serverUrl} from "../../../utils/config";
 import RenderSubTasks from "../backlogs/RenderSubTasks";
 import {getBacklogTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import {makeStyles} from "@material-ui/styles";
-import {getRandomColor} from "../../../src/material-styles/randomColors";
 import UserAvatarComponent from "../../UserAvatarComponent";
 import DialogTitleComponent from "../../DialogTitleComponent";
 import {DropzoneArea} from "material-ui-dropzone";
-import {addAttachmentsToTaskAPI} from "../../../utils/apiCalls/projects";
 import ProjectContext from "../../../context/project/project-context";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
+import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 const useStyles = makeStyles(theme =>({
     wrapText:{
         whiteSpace: 'normal',
         wordWrap: 'break-word'
     },
-    avatar:{
-        marginRight:theme.spacing(0.2),
-        width:30,
-        height:30,
-        backgroundColor: getRandomColor(),
-    },
+
     detailsContent:{
         marginBottom:theme.spacing(2)
     },
@@ -45,7 +40,10 @@ const useStyles = makeStyles(theme =>({
     },
     gridListItem:{
         cursor:'pointer'
-    }
+    },
+    icon: {
+        color: 'rgba(255, 255, 255, 0.54)'
+    },
 }));
 const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
     const projectContext = useContext(ProjectContext);
@@ -54,12 +52,49 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
     const [files,setFiles]=useState([]);
     const [fileError,setFileError] = useState(false);
     const [loading,setLoading]= useState(false);
-    const [success,setSuccess] = useState(false);
+    const [resError,setResError] = useState({
+        show:false,
+        message:''
+    });
+    const [success,setSuccess] = useState({
+        show:false,
+        message:''
+    });
+    const [removeAttachment,setRemoveAttachment] = useState({
+        show:false,
+        filename:''
+    });
     const [image,setImage] = useState({
         show:false,
         image:{}
     });
-
+    const handleRemoveAttachment = ()=>{
+        const data = {
+            filename:removeAttachment.filename,
+            projectId:projectContext.project.project._id,
+            taskId:details._id
+        };
+        setLoading(true);
+        projectContext.removeAttachmentFromTask(data)
+            .then(result =>{
+                setLoading(false);
+                setRemoveAttachment({show:false,filename:''});
+                setSuccess({
+                    show:true,
+                    message:'Removed Successfully'
+                });
+                setDetails({
+                    ...details,
+                    attachments:details.attachments.filter(attachment => attachment.filename !== data.filename)
+                })
+            })
+            .catch(err =>{
+               setResError({
+                   show:true,
+                   message:"Something went wrong"
+               })
+            })
+    };
     const handleDropZone = files=>{
         setFileError(false);
         setFiles(files)
@@ -79,9 +114,12 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
             data.set('taskId',details._id);
             projectContext.addAttachmentsToTask(data)
                 .then(result =>{
-                    console.log(result)
+                    setLoading(false);
                     setOpenAddAttachmentDialog(false);
-                    setSuccess(true);
+                    setSuccess({
+                        show:true,
+                        message:'Uploaded Successfully'
+                    });
                     setDetails({
                         ...details,
                         attachments:[
@@ -91,7 +129,10 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                     })
                 })
                 .catch(err =>{
-                    console.log(err.message)
+                    setResError({
+                        show:true,
+                        message:"Something went wrong"
+                    })
                 })
         }
 
@@ -108,7 +149,8 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
 
     return (
         <div>
-            <SuccessSnackBar open={success} message='Uploded' handleClose={()=>setSuccess(false)}/>
+            <SuccessSnackBar open={success.show} message={success.message} handleClose={()=>setSuccess(false)}/>
+            <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=> setResError({show:false, message:""})}/>
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={6}>
                     <div className={classes.detailsContent}>
@@ -183,11 +225,19 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                                             <GridListTile
                                                 key={attachment.filename}
                                                 cols={index === 0||index === 6? 2 :1}
-                                                onClick={()=>setImage({show:true,image:attachment})}
-                                                className={classes.gridListItem}
+
                                             >
-                                                <img src={`${serverUrl}/../static/images/${attachment.filename}`} alt={attachment.originalname}/>
-                                                <GridListTileBar title={attachment.originalname}/>
+                                                <img  className={classes.gridListItem} onClick={()=>setImage({show:true,image:attachment})}  src={`${serverUrl}/../static/images/${attachment.filename}`} alt={attachment.originalname}/>
+                                                <GridListTileBar
+                                                    title={attachment.originalname}
+                                                    actionIcon={
+                                                        <Tooltip  title='Remove' placement="top" TransitionComponent={Zoom}>
+                                                            <IconButton disabled={disableUpload} aria-label={`remove ${attachment.originalname}`} className={classes.icon} size='small' onClick={()=>setRemoveAttachment({show:true,filename:attachment.filename})}>
+                                                                <Delete />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    }
+                                                />
                                             </GridListTile>
                                         )
                                     }
@@ -217,10 +267,30 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                     <Button color='primary' onClick={handleUploadAttachments}>Add</Button>
                 </DialogActions>
             </Dialog>
+
+
+            <Dialog open={removeAttachment.show} onClose={()=>setRemoveAttachment({show:false,filename:''})} fullWidth maxWidth='sm'>
+                {loading && <LinearProgress/>}
+                <DialogTitleComponent title='Confirm' handleClose={()=>setRemoveAttachment({show:false,filename:''})}/>
+                <DialogContent dividers>
+                   <DialogContentText>Are you sure you want to remove this attachment?</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=>setRemoveAttachment({show:false,filename:''})}>Cancel</Button>
+                    <Button color='primary' onClick={handleRemoveAttachment}>Remove</Button>
+                </DialogActions>
+            </Dialog>
             {
                 image.show &&
                 <Dialog open={image.show} onClose={()=>setImage({show:false,image:{}})} fullWidth maxWidth='lg'>
-                    <DialogTitleComponent title={image.image.originalname} handleClose={()=>setImage({show:false,image:{}})}/>
+                    <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
+                        <Typography variant='h6' noWrap style={{flexGrow:1}}>{image.image.originalname}</Typography>
+                        <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
+                            <IconButton size='small' onClick={()=>setImage({show:false,image:{}})}>
+                                <Close/>
+                            </IconButton>
+                        </Tooltip>
+                    </DialogTitle>
                     <img
                         style={{ maxWidth: '100%', height: 'auto'}}
                         src={`${serverUrl}/../static/images/${image.image.filename}`}

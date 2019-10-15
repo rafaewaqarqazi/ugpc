@@ -2,7 +2,7 @@ import {makeStyles} from "@material-ui/styles";
 import {blue} from "@material-ui/core/colors";
 import {getRandomColor} from "./randomColors";
 
-const drawerWidth = 280;
+const drawerWidth = 250;
 export const useDrawerStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
@@ -31,8 +31,30 @@ export const useDrawerStyles = makeStyles(theme => ({
         overflowX: 'hidden',
         width: theme.spacing(6) + 1,
         [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(8) + 1,
+            width: theme.spacing(9) + 1,
         },
+    },
+    appBar: {
+
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    appBarContent:{
+      display:'flex',
+      flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'flex-end',
+        flexGrow: 1
     },
     toolbar: {
         display: 'flex',
@@ -51,7 +73,7 @@ export const useDrawerStyles = makeStyles(theme => ({
         height:'100%'
     },
     sidebar:{
-        minWidth: theme.spacing(6) ,
+        minWidth: theme.spacing(8) ,
         [theme.breakpoints.up('sm')]: {
             minWidth: theme.spacing(8),
         },
@@ -64,7 +86,43 @@ export const useDrawerStyles = makeStyles(theme => ({
         marginTop:theme.spacing(1),
     },
     list:{
-        width:'100%'
+        backgroundColor:'rgba(0,0,0,.8)',
+        width:'100%',
+        height:'100%',
+        color:'rgba(255,255,255,0.87)',
+        padding:theme.spacing(0,2,3,1.5),
+    },
+    drawerListItem:{
+        padding:theme.spacing(1),
+        marginTop:theme.spacing(2),
+        borderRadius:3,
+        color:'rgba(255,255,255,0.87)',
+        '&:hover':{
+            backgroundColor:'#00acc1'
+        }
+    },
+    profile:{
+      marginLeft:theme.spacing(1),
+    },
+    drawerListItemActive:{
+        backgroundColor:'#00acc1',
+        padding:theme.spacing(1),
+        marginTop:theme.spacing(2),
+        borderRadius:3,
+        color:'rgba(255,255,255,0.87)',
+        '&:hover':{
+            backgroundColor:'#00acc1'
+        }
+    },
+    iconColor:{
+        color:'rgba(255,255,255,0.87)',
+    },
+    sideBarImage:{
+
+      width:'100%',
+      height:'100%',
+        backgroundSize:'cover',
+        backgroundPosition:'center'
     },
     menuRightTopContent:{
         display:'flex',
@@ -97,6 +155,9 @@ export const useDrawerStyles = makeStyles(theme => ({
         width:32,
         height:32,
         fontSize:16
+    },
+    profileAvatarColor:{
+        backgroundColor:getRandomColor()
     },
     imageAvatar:{
         width:32,

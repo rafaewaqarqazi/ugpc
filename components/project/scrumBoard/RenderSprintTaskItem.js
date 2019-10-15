@@ -3,6 +3,7 @@ import {getSprintTaskPriorityColor} from "../../../src/material-styles/visionDoc
 import {makeStyles, Typography, Grid, Tooltip, Zoom, Chip, Divider, Badge} from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import {getRandomColor} from "../../../src/material-styles/randomColors";
+import UserAvatarComponent from "../../UserAvatarComponent";
 
 const useStyles = makeStyles(theme=>({
     listItem:{
@@ -36,10 +37,10 @@ const RenderSprintTaskItem = ({task}) => {
         <div className={classes.listItem} style={getSprintTaskPriorityColor(task.priority)} >
             <Grid container spacing={1} alignItems='center'>
                 <Grid item xs={12} sm={12}>
-                    <Typography variant='h6'noWrap>{task.title}</Typography>
+                    <Typography variant='subtitle1'noWrap>{task.title}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={12}>
-                    <Typography variant='body1' color='textSecondary' className={classes.description} >{task.description}</Typography>
+                    <Typography variant='body2' color='textSecondary' className={classes.description} >{task.description}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                     {
@@ -57,15 +58,13 @@ const RenderSprintTaskItem = ({task}) => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <Badge badgeContent={task.subTasks.length > 0 ? task.subTasks.length : '0'} max={10} color='secondary'>
-                        <Typography noWrap>Sub Tasks</Typography>
+                        <Typography variant='body2' color='textSecondary' noWrap>Sub Tasks</Typography>
                     </Badge>
                 </Grid>
                 <Grid item xs={12} sm={6} style={{display:'flex',justifyContent:'flex-end'}}>
                     {
                         task.assignee.map((student,index) =>(
-                            <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                <Avatar className={classes.avatar} >{student.name.charAt(0).toUpperCase()}</Avatar>
-                            </Tooltip>
+                            <UserAvatarComponent key={index} user={student}/>
                         ))
                     }
                 </Grid>
@@ -78,4 +77,4 @@ const RenderSprintTaskItem = ({task}) => {
     );
 };
 
-export default RenderSprintTaskItem;
+export default React.memo(RenderSprintTaskItem);

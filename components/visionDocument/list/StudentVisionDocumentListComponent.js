@@ -19,26 +19,19 @@ const useStyles = makeStyles(theme => ({
 const StudentVisionDocumentListComponent = () => {
     const context = useContext(ProjectContext);
     const classes = useStyles();
-    const UploadButton = ()=>{
-        const filter = context.project.project.documentation.visionDocument.filter(doc => doc.status === 'Rejected')
-        if (filter.length > 0){
-            return (
-                <>
-                    <div className={classes.listHeader}>
-                        <Link href='/student/project/vision-document/new'>
-                            <Button variant='outlined' color='primary'>
-                                Upload New Document
-                            </Button>
-                        </Link>
-                    </div>
-                    <Divider/>
-                </>
-            )
-        }else return <div/>
-    }
     return (
         <div>
-            <UploadButton/>
+            {
+                context.project.project.documentation.visionDocument.filter(doc => doc.status === 'Rejected').length > 0 &&
+                <div className={classes.listHeader}>
+                    <Link href='/student/project/vision-document/new'>
+                        <Button variant='outlined' color='primary'>
+                            Upload New Document
+                        </Button>
+                    </Link>
+                </div>
+            }
+            <Divider/>
             <StudentVisionListItem
                 project={context.project.project}
             />

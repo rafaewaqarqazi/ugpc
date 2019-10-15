@@ -150,3 +150,16 @@ export const removeTaskAPI = async data =>{
     });
     return await res.json();
 };
+
+export const removeAttachmentFromTaskAPI = async data =>{
+    const res = await fetch(`${serverUrl}/backlog/task/remove/attachment`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};

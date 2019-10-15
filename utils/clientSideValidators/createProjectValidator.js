@@ -1,13 +1,12 @@
 export const isValid = (data,setErrors,errors,activeStep)=>{
-    const {title, description, partnerId, team} = data;
-    console.log(team);
+    const {groupName, description, partnerId, team} = data;
     let error = false;
-    if ((title.length <=2 || title.length > 100) && activeStep === 0){
+    if ((groupName.length <=2 || groupName.length > 50) && activeStep === 0){
         setErrors({
             ...errors,
-            title:{
+            groupName:{
                 show:true,
-                message:'Title Must Be between 2-100 Characters'
+                message:'Group Name Must Be between 2-50 Characters'
             }
         });
         error = true;
@@ -21,7 +20,6 @@ export const isValid = (data,setErrors,errors,activeStep)=>{
         });
         error = true;
     } else if ((team === 'duo' && partnerId.length === 0) && activeStep === 1){
-        console.log('partner ID',errors);
         setErrors({
             ...errors,
             partnerId:{

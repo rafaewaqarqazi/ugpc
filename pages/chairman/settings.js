@@ -337,7 +337,7 @@ const Settings = () => {
                                 <Typography className={settingsClasses.secondaryHeading}>Add new Batches</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                                <div  style={{width:'100%'}}>
+                                <div  className={settingsClasses.root}>
                                     {
                                         userContext.user.isLoading ? <CircularLoading/> :
                                             <div>

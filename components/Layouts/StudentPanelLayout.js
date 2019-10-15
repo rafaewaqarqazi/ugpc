@@ -8,10 +8,9 @@ import {
     MenuItem,
     Hidden, Toolbar, AppBar
 } from '@material-ui/core';
-import {ListAltOutlined, ChevronRight, ChevronLeft, Add,
-    DashboardOutlined, AssignmentOutlined, ViewColumnOutlined,
-    SettingsOutlined,
-    ShowChartOutlined
+import {ListAltOutlined,ListAlt, ChevronRight, ChevronLeft, Add,
+    Dashboard, Assignment,AssignmentOutlined, ViewColumn,
+    ShowChart
 } from '@material-ui/icons';
 import Link from "next/link";
 
@@ -22,10 +21,12 @@ import clsx from "clsx";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from '@material-ui/icons/Menu';
-import Router from 'next/router'
+import Router, {useRouter} from 'next/router'
 import ProfileMenu from "../profile/ProfileMenu";
+import {serverUrl} from "../../utils/config";
 
 const StudentPanelLayout = ({children})=> {
+    const router = useRouter();
     const classes = useDrawerStyles();
     const projectContext = useContext(ProjectContext);
     const userContext = useContext(UserContext);
@@ -56,16 +57,20 @@ const StudentPanelLayout = ({children})=> {
 
     const addMenu = (
         <div>
-            <Link href='/student/project/vision-document/new'>
-                <MenuItem>
-                    <ListItemIcon>
-                        <AssignmentOutlined />
-                    </ListItemIcon>
-                    <Typography variant="inherit" noWrap>
-                        Vision Document
-                    </Typography>
-                </MenuItem>
-            </Link>
+            {
+                !projectContext.project.isLoading && projectContext.project.project.documentation.visionDocument.filter(visionDoc => visionDoc.status === 'Approved' || visionDoc.status === 'Approved With Changes').length === 0 &&
+                <Link href='/student/project/vision-document/new'>
+                    <MenuItem >
+                        <ListItemIcon>
+                            <AssignmentOutlined />
+                        </ListItemIcon>
+                        <Typography variant="inherit" noWrap>
+                            Vision Document
+                        </Typography>
+                    </MenuItem>
+                </Link>
+            }
+
             <Link href='/student/project/backlog'>
                 <MenuItem >
                     <ListItemIcon>
@@ -81,55 +86,44 @@ const StudentPanelLayout = ({children})=> {
     const drawer = (
         <Fragment>
             <List>
-                <Link href='/student/roadmap'>
-                    <ListItem button >
+                <Link href='/student/roadmap' >
+                    <ListItem button className={router.pathname === '/student/roadmap' ? classes.drawerListItemActive : classes.drawerListItem} >
                         <ListItemIcon>
-                            <DashboardOutlined />
+                            <Dashboard className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Roadmap"} />
                     </ListItem>
                 </Link>
                 <Link href='/student/project/documentation'>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/student/project/documentation' ? classes.drawerListItemActive : classes.drawerListItem} >
                         <ListItemIcon>
-                            <AssignmentOutlined />
+                            <Assignment className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Documentation"} />
                     </ListItem>
                 </Link>
                 <Link href='/student/project/backlog'>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/student/project/backlog' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <ListAltOutlined />
+                            <ListAlt className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Backlog"} />
                     </ListItem>
                 </Link>
                 <Link href='/student/project/scrumBoard'>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/student/project/scrumBoard' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <ViewColumnOutlined />
+                            <ViewColumn className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Scrum Board"} />
                     </ListItem>
                 </Link>
                 <Link href='/student/project/progress'>
-                    <ListItem button >
+                    <ListItem button  className={router.pathname === '/student/project/progress' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <ShowChartOutlined />
+                            <ShowChart className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Progress"} />
-                    </ListItem>
-                </Link>
-            </List>
-            <Divider/>
-            <List>
-                <Link href='/student/project/settings'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <SettingsOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Settings"} />
                     </ListItem>
                 </Link>
             </List>
@@ -170,7 +164,9 @@ const StudentPanelLayout = ({children})=> {
                                 >
                                     {addMenu}
                                 </Menu>
-                            <ProfileMenu handleClickProfile={handleClickProfile}/>
+                            <div className={classes.profile}>
+                                <ProfileMenu handleClickProfile={handleClickProfile}/>
+                            </div>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -183,13 +179,30 @@ const StudentPanelLayout = ({children})=> {
                                 ModalProps={{
                                     keepMounted: true, // Better open performance on mobile.
                                 }}
+
                             >
-                                <div style={{width:240}}>
-                                    <div className={classes.avatarDrawer}>
-                                        <Avatar  className={classes.avatarSize}>{!userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U' }</Avatar>
+                                <div  style={{width:250,height:'100%'}}>
+                                    <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
+                                        <div className={classes.list}>
+                                            <div className={classes.avatarDrawer}>
+                                                {
+                                                    userContext.user.isLoading ?
+                                                        <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
+                                                            U
+                                                        </Avatar>
+                                                        :
+                                                        userContext.user.user.profileImage.filename ?
+                                                            <Avatar className={classes.avatarSize} onClick={event =>  setAnchorEl(event.currentTarget)}   src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename }`}  />
+                                                            :
+                                                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)} className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
+                                                                { userContext.user.user.name.charAt(0).toUpperCase()}
+                                                            </Avatar>
+                                                }
+                                            </div>
+                                            <Divider/>
+                                            {drawer}
+                                        </div>
                                     </div>
-                                    <Divider/>
-                                    {drawer}
                                 </div>
 
                             </Drawer>
@@ -206,6 +219,40 @@ const StudentPanelLayout = ({children})=> {
 
             <div className={classes.root}>
                 <Hidden xsDown>
+                    <AppBar
+                        position="fixed"
+                        color='inherit'
+                        className={clsx(classes.appBar, {
+                            [classes.appBarShift]: open,
+                        })}
+                    >
+                        <Toolbar>
+                            <div className={classes.appBarContent}>
+                                <div>
+                                    <Tooltip title='Add' placement='right'>
+                                        <IconButton onClick={handleAddMenuClick} size='small'>
+                                            <Add/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        id="simple-menu"
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={Boolean(anchorEl)}
+                                        onClose={handleAddMenuClose}
+                                    >
+                                        {addMenu}
+                                    </Menu>
+                                </div>
+                                <div className={classes.profile}>
+                                    <ProfileMenu handleClickProfile={handleClickProfile}/>
+                                </div>
+
+                            </div>
+
+
+                        </Toolbar>
+                    </AppBar>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -220,71 +267,41 @@ const StudentPanelLayout = ({children})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.side}>
-                            <div className={classes.sidebar}>
-                                <div className={classes.menuRightButton}>
-                                    {
-                                        !open ?
-                                            <Tooltip title='Expand' placement='right'>
-                                                <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                    <ChevronRight color='inherit'/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            :
-                                            <div className={classes.blank}/>
-                                    }
-                                </div>
-
-                                <div className={classes.menus}>
-                                    <div className={classes.menuRightTopContent} style={{flexGrow:1}}>
-                                        <div >
-                                            <Tooltip title='UGPC-Software' placement='right'>
-                                                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarMargin}/>
-                                            </Tooltip>
-                                        </div>
-                                        <div>
-                                            <Tooltip title='Add' placement='right'>
-                                                <IconButton onClick={handleAddMenuClick} style={{color:'#fff'}} size='small'>
-                                                    <Add/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Menu
-                                                id="simple-menu"
-                                                anchorEl={anchorEl}
-                                                keepMounted
-                                                open={Boolean(anchorEl)}
-                                                onClose={handleAddMenuClose}
-                                            >
-                                                {addMenu}
-                                            </Menu>
-                                        </div>
-                                    </div>
-
-                                    <div className={classes.menuRightTopContent}>
-                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
                             <div className={classes.list}>
-                                <div className={classes.toolbar}>
-                                    <div style={{flexGrow:1}}/>
-                                    {
-                                        open &&
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose}>
-                                                <ChevronLeft />
+                                {
+                                    !open &&
+                                    <div className={classes.toolbar}>
+                                        <Tooltip title='Expand' placement='right'>
+                                            <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
+                                                <ChevronRight color='inherit'/>
                                             </IconButton>
                                         </Tooltip>
-                                    }
-                                </div>
-                                <Divider />
+                                    </div>
+                                }
 
+                                    {
+                                        open &&
+                                        <div className={classes.toolbar}>
+                                            <div style={{flexGrow:1}}/>
+                                        <Tooltip title='Collapse' placement='right'>
+                                            <IconButton onClick={handleDrawerClose}>
+                                                <ChevronLeft className={classes.iconColor}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        </div>
+
+                                    }
+                                <Divider />
                                 {drawer}
+
+
 
                             </div>
                         </div>
                     </Drawer>
                     <main className={classes.content}>
+                        <div className={classes.toolbar}/>
                         <StudentRouter>
                             {children}
                         </StudentRouter>

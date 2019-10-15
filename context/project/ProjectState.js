@@ -19,7 +19,8 @@ import {
     fetchProjectByProjectIdAPI,
     completeSprintAPI,
     uploadFinalDocumentationAPI,
-    removeTaskAPI
+    removeTaskAPI,
+    removeAttachmentFromTaskAPI
 } from "../../utils/apiCalls/students";
 import {addAttachmentsToTaskAPI} from "../../utils/apiCalls/projects";
 
@@ -81,6 +82,11 @@ const ProjectState = (props) => {
         await dispatch(addBacklogAction(result.result.details.backlog));
         return await result
     };
+    const removeAttachmentFromTask = async  data =>{
+        const result = await removeAttachmentFromTaskAPI(data);
+        await dispatch(addBacklogAction(result.details.backlog));
+        return await result
+    }
 useEffect(()=>{
     console.log('Project State:',state)
 },[state]);
@@ -98,7 +104,8 @@ useEffect(()=>{
             completeSprint,
             uploadFinalDocumentation,
             removeTask,
-            addAttachmentsToTask
+            addAttachmentsToTask,
+            removeAttachmentFromTask
         }}>
             {props.children}
         </ProjectContext.Provider>

@@ -1,24 +1,17 @@
 import React from 'react';
 import {getBacklogTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import {Typography, Grid, Tooltip, Zoom, Chip, } from "@material-ui/core";
-import {getRandomColor} from "../../../src/material-styles/randomColors";
 import {makeStyles} from "@material-ui/styles";
 import UserAvatarComponent from "../../UserAvatarComponent";
 
 const useStyles = makeStyles(theme=>({
     listItem:{
         backgroundColor:'rgba(255,255,255,0.5)',
-        padding:theme.spacing(1.2),
+        padding:theme.spacing(0.5),
         '&:hover':{
             boxShadow:theme.shadows[8]
         },
         borderRadius:'4px 0 0 4px',
-    },
-    avatar:{
-        marginRight:theme.spacing(0.2),
-        width:30,
-        height:30,
-        backgroundColor: getRandomColor(),
     },
 }))
 const RenderBacklogTaskItem = ({task}) => {

@@ -3,18 +3,22 @@ import ProjectContext from "../../../context/project/project-context";
 import {
     Button,
     Divider,
+    Chip,
     Dialog,
-    DialogTitle,
-    DialogActions,
     DialogContent,
+    DialogActions,
     Typography,
-    Tooltip, Zoom, IconButton, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody, Avatar
+    Tooltip, Zoom, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
-import {Close} from "@material-ui/icons";
+import {PictureAsPdfOutlined} from "@material-ui/icons";
 import {DropzoneArea} from "material-ui-dropzone";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import moment from "moment";
+import {serverUrl} from "../../../utils/config";
+import {getGrade} from "../../../utils";
+import {getGradeChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
+import DialogTitleComponent from "../../DialogTitleComponent";
 
 const useStyles = makeStyles(theme => ({
     listHeader:{
@@ -69,19 +73,25 @@ const StudentFinalDocumentationComponent = () => {
     return (
         <div>
             <SuccessSnackBar message='Uploaded Successfully' open={success} handleClose={()=>setSuccess(false)}/>
-            <div className={classes.listHeader}>
-                <Button variant='outlined' color='primary' onClick={()=>setOpenUploadDialog(true)}>
-                    Upload New Document
-                </Button>
-            </div>
+            {
+                projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved').length > 0 &&
+                <div className={classes.listHeader}>
+                    <Button variant='outlined' color='primary' onClick={()=>setOpenUploadDialog(true)}>
+                        Upload New Document
+                    </Button>
+                </div>
+            }
+
             <Divider/>
             <div className={classes.tableWrapper}>
                 <Table >
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left">Sr No.</TableCell>
+                            <TableCell align="left">SrNo.</TableCell>
                             <TableCell align="left">File Name</TableCell>
                             <TableCell align="left">Status</TableCell>
+                            <TableCell align="left">File</TableCell>
+                            <TableCell align="left">Grade</TableCell>
                             <TableCell align="left">Uploaded At</TableCell>
                         </TableRow>
                     </TableHead>
@@ -95,6 +105,18 @@ const StudentFinalDocumentationComponent = () => {
                                         </TableCell>
                                         <TableCell align="left">{doc.document.originalname}</TableCell>
                                         <TableCell >{doc.status}</TableCell>
+                                        <TableCell >
+                                            <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
+                                                <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${doc.document.filename}`} target="_blank" >
+                                                    <PictureAsPdfOutlined />
+                                                </a>
+                                            </Tooltip>
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                doc.status === 'Completed' ? <Chip label={getGrade(projectContext.project.project.details.marks)} style={getGradeChipColor(getGrade(projectContext.project.project.details.marks))}/> :'Not Specified Yet'
+                                            }
+                                        </TableCell>
                                         <TableCell align="left">{moment(doc.uploadedAt).format('MMM DD, YYYY')}</TableCell>
                                     </TableRow>
                             ))
@@ -104,14 +126,7 @@ const StudentFinalDocumentationComponent = () => {
             </div>
             <Dialog fullWidth maxWidth='xs' open={openUploadDialog} onClose={()=>setOpenUploadDialog(false)}>
                 {loading && <LinearProgress/>}
-                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Upload Final Documentation</Typography>
-                    <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=>setOpenUploadDialog(false)}>
-                            <Close/>
-                        </IconButton>
-                    </Tooltip>
-                </DialogTitle>
+                <DialogTitleComponent title={'Upload Final Documentation'} handleClose={()=>setOpenUploadDialog(false)}/>
                 <DialogContent>
                     <DropzoneArea
                         onChange={handleDropZone}

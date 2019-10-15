@@ -18,6 +18,7 @@ import {Search} from "@material-ui/icons";
 import {serverUrl} from "../../../utils/config";
 import moment from "moment";
 import RemoveUserComponent from "./RemoveUserComponent";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 const RenderOfficeUsers = ({chairmanOffice}) => {
     const userClasses = useChairmanUsersStyles();
@@ -25,6 +26,7 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
     const [users,setUsers] = useState([]);
     const [filter,setFilter] = useState([]);
     const tableClasses = useTableStyles();
+    const emptyStyles = useListItemStyles();
     const [success,setSuccess] = useState(false);
     useEffect(()=>{
         let data = [];

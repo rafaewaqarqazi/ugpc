@@ -41,8 +41,9 @@ const ProjectRoadMap = () => {
                                         !empty ?
                                             <Chart
                                                 width={'100%'}
-                                                height={'400px'}
+                                                height={(formatRoadmapSprintData(project.project.details).sprintData.length+1) * 32}
                                                 chartType="Gantt"
+                                                legendToggle
                                                 loader={<CircularLoading/>}
                                                 chartEvents={[
                                                     {
@@ -50,9 +51,8 @@ const ProjectRoadMap = () => {
                                                         callback:handleError
                                                     }
                                                 ]}
-                                                data={formatRoadmapSprintData(project.project.details)}
+                                                data={formatRoadmapSprintData(project.project.details).data}
                                                 options={{
-                                                    height:400,
                                                     gantt: {
                                                         trackHeight: 30,
                                                         criticalPathEnabled: false,

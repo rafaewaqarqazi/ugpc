@@ -15,14 +15,14 @@ const ProfileMenu = ({handleClickProfile}) => {
             <Tooltip title='Your Profile & Settings' placement='right'>
                 {
                     userContext.user.isLoading ?
-                        <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={classes.avatarColor}>
+                        <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={classes.profileAvatarColor}>
                             U
                         </Avatar>
                         :
                         userContext.user.user.profileImage.filename ?
-                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)} className={classes.imageAvatar}  src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename }`}  />
+                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}   src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename }`}  />
                             :
-                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={classes.avatarColor}>
+                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={classes.profileAvatarColor}>
                                 { userContext.user.user.name.charAt(0).toUpperCase()}
                             </Avatar>
                 }

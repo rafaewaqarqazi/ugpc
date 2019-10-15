@@ -1,6 +1,5 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import {
-    Avatar,
     Collapse, Divider,
     FormControl,
     FormControlLabel,
@@ -15,7 +14,7 @@ import {
 
 import {ExpandLess, ExpandMore} from "@material-ui/icons";
 import {fetchNotEnrolledStudents} from "../../utils/apiCalls/students";
-import {getRandomColor} from "../../src/material-styles/randomColors";
+import UserAvatarComponent from "../UserAvatarComponent";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -132,7 +131,7 @@ const CreateProjectDetailsComponent = ({data, setData,error, setErrors,value,set
                                                   onClick={handleListItemClick(index)}
                                         >
                                             <ListItemAvatar>
-                                                <Avatar style={{backgroundColor:getRandomColor()}}>{student.name.charAt(0)}</Avatar>
+                                                <UserAvatarComponent user={student}/>
                                             </ListItemAvatar>
                                             <ListItemText
                                                 primary={student.name}
