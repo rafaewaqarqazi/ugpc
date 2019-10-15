@@ -37,10 +37,9 @@ const RenderSprintTaskItem = ({task}) => {
         <div className={classes.listItem} style={getSprintTaskPriorityColor(task.priority)} >
             <Grid container spacing={1} alignItems='center'>
                 <Grid item xs={12} sm={12}>
-                    <Typography variant='subtitle1'noWrap>{task.title}</Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                    <Typography variant='body2' color='textSecondary' className={classes.description} >{task.description}</Typography>
+                    <Tooltip  title='Description' placement="top" TransitionComponent={Zoom}>
+                        <Typography variant='body2' color='textSecondary' className={classes.description} >{task.description}</Typography>
+                    </Tooltip>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                     {
@@ -57,11 +56,18 @@ const RenderSprintTaskItem = ({task}) => {
                     }
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Badge badgeContent={task.subTasks.length > 0 ? task.subTasks.length : '0'} max={10} color='secondary'>
-                        <Typography variant='body2' color='textSecondary' noWrap>Sub Tasks</Typography>
-                    </Badge>
+                    <Tooltip  title='Sub Tasks' placement="top" TransitionComponent={Zoom}>
+                        <Chip
+                            size='small'
+                            label={task.subTasks.length}
+
+                        />
+                    </Tooltip>
                 </Grid>
-                <Grid item xs={12} sm={6} style={{display:'flex',justifyContent:'flex-end'}}>
+                <Grid item xs={12} sm={6} style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
+                    <Tooltip  title='Task Name' placement="top" TransitionComponent={Zoom}>
+                        <Typography variant='caption' color='textSecondary' style={{marginRight:5}} noWrap>{task.title}</Typography>
+                    </Tooltip>
                     {
                         task.assignee.map((student,index) =>(
                             <UserAvatarComponent key={index} user={student}/>
