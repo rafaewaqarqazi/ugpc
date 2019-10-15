@@ -19,25 +19,30 @@ import {
     FormControl,
     InputLabel,
     Select,
-    OutlinedInput,
+    OutlinedInput, Menu,
 } from '@material-ui/core';
 
 import Link from "next/link";
 import {
-    DashboardOutlined,
     Laptop,
     ChevronLeft,
     ChevronRight,
-    AssignmentOutlined,
+    Assignment
 } from "@material-ui/icons";
 
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import Router from 'next/router';
+import Router, {useRouter} from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
+import {serverUrl} from "../../utils/config";
+import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
+
+
 const SupervisorLayout = ({children})=> {
+    const router = useRouter();
+    const switchClasses = useSwitchStyles();
     const userContext = useContext(UserContext);
     useEffect(()=>{
         userContext.fetchUserById();
@@ -58,9 +63,9 @@ const SupervisorLayout = ({children})=> {
         <Fragment>
             <List>
                 <Link href='/supervisor/projects'>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/projects' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <Laptop />
+                            <Laptop className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Projects"} />
                     </ListItem>
@@ -69,9 +74,9 @@ const SupervisorLayout = ({children})=> {
             <Divider/>
             <List>
                 <Link href='/supervisor/documentation'>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/documentation' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <AssignmentOutlined />
+                            <Assignment className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Documentation"}  style={{whiteSpace:'normal'}} />
                     </ListItem>
@@ -87,13 +92,14 @@ const SupervisorLayout = ({children})=> {
     const accountSwitch = (
         userContext.user.isLoading ? <div /> : userContext.user.user.additionalRole ?
             <FormControl variant="outlined" margin='dense' >
-                <InputLabel htmlFor="accountSwitch">
+                <InputLabel htmlFor="accountSwitch" className={classes.iconColor}>
                     Switch to
                 </InputLabel>
                 <Select
                     style={{fontSize:12}}
+                    className={classes.iconColor}
                     value={userContext.user.user.role}
-                    input={<OutlinedInput  labelWidth={67} fullWidth name="accountSwitch" id="accountSwitch" required/>}
+                    input={<OutlinedInput labelWidth={67}  classes={switchClasses} fullWidth name="accountSwitch" id="accountSwitch" required/>}
                 >
                     <MenuItem value={userContext.user.user.role} style={{fontSize:14}}>Supervisor View</MenuItem>
                     {
@@ -166,9 +172,7 @@ const SupervisorLayout = ({children})=> {
                                     <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
                                 </Tooltip>
                             </div>
-
                             <ProfileMenu handleClickProfile={handleClickProfile}/>
-
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
@@ -182,15 +186,31 @@ const SupervisorLayout = ({children})=> {
                                     keepMounted: true, // Better open performance on mobile.
                                 }}
                             >
-                                <div style={{width:240}}>
-                                    <div className={classes.avatarDrawer}>
-                                        <Avatar  className={classes.avatarSize}>{!userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U' }</Avatar>
+                                <div style={{width:250,height:'100%'}}>
+                                    <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
+                                        <div className={classes.list}>
+                                            <div className={classes.avatarDrawer}>
+                                                {
+                                                    userContext.user.isLoading ?
+                                                        <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
+                                                            U
+                                                        </Avatar>
+                                                        :
+                                                        userContext.user.user.profileImage.filename ?
+                                                            <Avatar className={classes.avatarSize} onClick={event =>  setAnchorEl(event.currentTarget)}   src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename }`}  />
+                                                            :
+                                                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)} className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
+                                                                { userContext.user.user.name.charAt(0).toUpperCase()}
+                                                            </Avatar>
+                                                }
+                                            </div>
+                                            <Divider/>
+                                            <div className={classes.avatarDrawer}>
+                                                {accountSwitch}
+                                            </div>
+                                            {drawer}
+                                        </div>
                                     </div>
-                                    <div className={classes.avatarDrawer}>
-                                        {accountSwitch}
-                                    </div>
-                                    <Divider/>
-                                    {drawer}
                                 </div>
 
                             </Drawer>
@@ -205,6 +225,19 @@ const SupervisorLayout = ({children})=> {
 
             <div className={classes.root}>
                 <Hidden xsDown>
+                    <AppBar
+                        position="fixed"
+                        color='inherit'
+                        className={clsx(classes.appBar, {
+                            [classes.appBarShift]: open,
+                        })}
+                    >
+                        <Toolbar>
+                            <div className={classes.appBarContent}>
+                                <ProfileMenu handleClickProfile={handleClickProfile}/>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -219,52 +252,38 @@ const SupervisorLayout = ({children})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.side}>
-                            <div className={classes.sidebar}>
-                                <div className={classes.menuRightButton}>
-                                    {
-                                        !open ?
-                                            <Tooltip title='Expand' placement='right'>
-                                                <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                    <ChevronRight color='inherit'/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            :
-                                            <div className={classes.blank}/>
-
-                                    }
-                                </div>
-
-                                <div className={classes.menus}>
-                                    <div className={classes.menuRightTopContent} style={{flexGrow:1}}>
-                                        <Tooltip title='UGPC-Software' placement='right'>
-                                            <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarMargin}/>
-                                        </Tooltip>
-                                    </div>
-
-                                    <div className={classes.menuRightTopContent}>
-                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
                             <div className={classes.list}>
-                                <div className={classes.toolbar}>
-                                    {accountSwitch}
-                                    {
-                                        open &&
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose} >
-                                                <ChevronLeft />
+                                {
+                                    !open &&
+                                    <div className={classes.toolbar}>
+                                        <Tooltip title='Expand' placement='right'>
+                                            <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
+                                                <ChevronRight color='inherit'/>
                                             </IconButton>
                                         </Tooltip>
-                                    }
-                                </div>
+                                    </div>
+                                }
+
+                                {
+                                    open &&
+                                    <div className={classes.toolbar}>
+                                        {accountSwitch}
+                                        <Tooltip title='Collapse' placement='right'>
+                                            <IconButton onClick={handleDrawerClose}>
+                                                <ChevronLeft className={classes.iconColor}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+
+                                }
                                 <Divider />
                                 {drawer}
                             </div>
                         </div>
                     </Drawer>
                     <main className={classes.content}>
+                        <div className={classes.toolbar}/>
                         {children}
                     </main>
                 </Hidden>

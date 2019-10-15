@@ -26,24 +26,29 @@ import {
 
 import Link from "next/link";
 import {
-    DashboardOutlined,
+    Dashboard,
     Laptop,
     VisibilityOutlined,
+    Visibility,
     ChevronLeft,
     ChevronRight,
-    Add, ViewColumnOutlined, ListAltOutlined,
-    BarChartOutlined
+    Add, ViewColumnOutlined, ListAlt,
+    ShowChart
 } from "@material-ui/icons";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import ProjectContext from '../../context/project/project-context';
 import MenuIcon from '@material-ui/icons/Menu';
-import Router from 'next/router';
+import Router, {useRouter} from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
+import {serverUrl} from "../../utils/config";
+import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
 
 const SupervisorProjectLayout = ({children,projectId})=> {
+    const router = useRouter();
     const userContext = useContext(UserContext);
     const projectContext =useContext(ProjectContext);
+    const switchClasses = useSwitchStyles();
     useEffect(()=>{
         userContext.fetchUserById();
         projectContext.fetchByProjectId(projectId)
@@ -76,9 +81,9 @@ const SupervisorProjectLayout = ({children,projectId})=> {
         <Fragment>
             <List>
                 <Link href='/supervisor/project/[projectId]/roadmap' as={`/supervisor/project/${projectId}/roadmap`}>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/roadmap' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <DashboardOutlined />
+                            <Dashboard className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Roadmap"} />
                     </ListItem>
@@ -86,27 +91,27 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                 </Link>
 
                 <Link href='/supervisor/project/[projectId]/backlog' as={`/supervisor/project/${projectId}/backlog`}>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/backlog' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <ListAltOutlined />
+                            <ListAlt className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Backlog"} />
                     </ListItem>
                 </Link>
 
                 <Link href='/supervisor/project/[projectId]/scrumBoard' as={`/supervisor/project/${projectId}/scrumBoard`}>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/scrumBoard' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <ViewColumnOutlined />
+                            <ViewColumnOutlined className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Scrum Board"} />
                     </ListItem>
                 </Link>
 
                 <Link href='/supervisor/project/[projectId]/progress' as={`/supervisor/project/${projectId}/progress`}>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/progress' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <BarChartOutlined />
+                            <ShowChart className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Progress"} />
                     </ListItem>
@@ -115,9 +120,9 @@ const SupervisorProjectLayout = ({children,projectId})=> {
             <Divider/>
             <List>
                 <Link href='/supervisor/project/[projectId]/meetings' as={`/supervisor/project/${projectId}/meetings`}>
-                    <ListItem button >
+                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/meetings' ? classes.drawerListItemActive : classes.drawerListItem}>
                         <ListItemIcon>
-                            <Laptop />
+                            <Visibility className={classes.iconColor}/>
                         </ListItemIcon>
                         <ListItemText primary={"Meetings"} />
                     </ListItem>
@@ -126,31 +131,34 @@ const SupervisorProjectLayout = ({children,projectId})=> {
         </Fragment>
 
     );
+    const handleClickAddMeeting = ()=>{
+        Router.push('/supervisor/meetings')
+    };
     const addMenu = (
-        <Link href='/supervisor/meetings'>
-            <MenuItem>
-                <ListItemIcon>
-                    <VisibilityOutlined />
-                </ListItemIcon>
-                <Typography variant="inherit" noWrap>
-                    Meeting
-                </Typography>
-            </MenuItem>
-        </Link>
+        <MenuItem onClick={handleClickAddMeeting}>
+            <ListItemIcon>
+                <VisibilityOutlined />
+            </ListItemIcon>
+            <Typography variant="inherit" noWrap>
+                Meeting
+            </Typography>
+        </MenuItem>
     );
     const handleClickProfile = ()=>{
         Router.push('/supervisor/profile')
     };
+
     const accountSwitch = (
         userContext.user.isLoading ? <div style={{flexGrow:1}}/> : userContext.user.user.additionalRole ?
             <FormControl variant="outlined" margin='dense' >
-                <InputLabel htmlFor="accountSwitch">
+                <InputLabel htmlFor="accountSwitch" className={classes.iconColor}>
                     Switch to
                 </InputLabel>
                 <Select
                     style={{fontSize:12}}
                     value={'Select'}
-                    input={<OutlinedInput  labelWidth={67} fullWidth name="accountSwitch" id="accountSwitch" required/>}
+                    className={classes.iconColor}
+                    input={<OutlinedInput  labelWidth={67} classes={switchClasses} fullWidth name="accountSwitch" id="accountSwitch" required/>}
                 >
                     <MenuItem value='Select' style={{fontSize:14}}>Select View</MenuItem>
                     <MenuItem value={userContext.user.user.role} style={{fontSize:14}}>
@@ -175,14 +183,15 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     const projectSwitch = (
             <div className={classes.toolbar}>
                 <FormControl variant="outlined" margin='dense' style={{flexGrow:1}}>
-                    <InputLabel htmlFor="projectSwitch">
+                    <InputLabel htmlFor="projectSwitch" className={classes.iconColor}>
                         Select Project
                     </InputLabel>
                     <Select
                         style={{fontSize:12}}
                         value={selectedProject}
+                        className={classes.iconColor}
                         onChange={handleSwitchProject}
-                        input={<OutlinedInput  labelWidth={100} fullWidth name="projectSwitch" id="projectSwitch" required/>}
+                        input={<OutlinedInput classes={switchClasses}  labelWidth={100} fullWidth name="projectSwitch" id="projectSwitch" required/>}
                     >
 
                         {
@@ -275,6 +284,40 @@ const SupervisorProjectLayout = ({children,projectId})=> {
 
             <div className={classes.root}>
                 <Hidden xsDown>
+                    <AppBar
+                        position="fixed"
+                        color='inherit'
+                        className={clsx(classes.appBar, {
+                            [classes.appBarShift]: open,
+                        })}
+                    >
+                        <Toolbar>
+                            <div className={classes.appBarContent}>
+                                <div>
+                                    <Tooltip title='Add' placement='right'>
+                                        <IconButton onClick={handleAddMenuClick} size='small'>
+                                            <Add/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        id="simple-menu"
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={Boolean(anchorEl)}
+                                        onClose={handleAddMenuClose}
+                                    >
+                                        {addMenu}
+                                    </Menu>
+                                </div>
+                                <div className={classes.profile}>
+                                    <ProfileMenu handleClickProfile={handleClickProfile}/>
+                                </div>
+
+                            </div>
+
+
+                        </Toolbar>
+                    </AppBar>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -289,76 +332,41 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.side}>
-                            <div className={classes.sidebar}>
-                                <div className={classes.menuRightButton}>
-                                    {
-                                        !open ?
-                                            <Tooltip title='Expand' placement='right'>
-                                                <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                    <ChevronRight color='inherit'/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            :
-                                            <div className={classes.blank}/>
-
-                                    }
-                                </div>
-
-                                <div className={classes.menus}>
-                                    <div className={classes.menuRightTopContent} style={{flexGrow:1}}>
-                                        <div >
-                                            <Tooltip title='UGPC-Software' placement='right'>
-                                                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarMargin}/>
-                                            </Tooltip>
-                                        </div>
-                                        {
-                                            selectedProject !== 'Select' &&
-                                            <div>
-                                                <Tooltip title='Add' placement='right'>
-                                                    <IconButton onClick={handleAddMenuClick} style={{color:'#fff'}} size='small' >
-                                                        <Add/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Menu
-                                                    id="add-menu"
-                                                    anchorEl={anchorEl}
-                                                    keepMounted
-                                                    open={Boolean(anchorEl)}
-                                                    onClose={handleAddMenuClose}
-                                                >
-                                                    {addMenu}
-                                                </Menu>
-                                            </div>
-                                        }
-
-                                    </div>
-
-                                    <div className={classes.menuRightTopContent}>
-                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
                             <div className={classes.list}>
-                                <div className={classes.toolbar}>
-                                    {accountSwitch}
-                                    {
-                                        open &&
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose} >
-                                                <ChevronLeft />
+                                {
+                                    !open &&
+                                    <div className={classes.toolbar}>
+                                        <Tooltip title='Expand' placement='right'>
+                                            <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
+                                                <ChevronRight color='inherit'/>
                                             </IconButton>
                                         </Tooltip>
-                                    }
-                                </div>
+                                    </div>
+                                }
+
+                                {
+                                    open &&
+                                    <div className={classes.toolbar}>
+                                        {accountSwitch}
+                                        <Tooltip title='Collapse' placement='right'>
+                                            <IconButton onClick={handleDrawerClose}>
+                                                <ChevronLeft className={classes.iconColor}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+
+                                }
                                 <Divider />
-                                    {projectSwitch}
+                                {projectSwitch}
                                 <Divider/>
                                 {drawer}
                             </div>
                         </div>
+
                     </Drawer>
                     <main className={classes.content}>
+                        <div className={classes.toolbar}/>
                         {children}
                     </main>
                 </Hidden>

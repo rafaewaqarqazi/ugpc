@@ -29,6 +29,7 @@ import {useDocDetailsDialogStyles} from "../../../../src/material-styles/docDeta
 import {RenderDocBasicDetails} from "../../common/RenderDocBasicDetails";
 import {RenderDocumentAttachments} from "../../common/RenderDocumentAttachments";
 import ErrorSnackBar from "../../../snakbars/ErrorSnackBar";
+import DialogTitleComponent from "../../../DialogTitleComponent";
 
 
 
@@ -257,7 +258,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 aria-labelledby="dialog-title"
             >
 
-                <DialogTitle id="dialog-title">{currentDocument.documentation.visionDocument.title}</DialogTitle>
+                <DialogTitleComponent title={currentDocument.documentation.visionDocument.title} handleClose={handleClose}/>
                 <DialogContent dividers>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>

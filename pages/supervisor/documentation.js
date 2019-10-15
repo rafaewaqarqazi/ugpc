@@ -4,23 +4,18 @@ import SupervisorLayout from "../../components/Layouts/SupervisorLayout";
 import VisionDocsState from "../../context/visionDocs/VisionDocsState";
 import SupervisorVisionDocs from "../../components/visionDocument/SupervisorVisionDocs";
 import {Assignment} from "@material-ui/icons";
-import {Box, Container, Tab, Tabs, Typography} from "@material-ui/core";
+import {Box, Container, Tab, Tabs, Typography,Divider} from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
-import {makeStyles, useTheme} from "@material-ui/styles";
+import {useTheme} from "@material-ui/styles";
 import SupervisorFinalDocumentation from "../../components/project/finalDocumentation/SupervisorFinalDocumentation";
 
-const useStyles = makeStyles(theme => ({
-    container:{
-        marginTop:theme.spacing(5),
-    }
-}));
+
 const TabPanel = props => {
     const { children, value, index, ...other } = props;
 
     return (
-        <Typography
-            component="div"
+        <div
             role="tabpanel"
             hidden={value !== index}
             id={`full-width-tabpanel-${index}`}
@@ -28,7 +23,7 @@ const TabPanel = props => {
             {...other}
         >
             <Box p={2}>{children}</Box>
-        </Typography>
+        </div>
     );
 };
 const a11yProps = index => {
@@ -39,7 +34,6 @@ const a11yProps = index => {
 };
 const Documentation = () => {
     const listContainerStyles = useListContainerStyles();
-    const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = useState(0);
 
@@ -53,7 +47,7 @@ const Documentation = () => {
     return (
         <VisionDocsState>
             <SupervisorLayout>
-                <Container className={classes.container}>
+                <Container >
                     <div className={listContainerStyles.listContainer}>
                         <div className={listContainerStyles.top}>
                             <div className={listContainerStyles.topIconBox}>
@@ -80,9 +74,11 @@ const Documentation = () => {
                             onChangeIndex={handleChangeIndex}
                         >
                             <TabPanel value={value} index={0} dir={theme.direction}>
+                                <Divider/>
                                 <SupervisorVisionDocs/>
                             </TabPanel>
                             <TabPanel value={value} index={1} dir={theme.direction}>
+                                <Divider/>
                                 <SupervisorFinalDocumentation/>
                             </TabPanel>
                         </SwipeableViews>

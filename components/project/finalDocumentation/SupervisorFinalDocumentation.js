@@ -80,10 +80,9 @@ const SupervisorFinalDocumentation = () => {
             .then(result =>{
                 setDocuments(result);
                 setFilteredDocs(result);
-                console.log(result)
                 setLoading({...loading,main:false})
             })
-    }
+    };
     useEffect(()=>{
         fetchData();
     },[]);
@@ -110,7 +109,7 @@ const SupervisorFinalDocumentation = () => {
     };
     const handleComment = event =>{
         setComment({error:false,text:event.target.value})
-    }
+    };
     const handleConfirm = ()=>{
 
         if(status.status === 'NotApproved' && comment.text === ''){
@@ -129,7 +128,7 @@ const SupervisorFinalDocumentation = () => {
                 setNotApprovedDialog(false);
                 fetchData();
             });
-    }
+    };
     return (
         <div>
             {
@@ -173,7 +172,7 @@ const SupervisorFinalDocumentation = () => {
                                                     if (vDoc.status === 'Approved' || vDoc.status === 'Approved With Changes'){
                                                         return vDoc.title
                                                     }
-                                                })
+                                                });
                                                 return(
                                                     doc.documentation.finalDocumentation.length === 0?
                                                     <TableRow key={index} >

@@ -74,7 +74,11 @@ const Projects = () => {
                         {
                             userContext.user.isLoading ? <CircularLoading/> :
                                 userContext.user.user.supervisor_details.projects.length === 0 ?
-                                    <div>no projects</div> :
+                                    <div className={emptyStyles.emptyListContainer}>
+                                        <div className={emptyStyles.emptyList}>
+                                            No Projects Assigned Yet
+                                        </div>
+                                    </div> :
                                     <div className={projectsClasses.tableWrapper}>
                                         <Table >
                                             <TableHead>
@@ -90,8 +94,8 @@ const Projects = () => {
                                             <TableBody >
                                                 {
                                                     userContext.user.user.supervisor_details.projects.length === 0 ?
-                                                    <TableRow key={index} >
-                                                        <TableCell colSpan={7}>
+                                                    <TableRow >
+                                                        <TableCell colSpan={6}>
                                                             <div className={emptyStyles.emptyListContainer}>
                                                                 <div className={emptyStyles.emptyList}>
                                                                     No Projects Found

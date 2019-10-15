@@ -7,6 +7,11 @@ export const useDrawerStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
     },
+    switch:{
+        "& $notchedOutline": {
+            borderColor: "#fff"
+        }
+    },
     hide: {
         display: 'none',
     },
