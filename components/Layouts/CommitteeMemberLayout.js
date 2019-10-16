@@ -15,17 +15,23 @@ import {
 
 import Link from "next/link";
 import UserContext from '../../context/user/user-context';
-import Router from "next/router";
+import Router, {useRouter} from "next/router";
 import ProfileMenu from "../profile/ProfileMenu";
 
 
-const CommitteeMemberLayout = ({children})=> {
+const CommitteeMemberLayout = ({children,committeeType})=> {
+    const router = useRouter();
     const userContext = useContext(UserContext);
     useEffect(()=>{
         userContext.fetchUserById();
     },[]);
     const handleClickProfile = ()=>{
-        Router.push('/chairmanOffice/profile');
+        if (committeeType === 'Defence'){
+            Router.push('/committee/defence/member/profile');
+        }else if (committeeType === 'Evaluation'){
+            Router.push('/committee/evaluation/member/profile');
+        }
+
     };
     const accountSwitch = (
         userContext.user.isLoading ? <div /> : userContext.user.user.role === 'Supervisor' ?

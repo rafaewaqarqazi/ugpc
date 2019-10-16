@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
+    AppBar,
     Toolbar,
     Typography,
     Button,
@@ -13,7 +14,7 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    Avatar
+    Avatar, Container
 } from '@material-ui/core';
 import {Input} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -22,9 +23,6 @@ import Link from "next/link";
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
-    },
-    toolbarBorder: {
-        borderBottom: `1px solid ${theme.palette.divider}`,
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -44,10 +42,11 @@ const useStyles = makeStyles(theme => ({
     },
     link:{
         textDecoration:'none',
-        color:'grey'
+        color:'inherit'
     },
     avatar: {
         margin: 10,
+        cursor:'pointer'
     },
     avatarDrawer: {
         width: 100,
@@ -97,38 +96,40 @@ const useStyles = makeStyles(theme => ({
         <div>
             <CssBaseline/>
             <div className={classes.root}>
-
-                <Toolbar className={classes.toolbarBorder}>
-                    <Hidden smUp>
-                        <IconButton edge="start" className={classes.menuButton} color="primary" aria-label="menu" onClick={handleDrawerToggle()}>
-                            <MenuIcon />
-                        </IconButton>
-                    </Hidden>
-                    <Link href='/'>
-                        <Avatar alt="IIUI-LOGO"
-                                src="/static/images/avatar/iiui-logo.jpg"
-                                className={classes.avatar}
-                        />
-                    </Link>
-                    <Typography variant='h6' color='textSecondary' className={classes.title}>
+                <AppBar position="fixed" color="default">
+                    <Container>
+                    <Toolbar>
+                        <Hidden smUp>
+                            <IconButton edge="start" className={classes.menuButton} color="primary" aria-label="menu" onClick={handleDrawerToggle()}>
+                                <MenuIcon />
+                            </IconButton>
+                        </Hidden>
                         <Link href='/'>
-                            <a className={classes.link}>
-                                UGPC Software
-                            </a>
+                            <Avatar alt="IIUI-LOGO"
+                                    src="/static/images/avatar/iiui-logo.jpg"
+                                    className={classes.avatar}
+                            />
                         </Link>
-                    </Typography>
+                        <Typography variant='h6' color='textSecondary' className={classes.title}>
+                            <Link href='/'>
+                                <a className={classes.link}>
+                                    UGPC Software
+                                </a>
+                            </Link>
+                        </Typography>
 
-                    <Hidden xsDown >
-                        <Link href='/sign-in'>
-                            <Button color="primary"  className={classes.button}>Login</Button>
-                        </Link>
-                        <Link href='/student/sign-up'>
-                            <Button color="primary"  className={classes.button}>Sign Up</Button>
-                        </Link>
-                    </Hidden>
-                </Toolbar>
-                <nav  aria-label="mailbox folders">
-                    {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                        <Hidden xsDown >
+                            <Link href='/sign-in'>
+                                <Button color="primary" className={classes.button}>Login</Button>
+                            </Link>
+                            <Link href='/student/sign-up'>
+                                <Button color="primary"  className={classes.button}>Sign Up</Button>
+                            </Link>
+                        </Hidden>
+                    </Toolbar>
+                    </Container>
+                </AppBar>
+                <nav >
                     <Hidden smUp >
                         <Drawer
                             variant="temporary"
@@ -143,6 +144,7 @@ const useStyles = makeStyles(theme => ({
                     </Hidden>
                 </nav>
                 <div>
+                    <div className={classes.toolbar}/>
                     {props.children}
                 </div>
 
