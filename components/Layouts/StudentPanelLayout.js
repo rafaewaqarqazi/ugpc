@@ -24,6 +24,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Router, {useRouter} from 'next/router'
 import ProfileMenu from "../profile/ProfileMenu";
 import {serverUrl} from "../../utils/config";
+import AddMenu from "./AddMenu";
+import AppBarWithAddMenu from "./AppBarWithAddMenu";
+import DrawerLayout from "./DrawerLayout";
+import MobileDrawer from "./MobileDrawer";
+import DrawerLink from "./DrawerLink";
 
 const StudentPanelLayout = ({children})=> {
     const router = useRouter();
@@ -55,7 +60,7 @@ const StudentPanelLayout = ({children})=> {
         setMobileOpen(!mobileOpen);
     };
 
-    const addMenu = (
+    const addMenuContent = (
         <div>
             {
                 !projectContext.project.isLoading && projectContext.project.project.documentation.visionDocument.filter(visionDoc => visionDoc.status === 'Approved' || visionDoc.status === 'Approved With Changes').length === 0 &&
@@ -83,52 +88,39 @@ const StudentPanelLayout = ({children})=> {
             </Link>
         </div>
     );
-    const drawer = (
-        <Fragment>
-            <List>
-                <Link href='/student/roadmap' >
-                    <ListItem button className={router.pathname === '/student/roadmap' ? classes.drawerListItemActive : classes.drawerListItem} >
-                        <ListItemIcon>
-                            <Dashboard className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Roadmap"} />
-                    </ListItem>
-                </Link>
-                <Link href='/student/project/documentation'>
-                    <ListItem button className={router.pathname === '/student/project/documentation' ? classes.drawerListItemActive : classes.drawerListItem} >
-                        <ListItemIcon>
-                            <Assignment className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Documentation"} />
-                    </ListItem>
-                </Link>
-                <Link href='/student/project/backlog'>
-                    <ListItem button className={router.pathname === '/student/project/backlog' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <ListAlt className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Backlog"} />
-                    </ListItem>
-                </Link>
-                <Link href='/student/project/scrumBoard'>
-                    <ListItem button className={router.pathname === '/student/project/scrumBoard' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <ViewColumn className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Scrum Board"} />
-                    </ListItem>
-                </Link>
-                <Link href='/student/project/progress'>
-                    <ListItem button  className={router.pathname === '/student/project/progress' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <ShowChart className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Progress"} />
-                    </ListItem>
-                </Link>
-            </List>
-        </Fragment>
-
+    const drawerContent = (
+        <List>
+            <DrawerLink href={'/student/roadmap'}>
+                <ListItemIcon>
+                    <Dashboard className={classes.iconColor}/>
+                </ListItemIcon>
+                <ListItemText primary={"Roadmap"} />
+            </DrawerLink>
+            <DrawerLink href={'/student/project/documentation'}>
+                <ListItemIcon>
+                    <Assignment className={classes.iconColor}/>
+                </ListItemIcon>
+                <ListItemText primary={"Documentation"} />
+            </DrawerLink>
+            <DrawerLink href={'/student/project/backlog'}>
+                <ListItemIcon>
+                    <ListAlt className={classes.iconColor}/>
+                </ListItemIcon>
+                <ListItemText primary={"Backlog"} />
+            </DrawerLink>
+            <DrawerLink href={'/student/project/scrumBoard'}>
+                <ListItemIcon>
+                    <ViewColumn className={classes.iconColor}/>
+                </ListItemIcon>
+                <ListItemText primary={"Scrum Board"} />
+            </DrawerLink>
+            <DrawerLink href={'/student/project/progress'}>
+                <ListItemIcon>
+                    <ShowChart className={classes.iconColor}/>
+                </ListItemIcon>
+                <ListItemText primary={"Progress"} />
+            </DrawerLink>
+        </List>
     );
      const handleClickProfile = ()=>{
          Router.push('/student/profile');
@@ -150,62 +142,19 @@ const StudentPanelLayout = ({children})=> {
                                     <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
                                 </Tooltip>
                             </div>
-                                <Tooltip title='Add' placement='right'>
-                                    <IconButton onClick={handleAddMenuClick}  size='small'>
-                                        <Add/>
-                                    </IconButton>
-                                </Tooltip>
-                                <Menu
-                                    id="simple-menu"
-                                    anchorEl={anchorEl}
-                                    keepMounted
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleAddMenuClose}
-                                >
-                                    {addMenu}
-                                </Menu>
+                            <AddMenu addMenuContent={addMenuContent}/>
                             <div className={classes.profile}>
                                 <ProfileMenu handleClickProfile={handleClickProfile}/>
                             </div>
                         </Toolbar>
                     </AppBar>
-                    <nav  aria-label="mailbox folders">
-                        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                    <nav >
                         <Hidden smUp >
-                            <Drawer
-                                variant="temporary"
-                                open={mobileOpen}
-                                onClose={handleDrawerToggle()}
-                                ModalProps={{
-                                    keepMounted: true, // Better open performance on mobile.
-                                }}
-
-                            >
-                                <div  style={{width:250,height:'100%'}}>
-                                    <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
-                                        <div className={classes.list}>
-                                            <div className={classes.avatarDrawer}>
-                                                {
-                                                    userContext.user.isLoading ?
-                                                        <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
-                                                            U
-                                                        </Avatar>
-                                                        :
-                                                        userContext.user.user.profileImage.filename ?
-                                                            <Avatar className={classes.avatarSize} onClick={event =>  setAnchorEl(event.currentTarget)}   src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename }`}  />
-                                                            :
-                                                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)} className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
-                                                                { userContext.user.user.name.charAt(0).toUpperCase()}
-                                                            </Avatar>
-                                                }
-                                            </div>
-                                            <Divider/>
-                                            {drawer}
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </Drawer>
+                            <MobileDrawer
+                                mobileOpen={mobileOpen}
+                                handleDrawerToggle={handleDrawerToggle}
+                                drawerContent={drawerContent}
+                                />
                         </Hidden>
                     </nav>
                     <div>
@@ -214,45 +163,10 @@ const StudentPanelLayout = ({children})=> {
                         </StudentRouter>
                     </div>
                 </Hidden>
-
             </div>
-
             <div className={classes.root}>
                 <Hidden xsDown>
-                    <AppBar
-                        position="fixed"
-                        color='inherit'
-                        className={clsx(classes.appBar, {
-                            [classes.appBarShift]: open,
-                        })}
-                    >
-                        <Toolbar>
-                            <div className={classes.appBarContent}>
-                                <div>
-                                    <Tooltip title='Add' placement='right'>
-                                        <IconButton onClick={handleAddMenuClick} size='small'>
-                                            <Add/>
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Menu
-                                        id="simple-menu"
-                                        anchorEl={anchorEl}
-                                        keepMounted
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleAddMenuClose}
-                                    >
-                                        {addMenu}
-                                    </Menu>
-                                </div>
-                                <div className={classes.profile}>
-                                    <ProfileMenu handleClickProfile={handleClickProfile}/>
-                                </div>
-
-                            </div>
-
-
-                        </Toolbar>
-                    </AppBar>
+                    <AppBarWithAddMenu open={open} addMenuContent={addMenuContent} handleClickProfile={handleClickProfile}/>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -267,38 +181,12 @@ const StudentPanelLayout = ({children})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
-                            <div className={classes.list}>
-                                {
-                                    !open &&
-                                    <div className={classes.toolbar}>
-                                        <Tooltip title='Expand' placement='right'>
-                                            <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                <ChevronRight color='inherit'/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </div>
-                                }
-
-                                    {
-                                        open &&
-                                        <div className={classes.toolbar}>
-                                            <div style={{flexGrow:1}}/>
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose}>
-                                                <ChevronLeft className={classes.iconColor}/>
-                                            </IconButton>
-                                        </Tooltip>
-                                        </div>
-
-                                    }
-                                <Divider />
-                                {drawer}
-
-
-
-                            </div>
-                        </div>
+                        <DrawerLayout
+                            open={open}
+                            handleDrawerOpen={handleDrawerOpen}
+                            handleDrawerClose={handleDrawerClose}
+                            drawerContent={drawerContent}
+                            />
                     </Drawer>
                     <main className={classes.content}>
                         <div className={classes.toolbar}/>
@@ -307,10 +195,7 @@ const StudentPanelLayout = ({children})=> {
                         </StudentRouter>
                     </main>
                 </Hidden>
-
             </div>
-
-
         </div>
     );
 

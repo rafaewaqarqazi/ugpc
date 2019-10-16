@@ -66,7 +66,7 @@ const RenderSprintTaskItem = ({task}) => {
                 </Grid>
                 <Grid item xs={12} sm={6} style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
                     <Tooltip  title='Task Name' placement="top" TransitionComponent={Zoom}>
-                        <Typography variant='caption' color='textSecondary' style={{marginRight:5}} noWrap>{task.title}</Typography>
+                        <Typography variant='caption' color='textSecondary' style={{marginRight:10}} noWrap>{task.title}</Typography>
                     </Tooltip>
                     {
                         task.assignee.map((student,index) =>(

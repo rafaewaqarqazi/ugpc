@@ -42,7 +42,7 @@ const ProjectsGantt = ({projects}) => {
                         !empty ?
                             <Chart
                                 width={'100%'}
-                                height={(formatProjectsData(projects.projects).projectsData.length + 1) * 32}
+                                height={(formatProjectsData(projects.projects).projectsData.length + 1) * 40}
                                 chartType="Gantt"
                                 legendToggle
                                 loader={<CircularLoading/>}

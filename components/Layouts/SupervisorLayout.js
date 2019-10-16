@@ -38,6 +38,9 @@ import Router, {useRouter} from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
 import {serverUrl} from "../../utils/config";
 import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
+import DrawerLayout from "./DrawerLayout";
+import AppBarWithAddMenu from "./AppBarWithAddMenu";
+import MobileDrawer from "./MobileDrawer";
 
 
 const SupervisorLayout = ({children})=> {
@@ -59,7 +62,7 @@ const SupervisorLayout = ({children})=> {
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
     };
-    const drawer = (
+    const drawerContent = (
         <Fragment>
             <List>
                 <Link href='/supervisor/projects'>
@@ -178,42 +181,12 @@ const SupervisorLayout = ({children})=> {
                     <nav  aria-label="mailbox folders">
                         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                         <Hidden smUp >
-                            <Drawer
-                                variant="temporary"
-                                open={mobileOpen}
-                                onClose={handleDrawerToggle()}
-                                ModalProps={{
-                                    keepMounted: true, // Better open performance on mobile.
-                                }}
-                            >
-                                <div style={{width:250,height:'100%'}}>
-                                    <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
-                                        <div className={classes.list}>
-                                            <div className={classes.avatarDrawer}>
-                                                {
-                                                    userContext.user.isLoading ?
-                                                        <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)}  className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
-                                                            U
-                                                        </Avatar>
-                                                        :
-                                                        userContext.user.user.profileImage.filename ?
-                                                            <Avatar className={classes.avatarSize} onClick={event =>  setAnchorEl(event.currentTarget)}   src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename }`}  />
-                                                            :
-                                                            <Avatar  onClick={event =>  setAnchorEl(event.currentTarget)} className={`${classes.profileAvatarColor} ${classes.avatarSize}`}>
-                                                                { userContext.user.user.name.charAt(0).toUpperCase()}
-                                                            </Avatar>
-                                                }
-                                            </div>
-                                            <Divider/>
-                                            <div className={classes.avatarDrawer}>
-                                                {accountSwitch}
-                                            </div>
-                                            {drawer}
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </Drawer>
+                            <MobileDrawer
+                                mobileOpen={mobileOpen}
+                                handleDrawerToggle={handleDrawerToggle}
+                                drawerContent={drawerContent}
+                                accountSwitch={accountSwitch}
+                                />
                         </Hidden>
                     </nav>
                     <div>
@@ -225,19 +198,7 @@ const SupervisorLayout = ({children})=> {
 
             <div className={classes.root}>
                 <Hidden xsDown>
-                    <AppBar
-                        position="fixed"
-                        color='inherit'
-                        className={clsx(classes.appBar, {
-                            [classes.appBarShift]: open,
-                        })}
-                    >
-                        <Toolbar>
-                            <div className={classes.appBarContent}>
-                                <ProfileMenu handleClickProfile={handleClickProfile}/>
-                            </div>
-                        </Toolbar>
-                    </AppBar>
+                    <AppBarWithAddMenu open={open} handleClickProfile={handleClickProfile}/>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -252,35 +213,13 @@ const SupervisorLayout = ({children})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
-                            <div className={classes.list}>
-                                {
-                                    !open &&
-                                    <div className={classes.toolbar}>
-                                        <Tooltip title='Expand' placement='right'>
-                                            <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                <ChevronRight color='inherit'/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </div>
-                                }
-
-                                {
-                                    open &&
-                                    <div className={classes.toolbar}>
-                                        {accountSwitch}
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose}>
-                                                <ChevronLeft className={classes.iconColor}/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </div>
-
-                                }
-                                <Divider />
-                                {drawer}
-                            </div>
-                        </div>
+                        <DrawerLayout
+                            open={open}
+                            handleDrawerOpen={handleDrawerOpen}
+                            handleDrawerClose={handleDrawerClose}
+                            drawerContent={drawerContent}
+                            accountSwitch={accountSwitch}
+                            />
                     </Drawer>
                     <main className={classes.content}>
                         <div className={classes.toolbar}/>

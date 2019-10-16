@@ -43,6 +43,10 @@ import Router, {useRouter} from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
 import {serverUrl} from "../../utils/config";
 import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
+import MobileDrawer from "./MobileDrawer";
+import DrawerLayout from "./DrawerLayout";
+import AppBarWithAddMenu from "./AppBarWithAddMenu";
+import AddMenu from "./AddMenu";
 
 const SupervisorProjectLayout = ({children,projectId})=> {
     const router = useRouter();
@@ -77,7 +81,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
     };
-    const drawer = (
+    const drawerContent = (
         <Fragment>
             <List>
                 <Link href='/supervisor/project/[projectId]/roadmap' as={`/supervisor/project/${projectId}/roadmap`}>
@@ -162,15 +166,55 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                 >
                     <MenuItem value='Select' style={{fontSize:14}}>Select View</MenuItem>
                     <MenuItem value={userContext.user.user.role} style={{fontSize:14}}>
-                        <Link href='/supervisor/dashboard'>
+                        <Link href='/supervisor/projects'>
                             <a style={{textDecoration:'none',color:'inherit'}}>Supervisor View</a>
                         </Link>
                     </MenuItem>
                     {
                         userContext.user.user.additionalRole && userContext.user.user.ugpc_details.position === 'Coordinator' &&
                         <MenuItem value='Coordinator View'  style={{fontSize:14}}>
-                            <Link href='/committee/defence/coordinator/overview'>
+                            <Link href='/committee/defence/coordinator/dashboard'>
                                 <a style={{textDecoration:'none',color:'inherit'}}>Coordinator View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Member' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Defence' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/defence/member'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Member' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Evaluation' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/evaluation/member'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Chairman_Committee' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Defence' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/defence/chairman'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Chairman Committee View</a>
+                            </Link>
+                        </MenuItem>
+                    }
+                    {
+                        userContext.user.user.additionalRole &&
+                        userContext.user.user.ugpc_details.position === 'Chairman_Committee' &&
+                        userContext.user.user.ugpc_details.committeeType === 'Evaluation' &&
+                        <MenuItem value='Coordinator View'  style={{fontSize:14}}>
+                            <Link href='/committee/evaluation/chairman'>
+                                <a style={{textDecoration:'none',color:'inherit'}}>Chairman Committee View</a>
                             </Link>
                         </MenuItem>
                     }
@@ -225,54 +269,20 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                                     <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
                                 </Tooltip>
                             </div>
-                            {
-                                selectedProject !== 'Select' &&
-                                <Fragment>
-                                    <Tooltip title='Add' placement='right'>
-                                        <IconButton onClick={handleAddMenuClick}  size='small'>
-                                            <Add/>
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Menu
-                                        id="simple-menu"
-                                        anchorEl={anchorEl}
-                                        keepMounted
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleAddMenuClose}
-                                    >
-                                        {addMenu}
-                                    </Menu>
-                                </Fragment>
-                            }
-
+                            <AddMenu addMenuContent={addMenu}/>
                             <ProfileMenu handleClickProfile={handleClickProfile}/>
                         </Toolbar>
                     </AppBar>
                     <nav  aria-label="mailbox folders">
                         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                         <Hidden smUp >
-                            <Drawer
-                                variant="temporary"
-                                open={mobileOpen}
-                                onClose={handleDrawerToggle()}
-                                ModalProps={{
-                                    keepMounted: true, // Better open performance on mobile.
-                                }}
-                            >
-                                <div style={{width:240}}>
-                                    <div className={classes.avatarDrawer}>
-                                        <Avatar  className={classes.avatarSize}>{!userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U' }</Avatar>
-                                    </div>
-                                    <div className={classes.avatarDrawer}>
-                                        {accountSwitch}
-                                    </div>
-                                    <Divider/>
-                                    {projectSwitch}
-                                    <Divider/>
-                                    {drawer}
-                                </div>
-
-                            </Drawer>
+                            <MobileDrawer
+                                mobileOpen={mobileOpen}
+                                handleDrawerToggle={handleDrawerToggle}
+                                drawerContent={drawerContent}
+                                accountSwitch={accountSwitch}
+                                projectSwitch={projectSwitch}
+                                />
                         </Hidden>
                     </nav>
                     <div>
@@ -284,40 +294,7 @@ const SupervisorProjectLayout = ({children,projectId})=> {
 
             <div className={classes.root}>
                 <Hidden xsDown>
-                    <AppBar
-                        position="fixed"
-                        color='inherit'
-                        className={clsx(classes.appBar, {
-                            [classes.appBarShift]: open,
-                        })}
-                    >
-                        <Toolbar>
-                            <div className={classes.appBarContent}>
-                                <div>
-                                    <Tooltip title='Add' placement='right'>
-                                        <IconButton onClick={handleAddMenuClick} size='small'>
-                                            <Add/>
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Menu
-                                        id="simple-menu"
-                                        anchorEl={anchorEl}
-                                        keepMounted
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleAddMenuClose}
-                                    >
-                                        {addMenu}
-                                    </Menu>
-                                </div>
-                                <div className={classes.profile}>
-                                    <ProfileMenu handleClickProfile={handleClickProfile}/>
-                                </div>
-
-                            </div>
-
-
-                        </Toolbar>
-                    </AppBar>
+                    <AppBarWithAddMenu open={open} addMenuContent={addMenu} handleClickProfile={handleClickProfile}/>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -332,38 +309,14 @@ const SupervisorProjectLayout = ({children,projectId})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
-                            <div className={classes.list}>
-                                {
-                                    !open &&
-                                    <div className={classes.toolbar}>
-                                        <Tooltip title='Expand' placement='right'>
-                                            <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                <ChevronRight color='inherit'/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </div>
-                                }
-
-                                {
-                                    open &&
-                                    <div className={classes.toolbar}>
-                                        {accountSwitch}
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose}>
-                                                <ChevronLeft className={classes.iconColor}/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </div>
-
-                                }
-                                <Divider />
-                                {projectSwitch}
-                                <Divider/>
-                                {drawer}
-                            </div>
-                        </div>
-
+                        <DrawerLayout
+                            open={open}
+                            handleDrawerOpen={handleDrawerOpen}
+                            handleDrawerClose={handleDrawerClose}
+                            drawerContent={drawerContent}
+                            accountSwitch={accountSwitch}
+                            projectSwitch={projectSwitch}
+                            />
                     </Drawer>
                     <main className={classes.content}>
                         <div className={classes.toolbar}/>

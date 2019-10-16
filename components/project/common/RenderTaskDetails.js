@@ -255,10 +255,10 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                     <DropzoneArea
                         onChange={handleDropZone}
                         acceptedFiles={['image/*']}
-                        filesLimit={10-details.attachments.length}
+                        filesLimit={20-details.attachments.length}
                         showPreviews={true}
                         showPreviewsInDropzone={false}
-                        dropzoneText={`Drag and drop Images here or click (Max ${10-details.attachments.length}) size-3mb max`}
+                        dropzoneText={`Drag and drop Images here or click (Max ${20-details.attachments.length}) size-3mb max`}
                     />
                     {fileError && <Typography variant='caption' color='error'>Please Upload Images</Typography> }
                 </DialogContent>
