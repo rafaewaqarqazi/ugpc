@@ -4,7 +4,7 @@ import {Button, Container, LinearProgress, Typography} from "@material-ui/core";
 import {DashboardOutlined} from "@material-ui/icons";
 import {Chart} from "react-google-charts";
 import CircularLoading from "../loading/CircularLoading";
-import {formatRoadmapSprintData} from "../coordinator/presentations/formatData";
+import {formatRoadmapSprintData, getScheduleSprint} from "../coordinator/presentations/formatData";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import UserContext from "../../context/user/user-context";
@@ -36,6 +36,13 @@ const ProjectRoadMap = () => {
                                         <div className={classes.topTitle} >
                                             <Typography variant='h5'>Roadmap</Typography>
                                         </div>
+                                    </div>
+                                    <div>
+                                        {
+                                            getScheduleSprint(project.project.details.sprint) ?
+                                                <Typography paragraph>Great! everything is on Schedule</Typography>:
+                                                <Typography variant='caption' color='error' paragraph>Some of your sprint's deadline have crossed </Typography>
+                                        }
                                     </div>
                                     {
                                         !empty ?

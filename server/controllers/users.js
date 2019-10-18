@@ -318,38 +318,6 @@ exports.removeFromCommittee = async (req,res) =>{
     }
 };
 
-exports.setStudentsCount = async (req,res)=>{
-    try {
-        const {count,userId} = req.body;
-        const result = await User.updateOne({"_id":userId},{
-            "coordinator_details.settings.studentsCount":count
-        });
-        if (result.ok){
-            await res.json({message:'Students Count Changed'})
-        }else {
-            await res.json({error:"Couldn't Change Students Count"})
-        }
-
-    }catch (e) {
-        await res.json({error:e.message})
-    }
-};
-exports.setStartingDate = async (req,res)=>{
-    try {
-        const {date,userId} = req.body;
-        const result = await User.updateOne({"_id":userId},{
-            "coordinator_details.settings.startingDate":date
-        });
-        if (result.ok){
-            await res.json({message:'Starting Date Changed'})
-        }else {
-            await res.json({error:"Couldn't Change Date"})
-        }
-
-    }catch (e) {
-        await res.json({error:e.message})
-    }
-};
 
 exports.fetchStudentsBarData = async (req,res)=>{
     try {
@@ -385,4 +353,18 @@ exports.fetchAllSupervisors = async (req,res)=>{
     }catch (e) {
         await res.json({error:e.message})
     }
-}
+};
+
+exports.fetchBatches = async (req,res) =>{
+    try {
+        const result = await User.findOne({"role":'Chairman DCSSE'}).select('-_id chairman_details.settings.batches');
+        if (result.length > 0){
+            await res.json(result.chairman_details.settings.batches)
+        }else {
+            await res.json(['F15','F16','F17','F18','F19'])
+        }
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};

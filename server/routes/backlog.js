@@ -10,15 +10,15 @@ const {
     addAttachmentsToTask,
     removeAttachmentFromTask
 } = require('../controllers/backlog');
-const {requireSignin} = require('../controllers/auth');
+const {requireSignin,isBacklogAuth} = require('../controllers/auth');
 const upload = require('../upload');
 
-router.put('/task/add',addNewTask);
-router.put('/task/add/attachments/:type', upload.array('files'),addAttachmentsToTask);
-router.put('/task/remove',removeTask);
-router.put('/task/remove/attachment',removeAttachmentFromTask);
-router.put('/sprint/plan',planSprint);
-router.put('/task/change/column',changeTaskStatus);
-router.put('/task/change/priority',changeTaskPriority);
-router.put('/sprint/complete',completeSprint)
+router.put('/task/add',requireSignin,isBacklogAuth,addNewTask);
+router.put('/task/add/attachments/:type',requireSignin,isBacklogAuth, upload.array('files'),addAttachmentsToTask);
+router.put('/task/remove',requireSignin,isBacklogAuth,removeTask);
+router.put('/task/remove/attachment',requireSignin,isBacklogAuth,removeAttachmentFromTask);
+router.put('/sprint/plan',requireSignin,isBacklogAuth,planSprint);
+router.put('/task/change/column',requireSignin,isBacklogAuth,changeTaskStatus);
+router.put('/task/change/priority',requireSignin,isBacklogAuth,changeTaskPriority);
+router.put('/sprint/complete',requireSignin,isBacklogAuth,completeSprint);
 module.exports = router;

@@ -18,12 +18,15 @@ const {changeEligibility,
 const upload = require('../upload');
 const router = express.Router();
 
+//Program_Office
 router.put('/eligibility/:userId',changeEligibility);
 router.get('/fetch/programOffice',fetchForProgramOffice);
-router.put('/additionalFile/vision-doc/:type',upload.single('file'),resubmitVisionDoc)
+
+//Students
+router.put('/additionalFile/vision-doc/:type',requireSignin,isStudent,upload.single('file'),resubmitVisionDoc);
 router.post('/project/new',requireSignin,isStudent,createProjectValidator,createProject);
-router.put("/project/vision-doc/:type/:id",upload.single('file'), uploadVisionDocument);
-router.put('/project/finalDocumentation/:type',upload.single('file'),uploadFinalDocumentation)
+router.put("/project/vision-doc/:type/:id",requireSignin,isStudent,upload.single('file'), uploadVisionDocument);
+router.put('/project/finalDocumentation/:type',requireSignin,isStudent,upload.single('file'),uploadFinalDocumentation);
 router.get('/notEnrolled/:userId',requireSignin,isStudent,getNotEnrolledStudents);
 
 router.param("userId", userById);

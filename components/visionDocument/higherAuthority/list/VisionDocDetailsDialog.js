@@ -30,6 +30,7 @@ import {RenderDocBasicDetails} from "../../common/RenderDocBasicDetails";
 import {RenderDocumentAttachments} from "../../common/RenderDocumentAttachments";
 import ErrorSnackBar from "../../../snakbars/ErrorSnackBar";
 import DialogTitleComponent from "../../../DialogTitleComponent";
+import UserContext from "../../../../context/user/user-context";
 
 
 
@@ -47,6 +48,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [chairmanName,setChairmanName]= useState('');
     const [marks,setMarks] = useState('');
     const [saveButton,setSaveButton]= useState(true);
+    const userContext = useContext(UserContext);
     const [resError,setResError] = useState({
         show:false,
         message:''
@@ -146,7 +148,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 text:commentText,
                 projectId:currentDocument._id,
                 documentId:currentDocument.documentation.visionDocument._id,
-                author:isAuthenticated().user._id
+                author:userContext.user.user._id
             };
             visionDocsContext.comment(commentDetails)
                 .then(res =>{
@@ -154,8 +156,9 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                         text:commentText,
                         createdAt:Date.now(),
                         author:{
-                            name:isAuthenticated().user.name,
-                            role:isAuthenticated().user.role
+                            name:userContext.user.user.name,
+                            role:userContext.user.user.role,
+                            profileImage:userContext.user.user.profileImage
                         }
                     });
                     setCurrentDocument({

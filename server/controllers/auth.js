@@ -40,7 +40,7 @@ exports.studentSignup = async (req, res)=>{
 };
 
 exports.ugpcSignup = async (req, res)=>{
-    const {name, email, role,additionalRole,designation} = req.body;
+    const {name, email, role,additionalRole,designation,settings} = req.body;
     const userExists = await User.findOne({email: email});
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
@@ -61,7 +61,9 @@ exports.ugpcSignup = async (req, res)=>{
             committeeType:'None'
         }:undefined,
         supervisor_details:role === 'Supervisor' ? {position:designation} : null,
-        chairman_details: role === 'Chairman DCSSE'?{}:null
+        chairman_details: role === 'Chairman DCSSE'?{
+            settings
+        }:null
     });
     const newUser = await user.save();
     if (newUser){
@@ -89,7 +91,6 @@ exports.ugpcSignup = async (req, res)=>{
     }
 };
 exports.signin = (req, res) => {
-    console.log('req.body',req.body);
     const {email, password} = req.body;
     User.findOne({email},(err, user) => {
         if (err || !user){
@@ -106,7 +107,7 @@ exports.signin = (req, res) => {
         //Generating Key
         const {_id, name, email, role,isEmailVerified,ugpc_details,additionalRole,supervisor_details} = user;
 
-        const token = jwt.sign({ _id, role},process.env.JWT_SECRET);
+        const token = jwt.sign({ _id, role,additionalRole},process.env.JWT_SECRET);
         const loggedInUser = {
             _id,
             email,
@@ -131,6 +132,33 @@ exports.signin = (req, res) => {
 exports.isChairman = (req, res, next) => {
     let chairman = req.auth && req.auth.role === "Chairman DCSSE";
     if (!chairman){
+        return res.status(403).json({
+            error: "You are Not Authorized to perform this action"
+        })
+    }
+    next();
+};
+exports.isBacklogAuth = (req, res, next) => {
+    let backlogAuth = req.auth && (req.auth.role === "Student" || req.auth.role === "Supervisor");
+    if (!backlogAuth){
+        return res.status(403).json({
+            error: "You are Not Authorized to perform this action"
+        })
+    }
+    next();
+};
+exports.isUGPCAuth = (req, res, next) => {
+    let backlogAuth = req.auth && req.auth.additionalRole === "UGPC_Member";
+    if (!backlogAuth){
+        return res.status(403).json({
+            error: "You are Not Authorized to perform this action"
+        })
+    }
+    next();
+};
+exports.isChairmanOfficeAuth = (req, res, next) => {
+    let chairmanOfficeAuth = req.auth && req.auth.role === "Chairman_Office";
+    if (!chairmanOfficeAuth){
         return res.status(403).json({
             error: "You are Not Authorized to perform this action"
         })
@@ -269,9 +297,7 @@ exports.resetPassword = (req, res) => {
 exports.getUser = (req,res)=>{
     res.json(req.profile)
 };
-exports.checkEligibility = (req,res) => {
-    res.json(req.auth);
-};
+
 exports.getChairmanName = async (req, res)=>{
     try {
         const chairman = await User.findOne({role:'Chairman DCSSE'})

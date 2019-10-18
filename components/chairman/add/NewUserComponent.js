@@ -60,19 +60,17 @@ const NewUserComponent = ({open,onClose}) => {
             return false
         }
         else if (data.designation === '' && data.role !== 'Program_Office'){
-            setErrors({...errors,designation:true})
+            setErrors({...errors,designation:true});
             return false
         }
         return true
-    }
+    };
     const handleSubmit= e =>{
         e.preventDefault();
 
         if (isValid(data)){
             setLoading(true);
-
-            console.log(data);
-            userContext.createUser(data)
+            userContext.createUser({...data,settings:userContext.user.user.chairman_details.settings})
                 .then(res => {
                     if (res.error){
                         setReject({open:true, message:res.error});

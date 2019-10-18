@@ -20,30 +20,37 @@ const {
     fetchForExternalLetter,
     fetchCompleted
 } = require('../controllers/projects');
-const {requireSignin} = require('../controllers/auth');
+const {requireSignin,isUGPCAuth, isChairmanOfficeAuth} = require('../controllers/auth');
 
-router.get('/by/studentId/:byStudentId',(req,res)=>{
+router.get('/by/studentId/:byStudentId',requireSignin,(req,res)=>{
     res.json(req.project);
 });
-router.get('/by/projectId/:projectId',(req,res)=>{
+router.get('/by/projectId/:projectId',requireSignin,(req,res)=>{
     res.json(req.project);
 });
-router.get('/all',getAllProjects);
-router.put('/supervisor/assign',assignSupervisor);
-router.put('/generate/acceptanceLetter',generateAcceptanceLetter);
-router.put('/changeFDStatus',changeFDStatus);
-router.put('/schedule/internal',scheduleInternal);
-router.put('/schedule/external/date',scheduleExternalDate);
-router.put('/assign/external/auto',assignExternalAuto);
-router.put('/assign/external/manual',assignExternalManual);
-router.put('/evaluate/internalExternal',evaluateInternalExternal);
-router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',fetchFinalDocumentationsBySupervisor);
-router.get('/fetch/forEvaluation',fetchForEvaluation);
-router.get('/fetch/externalExaminers',fetchExternalExaminers);
-router.get('/fetch/forApprovalLetter',fetchForApprovalLetter);
-router.get('/fetch/completed',fetchCompleted);
-router.get('/fetch/forExternalLetter',fetchForExternalLetter);
-router.get('/fetch/assignedForEvaluation/:userId',fetchAssignedForEvaluation);
+router.get('/all',requireSignin,getAllProjects);
+
+//UGPC Member's Routes
+router.put('/supervisor/assign',requireSignin,isUGPCAuth,assignSupervisor);
+router.put('/generate/acceptanceLetter',requireSignin,generateAcceptanceLetter);
+router.put('/changeFDStatus',requireSignin,changeFDStatus);
+router.put('/schedule/internal',requireSignin,isUGPCAuth,scheduleInternal);
+router.put('/schedule/external/date',requireSignin,isUGPCAuth,scheduleExternalDate);
+router.put('/evaluate/internalExternal',requireSignin,isUGPCAuth,evaluateInternalExternal);
+router.get('/fetch/assignedForEvaluation/:userId',requireSignin,fetchAssignedForEvaluation);
+router.get('/fetch/forEvaluation',requireSignin,isUGPCAuth,fetchForEvaluation);
+
+//Chairman Office
+router.put('/assign/external/auto',requireSignin,isChairmanOfficeAuth,assignExternalAuto);
+router.put('/assign/external/manual',requireSignin,isChairmanOfficeAuth,assignExternalManual);
+router.get('/fetch/externalExaminers',requireSignin,isChairmanOfficeAuth,fetchExternalExaminers);
+router.get('/fetch/forApprovalLetter',requireSignin,isChairmanOfficeAuth,fetchForApprovalLetter);
+router.get('/fetch/completed',requireSignin,isChairmanOfficeAuth,fetchCompleted);
+router.get('/fetch/forExternalLetter',requireSignin,isChairmanOfficeAuth,fetchForExternalLetter);
+
+//Supervisor
+router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',requireSignin,fetchFinalDocumentationsBySupervisor);
+
 router.param('byStudentId',findByStudentId);
 router.param('projectId',findByProjectId);
 module.exports = router;

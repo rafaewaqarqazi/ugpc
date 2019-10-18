@@ -22,9 +22,12 @@ import {RenderComments} from "../common/RenderComments";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
 import {RenderDocBasicDetails} from "../common/RenderDocBasicDetails";
 import {RenderDocumentAttachments} from "../common/RenderDocumentAttachments";
+import DialogTitleComponent from "../../DialogTitleComponent";
+import UserContext from '../../../context/user/user-context';
 
 const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
     const classes = useDocDetailsDialogStyles();
+    const userContext = useContext(UserContext);
     const visionDocsContext = useContext(VisionDocsContext);
     const [comment,setComment] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,10 +40,10 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
     const [chairmanName,setChairmanName]= useState('');
     const handleClickAttachDocumentMenu = (event)=> {
         setAnchorEl(event.currentTarget);
-    }
+    };
     const handleCloseAttachDocumentMenu = ()=> {
         setAnchorEl(null);
-    }
+    };
     const handleCommentChange = e =>{
         setComment(e.target.value)
     };
@@ -50,7 +53,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                 text:comment,
                 projectId:project._id,
                 documentId:currentDocument._id,
-                author:isAuthenticated().user._id
+                author:userContext.user.user._id
             };
             visionDocsContext.comment(commentDetails)
                 .then(res =>{
@@ -58,10 +61,11 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                         text:comment,
                         createdAt:Date.now(),
                         author:{
-                            name:isAuthenticated().user.name,
-                            role:isAuthenticated().user.role
+                            name:userContext.user.user.name,
+                            role:userContext.user.user.role,
+                            profileImage:userContext.user.user.profileImage
                         }
-                    })
+                    });
                     setCurrentDocument({
                         ...currentDocument,
                         a
@@ -132,7 +136,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
             aria-labelledby="dialog-title"
         >
 
-            <DialogTitle id="dialog-title">{currentDocument.title}</DialogTitle>
+            <DialogTitleComponent title={currentDocument.title} handleClose={handleClose}/>
             {open && <>
                 <DialogContent dividers>
                     <Grid container spacing={2}>

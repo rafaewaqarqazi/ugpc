@@ -13,6 +13,17 @@ export const fetchUserByIdAPI = async ()=>{
     return await res.json();
 };
 
+export const fetchBatchesAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/chairman/settings/fetch/batches`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json'
+        }
+    });
+    return await res.json();
+};
+
 export const createNewUserAPI = async user=>{
     const res = await fetch(`${serverUrl}/auth/ugpc/signup`,{
         method:'POST',

@@ -1,5 +1,6 @@
+import moment from "moment";
 export const formatData = docs => {
-    const sortedDocs = docs.sort((a,b)=> a.updatedAt - b.updatedAt);
+    const sortedDocs = docs.sort((a,b)=> new Date(a.updatedAt) - new Date(b.updatedAt));
     const ids = Array.from(docs.map(doc => doc._id));
     let projects = {};
     sortedDocs.map(doc => {
@@ -124,7 +125,14 @@ export const formatScrumBoard = sprint => {
     return data;
 
 };
-
+export const getScheduleSprint = sprint =>{
+    sprint.map(spr =>{
+        if (!moment(Date.now()).isBefore(spr.endDate)){
+            return false;
+        }
+    });
+    return true
+};
 
 export const formatRoadmapSprintData = details =>{
     let sprintData = details.sprint.map(spr => {
