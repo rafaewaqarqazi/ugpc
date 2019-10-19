@@ -81,6 +81,7 @@ const projectsSchema = new mongoose.Schema({
                 type:ObjectId,
                 ref:"Users"
             },
+            status:String,
             storyPoints: String,
             attachments:[{}]
 
@@ -91,6 +92,7 @@ const projectsSchema = new mongoose.Schema({
             endDate:Date,
             status:String,
             completedOn:Date,
+            tasks:[],
             todos:[{}],
             inProgress:[{}],
             inReview:[{}],

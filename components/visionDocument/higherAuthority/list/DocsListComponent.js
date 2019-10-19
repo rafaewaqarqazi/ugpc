@@ -9,12 +9,12 @@ const useStyles = makeStyles(theme => ({
     container:{
         marginTop:theme.spacing(4),
     }
-}))
+}));
 const DocsListComponent = () => {
     const visionDocsContext = useContext(VisionDocsContext);
     const classes = useStyles();
     useEffect(()=>{
-        visionDocsContext.fetchByCommittee();
+        visionDocsContext.fetchByCommittee(true);
     },[]);
     return (
         <div >

@@ -1,11 +1,10 @@
 import React, {useContext, useState} from 'react';
 import {SupervisorAccountOutlined} from "@material-ui/icons";
-import {Box, Container, Tab, Tabs, Typography} from "@material-ui/core";
+import {Box,Tab, Tabs, Typography} from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import {useTheme} from "@material-ui/styles";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import UserContext from "../../../context/user/user-context";
-import CircularLoading from "../../loading/CircularLoading";
 import CommitteeTypeComponent from "./CommitteeTypeComponent";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 
@@ -28,7 +27,7 @@ const a11yProps = index => {
         id: `tab-${index}`,
         'aria-controls': `tabpanel-${index}`,
     };
-}
+};
 const CommitteesComponent = () => {
     const userContext = useContext(UserContext);
     const classes = useListContainerStyles();
@@ -48,7 +47,8 @@ const CommitteesComponent = () => {
 
     const handleSuccess = ()=>{
         setSuccess({show:false,message:''});
-        userContext.fetchCommittees();
+        userContext.fetchCommittees()
+            .catch(error => console.error(error.message));
     };
     return (
         <div>

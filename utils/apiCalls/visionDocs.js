@@ -3,8 +3,7 @@ import {serverUrl} from "../config";
 import {isAuthenticated} from "../../auth";
 
 export const fetchDocsByCommitteeAPI = async ()=>{
-    console.log(isAuthenticated().user.ugpc_details.committees)
-    const res = await fetch(`${serverUrl}/visionDocument/fetch/byCommittees?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/byCommittees?committees=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
@@ -77,7 +76,7 @@ export const submitAdditionFilesVisionDocAPI = async (formData,type) =>{
 }
 
 export const fetchMeetingsAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/visionDocument/fetch/byMeetings?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/byMeetings?committees=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
@@ -104,7 +103,7 @@ export const addMarksAPI = async (marks,projectId) =>{
     return await res.json();
 };
 export const fetchVisionDocsPieDataAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/visionDocument/fetch/visionDocsPieData?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+    const res = await fetch(`${serverUrl}/visionDocument/fetch/visionDocsPieData?committees=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',

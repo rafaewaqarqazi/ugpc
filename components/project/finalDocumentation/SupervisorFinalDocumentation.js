@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 
 
-import {fetchFinalDocumentationsBySupervisorAPI} from "../../../utils/apiCalls/projects";
+import {fetchFinalDocumentationsBySupervisorAPI, fetchMarksDistributionAPI} from "../../../utils/apiCalls/projects";
 import {
     LinearProgress,
     Table,
@@ -33,9 +33,12 @@ import {makeStyles} from "@material-ui/styles";
 import moment from "moment";
 import {serverUrl} from "../../../utils/config";
 import Button from "@material-ui/core/Button";
-import {changeFinalDocumentationStatusAPI} from "../../../utils/apiCalls/users";
+import {addSupervisorMarksAPI, changeFinalDocumentationStatusAPI} from "../../../utils/apiCalls/users";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 import CircularLoading from "../../loading/CircularLoading";
+import DialogTitleComponent from "../../DialogTitleComponent";
+import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
+import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 
 
 const useStyles = makeStyles(theme => ({
@@ -63,6 +66,13 @@ const SupervisorFinalDocumentation = () => {
     const [filteredDocs,setFilteredDocs]=useState([]);
     const [confirmDialog,setConfirmDialog] = useState(false);
     const [notApprovedDialog,setNotApprovedDialog] = useState(false);
+    const [marksDialog,setMarksDialog] = useState(false);
+    const [success,setSuccess] = useState(false);
+    const [marks,setMarks] = useState({
+        marks:'',
+        error:false
+    });
+    const [marksDistribution,setMarksDistribution] = useState(10);
 
     const [status,setStatus] = useState({
         status:'',
@@ -78,12 +88,19 @@ const SupervisorFinalDocumentation = () => {
     const fetchData =()=>{
         fetchFinalDocumentationsBySupervisorAPI()
             .then(result =>{
+                console.log(result)
                 setDocuments(result);
                 setFilteredDocs(result);
                 setLoading({...loading,main:false})
             })
     };
     useEffect(()=>{
+        fetchMarksDistributionAPI()
+            .then(result =>{
+                setMarksDistribution(result.supervisor)
+            })
+            .catch(error => console.error(error.message));
+
         fetchData();
     },[]);
     const handleDepChange = event =>{
@@ -103,7 +120,10 @@ const SupervisorFinalDocumentation = () => {
         setAnchorEl(null);
         if (status === 'NotApproved'){
             setNotApprovedDialog(true);
-        }else {
+        }else if (status === 'Available for Internal'){
+            setMarksDialog(true);
+        }
+        else {
             setConfirmDialog(true)
         }
     };
@@ -123,14 +143,31 @@ const SupervisorFinalDocumentation = () => {
         };
         changeFinalDocumentationStatusAPI(data)
             .then(result => {
+                setSuccess(true);
                 setLoading({main:true,dialog: false});
-                setConfirmDialog(false);
-                setNotApprovedDialog(false);
-                fetchData();
+                setTimeout(()=>{
+                    setConfirmDialog(false);
+                    setNotApprovedDialog(false);
+                    setMarksDialog(false);
+                    fetchData();
+                },3000);
             });
+    };
+    const handleAddMarks = ()=>{
+        if (marks.marks < 0 || marks.marks > marksDistribution){
+            setMarks({...marks,error:true});
+            return;
+        }
+        addSupervisorMarksAPI({projectId:status.projectId,marks:marks.marks})
+            .then(result =>{
+                handleConfirm();
+            })
+            .catch(err => console.error(err.message))
+
     };
     return (
         <div>
+
             {
                 loading.main ? <CircularLoading/> :
 
@@ -153,7 +190,7 @@ const SupervisorFinalDocumentation = () => {
                                 </FormControl>
                             </div>
                             <div className={classes.tableWrapper}>
-                                <Table >
+                                <Table  size='small'>
                                     <TableHead>
                                         <TableRow>
                                             <TableCell align="left">Title</TableCell>
@@ -162,6 +199,7 @@ const SupervisorFinalDocumentation = () => {
                                             <TableCell align="left">Status</TableCell>
                                             <TableCell align="left">UploadedAt</TableCell>
                                             <TableCell align="left">File</TableCell>
+                                            <TableCell align="left">Marks</TableCell>
                                             <TableCell align="left">Actions</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -175,8 +213,13 @@ const SupervisorFinalDocumentation = () => {
                                                 });
                                                 return(
                                                     doc.documentation.finalDocumentation.length === 0?
-                                                    <TableRow key={index} >
-                                                        <TableCell colSpan={7}>
+                                                    <TableRow key={index}>
+                                                        <TableCell align="left" >{title}</TableCell>
+                                                        <TableCell align="left" >{doc.department}</TableCell>
+                                                        <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
+                                                            <TableCell align="left" >{doc.students[0].name}</TableCell>
+                                                        </Tooltip>
+                                                        <TableCell colSpan={4}>
                                                             <div className={emptyStyles.emptyListContainer}>
                                                                 <div className={emptyStyles.emptyList}>
                                                                     No Documents Found
@@ -200,6 +243,7 @@ const SupervisorFinalDocumentation = () => {
                                                                     </a>
                                                                 </Tooltip>
                                                             </TableCell>
+                                                            <TableCell >{doc.details.marks && doc.details.marks.supervisor ? doc.details.marks.supervisor : 'Not Provided'}</TableCell>
                                                             <TableCell >
                                                                 <Tooltip title='Click for Actions' placement='top'>
                                                                     <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
@@ -235,7 +279,7 @@ const SupervisorFinalDocumentation = () => {
                                                                         </div>
                                                                     }
                                                                     {
-                                                                        finalDoc.status === 'Approved' && !moment(Date.now()).isBefore(doc.details.estimatedDeadline) &&
+                                                                        finalDoc.status === 'Approved' &&
                                                                         <MenuItem onClick={()=>handleClickChangeStatusMenu('Available for Internal',doc._id,finalDoc._id)}>
                                                                             <ListItemIcon>
                                                                                 <SendOutlined />
@@ -268,6 +312,7 @@ const SupervisorFinalDocumentation = () => {
             }
             <Dialog fullWidth maxWidth='xs' open={confirmDialog} onClose={()=>setConfirmDialog(false)} >
                 {loading.dialog && <LinearProgress/>}
+                <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Confirm</Typography>
                     <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
@@ -286,6 +331,7 @@ const SupervisorFinalDocumentation = () => {
             </Dialog>
             <Dialog fullWidth maxWidth='xs' open={notApprovedDialog} onClose={()=>setNotApprovedDialog(false)} >
                 {loading.dialog && <LinearProgress/>}
+                <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Confirm</Typography>
                     <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
@@ -312,6 +358,36 @@ const SupervisorFinalDocumentation = () => {
                 <DialogActions>
                     <Button variant='contained' onClick={()=>setNotApprovedDialog(false)}>Cancel</Button>
                     <Button variant='outlined' color='secondary' onClick={handleConfirm}>Confirm</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={marksDialog}
+                onClose={()=> setMarksDialog(false)}
+                fullWidth
+                maxWidth='xs'
+            >
+                {loading.dialog && <LinearProgress/>}
+                <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
+                <DialogTitleComponent title={'Add Marks'} handleClose={()=>setMarksDialog(false)}/>
+                <DialogContent>
+                    <Typography variant='caption' component='span'>Note: </Typography>
+                    <Typography variant='body2' component='span'> You cannot change marks after adding!</Typography>
+                    <Typography variant='subtitle1' component='div'>Please Provide marks obtained</Typography>
+                    <TextField
+                        label='Marks Obtained'
+                        margin='dense'
+                        variant='outlined'
+                        name='marks'
+                        value={marks.marks}
+                        onChange={event => setMarks({...marks,marks:event.target.value})}
+                        error={marks.error}
+                        helperText={marks.error && `Provide Marks between 0-${marksDistribution}`}
+                        placeholder={`0-${marksDistribution}`}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=>setMarksDialog(false)}>Cancel</Button>
+                    <Button variant='contained' color='secondary' onClick={handleAddMarks}>Confirm</Button>
                 </DialogActions>
             </Dialog>
         </div>

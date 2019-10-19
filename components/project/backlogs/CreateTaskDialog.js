@@ -167,7 +167,8 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
             const data = {
                 ...state,
                 title:`TS-${taskNo+1}`,
-                createdBy:isAuthenticated().user._id
+                createdBy:isAuthenticated().user._id,
+                status:'todo'
             };
             projectContext.addTaskToBacklog(projectContext.project.project._id,data)
                 .then(result =>{

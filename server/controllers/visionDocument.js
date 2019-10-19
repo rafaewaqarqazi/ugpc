@@ -7,9 +7,10 @@ const _ = require('lodash');
 exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
     try {
         const {committees} = req.query;
-
+        console.log(committees)
+        const dep = committees.split(',');
         const results= await Projects.aggregate([
-            {$match:{department:{$in:committees}}},
+            {$match:{department:{$in:dep}}},
             {$project:{students: 1,"documentation.visionDocument":1,title:1,"details.acceptanceLetter":1,"details.supervisor":1,"details.marks":1}},
             {$unwind:"$documentation.visionDocument"},
             {
@@ -149,9 +150,10 @@ exports.scheduleVisionDefence = async (req,res)=>{
 
 exports.fetchMeetings =async (req,res)=>{
     const {committees} = req.query;
+    const dep = committees.split(',');
     const projectsResult = await Projects.aggregate([
         {
-            $match:{"department":{$in:committees}}
+            $match:{"department":{$in:dep}}
         },
         {
             $unwind:"$documentation.visionDocument"
@@ -193,9 +195,11 @@ exports.addMarks = async (req,res)=>{
 };
 exports.fetchVisionDocsPieData = async (req,res) =>{
     try {
+        const {committees} = req.query;
+        const dep = committees.split(',');
         const result = await Projects.aggregate([
             {
-                $match: { "department":{$in:req.query.committees}}
+                $match: { "department":{$in:dep}}
             },
             {
                 $unwind:"$documentation.visionDocument"

@@ -4,7 +4,6 @@ const {
     getAllProjects,
     findByStudentId,
     assignSupervisor,
-    generateAcceptanceLetter,
     findByProjectId,
     fetchFinalDocumentationsBySupervisor,
     changeFDStatus,
@@ -18,7 +17,8 @@ const {
     evaluateInternalExternal,
     fetchForApprovalLetter,
     fetchForExternalLetter,
-    fetchCompleted
+    fetchCompleted,
+    addMarksSupervisor
 } = require('../controllers/projects');
 const {requireSignin,isUGPCAuth, isChairmanOfficeAuth} = require('../controllers/auth');
 
@@ -32,13 +32,12 @@ router.get('/all',requireSignin,getAllProjects);
 
 //UGPC Member's Routes
 router.put('/supervisor/assign',requireSignin,isUGPCAuth,assignSupervisor);
-router.put('/generate/acceptanceLetter',requireSignin,generateAcceptanceLetter);
 router.put('/changeFDStatus',requireSignin,changeFDStatus);
 router.put('/schedule/internal',requireSignin,isUGPCAuth,scheduleInternal);
 router.put('/schedule/external/date',requireSignin,isUGPCAuth,scheduleExternalDate);
 router.put('/evaluate/internalExternal',requireSignin,isUGPCAuth,evaluateInternalExternal);
 router.get('/fetch/assignedForEvaluation/:userId',requireSignin,fetchAssignedForEvaluation);
-router.get('/fetch/forEvaluation',requireSignin,isUGPCAuth,fetchForEvaluation);
+router.get('/fetch/forEvaluation',requireSignin,fetchForEvaluation);
 
 //Chairman Office
 router.put('/assign/external/auto',requireSignin,isChairmanOfficeAuth,assignExternalAuto);
@@ -50,6 +49,7 @@ router.get('/fetch/forExternalLetter',requireSignin,isChairmanOfficeAuth,fetchFo
 
 //Supervisor
 router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',requireSignin,fetchFinalDocumentationsBySupervisor);
+router.put('/marks/supervisor',requireSignin,addMarksSupervisor)
 
 router.param('byStudentId',findByStudentId);
 router.param('projectId',findByProjectId);

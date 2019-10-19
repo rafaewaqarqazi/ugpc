@@ -16,7 +16,8 @@ const {
     removeFromCommittee,
     fetchStudentsBarData,
     fetchAllSupervisors,
-    fetchBatches
+    fetchBatches,
+    fetchMarksDistribution
 } = require('../controllers/users');
 const upload = require('../upload');
 const {requireSignin,isChairman} = require('../controllers/auth');
@@ -25,6 +26,7 @@ router.put('/chairman/settings/marksDistribution',requireSignin,marksDistributio
 router.put('/chairman/settings/batch/add',requireSignin,isChairman,addNewBatch);
 router.put('/chairman/settings/batch/remove',requireSignin,isChairman,removeBatch);
 router.get('/chairman/settings/fetch/batches',fetchBatches);
+router.get('/chairman/settings/fetch/marksDistribution',fetchMarksDistribution);
 
 
 router.put('/profile/upload/:type',requireSignin,upload.single('file'),uploadProfileImage);

@@ -321,9 +321,11 @@ exports.removeFromCommittee = async (req,res) =>{
 
 exports.fetchStudentsBarData = async (req,res)=>{
     try {
+        const {committees} = req.query;
+        const dep = committees.split(',');
         const result = await User.aggregate([
             {
-                $match:  {$and:[{"role":'Student'},{"department":{$in:req.query.committees}}]}
+                $match:  {$and:[{"role":'Student'},{"department":{$in:dep}}]}
             },
             {
                 $project:{"student_details.batch":1}
@@ -358,10 +360,23 @@ exports.fetchAllSupervisors = async (req,res)=>{
 exports.fetchBatches = async (req,res) =>{
     try {
         const result = await User.findOne({"role":'Chairman DCSSE'}).select('-_id chairman_details.settings.batches');
-        if (result.length > 0){
+        if (result){
             await res.json(result.chairman_details.settings.batches)
         }else {
             await res.json(['F15','F16','F17','F18','F19'])
+        }
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.fetchMarksDistribution = async (req,res) =>{
+    try {
+        const result = await User.findOne({"role":'Chairman DCSSE'}).select('-_id chairman_details.settings.marksDistribution');
+        if (result){
+            await res.json(result.chairman_details.settings.marksDistribution)
+        }else {
+            await res.json({proposal: 10,supervisor: 10,internal: 30,external: 50})
         }
 
     }catch (e) {

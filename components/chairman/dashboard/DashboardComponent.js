@@ -10,6 +10,7 @@ import CircularLoading from "../../loading/CircularLoading";
 import { getTotalNoUsers, getUsersChartData, getUsersLabel} from "./values";
 import 'chartjs-plugin-colorschemes';
 import ProjectsGantt from "../../charts/gantt/ProjectsGantt";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 defaults.global.legend.position = 'right';
 
@@ -17,6 +18,7 @@ const DashboardComponent = ({projects}) => {
     const userContext = useContext(UserContext);
     const classes = useListContainerStyles();
     const progressClasses = useProgressStyles();
+    const emptyStyles = useListItemStyles();
 
     return (
         <div>
@@ -40,22 +42,31 @@ const DashboardComponent = ({projects}) => {
                             </div>
                             <Divider/>
                             <div className={progressClasses.topProgressBarContainer}>
-                                <Pie width={3}
-                                     height={1}
-                                     options={{
-                                         maintainAspectRatio: true,
-                                         plugins: {
-                                             colorschemes: {
-                                                 scheme: 'brewer.SetTwo8'
-                                             }
-                                         }
-                                     }}
-                                     data={{
-                                         labels:getUsersLabel(userContext.user.users.allUsers),
-                                         datasets:[{
-                                             data:getUsersChartData(userContext.user.users.allUsers),
-                                         }]
-                                     }} />
+                                {
+                                    getTotalNoUsers(userContext.user.users.allUsers) === 0 ?
+                                    <div className={emptyStyles.emptyListContainer}>
+                                        <div className={emptyStyles.emptyList}>
+                                            No Users Found
+                                        </div>
+                                    </div>:
+                                        <Pie width={3}
+                                             height={1}
+                                             options={{
+                                                 maintainAspectRatio: true,
+                                                 plugins: {
+                                                     colorschemes: {
+                                                         scheme: 'brewer.SetTwo8'
+                                                     }
+                                                 }
+                                             }}
+                                             data={{
+                                                 labels:getUsersLabel(userContext.user.users.allUsers),
+                                                 datasets:[{
+                                                     data:getUsersChartData(userContext.user.users.allUsers),
+                                                 }]
+                                             }} />
+                                }
+
                             </div>
 
                         </div>

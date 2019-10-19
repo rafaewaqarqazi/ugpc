@@ -1,4 +1,4 @@
-import React, { useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     Button,
     Chip, CircularProgress, Container, Dialog, DialogActions,
@@ -10,7 +10,7 @@ import {
     Select, TextField,
     Typography,
     AppBar,
-    Toolbar
+    Toolbar, DialogContentText
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../../auth";
@@ -31,6 +31,7 @@ import {RenderDocumentAttachments} from "../../common/RenderDocumentAttachments"
 import ErrorSnackBar from "../../../snakbars/ErrorSnackBar";
 import DialogTitleComponent from "../../../DialogTitleComponent";
 import UserContext from "../../../../context/user/user-context";
+import {fetchMarksDistributionAPI} from "../../../../utils/apiCalls/projects";
 
 
 
@@ -43,16 +44,27 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [confirmDialogLoading,setConfirmDialogLoading] = useState(false);
     const [successSnackbar,setSuccessSnackbar] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
-    const [generateLetterLoading,setGenerateLetterLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [chairmanName,setChairmanName]= useState('');
     const [marks,setMarks] = useState('');
     const [saveButton,setSaveButton]= useState(true);
     const userContext = useContext(UserContext);
+    const [marksDistribution,setMarksDistribution] = useState( 10);
+    const [marksConfirm,setMarksConfirm] = useState(false);
     const [resError,setResError] = useState({
         show:false,
         message:''
     });
+    useEffect(()=>{
+        if (!currentDocument.details.marks || !currentDocument.details.marks.visionDocument){
+            fetchMarksDistributionAPI()
+                .then(result =>{
+                    setMarksDistribution(result.proposal)
+                })
+                .catch(error => console.error(error.message))
+        }
+
+    },[]);
     const handleMarksChange = event =>{
         if (event.target.value === ''){
             setSaveButton(true)
@@ -91,13 +103,17 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const handleCloseConfirmDialog = ()=>{
         setConfirmDialog(false);
     };
-    const buttonClassname = clsx({
-        [classes.buttonSuccess]: success,
-    });
-    const handleMarksSave = ()=>{
 
+    const handleMarksSave = ()=>{
+        if (marks < 0 || marks > marksDistribution){
+            setMarksConfirm(false);
+            setResError({show:true,message:`Should be between 0-${marksDistribution}`});
+            return;
+        }
         visionDocsContext.addMarks(marks,currentDocument._id)
             .then(res => {
+                setMarksConfirm(false);
+                setSuccessSnackbar(true);
                 setCurrentDocument({
                     ...currentDocument,
                     details: {
@@ -117,31 +133,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
             })
     };
 
-    const handleGenerateLetterButtonClick =()=> {
-        setGenerateLetterLoading(true);
-        visionDocsContext.generateAcceptanceLetter(currentDocument._id,currentDocument.students[0].student_details.regNo)
-            .then(result =>{
-                setCurrentDocument({
-                    ...currentDocument,
-                    details:{
-                        ...currentDocument.details,
-                        acceptanceLetter: {
-                            name:`${currentDocument.students[0].student_details.regNo}.pdf`,
-                            issueDate: result.issueDate
-                        }
-                    }
-                });
-                setSuccess(true);
-                setGenerateLetterLoading(false);
-            })
-            .catch(err =>{
-                setResError({
-                    show:true,
-                    message:'Something went wrong please try again'
-                })
-            })
 
-    };
     const handleComment = ()=>{
         if (commentText !== ''){
             const commentDetails = {
@@ -198,7 +190,8 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             setCurrentDocument({...currentDocument,
                                 details:{
                                 ...currentDocument.details,
-                                    supervisor:result.supervisor
+                                    supervisor:result.supervisor,
+                                    acceptanceLetter: result.acceptanceLetter
                                 },
                                 documentation:{
                                     ...currentDocument.documentation,
@@ -327,9 +320,9 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                         Marks
                                     </Typography>
                                     {
-                                        currentDocument.details.marks ?
+                                        currentDocument.details.marks && currentDocument.details.marks.visionDocument ?
                                             <Container>
-                                                <Typography variant='h6' color='textSecondary'>{`(${currentDocument.details.marks.visionDocument}/10)`}</Typography>
+                                                <Typography variant='h6' color='textSecondary'>{`(${currentDocument.details.marks.visionDocument}/${marksDistribution})`}</Typography>
                                             </Container>
                                              :
                                             <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -339,9 +332,9 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                     variant="outlined"
                                                     value={marks}
                                                     onChange={handleMarksChange}
-                                                    placeholder='0-10'
+                                                    placeholder={`0-${marksDistribution}`}
                                                 />
-                                                <Button onClick={handleMarksSave} disabled={saveButton} style={{marginLeft:2}} variant='outlined' color='primary'>Save</Button>
+                                                <Button onClick={()=>setMarksConfirm(true)} disabled={saveButton} style={{marginLeft:2}} variant='outlined' color='primary'>Save</Button>
                                             </div>
                                     }
 
@@ -382,22 +375,8 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 <DialogActions>
                     {
                         (currentDocument.documentation.visionDocument.status === 'Approved' || currentDocument.documentation.visionDocument.status === 'Approved With Changes') &&(
-                            currentDocument.details && !currentDocument.details.acceptanceLetter.name?
-                                <div className={classes.wrapper}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        className={buttonClassname}
-                                        disabled={generateLetterLoading}
-                                        onClick={handleGenerateLetterButtonClick}
-                                    >
-                                        Generate Acceptance Letter
-                                    </Button>
-                                    {generateLetterLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-                                </div>
-                                :
-
-                                <Button onClick={openLetterViewer} className={classes.buttonSuccess} variant='contained'>View Acceptance Letter</Button>
+                            currentDocument.details && currentDocument.details.acceptanceLetter.name &&
+                                <Button onClick={openLetterViewer} >View Acceptance Letter</Button>
                         )
 
 
@@ -424,10 +403,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 {confirmDialogLoading && <LinearProgress color='secondary'/>}
                 <DialogTitle>Confirm Changes?</DialogTitle>
                 <DialogActions>
-                    <Button onClick={handleCloseConfirmDialog} color="primary" variant='contained'>
+                    <Button onClick={handleCloseConfirmDialog}>
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirm} variant='contained' color='secondary'>
+                    <Button onClick={handleConfirm} color='primary'>
                         Confirm
                     </Button>
                 </DialogActions>
@@ -435,15 +414,13 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
             <Dialog open={letterViewer} onClose={closeLetterViewer} fullScreen>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
+
                         <Typography variant="h6" className={classes.title} noWrap>
                             Auto Generated Acceptance Letter
                         </Typography>
-                        <Button color="inherit" onClick={closeLetterViewer}>
-                            Download
-                        </Button>
+                        <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
+                            <CloseIcon />
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 <DialogContent style={{height:500}}>
@@ -459,6 +436,22 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                     }
 
                 </DialogContent>
+            </Dialog>
+            <Dialog maxWidth='xs' fullWidth open={marksConfirm} onClose={()=>setMarksConfirm(false)}>
+                <DialogTitleComponent title='Confirm' handleClose={()=>setMarksConfirm(false)}/>
+                <DialogContent dividers>
+                    <Typography variant='caption' component='span'>Note: </Typography>
+                    <Typography variant='body2' component='span'> You cannot change marks after adding!</Typography>
+                    <Typography variant='subtitle1' component='div'>Are you sure you want to continue?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=>setMarksConfirm(false)} >
+                        Cancel
+                    </Button>
+                    <Button onClick={handleMarksSave} color='primary'>
+                        Confirm
+                    </Button>
+                </DialogActions>
             </Dialog>
         </div>
 

@@ -19,9 +19,11 @@ const VisionDocsState = (props) => {
         errMess:null,
         visionDocs:[]
     });
-    const fetchByCommittee =async ()=>{
+    const fetchByCommittee =async (loading)=>{
         try {
-            dispatch(docsLoadingAction());
+            if (loading){
+                dispatch(docsLoadingAction());
+            }
             const docs = await fetchDocsByCommitteeAPI();
             dispatch(addDocsAction(docs));
         }catch (e) {
@@ -52,9 +54,11 @@ const VisionDocsState = (props) => {
         const result = await assignSupervisorAutoAPI(projectId,title,regNo);
         return await result
     };
-    const fetchBySupervisor = async ()=>{
+    const fetchBySupervisor = async (loading)=>{
         try {
-            dispatch(docsLoadingAction());
+            if (loading){
+                dispatch(docsLoadingAction());
+            }
             const result = await fetchBySupervisorAPI();
             dispatch(addDocsAction(result));
         }catch (e) {

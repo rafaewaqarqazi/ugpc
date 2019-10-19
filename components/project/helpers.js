@@ -5,11 +5,15 @@ export const getCompletionPercentage = details =>{
     let total = 0;
     total += details.backlog.length;
     details.sprint.map(sprint => {
+        const todos = sprint.tasks.filter(task => task.status === 'todo').length;
+        const inProgress = sprint.tasks.filter(task => task.status === 'inProgress').length;
+        const inReview = sprint.tasks.filter(task => task.status === 'inReview').length;
+        const done = sprint.tasks.filter(task => task.status === 'done').length;
         if (sprint.status === 'Completed'){
-            completed +=sprint.done.length;
-            total += sprint.done.length;
+            completed +=done;
+            total += done;
         }else{
-            total +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
+            total +=todos + inProgress + inReview + done;
         }
     });
     return parseFloat(((completed / total) * 100).toFixed(2));
@@ -19,7 +23,11 @@ export const getTotalTasksCount = details =>{
 
     totaltasks += details.backlog.length;
     details.sprint.map(sprint => {
-        totaltasks +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
+        const todos = sprint.tasks.filter(task => task.status === 'todo').length;
+        const inProgress = sprint.tasks.filter(task => task.status === 'inProgress').length;
+        const inReview = sprint.tasks.filter(task => task.status === 'inReview').length;
+        const done = sprint.tasks.filter(task => task.status === 'done').length;
+        totaltasks +=todos + inProgress + inReview + done;
 
     });
     return totaltasks
@@ -28,7 +36,7 @@ export const getCompletedTasksCount = details =>{
     let completed = 0;
 
     details.sprint.map(sprint => {
-        completed +=sprint.done.length;
+        completed +=sprint.tasks.filter(task => task.status === 'done').length;
     });
     return completed
 };
@@ -39,8 +47,15 @@ export const getSprintsPercentage = details =>{
     }
 
     details.sprint.map(sprint => {
-        if (sprint.todos.length === 0 && sprint.inProgress.length === 0 && sprint.inReview.length === 0 && sprint.done.length > 0)
-            count +=1;
+        if (sprint.status === 'Completed'){
+            const todos = sprint.tasks.filter(task => task.status === 'todo').length;
+            const inProgress = sprint.tasks.filter(task => task.status === 'inProgress').length;
+            const inReview = sprint.tasks.filter(task => task.status === 'inReview').length;
+            const done = sprint.tasks.filter(task => task.status === 'done').length;
+            if (todos === 0 && inProgress === 0 && inReview === 0 && done > 0)
+                count +=1;
+        }
+
     });
 
     return parseFloat(((count / details.sprint.length) * 100).toFixed(2))
@@ -52,11 +67,11 @@ export const getSprintDataSet = details =>{
     let done = 0;
     details.sprint.map(sprint => {
         if (sprint.status === 'Completed'){
-            done +=sprint.done.length;
+            done +=sprint.tasks.filter(task => task.status === 'done').length;
         }else {
-            todos +=sprint.todos.length;
-            inProgress +=sprint.inProgress.length;
-            inReview +=sprint.inReview.length;
+            todos +=sprint.tasks.filter(task => task.status === 'todo').length;
+            inProgress +=sprint.tasks.filter(task => task.status === 'inProgress').length;
+            inReview +=sprint.tasks.filter(task => task.status === 'inReview').length;
         }
 
     });
@@ -75,8 +90,10 @@ export const getSprintVelocity = sprint =>{
     let totalStoryPointsCompleted = 0;
     sprint.map(s =>{
         if (s.status === 'Completed'){
-            s.done.map(done =>{
-                totalStoryPointsCompleted +=parseInt(done.storyPoints)
+            s.tasks.map(task =>{
+                if (task.status === 'done'){
+                    totalStoryPointsCompleted +=parseInt(task.storyPoints)
+                }
             });
             totalSprints++;
         }
@@ -88,17 +105,8 @@ export const getTotalStoryPoints = sprint =>{
     sprint.map(s =>{
         let total = 0;
         if (s.status === 'Completed'){
-            s.todos.map(todos =>{
-                total +=parseInt(todos.storyPoints)
-            });
-            s.inProgress.map(inProgress =>{
-                total +=parseInt(inProgress.storyPoints)
-            });
-            s.inReview.map(inReview =>{
-                total +=parseInt(inReview.storyPoints)
-            });
-            s.done.map(done =>{
-                total +=parseInt(done.storyPoints)
+            s.tasks.map(task =>{
+                total +=parseInt(task.storyPoints)
             });
             data = [...data,total]
         }
@@ -110,8 +118,10 @@ export const getCompletedStoryPoints = sprint =>{
     sprint.map(s =>{
         let completed = 0;
         if (s.status === 'Completed'){
-            s.done.map(done =>{
-                completed +=parseInt(done.storyPoints)
+            s.tasks.map(task =>{
+                if (task.status === 'done'){
+                    completed +=parseInt(task.storyPoints)
+                }
             });
             data = [...data,completed]
         }

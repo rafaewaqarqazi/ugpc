@@ -20,11 +20,11 @@ const VisionDocListItem = ({filter,fetchData,userType}) => {
         }else if (userType) {
             setOpen(false);
             setCurrentDocument({});
-            visionDocsContext.fetchBySupervisor();
+            visionDocsContext.fetchBySupervisor(false);
         }else {
             setOpen(false);
             setCurrentDocument({});
-            visionDocsContext.fetchByCommittee()
+            visionDocsContext.fetchByCommittee(false)
         }
 
     };

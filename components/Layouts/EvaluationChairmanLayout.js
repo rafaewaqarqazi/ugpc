@@ -26,7 +26,7 @@ const EvaluationChairmanLayout = ({children})=> {
         userContext.fetchUserById();
     },[]);
     const handleClickProfile = ()=>{
-        Router.push('/committee/defence/coordinator/profile');
+        Router.push('/committee/evaluation/chairman/profile');
     };
     const accountSwitch = (
         userContext.user.isLoading ? <div /> : userContext.user.user.role === 'Supervisor' ?

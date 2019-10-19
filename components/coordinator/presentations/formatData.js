@@ -20,7 +20,7 @@ export const formatData = docs => {
             },
             'column-2':{
                 'id':'column-2',
-                title:'Docs To Schedule',
+                title:'Projects To Schedule',
                 projectsIds:ids
             },
         },
@@ -61,40 +61,75 @@ export const formatBacklog = backlog => {
 };
 
 export const formatScrumBoard = sprint => {
-    const sortedTodos =sprint ? sprint.todos.sort((a,b)=>a.priority-b.priority):[];
-    const sortedInProgress = sprint ? sprint.inProgress.sort((a,b)=>a.priority-b.priority):[];
-    const sortedInReview = sprint ? sprint.inReview.sort((a,b)=>a.priority-b.priority):[];
-    const sortedDone = sprint ? sprint.done.sort((a,b)=>a.priority-b.priority):[];
-    const todoIds =sprint ? sortedTodos.map(todo => todo._id) :[];
-    const inProgressIds =sprint ?  sortedInProgress.map(inPrg => inPrg._id) :[];
-    const inReviewIds =sprint ?  sortedInReview.map(inRev => inRev._id) :[];
-    const doneIds =sprint ?  sortedDone.map(done => done._id):[];
+    const todos = sprint ? sprint.tasks.filter(task => task.status === 'todo').sort((a,b)=>a.priority-b.priority):[];
+    console.log('todos',todos);
+    const inProgress = sprint ? sprint.tasks.filter(task => task.status === 'inProgress').sort((a,b)=>a.priority-b.priority):[];
+    console.log('inProgress',inProgress);
+    const inReview = sprint ? sprint.tasks.filter(task => task.status === 'inReview').sort((a,b)=>a.priority-b.priority):[];
+    console.log('inReview',inReview);
+    const done = sprint ? sprint.tasks.filter(task => task.status === 'done').sort((a,b)=>a.priority-b.priority):[];
+    console.log('done',done);
+    // const sortedTodos =sprint ? sprint.todos.sort((a,b)=>a.priority-b.priority):[];
+    // const sortedInProgress = sprint ? sprint.inProgress.sort((a,b)=>a.priority-b.priority):[];
+    // const sortedInReview = sprint ? sprint.inReview.sort((a,b)=>a.priority-b.priority):[];
+    // const sortedDone = sprint ? sprint.done.sort((a,b)=>a.priority-b.priority):[];
+    const todoIds =sprint ? todos.map(todo => todo._id) :[];
+    const inProgressIds =sprint ?  inProgress.map(inPrg => inPrg._id) :[];
+    const inReviewIds =sprint ?  inReview.map(inRev => inRev._id) :[];
+    const doneIds =sprint ?  done.map(done => done._id):[];
+    let todoTasks = {};
+
     let tasks = {}
     if (sprint){
-        sprint.todos.map(todo => {
+        todos.map(todo => {
             tasks = {
                 ...tasks,
                 [todo._id]:todo
             }
-        })
-        sprint.inProgress.map(inPrg => {
+        });
+        console.log(todoTasks)
+        inProgress.map(inPrg => {
             tasks = {
                 ...tasks,
                 [inPrg._id]:inPrg
             }
         })
-        sprint.inReview.map(inRev => {
+        inReview.map(inRev => {
             tasks = {
                 ...tasks,
                 [inRev._id]:inRev
             }
         })
-        sprint.done.map(done => {
+        done.map(done => {
             tasks = {
                 ...tasks,
                 [done._id]:done
             }
         })
+        // sprint.todos.map(todo => {
+        //     tasks = {
+        //         ...tasks,
+        //         [todo._id]:todo
+        //     }
+        // })
+        // sprint.inProgress.map(inPrg => {
+        //     tasks = {
+        //         ...tasks,
+        //         [inPrg._id]:inPrg
+        //     }
+        // })
+        // sprint.inReview.map(inRev => {
+        //     tasks = {
+        //         ...tasks,
+        //         [inRev._id]:inRev
+        //     }
+        // })
+        // sprint.done.map(done => {
+        //     tasks = {
+        //         ...tasks,
+        //         [done._id]:done
+        //     }
+        // })
     }
     const data = {
         tasks,
@@ -136,8 +171,12 @@ export const getScheduleSprint = sprint =>{
 
 export const formatRoadmapSprintData = details =>{
     let sprintData = details.sprint.map(spr => {
-        const total = spr.todos.length + spr.inProgress.length + spr.inReview.length + spr.done.length;
-        const percentage = parseFloat(((spr.done.length / total) * 100).toFixed(2))
+        const todos = spr.tasks.filter(task => task.status === 'todo').length;
+        const inProgress = spr.tasks.filter(task => task.status === 'inProgress').length;
+        const inReview = spr.tasks.filter(task => task.status === 'inReview').length;
+        const done = spr.tasks.filter(task => task.status === 'done').length;
+        const total = todos + inProgress + inReview + done;
+        const percentage = parseFloat(((done / total) * 100).toFixed(2))
         return [spr._id,spr.name,new Date(spr.startDate), new Date(spr.endDate),null,percentage,null]
     });
     const data = [

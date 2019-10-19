@@ -48,7 +48,7 @@ const ProjectRoadMap = () => {
                                         !empty ?
                                             <Chart
                                                 width={'100%'}
-                                                height={(formatRoadmapSprintData(project.project.details).sprintData.length+1) * 32}
+                                                height={(formatRoadmapSprintData(project.project.details).sprintData.length+1) * 52}
                                                 chartType="Gantt"
                                                 legendToggle
                                                 loader={<CircularLoading/>}

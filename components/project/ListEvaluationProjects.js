@@ -53,6 +53,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
     const [selectedDate, handleDateChange] = useState(new Date());
     const [documentId,setDocumentId] = useState('');
     const [openError,setOpenError] = useState(false);
+    const emptyStyles = useListItemStyles();
     const [data,setData] = useState({
         projectId:'',
         filename:'',
@@ -68,7 +69,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
         internal:false,
         external:false
     });
-    const emptyStyles = useListItemStyles();
+
     const handleOpenDialog = (projectId,supervisorId,filename,originalname,title,docId,dialogType) =>{
         setLoading({
             ...loading,
@@ -171,11 +172,11 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                                                 <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
                                             </Tooltip>
                                             <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
-                                            <Tooltip  title={project.details.internal.examiner ? project.details.internal.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                            <Tooltip  title={project.details.internal.examiner ? project.details.internal.examiner.ugpc_details.designation ? project.details.internal.examiner.ugpc_details.designation :'Not Provided' : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
                                                 <TableCell align="left">{project.details.internal.examiner ? project.details.internal.examiner.name : 'Not Assigned'}</TableCell>
                                             </Tooltip>
                                             <TableCell align="left">{project.details.internal.date ? moment(project.details.internal.date).format('MMM DD, YYYY')  : 'Not Assigned'}</TableCell>
-                                            <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                            <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation ? project.details.external.examiner.ugpc_details.designation : 'Not Provided' : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
                                                 <TableCell align="left">{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
                                             </Tooltip>
                                             <TableCell align="left">{project.details.external.date ? moment(project.details.external.date).format('MMM DD, YYYY') : 'Not Assigned'}</TableCell>

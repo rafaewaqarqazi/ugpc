@@ -301,7 +301,7 @@ const ListBacklog = ({backlog}) => {
                                     <div key={column.id}>
                                         <div className={classes.actions}>
                                             <Typography variant='subtitle1' >{column.title}</Typography>
-                                            <Typography variant='caption' color='textSecondary' className={classes.title}>{`${column.tasksIds.length} issues`}</Typography>
+                                            <Typography variant='caption' color='textSecondary' className={classes.title}>{`${column.tasksIds.length} tasks`}</Typography>
                                             {
                                                 column.title==='Create Sprint' &&
                                                 <>

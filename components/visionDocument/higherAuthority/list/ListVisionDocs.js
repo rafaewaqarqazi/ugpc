@@ -89,7 +89,7 @@ const ListVisionDocs = ({docs}) => {
                             <MenuItem value='Waiting for Initial Approval'>Waiting for Initial Approval</MenuItem>
                             <MenuItem value='Approved for Meeting'>Approved for Meeting</MenuItem>
                             <MenuItem value='Meeting Scheduled'>Meeting Scheduled</MenuItem>
-                            <MenuItem value='Approved with Changes'>Approved with Changes</MenuItem>
+                            <MenuItem value='Approved With Changes'>Approved With Changes</MenuItem>
                             <MenuItem value='Approved'>Approved</MenuItem>
                             <MenuItem value='Rejected'>Rejected</MenuItem>
                         </Select>

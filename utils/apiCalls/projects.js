@@ -39,7 +39,7 @@ export const fetchFinalDocumentationsBySupervisorAPI = async ()=>{
     return await res.json();
 };
 export const fetchForEvaluationProjectsAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/projects/fetch/forEvaluation?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+    const res = await fetch(`${serverUrl}/projects/fetch/forEvaluation?committees=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
@@ -213,4 +213,15 @@ export const addAttachmentsToTaskAPI = async data =>{
         body:data
     });
     return await res.json();
-}
+};
+export const fetchMarksDistributionAPI = async ()=>{
+    const res = await fetch(`${serverUrl}/users/chairman/settings/fetch/marksDistribution`,{
+        method:'GET',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        }
+    });
+    return await res.json();
+};

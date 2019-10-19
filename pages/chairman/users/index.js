@@ -6,8 +6,9 @@ import UserContext from '../../../context/user/user-context';
 const Index = () => {
     const userContext = useContext(UserContext);
     useEffect(()=>{
-        userContext.fetchAllUsers();
-    },[])
+        userContext.fetchAllUsers()
+            .catch(error => console.error(error.message));
+    },[]);
     return (
         <ChairmanPanelLayout>
             <UsersMainComponent/>

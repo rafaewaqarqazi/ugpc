@@ -34,6 +34,8 @@ exports.findByStudentId = (req,res,next,id)=>{
         .populate('details.supervisor','_id name supervisor_details.position profileImage')
         .populate('details.backlog.assignee', '_id name department student_details profileImage')
         .populate('details.backlog.createdBy', 'name')
+        .populate({path:'details.sprint.tasks.assignee',model:'Users',select:'name department student_details email profileImage'})
+        .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name'})
         .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
         .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
@@ -134,7 +136,7 @@ exports.assignSupervisor = async (req,res)=>{
                 }
             });
         const project =await Projects.findOne({_id:projectId}).populate('students','-_id email student_details.regNo')
-            .select('students title details.supervisor')
+            .select('students title details.supervisor details.acceptanceLetter')
             .populate({path:'details.supervisor',model:'Users',select:'name supervisor_details.position'});
 
         const studentEmails =await project.students.map(student => student.email);
@@ -180,7 +182,7 @@ exports.assignSupervisor = async (req,res)=>{
         };
         await sendEmail(supervisorEmailData);
         await sendEmail(studentsEmailData);
-        await res.json({success:'Assigned',supervisor:project.details.supervisor})
+        await res.json({success:'Assigned',supervisor:project.details.supervisor,acceptanceLetter:project.details.acceptanceLetter})
     }
     catch (e) {
         await res.json({error:e.message})
@@ -188,32 +190,12 @@ exports.assignSupervisor = async (req,res)=>{
 
 };
 
-exports.generateAcceptanceLetter = async (req, res)=>{
-    const {projectId,regNo} = req.body;
-    const date = Date.now();
-    const estimatedDeadline =  moment(date).add(4,'M').add(1,'d').startOf('d');
-    const result= await Projects.updateOne(
-        {"_id":projectId},
-        {
-            $set:{
-                "details.acceptanceLetter":{
-                        name:`${regNo}.pdf`,
-                        issueDate:date
-                    },
-                "details.estimatedDeadline":estimatedDeadline
-            }
-        }
-        );
-    if (result.ok){
-        await res.json({issueDate:date})
-    }
-};
 
 exports.fetchFinalDocumentationsBySupervisor = async (req,res)=>{
     try {
         const {supervisorId} = req.params;
         const result = await Projects.find({"details.supervisor":supervisorId})
-            .select('documentation.finalDocumentation documentation.visionDocument.title documentation.visionDocument.status students details.estimatedDeadline department')
+            .select('documentation.finalDocumentation documentation.visionDocument.title documentation.visionDocument.status students details.estimatedDeadline department details.marks.supervisor')
             .populate('students','name student_details');
         await res.json(result)
     }catch (e) {
@@ -265,8 +247,9 @@ exports.changeFDStatus = async (req,res)=>{
 exports.fetchForEvaluation = async (req,res) =>{
     try {
         const {committees} = req.query;
+        const dep = committees.split(',');
         const result = await Projects.aggregate([
-            {$match:{"department":{$in:committees}}},
+            {$match:{"department":{$in:dep}}},
             {$unwind:"$documentation.visionDocument"},
             {$match:{
                 $or:[{"documentation.visionDocument.status":'Approved'},{"documentation.visionDocument.status":'Approved With Changes'}]
@@ -292,9 +275,9 @@ exports.fetchForEvaluation = async (req,res) =>{
         ]);
         const projects = await Projects.populate(result,[
             {path:"details.supervisor",model:'Users',select:"name supervisor_details.position"},
-            {path:"details.internal.examiner",model:'Users',select:"name ugpc_details.designation"},
-            {path:"details.external.examiner",model:'Users',select:"name ugpc_details.designation"},
-        ])
+            {path:"details.internal.examiner",model:'Users',select:"name ugpc_details"},
+            {path:"details.external.examiner",model:'Users',select:"name ugpc_details"},
+        ]);
         await res.json(projects)
     }catch (e) {
         await res.json(e.message)
@@ -817,3 +800,19 @@ exports.fetchCompleted = async (req,res)=>{
         await res.json({error:e.message})
     }
 };
+
+exports.addMarksSupervisor = async (req,res) => {
+    try {
+        const {marks,projectId} = req.body;
+        const result = await Projects.update({"_id":projectId},{
+            $set:{
+                "details.marks.supervisor":marks
+            }
+        });
+        if(result.ok){
+            await res.json({message:"Marks Added"})
+        }
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+}

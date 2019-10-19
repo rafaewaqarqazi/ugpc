@@ -7,7 +7,7 @@ import CircularLoading from "../loading/CircularLoading";
 const SupervisorVisionDocs = () => {
     const visionDocsContext = useContext(VisionDocsContext);
     useEffect(()=>{
-        visionDocsContext.fetchBySupervisor();
+        visionDocsContext.fetchBySupervisor(true);
     },[]);
     return (
         <div >

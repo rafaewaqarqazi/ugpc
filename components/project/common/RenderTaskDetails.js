@@ -1,6 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {
     Dialog, DialogActions,
+    Chip,
     DialogContent,
     Grid,
     GridList,
@@ -169,6 +170,12 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
+                    <div className={classes.detailsContent}>
+                        <Typography variant='subtitle2'>
+                            Status
+                        </Typography>
+                        <Chip label={details.status} color='primary'/>
+                    </div>
                     <div className={classes.detailsContent}>
                         <Typography variant='subtitle2'>
                             Assignee

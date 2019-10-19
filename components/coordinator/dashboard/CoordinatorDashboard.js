@@ -9,12 +9,13 @@ import CircularLoading from "../../loading/CircularLoading";
 import 'chartjs-plugin-colorschemes';
 import {getStudentsCount, getVisionDocsCount} from "./values";
 import ProjectsGantt from "../../charts/gantt/ProjectsGantt";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 
 const CoordinatorDashboard = ({projects ,students,visionDocs}) => {
     const classes = useListContainerStyles();
     const progressClasses = useProgressStyles();
-
+    const emptyStyles = useListItemStyles();
     return (
         <div className={classes.footerMargin}>
             <Container>
@@ -98,26 +99,35 @@ const CoordinatorDashboard = ({projects ,students,visionDocs}) => {
                             {
                                 visionDocs.isLoading ? <CircularLoading/> :
                                     <div className={progressClasses.topProgressBarContainer}>
-                                        <Pie width={3}
-                                             height={1}
-                                             options={{
-                                                 maintainAspectRatio: true,
-                                                 plugins: {
-                                                     colorschemes: {
-                                                         scheme: 'brewer.SetTwo8'
-                                                     }
-                                                 },
-                                                 legend:{
-                                                     display:true,
-                                                     position:'right'
-                                                 }
-                                             }}
-                                             data={{
-                                                 labels:visionDocs.visionDocs.map(doc => doc._id),
-                                                 datasets:[{
-                                                     data:visionDocs.visionDocs.map(doc => doc.visionDocs),
-                                                 }]
-                                             }} />
+                                        {
+                                            getVisionDocsCount(visionDocs.visionDocs) === 0 ?
+                                            <div className={emptyStyles.emptyListContainer}>
+                                                <div className={emptyStyles.emptyList}>
+                                                    No Projects Found
+                                                </div>
+                                            </div>:
+                                                <Pie width={3}
+                                                     height={1}
+                                                     options={{
+                                                         maintainAspectRatio: true,
+                                                         plugins: {
+                                                             colorschemes: {
+                                                                 scheme: 'brewer.SetTwo8'
+                                                             }
+                                                         },
+                                                         legend:{
+                                                             display:true,
+                                                             position:'right'
+                                                         }
+                                                     }}
+                                                     data={{
+                                                         labels:visionDocs.visionDocs.map(doc => doc._id),
+                                                         datasets:[{
+                                                             data:visionDocs.visionDocs.map(doc => doc.visionDocs),
+                                                         }]
+                                                     }} />
+                                        }
+
                                     </div>
                             }
 

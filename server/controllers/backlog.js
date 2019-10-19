@@ -17,7 +17,7 @@ exports.addNewTask = async (req,res)=>{
                 "details.backlog":update
             }
         },{new:true})
-            .select('details.backlog details.sprint')
+            .select('details.backlog')
             .populate('details.backlog.assignee','name department student_details email profileImage')
             .populate('details.backlog.createdBy','name')
             .sort({"details.backlog.priority":1})
@@ -61,16 +61,15 @@ exports.planSprint = async (req,res)=>{
             "startDate":startDate,
             "endDate":endDate,
             "status":'InComplete',
-            "todos":await filteredTasks
+            "tasks":await filteredTasks
         };
-        console.log(update)
         const updatedResult = await Projects.findByIdAndUpdate(projectId,
             {
                 $push: {
                     "details.sprint": update
                 }
             },{new:true})
-            .select('details.backlog details.sprint')
+            .select('details.backlog')
             .populate('details.backlog.assignee','name department student_details email profileImage')
             .populate('details.backlog.createdBy','name')
             .sort({"details.backlog.priority":1})
@@ -83,47 +82,23 @@ exports.planSprint = async (req,res)=>{
 
 exports.changeTaskStatus = async (req,res)=>{
     try {
-        const {projectId,taskId,existingColumn,newColumn,task,sprintId} = req.body;
-        const assignee = task.assignee.map(a => mongoose.Types.ObjectId(a._id));
-        const createdBy = mongoose.Types.ObjectId(task.createdBy._id)
-        const updatedTask = {
-            ...task,
-            _id:mongoose.Types.ObjectId(taskId),
-            assignee:assignee,
-            createdBy:createdBy
-        }
-        //Removing Task from Existing Column
-        const result = await Projects.updateOne(
-            {"_id":projectId,"details.sprint._id":sprintId},
-            {
-
-                    $pull:{
-                        [`details.sprint.$[].${existingColumn}`]:{
-                            _id:mongoose.Types.ObjectId(taskId)
-                        }
-                    }
-
-            },
-        );
+        const {projectId,taskId,newColumn,sprintId} = req.body;
 
         //Adding Task to New Column
 
         const updatedResult = await Projects.findOneAndUpdate(
-            {"_id":projectId,"details.sprint._id":sprintId},
+            {"_id":projectId},
             {
-                $push: {
-                    [`details.sprint.$.${newColumn}`]:updatedTask
+                $set: {
+                    "details.sprint.$[spr].tasks.$[tsk].status":newColumn === 'todos' ? 'todo' : newColumn
                 }
-            },{new:true})
-            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'})
-            // .sort({"details.backlog.priority":1})
+            },
+            {
+                arrayFilters:[{"spr._id":mongoose.Types.ObjectId(sprintId)},{"tsk._id":mongoose.Types.ObjectId(taskId)}],
+                new:true
+            })
+            .populate({path:'details.sprint.tasks.assignee',model:'Users',select:'name department student_details email profileImage'})
+            .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name'});
         await res.json(updatedResult)
     }catch (e) {
         await res.json(e.message)
@@ -171,14 +146,8 @@ exports.completeSprint = async (req,res) =>{
             .select('details.backlog details.sprint')
             .populate({path:'details.backlog.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.backlog.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.todos.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.todos.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inProgress.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.inProgress.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.inReview.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.inReview.createdBy',model:'Users',select:'name'})
-            .populate({path:'details.sprint.done.assignee',model:'Users',select:'name department student_details email profileImage'})
-            .populate({path:'details.sprint.done.createdBy',model:'Users',select:'name'});
+            .populate({path:'details.sprint.tasks.assignee',model:'Users',select:'name department student_details email profileImage'})
+            .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name'});
         await res.json(result)
     }catch (e) {
         await res.json(e.message)
@@ -262,4 +231,4 @@ exports.removeAttachmentFromTask = (req,res) =>{
             });
 
     });
-}
+};

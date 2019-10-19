@@ -169,14 +169,12 @@ const ListVisionDocsForPresentation = ({docs}) => {
     const handleSchedule = ()=>{
         setDialogLoading(true);
         const visionIds = finalIds.map(projectId => state.projects[projectId].documentation.visionDocument._id );
-        console.log(visionIds);
         const data = {
             projectIds:finalIds,
             visionDocsIds:visionIds,
             date:selectedDate,
             venue
-        }
-        console.log(visionDocsContext)
+        };
         visionDocsContext.scheduleVisionDefence(data)
             .then(res => {
                 setOpenSnackbar(true);
@@ -275,7 +273,7 @@ const ListVisionDocsForPresentation = ({docs}) => {
                                                             >
                                                                 <div className={presentationClasses.emptySchedule}>
                                                                     <Typography variant='subtitle2' color='textSecondary'>
-                                                                        No Documents Yet to Schedule Presentation
+                                                                        No Projects to Schedule Presentation
                                                                     </Typography>
                                                                 </div>
                                                                 {provided.placeholder}

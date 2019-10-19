@@ -7,8 +7,9 @@ import UserContext from "../../context/user/user-context";
 const Committees = () => {
     const userContext = useContext(UserContext);
     useEffect(()=>{
-        userContext.fetchCommittees();
-    },[])
+        userContext.fetchCommittees()
+            .catch(error => console.error(error.message));
+    },[]);
     return (
         <ChairmanPanelLayout>
             <CommitteesComponent/>

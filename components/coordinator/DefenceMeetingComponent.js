@@ -36,7 +36,6 @@ const DefenceMeetingComponent = () => {
                     setResults(result);
                     setMeetings(data);
                     setFilter(data);
-                    console.log(result)
                     let date = [];
                     result.map(r => {
                         date = [...date, moment(r._id).format('LLL')]
@@ -47,9 +46,7 @@ const DefenceMeetingComponent = () => {
             })
     }
     useEffect(()=>{
-
         fetchData();
-
     },[]);
     const handleChange =(event)=> {
         setSelectedDate(event.target.value);

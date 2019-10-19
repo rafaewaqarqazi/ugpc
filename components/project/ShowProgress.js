@@ -75,7 +75,7 @@ const ShowProgress = () => {
                                                    getTotalTasksCount(project.project.details) === 0?
                                                        <div className={emptyStyles.emptyListContainer}>
                                                            <div className={emptyStyles.emptyList}>
-                                                               No Tasks created yet
+                                                               No Tasks Done yet
                                                            </div>
                                                        </div>:
                                                        <Pie width={50}
@@ -266,8 +266,8 @@ const ShowProgress = () => {
                                                                            <TableCell align="left" >{moment(sprint.startDate).format('MM-DD-YY')}</TableCell>
                                                                            <TableCell align="left" >{moment(sprint.endDate).format('MM-DD-YY')}</TableCell>
                                                                            <TableCell >{sprint.status}</TableCell>
-                                                                           <TableCell align="left">{sprint.todos.length+sprint.inProgress.length+sprint.inReview.length+sprint.done.length}</TableCell>
-                                                                           <TableCell >{sprint.done.length}</TableCell>
+                                                                           <TableCell align="left">{sprint.tasks.length}</TableCell>
+                                                                           <TableCell >{sprint.tasks.filter(task => task.status === 'done').length}</TableCell>
                                                                            <TableCell >{sprint.status === 'Completed' ? moment(sprint.completedOn).format('MM-DD-YY') :'InComplete'}</TableCell>
                                                                        </TableRow>
                                                                    ))

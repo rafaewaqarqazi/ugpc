@@ -58,6 +58,19 @@ export const changeFinalDocumentationStatusAPI = async data =>{
     });
     return await res.json();
 };
+
+export const addSupervisorMarksAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/marks/supervisor`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};
 export const marksDistributionAPI = async marks =>{
     const res = await fetch(`${serverUrl}/users/chairman/settings/marksDistribution`,{
         method:'PUT',
@@ -214,7 +227,7 @@ export const removeFromCommitteeAPI = async data =>{
     return await res.json();
 };
 export const fetchAllStudentsAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/users/fetch/studentsBarData?committees[]=${isAuthenticated().user.ugpc_details.committees}`,{
+    const res = await fetch(`${serverUrl}/users/fetch/studentsBarData?committees=${isAuthenticated().user.ugpc_details.committees}`,{
         method:'GET',
         headers:{
             Accept:'application/json',
