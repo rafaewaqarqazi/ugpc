@@ -92,11 +92,7 @@ const projectsSchema = new mongoose.Schema({
             endDate:Date,
             status:String,
             completedOn:Date,
-            tasks:[],
-            todos:[{}],
-            inProgress:[{}],
-            inReview:[{}],
-            done:[{}]
+            tasks:[]
         }]
     }
 

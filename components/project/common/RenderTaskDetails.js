@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme =>({
         color: 'rgba(255, 255, 255, 0.54)'
     },
 }));
-const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
+const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
     const projectContext = useContext(ProjectContext);
     const classes = useStyles();
     const [openAddAttachmentDialog,setOpenAddAttachmentDialog] = useState(false);
@@ -73,7 +73,9 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
         const data = {
             filename:removeAttachment.filename,
             projectId:projectContext.project.project._id,
-            taskId:details._id
+            taskId:details._id,
+            taskIn,
+            sprintId
         };
         setLoading(true);
         projectContext.removeAttachmentFromTask(data)
@@ -111,9 +113,13 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                 data.append('files',file);
             });
 
-            data.set('projectId',projectContext.project.project._id)
+            data.set('projectId',projectContext.project.project._id);
             data.set('taskId',details._id);
-            projectContext.addAttachmentsToTask(data)
+            data.set('taskIn',taskIn);
+            if (sprintId){
+                data.set('sprintId',sprintId)
+            }
+            projectContext.addAttachmentsToTask(data,taskIn)
                 .then(result =>{
                     setLoading(false);
                     setOpenAddAttachmentDialog(false);
@@ -130,10 +136,7 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                     })
                 })
                 .catch(err =>{
-                    setResError({
-                        show:true,
-                        message:"Something went wrong"
-                    })
+                    console.log(err.message)
                 })
         }
 
@@ -156,7 +159,7 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                 <Grid item xs={12} sm={6}>
                     <div className={classes.detailsContent}>
                         <Tooltip title='Add Attachments' placement='top' onClick={()=>setOpenAddAttachmentDialog(true)}>
-                            <IconButton style={{borderRadius:0,backgroundColor:'#e0e0e0'}} disabled={details.attachments.length === 10 || disableUpload} size='small' ><AttachFile/></IconButton>
+                            <IconButton style={{borderRadius:0,backgroundColor:'#e0e0e0'}} disabled={details.attachments.length === 20} size='small' ><AttachFile/></IconButton>
                         </Tooltip>
                     </div>
 
@@ -239,7 +242,7 @@ const RenderTaskDetails = ({details,disableUpload,setDetails}) => {
                                                     title={attachment.originalname}
                                                     actionIcon={
                                                         <Tooltip  title='Remove' placement="top" TransitionComponent={Zoom}>
-                                                            <IconButton disabled={disableUpload} aria-label={`remove ${attachment.originalname}`} className={classes.icon} size='small' onClick={()=>setRemoveAttachment({show:true,filename:attachment.filename})}>
+                                                            <IconButton aria-label={`remove ${attachment.originalname}`} className={classes.icon} size='small' onClick={()=>setRemoveAttachment({show:true,filename:attachment.filename})}>
                                                                 <Delete />
                                                             </IconButton>
                                                         </Tooltip>

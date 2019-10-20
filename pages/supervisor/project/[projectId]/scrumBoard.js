@@ -29,7 +29,6 @@ const ScrumBoard = () => {
                                             return sprint.name
                                         }else return
                                     })
-                                    console.log(sprintNames)
                                     return (
                                         <RenderScrumBoard sprint={project.project.details.sprint} sprintNames={sprintNames.filter(name => name !== undefined)}/>
                                     )

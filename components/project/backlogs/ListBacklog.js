@@ -445,7 +445,7 @@ const ListBacklog = ({backlog}) => {
                                 </div>
                                 {
                                     openDetails &&
-                                    <RenderTaskDetails details={details} projectId={projectContext.project.project._id} disableUpload={false} setDetails={setDetails}/>
+                                    <RenderTaskDetails details={details} taskIn='Backlog' setDetails={setDetails}/>
                                 }
                             </div>
                         }
@@ -454,23 +454,16 @@ const ListBacklog = ({backlog}) => {
             </Grid>
         </DragDropContext>
             <Hidden smUp>
-                <Dialog fullScreen style={{marginTop:48,marginBottom:48}} open={openDetails} onClose={closeDetails}>
-                    <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                        <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
-                        <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
-                            <IconButton size='small' onClick={closeDetails}>
-                                <Close/>
-                            </IconButton>
-                        </Tooltip>
-                    </DialogTitle>
-                    <DialogContent dividers>
-                        {
-                            openDetails &&
-                            <RenderTaskDetails details={details} disableUpload={false} setDetails={setDetails}/>
-                        }
+                {
+                    openDetails &&
+                    <Dialog fullScreen style={{marginTop:48,marginBottom:48}} open={openDetails} onClose={closeDetails}>
+                        <DialogTitleComponent title={details.title} handleClose={closeDetails}/>
+                        <DialogContent dividers>
+                            <RenderTaskDetails details={details} taskIn='Backlog' setDetails={setDetails}/>
+                        </DialogContent>
+                    </Dialog>
+                }
 
-                    </DialogContent>
-                </Dialog>
             </Hidden>
             {
                 openPlanSprintDialog &&

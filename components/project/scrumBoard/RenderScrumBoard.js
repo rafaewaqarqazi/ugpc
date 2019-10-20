@@ -420,7 +420,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                 <DialogContent dividers>
                     {
                         openDetails &&
-                        <RenderTaskDetails details={details} disableUpload={true}/>
+                        <RenderTaskDetails setDetails={setDetails} details={details} taskIn='ScrumBoard' sprintId={sprint.filter(f => f.name === selectedSprint)[0]._id}/>
                     }
 
                 </DialogContent>

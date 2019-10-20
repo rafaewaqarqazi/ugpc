@@ -178,27 +178,49 @@ exports.removeTask = async (req,res)=>{
 
 exports.addAttachmentsToTask = async (req,res) =>{
     try {
-        const {projectId,taskId} = req.body;
+        const {projectId,taskId,taskIn,sprintId} = req.body;
         let files =[];
             req.files.map(file => {
                 files=[...files,{
                     filename:file.filename,
                     originalname:file.originalname
                 }]
-            })
-        const result = await Projects.findOneAndUpdate({"_id":projectId,"details.backlog._id":taskId},{
-            $push:{
-                "details.backlog.$.attachments":{
-                    $each:files
-                }
-            }
-        },{new:true})
-            .select('details.backlog')
-            .populate('details.backlog.assignee','name department student_details email profileImage')
-            .populate('details.backlog.createdBy','name')
-            .sort({"details.backlog.priority":1});
+            });
 
-            await res.json({result,files})
+            if (taskIn === 'Backlog'){
+                const result = await Projects.findOneAndUpdate({"_id":projectId,"details.backlog._id":mongoose.Types.ObjectId(taskId)},{
+                    $push:{
+                        "details.backlog.$.attachments":{
+                            $each:files
+                        }
+                    }
+                },{new:true})
+                    .select('details.backlog')
+                    .populate('details.backlog.assignee','name department student_details email profileImage')
+                    .populate('details.backlog.createdBy','name')
+                    .sort({"details.backlog.priority":1});
+
+                await res.json({result,files})
+            }else if (taskIn === 'ScrumBoard'){
+                const result = await Projects.findOneAndUpdate({"_id":projectId},{
+                    $push:{
+                        "details.sprint.$[spr].tasks.$[tsk].attachments":{
+                            $each:files
+                        }
+                    }
+                }, {
+                    arrayFilters:[{"spr._id":mongoose.Types.ObjectId(sprintId)},{"tsk._id":mongoose.Types.ObjectId(taskId)}],
+                    new:true
+                })
+                    .select('details.backlog details.sprint')
+                    .populate('details.backlog.assignee','name department student_details email profileImage')
+                    .populate('details.backlog.createdBy','name')
+                    .populate('details.sprint.tasks.assignee','name department student_details email profileImage')
+                    .populate('details.sprint.tasks.createdBy','name')
+
+                await res.json({result,files})
+            }
+
 
     }catch (e) {
         await res.json({error:e.message})
@@ -206,29 +228,54 @@ exports.addAttachmentsToTask = async (req,res) =>{
 };
 
 exports.removeAttachmentFromTask = (req,res) =>{
-    const {projectId,taskId,filename} = req.body;
+    const {projectId,taskId,filename,taskIn,sprintId} = req.body;
     fs.unlink(`static/images/${filename}`,err => {
         if(err){
             res.json({error:err.message})
         }
 
-        Projects.findOneAndUpdate({"_id":projectId,"details.backlog._id":taskId},{
-            $pull:{
-                "details.backlog.$.attachments":{
-                    filename:filename
+        if (taskIn === 'Backlog'){
+            Projects.findOneAndUpdate({"_id":projectId,"details.backlog._id":mongoose.Types.ObjectId(taskId)},{
+                $pull:{
+                    "details.backlog.$.attachments":{
+                        filename:filename
+                    }
                 }
-            }
-        },{new:true})
-            .select('details.backlog')
-            .populate('details.backlog.assignee','name department student_details email profileImage')
-            .populate('details.backlog.createdBy','name')
-            .sort({"details.backlog.priority":1})
-            .then(result =>{
-                res.json(result)
+            },{new:true})
+                .select('details.backlog')
+                .populate('details.backlog.assignee','name department student_details email profileImage')
+                .populate('details.backlog.createdBy','name')
+                .sort({"details.backlog.priority":1})
+                .then(result =>{
+                    res.json(result)
+                })
+                .catch(error => {
+                    res.json({error:error.message})
+                });
+        }else if (taskIn === 'ScrumBoard'){
+            Projects.findOneAndUpdate({"_id":projectId},{
+                $pull:{
+                    "details.sprint.$[spr].tasks.$[tsk].attachments":{
+                        filename:filename
+                    }
+                }
+            }, {
+                arrayFilters:[{"spr._id":mongoose.Types.ObjectId(sprintId)},{"tsk._id":mongoose.Types.ObjectId(taskId)}],
+                new:true
             })
-            .catch(error => {
-                res.json({error:error.message})
-            });
+                .select('details.backlog details.sprint')
+                .populate('details.backlog.assignee','name department student_details email profileImage')
+                .populate('details.backlog.createdBy','name')
+                .populate('details.sprint.tasks.assignee','name department student_details email profileImage')
+                .populate('details.sprint.tasks.createdBy','name')
+                .then(result =>{
+                    res.json(result)
+                })
+                .catch(error => {
+                    res.json({error:error.message})
+                });
+        }
+
 
     });
 };

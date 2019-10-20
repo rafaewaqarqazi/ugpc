@@ -77,14 +77,23 @@ const ProjectState = (props) => {
         const result = await removeTaskAPI(data);
         await dispatch(addBacklogAction(result.details.backlog))
     };
-    const addAttachmentsToTask = async data =>{
+    const addAttachmentsToTask = async (data,taskIn) =>{
         const result = await addAttachmentsToTaskAPI(data);
-        await dispatch(addBacklogAction(result.result.details.backlog));
+        if (taskIn === 'Backlog'){
+            await dispatch(addBacklogAction(result.result.details.backlog));
+        }else if (taskIn === 'ScrumBoard'){
+            await dispatch(addSprintAction(result.result.details.sprint))
+        }
+
         return await result
     };
-    const removeAttachmentFromTask = async  data =>{
+    const removeAttachmentFromTask = async  (data) =>{
         const result = await removeAttachmentFromTaskAPI(data);
-        await dispatch(addBacklogAction(result.details.backlog));
+        if (data.taskIn === 'Backlog'){
+            await dispatch(addBacklogAction(result.details.backlog));
+        }else if (data.taskIn === 'ScrumBoard'){
+            await dispatch(addSprintAction(result.details.sprint))
+        }
         return await result
     }
 useEffect(()=>{
