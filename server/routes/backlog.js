@@ -8,13 +8,15 @@ const {
     completeSprint,
     removeTask,
     addAttachmentsToTask,
-    removeAttachmentFromTask
+    removeAttachmentFromTask,
+    addCommentToTask
 } = require('../controllers/backlog');
 const {requireSignin,isBacklogAuth} = require('../controllers/auth');
 const upload = require('../upload');
 
 router.put('/task/add',requireSignin,isBacklogAuth,addNewTask);
 router.put('/task/add/attachments/:type',requireSignin,isBacklogAuth, upload.array('files'),addAttachmentsToTask);
+router.put('/task/add/comment',requireSignin,isBacklogAuth,addCommentToTask);
 router.put('/task/remove',requireSignin,isBacklogAuth,removeTask);
 router.put('/task/remove/attachment',requireSignin,isBacklogAuth,removeAttachmentFromTask);
 router.put('/sprint/plan',requireSignin,isBacklogAuth,planSprint);

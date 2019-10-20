@@ -17,5 +17,6 @@ export default React.createContext({
     uploadVision:(data,projectId)=>{},
     removeTask:data=>{},
     addAttachmentsToTask:data=>{},
-    removeAttachmentFromTask:data =>{}
+    removeAttachmentFromTask:data =>{},
+    addCommentToTask:commentDetails =>{}
 })

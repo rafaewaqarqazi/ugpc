@@ -66,7 +66,8 @@ const useStyles = makeStyles(theme =>({
     },
     detailsContainer:{
         minHeight:150,
-
+        maxHeight:650,
+        overflowY:'auto',
         marginTop:theme.spacing(2)
     },
 

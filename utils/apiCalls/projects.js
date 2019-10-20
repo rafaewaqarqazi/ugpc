@@ -214,6 +214,18 @@ export const addAttachmentsToTaskAPI = async data =>{
     });
     return await res.json();
 };
+export const addCommentToTaskAPI = async commentDetails =>{
+    const res = await fetch(`${serverUrl}/backlog/task/add/comment`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(commentDetails)
+    });
+    return await res.json();
+};
 export const fetchMarksDistributionAPI = async ()=>{
     const res = await fetch(`${serverUrl}/users/chairman/settings/fetch/marksDistribution`,{
         method:'GET',

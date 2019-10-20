@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
     Button,
-    Chip, CircularProgress, Container, Dialog, DialogActions,
+    Chip, Tooltip, Container, Dialog, DialogActions,
     DialogContent,
     DialogTitle,
     FormControl, IconButton, InputAdornment,
@@ -10,7 +10,7 @@ import {
     Select, TextField,
     Typography,
     AppBar,
-    Toolbar, DialogContentText
+    Toolbar
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../../auth";
@@ -22,7 +22,6 @@ import {getVisionDocsStatusChipColor} from "../../../../src/material-styles/visi
 import SuccessSnackBar from "../../../snakbars/SuccessSnackBar";
 import ApprovalLetter from "../../../approvalLetter/ApprovalLetter";
 import CloseIcon from '@material-ui/icons/Close';
-import clsx from 'clsx';
 import {getChairmanName} from "../../../../utils/apiCalls/users";
 import {RenderComments} from "../../common/RenderComments";
 import {useDocDetailsDialogStyles} from "../../../../src/material-styles/docDetailsDialogStyles";
@@ -44,7 +43,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [confirmDialogLoading,setConfirmDialogLoading] = useState(false);
     const [successSnackbar,setSuccessSnackbar] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
-    const [success, setSuccess] = useState(false);
     const [chairmanName,setChairmanName]= useState('');
     const [marks,setMarks] = useState('');
     const [saveButton,setSaveButton]= useState(true);
@@ -341,9 +339,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 </div>
                             }
                             <div className={classes.detailsContent}>
-                                <RenderComments comments={currentDocument.documentation.visionDocument.comments}/>
-                            </div>
-                            <div className={classes.detailsContent}>
                                 <TextField
                                     label="Add Comment"
                                     margin="dense"
@@ -356,15 +351,21 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
-                                                <IconButton size='small' onClick={handleComment}>
-                                                    <Send />
-                                                </IconButton>
+                                                <Tooltip title='Add' placement='top'>
+                                                    <IconButton size='small' onClick={handleComment}>
+                                                        <Send />
+                                                    </IconButton>
+                                                </Tooltip>
 
                                             </InputAdornment>
                                         ),
                                     }}
                                 />
                             </div>
+                            <div className={classes.detailsContent}>
+                                <RenderComments comments={currentDocument.documentation.visionDocument.comments}/>
+                            </div>
+
 
 
                         </Grid>

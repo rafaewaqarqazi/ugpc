@@ -20,9 +20,10 @@ import {
     completeSprintAPI,
     uploadFinalDocumentationAPI,
     removeTaskAPI,
-    removeAttachmentFromTaskAPI
+    removeAttachmentFromTaskAPI,
+
 } from "../../utils/apiCalls/students";
-import {addAttachmentsToTaskAPI} from "../../utils/apiCalls/projects";
+import {addAttachmentsToTaskAPI,addCommentToTaskAPI} from "../../utils/apiCalls/projects";
 
 const ProjectState = (props) => {
     const [state, dispatch] = useReducer(projectReducer,{
@@ -95,7 +96,16 @@ const ProjectState = (props) => {
             await dispatch(addSprintAction(result.details.sprint))
         }
         return await result
-    }
+    };
+    const addCommentToTask = async commentDetails =>{
+        const result = await addCommentToTaskAPI(commentDetails);
+        if (commentDetails.taskIn === 'Backlog'){
+            await dispatch(addBacklogAction(result.details.backlog));
+        }else if (commentDetails.taskIn === 'ScrumBoard'){
+            await dispatch(addSprintAction(result.details.sprint))
+        }
+        return await result
+    };
 useEffect(()=>{
     console.log('Project State:',state)
 },[state]);
@@ -114,7 +124,8 @@ useEffect(()=>{
             uploadFinalDocumentation,
             removeTask,
             addAttachmentsToTask,
-            removeAttachmentFromTask
+            removeAttachmentFromTask,
+            addCommentToTask
         }}>
             {props.children}
         </ProjectContext.Provider>

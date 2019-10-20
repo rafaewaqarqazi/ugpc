@@ -26,11 +26,15 @@ export const formatProjectsData = projects =>{
         let totalTasks = project.details.backlog.length;
         let completedTasks = 0;
         project.details.sprint ? project.details.sprint.map(sprint => {
+            const todos = sprint.tasks.filter(task => task.status === 'todo').length;
+            const inProgress = sprint.tasks.filter(task => task.status === 'inProgress').length;
+            const inReview = sprint.tasks.filter(task => task.status === 'inReview').length;
+            const done = sprint.tasks.filter(task => task.status === 'done').length;
             if (sprint.status === 'Completed'){
-                completedTasks += sprint.done.length;
-                totalTasks += sprint.done.length;
+                completedTasks += done;
+                totalTasks += done;
             }else {
-                totalTasks +=sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length;
+                totalTasks +=todos + inProgress + inReview + done;
             }
         }):
             completedTasks = 0;

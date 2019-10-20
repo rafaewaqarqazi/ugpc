@@ -42,7 +42,7 @@ export const RenderComments = ({comments})=>{
             <Collapse in={showComments} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding className={classes.commentList}>
                     {
-                        comments.length === 0 ?
+                       !comments || comments.length === 0 ?
                             <ListItem>
                                 <Typography variant='h5' color='textSecondary'>No Comments Yet</Typography>
                             </ListItem>
@@ -51,7 +51,7 @@ export const RenderComments = ({comments})=>{
                                 {
                                     comments.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt)).map((comment,index)=>(
                                         <Fragment key={index}>
-                                            <ListItem alignItems="flex-start" key={comment._id}>
+                                            <ListItem alignItems="flex-start" >
                                                 <ListItemAvatar>
                                                     <UserAvatarComponent user={comment.author}/>
                                                 </ListItemAvatar>

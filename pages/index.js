@@ -5,8 +5,8 @@ import {makeStyles} from "@material-ui/styles";
 import CopyrightComponent from "../components/CopyrightComponent";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import {useEffect} from "react"; // You can also use <link> for styles
-// ..
+import {useEffect} from "react";
+import Link from 'next/link';
 const useStyles = makeStyles(theme => ({
     textContainer:{
         marginTop:theme.spacing(4),
@@ -77,10 +77,12 @@ const Index = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={5} className={landingClasses.textContainer} >
                         <div className={landingClasses.textRightContainer}>
-                                <Typography variant='h5' color='textPrimary' className={landingClasses.mainTitle}>
-                                    An Agile Software Development tool for FYPs
-                                </Typography>
-                            <Button variant='contained' color='primary'>Start Now</Button>
+                            <Typography variant='h5' color='textPrimary' className={landingClasses.mainTitle}>
+                                An Agile Software Development tool for FYPs
+                            </Typography>
+                            <Link href={'/student/sign-up'}>
+                                <Button variant='contained' color='primary'>Start Now</Button>
+                            </Link>
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={7}  className={landingClasses.textContainer}>
@@ -105,7 +107,7 @@ const Index = () => {
                         <div className={landingClasses.textRightContainer}>
                             <div className={landingClasses.firstHeadingContainer}>
                                 <Typography variant='h6' color='textPrimary' >Track</Typography>
-                                <Typography variant='subtitle1' color='textPrimary' >Prioritize your work with complete visibility</Typography>
+                                <Typography variant='subtitle1' color='textPrimary' >Prioritize and discuss your work with complete visibility</Typography>
                             </div>
                             <div>
                                 <Typography variant='h6' color='textPrimary' >Report</Typography>

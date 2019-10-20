@@ -10,9 +10,9 @@ import {
     Tooltip,
     Typography,
     Button, GridListTileBar, LinearProgress, Zoom,
-    DialogTitle, DialogContentText
+    DialogTitle, DialogContentText, TextField, InputAdornment
 } from "@material-ui/core";
-import {AttachFile,Delete,Close} from "@material-ui/icons";
+import {AttachFile, Delete, Close, Send} from "@material-ui/icons";
 import {serverUrl} from "../../../utils/config";
 import RenderSubTasks from "../backlogs/RenderSubTasks";
 import {getBacklogTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
@@ -23,6 +23,9 @@ import {DropzoneArea} from "material-ui-dropzone";
 import ProjectContext from "../../../context/project/project-context";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
+import {RenderComments} from "../../visionDocument/common/RenderComments";
+import UserContext from '../../../context/user/user-context';
+
 const useStyles = makeStyles(theme =>({
     wrapText:{
         whiteSpace: 'normal',
@@ -47,12 +50,14 @@ const useStyles = makeStyles(theme =>({
     },
 }));
 const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
+    const userContext = useContext(UserContext);
     const projectContext = useContext(ProjectContext);
     const classes = useStyles();
     const [openAddAttachmentDialog,setOpenAddAttachmentDialog] = useState(false);
     const [files,setFiles]=useState([]);
     const [fileError,setFileError] = useState(false);
     const [loading,setLoading]= useState(false);
+    const [comment,setComment] =useState('');
     const [resError,setResError] = useState({
         show:false,
         message:''
@@ -69,6 +74,52 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
         show:false,
         image:{}
     });
+    const handleCommentChange = event =>{
+        setComment(event.target.value);
+    };
+    const handleComment = ()=>{
+        if (comment !== ''){
+            const commentDetails = {
+                text:comment,
+                projectId:projectContext.project.project._id,
+                taskId:details._id,
+                taskIn,
+                sprintId,
+                author:userContext.user.user._id
+            };
+            projectContext.addCommentToTask(commentDetails)
+                .then(res =>{
+                    setComment('');
+                    setDetails({
+                        ...details,
+                        discussion:details.discussion ? [
+                            ...details.discussion,
+                            {
+                                text:comment,
+                                createdAt:Date.now(),
+                                author:{
+                                    name:userContext.user.user.name,
+                                    profileImage:userContext.user.user.profileImage
+                                }
+                            }
+                        ]:[ {
+                            text:comment,
+                            createdAt:Date.now(),
+                            author:{
+                                name:userContext.user.user.name,
+                                profileImage:userContext.user.user.profileImage
+                            }
+                        }]
+                    });
+                })
+                .catch(err =>{
+                    setResError({
+                        show:true,
+                        message:'Something went wrong please try again'
+                    })
+                })
+        }
+    };
     const handleRemoveAttachment = ()=>{
         const data = {
             filename:removeAttachment.filename,
@@ -156,7 +207,7 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
             <SuccessSnackBar open={success.show} message={success.message} handleClose={()=>setSuccess(false)}/>
             <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=> setResError({show:false, message:""})}/>
             <Grid container spacing={1}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} >
                     <div className={classes.detailsContent}>
                         <Tooltip title='Add Attachments' placement='top' onClick={()=>setOpenAddAttachmentDialog(true)}>
                             <IconButton style={{borderRadius:0,backgroundColor:'#e0e0e0'}} disabled={details.attachments.length === 20} size='small' ><AttachFile/></IconButton>
@@ -208,6 +259,37 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
                         </Typography>
                     </div>
 
+                </Grid>
+                <Grid item xs={12}>
+                    <div className={classes.detailsContent}>
+                        <Typography variant='subtitle2'>
+                            Discussion
+                        </Typography>
+
+                        <TextField
+                            label="Add Comment"
+                            margin="dense"
+                            variant="outlined"
+                            multiline
+                            fullWidth
+                            value={comment}
+                            onChange={handleCommentChange}
+                            rowsMax="4"
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <Tooltip title='Add' placement='top'>
+                                            <IconButton size='small' onClick={handleComment}>
+                                                <Send />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <RenderComments comments={details.discussion}/>
+                    </div>
                 </Grid>
                 <Grid item xs={12}>
                     <div className={classes.detailsContent}>

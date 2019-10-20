@@ -27,6 +27,7 @@ import {getCompletionPercentage} from "../../components/project/helpers";
 import {serverUrl} from "../../utils/config";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
+import UserAvatarComponent from "../../components/UserAvatarComponent";
 
 const useStyles = makeStyles(theme =>({
     tableRow:{
@@ -118,19 +119,7 @@ const Projects = () => {
                                                                 <TableCell align="left">{
                                                                     project.students.map((student,index) =>
                                                                         <div key={index} style={{display:'flex'}}>
-                                                                            <Tooltip  title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                                                                {
-                                                                                    student.profileImage && student.profileImage.filename ?
-                                                                                        <Avatar
-                                                                                            className={avatarClasses.imageAvatar}
-                                                                                            src={`${serverUrl}/../static/images/${student.profileImage.filename}`}/>
-                                                                                        :
-                                                                                        <Avatar
-                                                                                            className={avatarClasses.avatarColor}>
-                                                                                            {student.name.charAt(0).toUpperCase()}
-                                                                                        </Avatar>
-                                                                                }
-                                                                            </Tooltip>
+                                                                            <UserAvatarComponent user={student}/>
                                                                         </div>
                                                                     )
                                                                 }</TableCell>

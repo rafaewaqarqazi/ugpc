@@ -3,14 +3,13 @@ import {
     Button,
     Chip,Dialog, DialogActions,
     DialogContent,
-    DialogTitle,
+    Tooltip,
     IconButton, InputAdornment,
     Menu, MenuItem,
     TextField,
     Typography, ListItemIcon, AppBar, Toolbar,
     Grid,
 } from "@material-ui/core";
-import {isAuthenticated} from "../../../auth";
 import {Assignment, Send, AttachFile, PictureAsPdfOutlined} from "@material-ui/icons";
 import VisionDocsContext from "../../../context/visionDocs/visionDocs-context";
 import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
@@ -198,9 +197,6 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
 
                             </Menu>
                             <div className={classes.detailsContent}>
-                                <RenderComments comments={currentDocument.comments}/>
-                            </div>
-                            <div className={classes.detailsContent}>
                                 <TextField
                                     label="Add Comment"
                                     margin="dense"
@@ -213,15 +209,20 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
-                                                <IconButton size='small' onClick={handleComment}>
-                                                    <Send />
-                                                </IconButton>
-
+                                                <Tooltip title='Add' placement='top'>
+                                                    <IconButton size='small' onClick={handleComment}>
+                                                        <Send />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </InputAdornment>
                                         ),
                                     }}
                                 />
                             </div>
+                            <div className={classes.detailsContent}>
+                                <RenderComments comments={currentDocument.comments}/>
+                            </div>
+
                         </Grid>
                     </Grid>
                 </DialogContent>

@@ -83,8 +83,12 @@ const projectsSchema = new mongoose.Schema({
             },
             status:String,
             storyPoints: String,
-            attachments:[{}]
-
+            attachments:[{}],
+            discussion:[{
+                text:String,
+                createdAt: Date,
+                author:{type:ObjectId, ref:"Users"}
+            }]
         }],
         sprint:[{
             name:String,
