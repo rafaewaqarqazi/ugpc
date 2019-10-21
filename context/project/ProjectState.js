@@ -6,7 +6,8 @@ import {
     projectLoadingAction,
     addBacklogAction,
     addSprintAction,
-    addFinalDocumentationAction
+    addFinalDocumentationAction,
+    addSupervisorMeetingAction
 } from "./ActionCreators";
 import {
     addTaskToBacklogAPI,
@@ -23,7 +24,7 @@ import {
     removeAttachmentFromTaskAPI,
 
 } from "../../utils/apiCalls/students";
-import {addAttachmentsToTaskAPI,addCommentToTaskAPI} from "../../utils/apiCalls/projects";
+import {addAttachmentsToTaskAPI,addCommentToTaskAPI,scheduleSupervisorMeetingAPI,requestSupervisorMeetingAPI,markSupervisorMeetingAsAttendedAPI} from "../../utils/apiCalls/projects";
 
 const ProjectState = (props) => {
     const [state, dispatch] = useReducer(projectReducer,{
@@ -106,6 +107,20 @@ const ProjectState = (props) => {
         }
         return await result
     };
+    const scheduleSupervisorMeeting = async meetingData =>{
+        const result = await scheduleSupervisorMeetingAPI(meetingData);
+        await dispatch(addSupervisorMeetingAction(result));
+        return await result;
+    };
+    const requestSupervisorMeeting = async requestMeetingData =>{
+        const result = await requestSupervisorMeetingAPI(requestMeetingData);
+        return await result;
+    };
+    const markSupervisorMeetingAsAttended = async data =>{
+        const result = await markSupervisorMeetingAsAttendedAPI(data);
+        await dispatch(addSupervisorMeetingAction(result));
+        return await result;
+    }
 useEffect(()=>{
     console.log('Project State:',state)
 },[state]);
@@ -125,7 +140,10 @@ useEffect(()=>{
             removeTask,
             addAttachmentsToTask,
             removeAttachmentFromTask,
-            addCommentToTask
+            addCommentToTask,
+            scheduleSupervisorMeeting,
+            requestSupervisorMeeting,
+            markSupervisorMeetingAsAttended
         }}>
             {props.children}
         </ProjectContext.Provider>

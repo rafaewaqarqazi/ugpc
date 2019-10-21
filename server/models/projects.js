@@ -62,6 +62,11 @@ const projectsSchema = new mongoose.Schema({
             name:String,
             issueDate:Date
         },
+        meetings:[{
+            purpose:String,
+            date:Date,
+            isAttended:Boolean
+        }],
         estimatedDeadline:Date,
         backlog:[{
             title: String,

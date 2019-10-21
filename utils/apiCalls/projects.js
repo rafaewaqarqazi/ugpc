@@ -237,3 +237,40 @@ export const fetchMarksDistributionAPI = async ()=>{
     });
     return await res.json();
 };
+
+export const scheduleSupervisorMeetingAPI = async meetingData =>{
+    const res = await fetch(`${serverUrl}/projects/meetings/supervisor/schedule`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(meetingData)
+    });
+    return await res.json();
+};
+export const requestSupervisorMeetingAPI = async requestMeetingData =>{
+    const res = await fetch(`${serverUrl}/projects/meetings/supervisor/request`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(requestMeetingData)
+    });
+    return await res.json();
+};
+export const markSupervisorMeetingAsAttendedAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/meetings/supervisor/attended`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            "Content-Type":'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:JSON.stringify(data)
+    });
+    return await res.json();
+};

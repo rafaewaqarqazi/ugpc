@@ -25,4 +25,9 @@ export const addSprintAction = (sprint) =>({
 export const addFinalDocumentationAction= (finalDocumentation)=>({
     type:Actions.ADD_FINAL_DOCUMENTATION,
     payload: finalDocumentation
+});
+
+export const addSupervisorMeetingAction = meetings =>({
+    type:Actions.ADD_SUPERVISOR_MEETINGS,
+    payload: meetings
 })

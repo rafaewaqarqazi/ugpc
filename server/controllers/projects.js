@@ -31,7 +31,7 @@ exports.findByStudentId = (req,res,next,id)=>{
     Projects.find({students:id})
         .populate('students','_id name department student_details profileImage')
         .populate('documentation.visionDocument.comments.author','_id name role department profileImage')
-        .populate('details.supervisor','_id name supervisor_details.position profileImage')
+        .populate('details.supervisor','_id name email supervisor_details.position profileImage')
         .populate('details.backlog.assignee', '_id name department student_details profileImage')
         .populate('details.backlog.createdBy', 'name')
         .populate({path:'details.backlog.discussion.author',model:'Users',select:'name profileImage'})
@@ -168,6 +168,7 @@ exports.assignSupervisor = async (req,res)=>{
                 <p><b>Name: </b> ${supervisor.name}</p>
                 <p><b>Email: </b> ${supervisor.email}</p>
                 <p>is Assigned to your Project as a Supervisor </p>
+                   <p>Regards!</p>
             `
         };
         await sendEmail(supervisorEmailData);
@@ -223,7 +224,7 @@ exports.changeFDStatus = async (req,res)=>{
                 <p><b>Available for Internal:</b> Your Project is sent to evaluation Committee for internal scheduling.</p>
                 <p><b>Internal Scheduled:</b> Your Project's internal is scheduled.</p>
                 <p><b>Available for external:</b> Your Project is send to evaluation committee for external scheduling.</p>
-                <p><b>Complete:</b> Your Evaluation Process is Completed.</p>
+                <p><b>Completed:</b> Your Evaluation Process is Completed.</p>
                 <p>Regards!</p>
             `
         };
@@ -353,7 +354,7 @@ exports.scheduleInternal = async (req,res)=>{
                 <p><b>Venue: </b>${venue}</p>
                 <p><b>Date: </b> ${moment(selectedDate).format('MMM DD, YYYY')}</p>
                 <br/>
-                <p>Regard!</p>
+                <p>Regards!</p>
             `,
             attachments:[{filename:originalname,path:`${process.env.CLIENT_URL}/static/pdf/${filename}`}]
         };
@@ -370,7 +371,7 @@ exports.scheduleInternal = async (req,res)=>{
                 <br/>
                 <p><b>Venue: </b>${venue}</p>
                 <p><b>Date: </b> ${moment(selectedDate).format('LLL')}</p>
-                <p>Regard!</p>
+                <p>Regards!</p>
             `
         };
         await sendEmail(examinerEmailData);
@@ -411,7 +412,7 @@ exports.scheduleExternalDate = async (req,res)=>{
                 <br/>
                 <p><b>Venue: </b>${venue}</p>
                 <p><b>Date: </b> ${moment(selectedDate).format('LLL')}</p>
-                <p>Regard!</p>
+                <p>Regards!</p>
             `
         };
         await sendEmail(studentsEmailData);
@@ -499,7 +500,7 @@ exports.assignExternalAuto = async (req,res)=>{
                 <br/>
                 <p>It will be appreciated if you kindly fix a suitable date for the Viva-Voce Examination of the students.</p>
                 <br/>
-                <p>Regard!</p>
+                <p>Regards!</p>
             `,
                 attachments:[{filename:originalname,path:`${process.env.CLIENT_URL}/static/pdf/${filename}`}]
             };
@@ -514,7 +515,7 @@ exports.assignExternalAuto = async (req,res)=>{
                 <p><b>Email: </b> ${examiner.email}</p>
                 <p>is Assigned to your Project as an External Examiner. Venue and date will be specified by Your Examiner.</p>
                 <br/>
-                <p>Regard!</p>
+                <p>Regards!</p>
             `
             };
             await sendEmail(examinerEmailData);
@@ -617,7 +618,7 @@ exports.assignExternalManual = async (req,res)=>{
             <p><b>Email: </b> ${examiner.email}</p>
             <p>is Assigned to your Project as an External Examiner. Venue and date will be specified by Your Examiner.</p>
             <br/>
-            <p>Regard!</p>
+            <p>Regards!</p>
         `
         };
         await sendEmail(examinerEmailData);
@@ -805,4 +806,81 @@ exports.addMarksSupervisor = async (req,res) => {
     }catch (e) {
         await res.json({error:e.message})
     }
-}
+};
+
+exports.scheduleMeetingSupervisor = async (req,res) =>{
+    try {
+        const {purpose,selectedDate,projectId} = req.body;
+        const result = await Projects.findOneAndUpdate({"_id":projectId},{
+            $push:{
+                "details.meetings":{
+                    purpose,
+                    date:selectedDate,
+                    isAttended:false
+                }
+            }
+        },{new:true})
+            .select('details.meetings students')
+            .populate('students','-_id email');
+        const emails = result.students.map(student => student.email);
+        const studentsEmailData = {
+            from: "noreply@node-react.com",
+            to: emails,
+            subject: "Meeting Scheduled With Supervisor",
+            text: `Dear Student,\n your meeting with supervisor is scheduled on ${moment(selectedDate).format('MM/DD/YY, h:mm A')}\n Please be on time.`,
+            html: `
+            <p>Dear Student,</p>
+            <p>Your meeting with supervisor is scheduled on ${moment(selectedDate).format('MM/DD/YY, h:mm A')}</p>
+            <p>The purpose of meeting is: ${purpose}</p>
+            <p>Please be on time</p>
+            <br/>
+            <p>Regards!</p>
+        `
+        };
+        await sendEmail(studentsEmailData);
+        await res.json(result.details.meetings)
+
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+
+};
+
+exports.requestMeetingSupervisor = async (req,res) =>{
+    try {
+        const {purpose,username,projectTitle,supervisorEmail} = req.body;
+
+        const emailData = {
+            from: "noreply@node-react.com",
+            to: supervisorEmail,
+            subject: "Request for Scheduling a Meeting",
+            text: `Respected Supervisor,\n Student named as ${username}, with Project Title ${projectTitle} has requested you to schedule a meeting for ${purpose}. Please find a suitable time for meeting and schedule it`,
+            html: `
+            <p>Respected Supervisor,</p>
+            <p>Student name as <b>${username}</b> with Project Title <b>${projectTitle}</b> has requested you to schedule a meeting</p>
+            <p>The purpose of meeting is: <b>${purpose}</b></p>
+            <p>Please find a suitable time and schedule a meeting</p>
+            <br/>
+            <p>Regards!</p>
+        `
+        };
+        await sendEmail(emailData);
+        await res.json({message:'Success'})
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+exports.markMeetingSupervisorAsAttended = async (req,res) =>{
+    try {
+        const {meetingId,projectId} = req.body;
+        const result = await Projects.findOneAndUpdate({"_id":projectId,"details.meetings._id":meetingId},{
+            $set:{
+                "details.meetings.$.isAttended":true
+            }
+        },{new:true})
+        .select('details.meetings');
+        await res.json(result.details.meetings)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};

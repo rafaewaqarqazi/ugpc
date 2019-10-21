@@ -18,7 +18,10 @@ const {
     fetchForApprovalLetter,
     fetchForExternalLetter,
     fetchCompleted,
-    addMarksSupervisor
+    addMarksSupervisor,
+    scheduleMeetingSupervisor,
+    requestMeetingSupervisor,
+    markMeetingSupervisorAsAttended
 } = require('../controllers/projects');
 const {requireSignin,isUGPCAuth, isChairmanOfficeAuth} = require('../controllers/auth');
 
@@ -47,10 +50,12 @@ router.get('/fetch/forApprovalLetter',requireSignin,isChairmanOfficeAuth,fetchFo
 router.get('/fetch/completed',requireSignin,isChairmanOfficeAuth,fetchCompleted);
 router.get('/fetch/forExternalLetter',requireSignin,isChairmanOfficeAuth,fetchForExternalLetter);
 
-//Supervisor
+
 router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',requireSignin,fetchFinalDocumentationsBySupervisor);
 router.put('/marks/supervisor',requireSignin,addMarksSupervisor)
-
+router.put('/meetings/supervisor/schedule',requireSignin,scheduleMeetingSupervisor);
+router.put('/meetings/supervisor/request',requireSignin,requestMeetingSupervisor);
+router.put('/meetings/supervisor/attended',requireSignin,markMeetingSupervisorAsAttended);
 router.param('byStudentId',findByStudentId);
 router.param('projectId',findByProjectId);
 module.exports = router;

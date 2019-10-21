@@ -11,7 +11,6 @@ import {
     ListItemText,
     ListItemIcon,
     Tooltip,
-    Menu,
     MenuItem,
     Avatar,
     Typography,
@@ -27,12 +26,12 @@ import {
 import Link from "next/link";
 import {
     Dashboard,
-    Laptop,
+
     VisibilityOutlined,
     Visibility,
-    ChevronLeft,
-    ChevronRight,
-    Add, ViewColumnOutlined, ListAlt,
+
+
+    ViewColumnOutlined, ListAlt,
     ShowChart
 } from "@material-ui/icons";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
@@ -41,12 +40,12 @@ import ProjectContext from '../../context/project/project-context';
 import MenuIcon from '@material-ui/icons/Menu';
 import Router, {useRouter} from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
-import {serverUrl} from "../../utils/config";
 import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
 import MobileDrawer from "./MobileDrawer";
 import DrawerLayout from "./DrawerLayout";
 import AppBarWithAddMenu from "./AppBarWithAddMenu";
 import AddMenu from "./AddMenu";
+import DrawerLink from "./DrawerLink";
 
 const SupervisorProjectLayout = ({children,projectId})=> {
     const router = useRouter();
@@ -59,7 +58,6 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     },[projectId]);
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
-    const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [selectedProject,setSelectedProject] = useState(projectId);
     const handleSwitchProject = event=>{
@@ -72,71 +70,53 @@ const SupervisorProjectLayout = ({children,projectId})=> {
     const handleDrawerClose =()=> {
         setOpen(false);
     };
-    const handleAddMenuClose = ()=>{
-        setAnchorEl(null);
-    };
-    const handleAddMenuClick = event =>{
-        setAnchorEl(event.currentTarget)
-    };
+
     const handleDrawerToggle = ()=>event=>{
         setMobileOpen(!mobileOpen);
     };
     const drawerContent = (
         <Fragment>
             <List>
-                <Link href='/supervisor/project/[projectId]/roadmap' as={`/supervisor/project/${projectId}/roadmap`}>
-                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/roadmap' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <Dashboard className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Roadmap"} />
-                    </ListItem>
+                <DrawerLink href='/supervisor/project/[projectId]/roadmap' as={`/supervisor/project/${projectId}/roadmap`}>
+                    <ListItemIcon>
+                        <Dashboard className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Roadmap"} />
+                </DrawerLink>
+                <DrawerLink href='/supervisor/project/[projectId]/backlog' as={`/supervisor/project/${projectId}/backlog`}>
+                    <ListItemIcon>
+                        <ListAlt className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Backlog"} />
+                </DrawerLink>
+                <DrawerLink href='/supervisor/project/[projectId]/scrumBoard' as={`/supervisor/project/${projectId}/scrumBoard`}>
+                    <ListItemIcon>
+                        <ViewColumnOutlined className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Scrum Board"} />
+                </DrawerLink>
+                <DrawerLink href='/supervisor/project/[projectId]/progress' as={`/supervisor/project/${projectId}/progress`}>
+                    <ListItemIcon>
+                        <ShowChart className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Progress"} />
+                </DrawerLink>
 
-                </Link>
-
-                <Link href='/supervisor/project/[projectId]/backlog' as={`/supervisor/project/${projectId}/backlog`}>
-                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/backlog' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <ListAlt className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Backlog"} />
-                    </ListItem>
-                </Link>
-
-                <Link href='/supervisor/project/[projectId]/scrumBoard' as={`/supervisor/project/${projectId}/scrumBoard`}>
-                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/scrumBoard' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <ViewColumnOutlined className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Scrum Board"} />
-                    </ListItem>
-                </Link>
-
-                <Link href='/supervisor/project/[projectId]/progress' as={`/supervisor/project/${projectId}/progress`}>
-                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/progress' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <ShowChart className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Progress"} />
-                    </ListItem>
-                </Link>
             </List>
             <Divider/>
             <List>
-                <Link href='/supervisor/project/[projectId]/meetings' as={`/supervisor/project/${projectId}/meetings`}>
-                    <ListItem button className={router.pathname === '/supervisor/project/[projectId]/meetings' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <Visibility className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Meetings"} />
-                    </ListItem>
-                </Link>
+                <DrawerLink href='/supervisor/project/[projectId]/meetings' as={`/supervisor/project/${projectId}/meetings`}>
+                    <ListItemIcon>
+                        <Visibility className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Meetings"} />
+                </DrawerLink>
             </List>
         </Fragment>
 
     );
     const handleClickAddMeeting = ()=>{
-        Router.push('/supervisor/meetings')
+        Router.push(`/supervisor/project/[projectId]/meetings`,`/supervisor/project/${projectId}/meetings`)
     };
     const addMenu = (
         <MenuItem onClick={handleClickAddMeeting}>

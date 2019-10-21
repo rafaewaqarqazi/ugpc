@@ -3,7 +3,7 @@ import SupervisorProjectLayout from "../../../../components/Layouts/SupervisorPr
 import {withSupervisorAuthSync} from "../../../../components/routers/supervisorAuth";
 import {useRouter} from "next/router";
 import ProjectState from "../../../../context/project/ProjectState";
-import {Container, LinearProgress} from "@material-ui/core";
+import {LinearProgress} from "@material-ui/core";
 import ListBacklog from "../../../../components/project/backlogs/ListBacklog";
 import ProjectContext from "../../../../context/project/project-context";
 import BacklogAndSprintContainer from "../../../../components/project/BacklogAndSprintContainer";
@@ -17,19 +17,12 @@ const Backlog = () => {
                 <BacklogAndSprintContainer title='Backlog'>
                     <ProjectContext.Consumer>
                         {
-                            ({project})=>{
-                                if (project.isLoading){
-                                    return (
+                            ({project})=>
+                                project.isLoading ?
                                         <LinearProgress color='secondary'/>
-                                    )
-                                }
-                                if (!project.isLoading){
-                                    return (
+                                        :
                                         <ListBacklog backlog={project.project.details.backlog} />
-                                    )
-                                }
 
-                            }
                         }
                     </ProjectContext.Consumer>
                 </BacklogAndSprintContainer>

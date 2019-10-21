@@ -65,6 +65,19 @@ export const projectReducer = (state, action) => {
                 project: modState
             };
         }
+        case Actions.ADD_SUPERVISOR_MEETINGS:{
+            const modState = {
+                ...state.project,
+                details:{
+                    ...state.project.details,
+                    meetings:action.payload,
+                }
+            };
+            return {
+                ...state,
+                project: modState
+            };
+        }
         default:
             return state;
     }

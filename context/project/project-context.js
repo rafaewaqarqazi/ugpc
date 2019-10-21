@@ -18,5 +18,8 @@ export default React.createContext({
     removeTask:data=>{},
     addAttachmentsToTask:data=>{},
     removeAttachmentFromTask:data =>{},
-    addCommentToTask:commentDetails =>{}
+    addCommentToTask:commentDetails =>{},
+    requestSupervisorMeeting:requestMeetingData =>{},
+    scheduleSupervisorMeeting:meetingData =>{},
+    markSupervisorMeetingAsAttended:data =>{}
 })

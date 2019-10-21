@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export   const getBacklogTaskPriorityColor = priority =>{
     if (priority === '1'){
         return {
@@ -164,6 +166,28 @@ export const getGradeChipColor = grade =>{
     } else if (grade === 'F'){
         return {
             backgroundColor:'#b71c1c',
+            color:'white'
+        }
+    }
+};
+
+export const getSupervisorMeetingChipColor = meeting =>{
+    if (!meeting.isAttended && moment(Date.now()).isBefore(meeting.date)){
+        return {
+            backgroundColor:'#1A237E',
+            color:'white'
+        }
+    }
+    else if (!meeting.isAttended && !moment(Date.now()).isBefore(meeting.date)){
+        return {
+            backgroundColor:'#b71c1c',
+
+            color:'white'
+        }
+    }
+    else if (meeting.isAttended){
+        return {
+            backgroundColor:'#2e7d32',
             color:'white'
         }
     }

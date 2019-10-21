@@ -3,14 +3,15 @@ import React, {useState, useContext, useEffect, Fragment} from 'react';
 import {
     CssBaseline, Divider, Drawer,
     IconButton, List, ListItemText,
-    ListItem, ListItemIcon,
-    Avatar, Tooltip, Menu,
+    ListItemIcon,
+    Avatar, Tooltip,
     MenuItem,
     Hidden, Toolbar, AppBar
 } from '@material-ui/core';
-import {ListAltOutlined,ListAlt, ChevronRight, ChevronLeft, Add,
+import {ListAltOutlined,ListAlt,
     Dashboard, Assignment,AssignmentOutlined, ViewColumn,
-    ShowChart
+    ShowChart,
+    Visibility
 } from '@material-ui/icons';
 import Link from "next/link";
 
@@ -21,9 +22,8 @@ import clsx from "clsx";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from '@material-ui/icons/Menu';
-import Router, {useRouter} from 'next/router'
+import Router from 'next/router'
 import ProfileMenu from "../profile/ProfileMenu";
-import {serverUrl} from "../../utils/config";
 import AddMenu from "./AddMenu";
 import AppBarWithAddMenu from "./AppBarWithAddMenu";
 import DrawerLayout from "./DrawerLayout";
@@ -31,13 +31,12 @@ import MobileDrawer from "./MobileDrawer";
 import DrawerLink from "./DrawerLink";
 
 const StudentPanelLayout = ({children})=> {
-    const router = useRouter();
     const classes = useDrawerStyles();
     const projectContext = useContext(ProjectContext);
     const userContext = useContext(UserContext);
     const [open, setOpen] = useState(true);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+
     useEffect(()=>{
         projectContext.fetchByStudentId();
         userContext.fetchUserById()
@@ -48,12 +47,6 @@ const StudentPanelLayout = ({children})=> {
 
     const handleDrawerClose =()=> {
         setOpen(false);
-    };
-    const handleAddMenuClose = ()=>{
-        setAnchorEl(null);
-    };
-    const handleAddMenuClick = event =>{
-        setAnchorEl(event.currentTarget)
     };
 
     const handleDrawerToggle = ()=>event=>{
@@ -89,38 +82,49 @@ const StudentPanelLayout = ({children})=> {
         </div>
     );
     const drawerContent = (
-        <List>
-            <DrawerLink href={'/student/roadmap'}>
-                <ListItemIcon>
-                    <Dashboard className={classes.iconColor}/>
-                </ListItemIcon>
-                <ListItemText primary={"Roadmap"} />
-            </DrawerLink>
-            <DrawerLink href={'/student/project/documentation'}>
-                <ListItemIcon>
-                    <Assignment className={classes.iconColor}/>
-                </ListItemIcon>
-                <ListItemText primary={"Documentation"} />
-            </DrawerLink>
-            <DrawerLink href={'/student/project/backlog'}>
-                <ListItemIcon>
-                    <ListAlt className={classes.iconColor}/>
-                </ListItemIcon>
-                <ListItemText primary={"Backlog"} />
-            </DrawerLink>
-            <DrawerLink href={'/student/project/scrumBoard'}>
-                <ListItemIcon>
-                    <ViewColumn className={classes.iconColor}/>
-                </ListItemIcon>
-                <ListItemText primary={"Scrum Board"} />
-            </DrawerLink>
-            <DrawerLink href={'/student/project/progress'}>
-                <ListItemIcon>
-                    <ShowChart className={classes.iconColor}/>
-                </ListItemIcon>
-                <ListItemText primary={"Progress"} />
-            </DrawerLink>
-        </List>
+        <Fragment>
+            <List>
+                <DrawerLink href={'/student/roadmap'}>
+                    <ListItemIcon>
+                        <Dashboard className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Roadmap"} />
+                </DrawerLink>
+                <DrawerLink href={'/student/project/documentation'}>
+                    <ListItemIcon>
+                        <Assignment className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Documentation"} />
+                </DrawerLink>
+                <DrawerLink href={'/student/project/backlog'}>
+                    <ListItemIcon>
+                        <ListAlt className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Backlog"} />
+                </DrawerLink>
+                <DrawerLink href={'/student/project/scrumBoard'}>
+                    <ListItemIcon>
+                        <ViewColumn className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Scrum Board"} />
+                </DrawerLink>
+                <DrawerLink href={'/student/project/progress'}>
+                    <ListItemIcon>
+                        <ShowChart className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Progress"} />
+                </DrawerLink>
+            </List>
+            <Divider/>
+            <List>
+                <DrawerLink href={'/student/project/meetings'}>
+                    <ListItemIcon>
+                        <Visibility className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Meetings"} />
+                </DrawerLink>
+            </List>
+        </Fragment>
     );
      const handleClickProfile = ()=>{
          Router.push('/student/profile');
