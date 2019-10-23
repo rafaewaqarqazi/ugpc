@@ -28,15 +28,20 @@ export const createProjectAPI = async (data)=>{
 };
 
 export const fetchProjectByStudentIdAPI = async ()=>{
-    const res = await fetch(`${serverUrl}/projects/by/studentId/${isAuthenticated().user._id}`,{
-        method:'GET',
-        headers:{
-            Accept:'application/json',
-            "Content-Type":'application/json',
-            Authorization:`Bearer ${isAuthenticated().token}`
-        }
-    });
-    return await res.json();
+    try {
+        const res = await fetch(`${serverUrl}/projects/by/studentId/${isAuthenticated().user._id}`,{
+            method:'GET',
+            headers:{
+                Accept:'application/json',
+                "Content-Type":'application/json',
+                Authorization:`Bearer ${isAuthenticated().token}`
+            }
+        });
+        return await res.json();
+    }catch (e) {
+        console.error(e.message)
+    }
+
 };
 
 export const fetchProjectByProjectIdAPI = async projectId =>{

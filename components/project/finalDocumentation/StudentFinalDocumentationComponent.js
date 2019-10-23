@@ -19,6 +19,7 @@ import {serverUrl} from "../../../utils/config";
 import {getGrade} from "../../../utils";
 import {getGradeChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import DialogTitleComponent from "../../DialogTitleComponent";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 const useStyles = makeStyles(theme => ({
     listHeader:{
@@ -42,6 +43,7 @@ const StudentFinalDocumentationComponent = () => {
     const projectContext = useContext(ProjectContext);
     const [openUploadDialog,setOpenUploadDialog] = useState(false);
     const classes = useStyles();
+    const emptyStyles = useListItemStyles();
     const [file,setFile]=useState([]);
     const [fileError,setFileError] = useState(false);
     const [loading,setLoading]= useState(false);
@@ -74,7 +76,9 @@ const StudentFinalDocumentationComponent = () => {
         <div>
             <SuccessSnackBar message='Uploaded Successfully' open={success} handleClose={()=>setSuccess(false)}/>
             {
-                projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved').length > 0 &&
+                projectContext.project.project.documentation.visionDocument.filter(doc => doc.status === 'Approved' || doc.status === 'Approved With Changes').length > 0 &&
+                (projectContext.project.project.phase === 'Documentation' ||
+                projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved').length > 0) &&
                 <div className={classes.listHeader}>
                     <Button variant='outlined' color='primary' onClick={()=>setOpenUploadDialog(true)}>
                         Upload New Document
@@ -97,6 +101,17 @@ const StudentFinalDocumentationComponent = () => {
                     </TableHead>
                     <TableBody >
                         {
+                            projectContext.project.project.documentation.finalDocumentation.length === 0?
+                                <TableRow>
+                                    <TableCell colSpan={6}>
+                                        <div className={emptyStyles.emptyListContainer}>
+                                            <div className={emptyStyles.emptyList}>
+                                                No Documents Found
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                :
                             projectContext.project.project.documentation.finalDocumentation.map((doc,index) => (
 
                                     <TableRow key={index} className={classes.tableRow} >

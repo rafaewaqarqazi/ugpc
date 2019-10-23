@@ -56,7 +56,7 @@ const StudentPanelLayout = ({children})=> {
     const addMenuContent = (
         <div>
             {
-                !projectContext.project.isLoading && projectContext.project.project.documentation.visionDocument.filter(visionDoc => visionDoc.status === 'Approved' || visionDoc.status === 'Approved With Changes').length === 0 &&
+                !projectContext.project.isLoading && projectContext.project.project && projectContext.project.project.documentation.visionDocument.filter(visionDoc => visionDoc.status === 'Approved' || visionDoc.status === 'Approved With Changes').length === 0 &&
                 <Link href='/student/project/vision-document/new'>
                     <MenuItem >
                         <ListItemIcon>

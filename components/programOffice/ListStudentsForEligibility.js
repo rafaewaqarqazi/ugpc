@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
     Container,
     Divider,
-    FormControl,  InputAdornment,
+    FormControl, InputAdornment,
     InputLabel, LinearProgress,
     MenuItem,
     OutlinedInput,
@@ -17,72 +17,29 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    Dialog
+    Dialog, Tooltip, IconButton, Menu, ListItemIcon
 } from "@material-ui/core";
-import {AccountBox, Search} from "@material-ui/icons";
-import {red} from "@material-ui/core/colors";
-import {makeStyles} from "@material-ui/styles";
+import {
+    AccountBox,
+    CheckCircleOutlined, Close,
+    MoreVertOutlined,
+    Search, NotInterested,
+
+} from "@material-ui/icons";
 
 import Button from "@material-ui/core/Button";
 import {changeEligibility, fetchStudentsForEligibility} from "../../utils/apiCalls/programOffice";
-
-const useStyles = makeStyles(theme => ({
-    container:{
-        marginTop:theme.spacing(5),
-    },
-    listContainer:{
-        padding:theme.spacing(2,2,10,2),
-        marginTop: theme.spacing(8),
-        boxShadow:theme.shadows[10],
-        marginBottom: theme.spacing(5)
-    },
-    top:{
-        width: theme.spacing(11),
-        height:theme.spacing(11),
-        backgroundColor: theme.palette.secondary.dark,
-        color:'#fff',
-        display: 'flex',
-        alignItems:'center',
-        justifyContent: 'center',
-        marginTop:-theme.spacing(5),
-        marginBottom:theme.spacing(5),
-        boxShadow:theme.shadows[10],
-    },
-    listHeader:{
-        paddingBottom: theme.spacing(1.2),
-        display:'flex',
-        flexDirection: 'row',
-        justifyContent:'space-between',
-        alignItems: 'center',
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 160,
-    },
-    empty:{
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        marginTop:theme.spacing(2)
-    },
-    tableRow:{
-        "&:hover":{
-            boxShadow:theme.shadows[6]
-        }
-    },
-    buttonDanger:{
-        backgroundColor: red[700],
-        color:theme.palette.background.paper,
-        marginLeft:theme.spacing(0.5),
-        "&:hover":{
-            backgroundColor: red[900],
-        }
-    }
+import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
+import DialogTitleComponent from "../DialogTitleComponent";
+import CircularLoading from "../loading/CircularLoading";
+import {useListItemStyles} from "../../src/material-styles/listItemStyles";
+import {useTableStyles} from "../../src/material-styles/tableStyles";
 
 
-}));
 const ListStudentsForEligibility = ({studentsList}) => {
-    const classes = useStyles();
+    const classes = useListContainerStyles();
+    const emptyStyles = useListItemStyles();
+    const tableClasses = useTableStyles();
     const inputLabel = useRef(null);
     const [studentList,setStudentList] =useState([]);
     const [loading, setLoading] = useState(true);
@@ -93,6 +50,7 @@ const ListStudentsForEligibility = ({studentsList}) => {
     const [students,setStudents]=useState([]);
     const [filter,setFilter] = useState([]);
     const [labelWidth, setLabelWidth] = useState(0);
+    const [anchorEl, setAnchorEl] = useState(null);
     useEffect(() => {
         setLabelWidth(inputLabel.current.offsetWidth);
         setStudentList(studentsList);
@@ -152,10 +110,16 @@ const ListStudentsForEligibility = ({studentsList}) => {
     }
     return (
         <div>
-            <Container className={classes.container}>
+            <Container>
                 <div className={classes.listContainer}>
                     <div className={classes.top}>
-                        <AccountBox fontSize='large'/>
+                        <div className={classes.topIconBox} >
+                            <AccountBox className={classes.headerIcon}/>
+                        </div>
+                        <div className={classes.topTitle} >
+                            <Typography variant='h5'>Students</Typography>
+                        </div>
+
                     </div>
 
                    <div className={classes.listHeader}>
@@ -192,52 +156,101 @@ const ListStudentsForEligibility = ({studentsList}) => {
                    </div>
                    <Divider/>
                     {
-                        loading ? <LinearProgress />:
+                        loading ? <CircularLoading />:
                             <div className={classes.listItemContainer}>
-                                {
-                                    filter.length === 0?
-                                        <div className={classes.empty}>
-                                            <Typography variant='h5' color='textSecondary'>No Record Found</Typography>
-                                        </div>
-                                        :
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell align="left">Student Name</TableCell>
-                                                    <TableCell align="left">Registration No</TableCell>
-                                                    <TableCell align="left">Department</TableCell>
-                                                    <TableCell align="left">Eligibility Status</TableCell>
-                                                    <TableCell align="left">Actions</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {
-                                                    filter.map(student => (
-                                                        <TableRow key={student._id} className={classes.tableRow}>
-                                                            <TableCell align="left">
-                                                                {student.name}
-                                                            </TableCell>
-                                                            <TableCell align="left">{student.student_details.regNo}</TableCell>
-                                                            <TableCell align="left">{student.department}</TableCell>
-                                                            <TableCell align="left">{student.student_details.isEligible}</TableCell>
-                                                            <TableCell align="left">
+                                <div className={tableClasses.tableWrapper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="left">Student Name</TableCell>
+                                                <TableCell align="left">Registration No</TableCell>
+                                                <TableCell align="left">Department</TableCell>
+                                                <TableCell align="left">Eligibility Status</TableCell>
+                                                <TableCell align="left">Actions</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {
+                                                filter.length === 0 ?
+                                                    <TableRow>
+                                                        <TableCell colSpan={5}>
+                                                            <div className={emptyStyles.emptyListContainer}>
+                                                                <div className={emptyStyles.emptyList}>
+                                                                    No Students Found
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                    :
+                                                filter.map(student => (
+                                                    <TableRow key={student._id} className={tableClasses.tableRow}>
+                                                        <TableCell align="left">
+                                                            {student.name}
+                                                        </TableCell>
+                                                        <TableCell align="left">{student.student_details.regNo}</TableCell>
+                                                        <TableCell align="left">{student.department}</TableCell>
+                                                        <TableCell align="left">{student.student_details.isEligible}</TableCell>
+                                                        <TableCell align="left">
+                                                            <Tooltip title='Click for Actions' placement='top'>
+                                                                <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
+                                                                    <MoreVertOutlined/>
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                            <Menu
+                                                                id="simple-menu"
+                                                                anchorEl={anchorEl}
+                                                                keepMounted
+                                                                open={Boolean(anchorEl)}
+                                                                onClose={()=>setAnchorEl(null)}
+                                                            >
                                                                 {
                                                                     student.student_details.isEligible === 'Not Eligible'?
-                                                                        <Button variant='contained' size='small' color='secondary' onClick={()=>handleConfirm('Eligible',student._id)}>Make Eligible</Button>
+                                                                        <MenuItem onClick={()=>handleConfirm('Eligible',student._id)}>
+                                                                            <ListItemIcon>
+                                                                                <CheckCircleOutlined />
+                                                                            </ListItemIcon>
+                                                                            <Typography variant="inherit" noWrap>
+                                                                                Make Eligible
+                                                                            </Typography>
+                                                                        </MenuItem>
                                                                         :
-                                                                        <>
-                                                                            <Button variant='contained' size='small' color='secondary' onClick={()=>handleConfirm('Eligible',student._id)}>Eligible</Button>
-                                                                            <Button variant='contained' size='small' className={classes.buttonDanger} onClick={()=>handleConfirm('Not Eligible',student._id)}>Not Eligible</Button>
-                                                                        </>
+                                                                        <div>
+                                                                            <MenuItem onClick={()=>handleConfirm('Eligible',student._id)}>
+                                                                                <ListItemIcon>
+                                                                                    <CheckCircleOutlined />
+                                                                                </ListItemIcon>
+                                                                                <Typography variant="inherit" noWrap>
+                                                                                    Eligible
+                                                                                </Typography>
+                                                                            </MenuItem>
+                                                                            <MenuItem onClick={()=>handleConfirm('Not Eligible',student._id)}>
+                                                                                <ListItemIcon>
+                                                                                    <NotInterested />
+                                                                                </ListItemIcon>
+                                                                                <Typography variant="inherit" noWrap>
+                                                                                    Not Eligible
+                                                                                </Typography>
+                                                                            </MenuItem>
+                                                                        </div>
                                                                 }
+                                                                <MenuItem onClick={()=>setAnchorEl(null)}>
+                                                                    <ListItemIcon>
+                                                                        <Close />
+                                                                    </ListItemIcon>
+                                                                    <Typography variant="inherit" noWrap>
+                                                                        Cancel
+                                                                    </Typography>
+                                                                </MenuItem>
 
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                }
+                                                            </Menu>
+
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            }
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             </div>
                     }
 
@@ -245,22 +258,20 @@ const ListStudentsForEligibility = ({studentsList}) => {
                 <Dialog
                     open={dialogOpen}
                     onClose={handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
                 >
                     {dialogLoading && <LinearProgress/>}
-                    <DialogTitle id="alert-dialog-title">{"Confirm?"}</DialogTitle>
+                    <DialogTitleComponent title='Confirm' handleClose={handleClose}/>
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
+                        <DialogContentText >
                             Are you sure, you want to perform this action?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Disagree
+                        <Button onClick={handleClose} >
+                            Cancel
                         </Button>
-                        <Button onClick={()=>handleChangeStatus(changedStatus)} color="primary" autoFocus>
-                            Agree
+                        <Button onClick={()=>handleChangeStatus(changedStatus)} color="primary">
+                            Confirm
                         </Button>
                     </DialogActions>
                 </Dialog>

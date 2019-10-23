@@ -14,6 +14,6 @@ const Index = ({students}) => {
 Index.getInitialProps = async ()=>{
     const students = await fetchStudentsForEligibility();
     return  {students}
-}
+};
 
 export default withProgramOfficeAuthSync(Index);

@@ -22,7 +22,7 @@ const StudentVisionListItem = ({project}) => {
     return (
         <div className={classes.listItemContainer}>
             {
-                project.length === 0?
+                project.documentation.visionDocument.length === 0?
                     <div className={classes.emptyList}>
                         <div className={classes.emptyListContainer}>
                             <div className={classes.emptyList}>

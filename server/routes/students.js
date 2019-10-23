@@ -24,7 +24,7 @@ router.get('/fetch/programOffice',fetchForProgramOffice);
 
 //Students
 router.put('/additionalFile/vision-doc/:type',requireSignin,isStudent,upload.single('file'),resubmitVisionDoc);
-router.post('/project/new',requireSignin,isStudent,createProjectValidator,createProject);
+router.post('/project/new',requireSignin,isStudent,createProject);
 router.put("/project/vision-doc/:type/:id",requireSignin,isStudent,upload.single('file'), uploadVisionDocument);
 router.put('/project/finalDocumentation/:type',requireSignin,isStudent,upload.single('file'),uploadFinalDocumentation);
 router.get('/notEnrolled/:userId',requireSignin,isStudent,getNotEnrolledStudents);

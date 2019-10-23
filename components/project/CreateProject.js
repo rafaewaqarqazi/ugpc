@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     });
      const handleSuccess= ()=>{
          setSuccess(false);
-         router.push('/student/roadmap')
+         router.push('/student/project/documentation')
      };
     const [errors,setErrors] = useState({
         groupName:{
@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
         };
 
         context.createProject(projectData)
-            .then(()=>{
+            .then(result=>{
                 setLoading(false);
                 setSuccess(true);
             })

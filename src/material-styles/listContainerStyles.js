@@ -31,6 +31,9 @@ export const useListContainerStyles = makeStyles(theme=>({
         }
     },
     topIconBox:{
+        [theme.breakpoints.up('sm')]: {
+            marginLeft:theme.spacing(3),
+        },
         minWidth: theme.spacing(11),
         minHeight:theme.spacing(11),
         backgroundColor: getRandomColor(),
@@ -40,7 +43,7 @@ export const useListContainerStyles = makeStyles(theme=>({
         alignItems:'center',
         boxShadow:theme.shadows[2],
         marginTop:-theme.spacing(6),
-        marginLeft:theme.spacing(3),
+        marginLeft:theme.spacing(0),
         borderRadius:5
     },
     topTitle:{

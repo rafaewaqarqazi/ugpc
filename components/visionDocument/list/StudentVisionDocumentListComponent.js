@@ -22,7 +22,8 @@ const StudentVisionDocumentListComponent = () => {
     return (
         <div>
             {
-                context.project.project.documentation.visionDocument.filter(doc => doc.status === 'Rejected').length > 0 &&
+                (context.project.project.documentation.visionDocument.length === 0 ||
+                context.project.project.documentation.visionDocument.filter(doc => doc.status === 'Rejected').length > 0) &&
                 <div className={classes.listHeader}>
                     <Link href='/student/project/vision-document/new'>
                         <Button variant='outlined' color='primary'>

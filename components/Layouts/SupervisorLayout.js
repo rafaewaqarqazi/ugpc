@@ -25,8 +25,6 @@ import {
 import Link from "next/link";
 import {
     Laptop,
-    ChevronLeft,
-    ChevronRight,
     Assignment
 } from "@material-ui/icons";
 
@@ -36,7 +34,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import Router, {useRouter} from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
-import {serverUrl} from "../../utils/config";
 import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
 import DrawerLayout from "./DrawerLayout";
 import AppBarWithAddMenu from "./AppBarWithAddMenu";

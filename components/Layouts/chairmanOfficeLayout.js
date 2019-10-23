@@ -36,7 +36,6 @@ const ChairmanOfficeLayout = ({children})=> {
     },[]);
     const classes = useDrawerStyles();
     const [open, setOpen] = useState(true);
-    const [anchorEl2, setAnchorEl2] = useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerOpen = ()=> {
         setOpen(true);

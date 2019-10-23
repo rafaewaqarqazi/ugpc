@@ -39,7 +39,7 @@ const ProjectState = (props) => {
     };
     const createProject =async (data) =>{
         const project = await createProjectAPI(data);
-        dispatch(addProjectAction(await project));
+        return await project;
     };
     const uploadVision =async (data,projectId) => {
         return await uploadVisionAPI(data,projectId);
@@ -129,8 +129,8 @@ useEffect(()=>{
             project:state,
             fetchByStudentId,
             fetchByProjectId,
-            createProject:createProject,
-            uploadVision:uploadVision,
+            createProject,
+            uploadVision,
             addTaskToBacklog,
             planSprint,
             changeColumn,

@@ -12,7 +12,7 @@ exports.studentSignup = async (req, res)=>{
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
     });
-    const emailVerCode = Math.floor(Math.random() * 100000000);
+    const emailVerCode = Math.floor(Math.random() * 1000000);
 
     const user = await new User({
         ...req.body,
@@ -33,7 +33,7 @@ exports.studentSignup = async (req, res)=>{
             .then(()=>{
                 return res.status(200).json({
                     _id:student._id,
-                    message: `Email has been sent to ${email}. Please check your email for verification`
+                    message: `Please check your email for Verification`
                 });
             });
     }

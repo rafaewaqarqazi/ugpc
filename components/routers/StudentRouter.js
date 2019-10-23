@@ -27,12 +27,12 @@ const StudentRouter= props =>{
             <LinearProgress/>
         )
     }
-    else if (pending){
+    else if (pending && r.pathname !== '/student/profile'){
         return (
             <PendingEligibility/>
         )
     }
-    else if (notEligible) {
+    else if (notEligible && r.pathname !== '/student/profile') {
         return (
             <NotEligible/>
         )
@@ -42,7 +42,7 @@ const StudentRouter= props =>{
         if (context.project.isLoading){
             return (<LinearProgress/>)
         }
-        else if (context.project.project.length === 0 && r.pathname !== '/student/project/create'){
+        else if (!context.project.project && r.pathname !== '/student/project/create'){
             return (
                 <NoProjectComponent/>
             )
