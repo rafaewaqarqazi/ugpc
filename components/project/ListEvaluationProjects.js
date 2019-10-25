@@ -138,12 +138,6 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
         <div>
             <ErrorSnackBar open={openError} handleSnackBar={()=>setOpenError(false)} message={'Examiner Not Found!'}/>
             {
-                filter.length === 0  ?
-                    <div className={emptyStyles.emptyListContainer}>
-                        <div className={emptyStyles.emptyList}>
-                            No Projects Found
-                        </div>
-                    </div>:
                 <div className={projectsClasses.tableWrapper}>
                     <Table size='small'>
                         <TableHead>
@@ -163,62 +157,72 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
                         <TableBody>
 
                             {
-                                filter.map((project,index) => (
-                                    <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
-                                        <TableRow className={projectsClasses.tableRow} style={getEvaluationListBorderColor(project.documentation.finalDocumentation.status)}>
-                                            <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
-                                            <TableCell >{project.department}</TableCell>
-                                            <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
-                                                <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
-                                            </Tooltip>
-                                            <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
-                                            <Tooltip  title={project.details.internal.examiner ? project.details.internal.examiner.ugpc_details.designation ? project.details.internal.examiner.ugpc_details.designation :'Not Provided' : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
-                                                <TableCell align="left">{project.details.internal.examiner ? project.details.internal.examiner.name : 'Not Assigned'}</TableCell>
-                                            </Tooltip>
-                                            <TableCell align="left">{project.details.internal.date ? moment(project.details.internal.date).format('MMM DD, YYYY')  : 'Not Assigned'}</TableCell>
-                                            <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation ? project.details.external.examiner.ugpc_details.designation : 'Not Provided' : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
-                                                <TableCell align="left">{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
-                                            </Tooltip>
-                                            <TableCell align="left">{project.details.external.date ? moment(project.details.external.date).format('MMM DD, YYYY') : 'Not Assigned'}</TableCell>
-                                            <TableCell align="left">{project.documentation.finalDocumentation.status === 'Completed' ?  <Chip  label={getGrade(project.details.marks)} style={getGradeChipColor(getGrade(project.details.marks))}  size="small"/>  : 'Not Specified'}</TableCell>
-                                            <TableCell align="left">
-                                                <Tooltip title='Click for Actions' placement='top'>
-                                                    <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
-                                                        <MoreVertOutlined/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Menu
-                                                    id="simple-menu"
-                                                    anchorEl={anchorEl}
-                                                    keepMounted
-                                                    open={Boolean(anchorEl)}
-                                                    onClose={()=>setAnchorEl(null)}
-                                                >
-                                                    {
-                                                        project.documentation.finalDocumentation.status === 'Available for Internal' &&
-                                                        <MenuItem onClick={()=>handleOpenDialog(project._id,project.details.supervisor._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'internal')}>
-                                                            <ListItemIcon>
-                                                                <AccessTimeOutlined />
-                                                            </ListItemIcon>
-                                                            <Typography variant="inherit" noWrap>
-                                                                Schedule Internal
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    }
+                                filter.length === 0  ?
+                                    <TableRow>
+                                        <TableCell colSpan={10}>
+                                            <div className={emptyStyles.emptyListContainer}>
+                                                <div className={emptyStyles.emptyList}>
+                                                    No Projects Found
+                                                </div>
+                                            </div>
+                                        </TableCell>
 
-                                                    <MenuItem onClick={()=>setAnchorEl(null)}>
+                                    </TableRow>
+                                :
+                                filter.map((project,index) => (
+                                    <TableRow key={index} className={projectsClasses.tableRow} style={getEvaluationListBorderColor(project.documentation.finalDocumentation.status)}>
+                                        <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
+                                        <TableCell >{project.department}</TableCell>
+                                        <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
+                                            <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
+                                        </Tooltip>
+                                        <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
+                                        <Tooltip  title={project.details.internal.examiner ? project.details.internal.examiner.ugpc_details.designation ? project.details.internal.examiner.ugpc_details.designation :'Not Provided' : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                            <TableCell align="left">{project.details.internal.examiner ? project.details.internal.examiner.name : 'Not Assigned'}</TableCell>
+                                        </Tooltip>
+                                        <TableCell align="left">{project.details.internal.date ? moment(project.details.internal.date).format('MMM DD, YYYY')  : 'Not Assigned'}</TableCell>
+                                        <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation ? project.details.external.examiner.ugpc_details.designation : 'Not Provided' : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                            <TableCell align="left">{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
+                                        </Tooltip>
+                                        <TableCell align="left">{project.details.external.date ? moment(project.details.external.date).format('MMM DD, YYYY') : 'Not Assigned'}</TableCell>
+                                        <TableCell align="left">{project.documentation.finalDocumentation.status === 'Completed' ?  <Chip  label={getGrade(project.details.marks)} style={getGradeChipColor(getGrade(project.details.marks))}  size="small"/>  : 'Not Specified'}</TableCell>
+                                        <TableCell align="left">
+                                            <Tooltip title='Click for Actions' placement='top'>
+                                                <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
+                                                    <MoreVertOutlined/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Menu
+                                                id="simple-menu"
+                                                anchorEl={anchorEl}
+                                                keepMounted
+                                                open={Boolean(anchorEl)}
+                                                onClose={()=>setAnchorEl(null)}
+                                            >
+                                                {
+                                                    project.documentation.finalDocumentation.status === 'Available for Internal' &&
+                                                    <MenuItem onClick={()=>handleOpenDialog(project._id,project.details.supervisor._id,project.documentation.finalDocumentation.document.filename,project.documentation.finalDocumentation.document.originalname,project.documentation.visionDocument.title,project.documentation.finalDocumentation._id,'internal')}>
                                                         <ListItemIcon>
-                                                            <Close />
+                                                            <AccessTimeOutlined />
                                                         </ListItemIcon>
                                                         <Typography variant="inherit" noWrap>
-                                                            Cancel
+                                                            Schedule Internal
                                                         </Typography>
                                                     </MenuItem>
+                                                }
 
-                                                </Menu>
-                                            </TableCell>
-                                        </TableRow>
-                                    </Tooltip>
+                                                <MenuItem onClick={()=>setAnchorEl(null)}>
+                                                    <ListItemIcon>
+                                                        <Close />
+                                                    </ListItemIcon>
+                                                    <Typography variant="inherit" noWrap>
+                                                        Cancel
+                                                    </Typography>
+                                                </MenuItem>
+
+                                            </Menu>
+                                        </TableCell>
+                                    </TableRow>
                                 ))
                             }
                         </TableBody>

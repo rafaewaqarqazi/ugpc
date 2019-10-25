@@ -266,136 +266,142 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                 />
             </div>
             {
-                filter.length === 0  ?
-                    <div className={emptyStyles.emptyListContainer}>
-                        <div className={emptyStyles.emptyList}>
-                            No Projects Found
-                        </div>
-                    </div>:
-                    <div className={projectsClasses.tableWrapper}>
+                <div className={projectsClasses.tableWrapper}>
 
-                        <Table size='small'>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left">Title</TableCell>
-                                    <TableCell align="left">Department</TableCell>
-                                    <TableCell align="left">Students</TableCell>
-                                    <TableCell align="left">Supervisor</TableCell>
-                                    <TableCell align="left">Status</TableCell>
-                                    <TableCell align="left">Date</TableCell>
-                                    <TableCell align="left">Document</TableCell>
-                                    <TableCell align="left">Marks</TableCell>
-                                    <TableCell align="left">Actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
+                    <Table size='small'>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="left">Title</TableCell>
+                                <TableCell align="left">Department</TableCell>
+                                <TableCell align="left">Students</TableCell>
+                                <TableCell align="left">Supervisor</TableCell>
+                                <TableCell align="left">Status</TableCell>
+                                <TableCell align="left">Date</TableCell>
+                                <TableCell align="left">Document</TableCell>
+                                <TableCell align="left">Marks</TableCell>
+                                <TableCell align="left">Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
 
-                                {
-                                    filter.map((project,index) => (
-                                        <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
-                                            <TableRow className={projectsClasses.tableRow} >
-                                                <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
-                                                <TableCell align="left" >{project.department}</TableCell>
-                                                <TableCell style={{display:'flex'}}>
-                                                    {
-                                                        project.students.map((student,index) =>
-                                                            <Tooltip key={index} title={student.student_details.regNo} placement='top'>
-                                                                <Avatar className={emptyStyles.avatar}>
-                                                                    {
-                                                                        student.name.charAt(0).toUpperCase()
-                                                                    }
-                                                                </Avatar>
-                                                            </Tooltip>
-                                                        )
-                                                    }
-                                                </TableCell>
-                                                <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
-                                                    <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
+                            {
+                                filter.length === 0  ?
+                                    <TableRow>
+                                        <TableCell colSpan={9}>
+                                            <div className={emptyStyles.emptyListContainer}>
+                                                <div className={emptyStyles.emptyList}>
+                                                    No Projects Found
+                                                </div>
+                                            </div>
+                                        </TableCell>
+
+                                    </TableRow>
+                                    :
+                                filter.map((project,index) => (
+                                    <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
+                                        <TableRow className={projectsClasses.tableRow} >
+                                            <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
+                                            <TableCell align="left" >{project.department}</TableCell>
+                                            <TableCell style={{display:'flex'}}>
+                                                {
+                                                    project.students.map((student,index) =>
+                                                        <Tooltip key={index} title={student.student_details.regNo} placement='top'>
+                                                            <Avatar className={emptyStyles.avatar}>
+                                                                {
+                                                                    student.name.charAt(0).toUpperCase()
+                                                                }
+                                                            </Avatar>
+                                                        </Tooltip>
+                                                    )
+                                                }
+                                            </TableCell>
+                                            <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
+                                                <TableCell align="left" style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
+                                            </Tooltip>
+                                            <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
+                                            <TableCell align="left">{
+                                                type === 'internal' ?
+                                                project.details.internal.date ? moment(project.details.internal.date).format('LLL')  : 'Not Assigned'
+                                                    :
+                                                    project.details.external.date ? moment(project.details.external.date).format('LLL')  : 'Not Assigned'
+                                            }</TableCell>
+                                            <TableCell align="left">
+                                                <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
+                                                    <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${project.documentation.finalDocumentation.document.filename}`} target="_blank" >
+                                                        <PictureAsPdfOutlined />
+                                                    </a>
                                                 </Tooltip>
-                                                <TableCell align="left">{project.documentation.finalDocumentation.status}</TableCell>
-                                                <TableCell align="left">{
-                                                    type === 'internal' ?
-                                                    project.details.internal.date ? moment(project.details.internal.date).format('LLL')  : 'Not Assigned'
-                                                        :
-                                                        project.details.external.date ? moment(project.details.external.date).format('LLL')  : 'Not Assigned'
-                                                }</TableCell>
-                                                <TableCell align="left">
-                                                    <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
-                                                        <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${project.documentation.finalDocumentation.document.filename}`} target="_blank" >
-                                                            <PictureAsPdfOutlined />
-                                                        </a>
-                                                    </Tooltip>
-                                                </TableCell>
-                                                <TableCell align="left">{
-                                                    type === 'internal' ?
-                                                    project.details.marks.internal ? project.details.marks.internal  : 'Not Assigned'
-                                                        :
-                                                    project.details.marks.external ? project.details.marks.external  : 'Not Assigned'
-                                                }</TableCell>
-                                                <TableCell align="left">
-                                                    <Tooltip title='Click for Actions' placement='top'>
-                                                        <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
-                                                            <MoreVertOutlined/>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Menu
-                                                        id="simple-menu"
-                                                        anchorEl={anchorEl}
-                                                        keepMounted
-                                                        open={Boolean(anchorEl)}
-                                                        onClose={()=>setAnchorEl(null)}
-                                                    >
-                                                        {
-                                                            project.documentation.finalDocumentation.status === 'Internal Scheduled' && type === 'internal' &&
-                                                            <MenuItem onClick={()=>handleClickEvaluate(project.documentation.finalDocumentation._id,project._id)}>
-                                                                <ListItemIcon>
-                                                                    <AssignmentTurnedInOutlined />
-                                                                </ListItemIcon>
-                                                                <Typography variant="inherit" noWrap>
-                                                                    Evaluate
-                                                                </Typography>
-                                                            </MenuItem>
-                                                        }
-                                                        {
-                                                            project.documentation.finalDocumentation.status === 'External Assigned' && type === 'external' &&
-                                                            <MenuItem onClick={()=>handleClickScheduleExternal(project.documentation.finalDocumentation._id,project._id)}>
-                                                                <ListItemIcon>
-                                                                    <AssignmentTurnedInOutlined />
-                                                                </ListItemIcon>
-                                                                <Typography variant="inherit" noWrap>
-                                                                    Schedule External
-                                                                </Typography>
-                                                            </MenuItem>
-                                                        }
-                                                        {
-                                                            project.documentation.finalDocumentation.status === 'External Scheduled' && type === 'external' &&
-                                                            <MenuItem onClick={()=>handleClickEvaluate(project.documentation.finalDocumentation._id,project._id)}>
-                                                                <ListItemIcon>
-                                                                    <AssignmentTurnedInOutlined />
-                                                                </ListItemIcon>
-                                                                <Typography variant="inherit" noWrap>
-                                                                    Evaluate
-                                                                </Typography>
-                                                            </MenuItem>
-                                                        }
-                                                        <MenuItem onClick={()=>setAnchorEl(null)}>
+                                            </TableCell>
+                                            <TableCell align="left">{
+                                                type === 'internal' ?
+                                                project.details.marks.internal ? project.details.marks.internal  : 'Not Assigned'
+                                                    :
+                                                project.details.marks.external ? project.details.marks.external  : 'Not Assigned'
+                                            }</TableCell>
+                                            <TableCell align="left">
+                                                <Tooltip title='Click for Actions' placement='top'>
+                                                    <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
+                                                        <MoreVertOutlined/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Menu
+                                                    id="simple-menu"
+                                                    anchorEl={anchorEl}
+                                                    keepMounted
+                                                    open={Boolean(anchorEl)}
+                                                    onClose={()=>setAnchorEl(null)}
+                                                >
+                                                    {
+                                                        project.documentation.finalDocumentation.status === 'Internal Scheduled' && type === 'internal' &&
+                                                        <MenuItem onClick={()=>handleClickEvaluate(project.documentation.finalDocumentation._id,project._id)}>
                                                             <ListItemIcon>
-                                                                <Close />
+                                                                <AssignmentTurnedInOutlined />
                                                             </ListItemIcon>
                                                             <Typography variant="inherit" noWrap>
-                                                                Cancel
+                                                                Evaluate
                                                             </Typography>
                                                         </MenuItem>
+                                                    }
+                                                    {
+                                                        project.documentation.finalDocumentation.status === 'External Assigned' && type === 'external' &&
+                                                        <MenuItem onClick={()=>handleClickScheduleExternal(project.documentation.finalDocumentation._id,project._id)}>
+                                                            <ListItemIcon>
+                                                                <AssignmentTurnedInOutlined />
+                                                            </ListItemIcon>
+                                                            <Typography variant="inherit" noWrap>
+                                                                Schedule External
+                                                            </Typography>
+                                                        </MenuItem>
+                                                    }
+                                                    {
+                                                        project.documentation.finalDocumentation.status === 'External Scheduled' && type === 'external' &&
+                                                        <MenuItem onClick={()=>handleClickEvaluate(project.documentation.finalDocumentation._id,project._id)}>
+                                                            <ListItemIcon>
+                                                                <AssignmentTurnedInOutlined />
+                                                            </ListItemIcon>
+                                                            <Typography variant="inherit" noWrap>
+                                                                Evaluate
+                                                            </Typography>
+                                                        </MenuItem>
+                                                    }
+                                                    <MenuItem onClick={()=>setAnchorEl(null)}>
+                                                        <ListItemIcon>
+                                                            <Close />
+                                                        </ListItemIcon>
+                                                        <Typography variant="inherit" noWrap>
+                                                            Cancel
+                                                        </Typography>
+                                                    </MenuItem>
 
-                                                    </Menu>
-                                                </TableCell>
-                                            </TableRow>
-                                        </Tooltip>
-                                    ))
-                                }
-                            </TableBody>
-                        </Table>
-                    </div>
+                                                </Menu>
+                                            </TableCell>
+                                        </TableRow>
+                                    </Tooltip>
+                                ))
+                            }
+                        </TableBody>
+                    </Table>
+                </div>
             }
             <Dialog
                 open={dialog.evaluation}
