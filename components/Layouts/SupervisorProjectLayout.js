@@ -7,7 +7,6 @@ import {
     CssBaseline,
     Divider,
     IconButton,
-    ListItem,
     ListItemText,
     ListItemIcon,
     Tooltip,
@@ -26,11 +25,8 @@ import {
 import Link from "next/link";
 import {
     Dashboard,
-
     VisibilityOutlined,
     Visibility,
-
-
     ViewColumnOutlined, ListAlt,
     ShowChart
 } from "@material-ui/icons";
@@ -38,7 +34,7 @@ import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import ProjectContext from '../../context/project/project-context';
 import MenuIcon from '@material-ui/icons/Menu';
-import Router, {useRouter} from 'next/router';
+import Router from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
 import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
 import MobileDrawer from "./MobileDrawer";
@@ -48,7 +44,6 @@ import AddMenu from "./AddMenu";
 import DrawerLink from "./DrawerLink";
 
 const SupervisorProjectLayout = ({children,projectId})=> {
-    const router = useRouter();
     const userContext = useContext(UserContext);
     const projectContext =useContext(ProjectContext);
     const switchClasses = useSwitchStyles();

@@ -116,13 +116,15 @@ const Projects = () => {
                                                                         <LinearProgress variant='determinate' value={getCompletionPercentage(project.details)} style={{height:8,borderRadius:10}}/>
                                                                     </Tooltip>
                                                                 </TableCell>
-                                                                <TableCell align="left">{
-                                                                    project.students.map((student,index) =>
-                                                                        <div key={index} style={{display:'flex'}}>
-                                                                            <UserAvatarComponent user={student}/>
-                                                                        </div>
-                                                                    )
-                                                                }</TableCell>
+                                                                <TableCell align="left">
+                                                                    <div style={{display:'flex'}}>
+                                                                        {
+                                                                            project.students.map((student,index) =>
+                                                                                <UserAvatarComponent user={student} key={index}/>
+                                                                            )
+                                                                        }
+                                                                    </div>
+                                                                </TableCell>
                                                                 <TableCell align="left">{moment(project.details.acceptanceLetter.issueDate).format('LL')}</TableCell>
                                                                 <TableCell align="left">{moment(project.details.estimatedDeadline).format('LL')}</TableCell>
                                                             </TableRow>

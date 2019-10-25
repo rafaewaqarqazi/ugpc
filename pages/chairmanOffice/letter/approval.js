@@ -180,12 +180,6 @@ const Approval = () => {
                         <Divider/>
                         {
                             loading ? <CircularLoading/> :
-                            filter.length === 0  ?
-                                <div className={styles.emptyListContainer}>
-                                    <div className={styles.emptyList}>
-                                        No Projects Found
-                                    </div>
-                                </div>:
                                 <div className={tableClasses.tableWrapper}>
 
                                     <Table size='small'>
@@ -202,6 +196,16 @@ const Approval = () => {
                                         <TableBody>
 
                                             {
+                                                filter.length === 0  ?
+                                                    <TableRow >
+                                                        <TableCell colSpan={6}>
+                                                            <div className={styles.emptyListContainer}>
+                                                                <div className={styles.emptyList}>
+                                                                    No Projects Found
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>:
                                                 filter.map((project,index) => (
                                                     <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
                                                         <TableRow className={tableClasses.tableRow} >
@@ -211,9 +215,9 @@ const Approval = () => {
                                                             <TableCell >
                                                                 {
                                                                     project.students.map((student,index) =>
-                                                                        <div key={index}>
-                                                                            {`${student.student_details.regNo.slice(0,4)} ${index === 1 ? '& ':''}`}
-                                                                        </div>
+                                                                        <span key={index}>
+                                                                            {` ${index === 1 ? ' & ':''}${student.student_details.regNo.slice(0,4)}`}
+                                                                        </span>
                                                                     )
                                                                 }
                                                             </TableCell>
@@ -268,12 +272,12 @@ const Approval = () => {
             <Dialog open={letterViewer} onClose={()=>setLetterViewer(false)} fullScreen>
                 <AppBar className={documentClasses.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color='inherit'  onClick={()=>setLetterViewer(false)} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
                         <Typography variant="h6" className={documentClasses.title} noWrap>
                             Auto Generated Acceptance Letter
                         </Typography>
+                        <IconButton edge="start" color='inherit'  onClick={()=>setLetterViewer(false)} aria-label="close">
+                            <CloseIcon />
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 <DialogContent style={{height:500}}>

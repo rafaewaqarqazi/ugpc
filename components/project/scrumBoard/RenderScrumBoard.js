@@ -215,8 +215,8 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const handleCompleteSprint = ()=>{
         const data = sprint;
         const currentSprint = data.filter(d => d.name === selectedSprint)[0];
-        const completed = currentSprint.done.length;
-        const inComplete = currentSprint.todos.length + currentSprint.inProgress.length + currentSprint.inReview.length;
+        const completed = currentSprint.tasks.filter(task => task.status === 'done').length;
+        const inComplete = currentSprint.tasks.filter(task => task.status === 'todo').length +currentSprint.tasks.filter(task => task.status === 'inProgress').length + currentSprint.tasks.filter(task => task.status === 'inReview').length;
         setSprintTasks({
             completed,
             inComplete
@@ -228,16 +228,8 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         setCompleteSprintLoading(true);
         const data = sprint;
         const currentSprint = data.filter(d => d.name === selectedSprint)[0];
-        let tasks =[];
-        currentSprint.todos.map(todos => {
-            tasks = [...tasks,todos]
-        });
-        currentSprint.inProgress.map(inProgress => {
-            tasks = [...tasks,inProgress]
-        });
-        currentSprint.inReview.map(inReview => {
-            tasks = [...tasks,inReview]
-        });
+        let tasks =currentSprint.tasks.filter(task => task.status !== 'done');
+        console.log(tasks)
         const completedData = {
             tasks,
             sprintId:currentSprint._id,

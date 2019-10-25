@@ -7,7 +7,6 @@ import {
     CssBaseline,
     Divider,
     IconButton,
-    ListItem,
     ListItemText,
     ListItemIcon,
     Tooltip,
@@ -19,7 +18,7 @@ import {
     FormControl,
     InputLabel,
     Select,
-    OutlinedInput, Menu,
+    OutlinedInput
 } from '@material-ui/core';
 
 import Link from "next/link";
@@ -32,16 +31,16 @@ import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import UserContext from '../../context/user/user-context';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import Router, {useRouter} from 'next/router';
+import Router from 'next/router';
 import ProfileMenu from "../profile/ProfileMenu";
 import {useSwitchStyles} from "../../src/material-styles/selectSwitchStyles";
 import DrawerLayout from "./DrawerLayout";
 import AppBarWithAddMenu from "./AppBarWithAddMenu";
 import MobileDrawer from "./MobileDrawer";
+import DrawerLink from "./DrawerLink";
 
 
 const SupervisorLayout = ({children})=> {
-    const router = useRouter();
     const switchClasses = useSwitchStyles();
     const userContext = useContext(UserContext);
     useEffect(()=>{
@@ -62,25 +61,21 @@ const SupervisorLayout = ({children})=> {
     const drawerContent = (
         <Fragment>
             <List>
-                <Link href='/supervisor/projects'>
-                    <ListItem button className={router.pathname === '/supervisor/projects' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <Laptop className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Projects"} />
-                    </ListItem>
-                </Link>
+                <DrawerLink href='/supervisor/projects'>
+                    <ListItemIcon>
+                        <Laptop className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Projects"} />
+                </DrawerLink>
             </List>
             <Divider/>
             <List>
-                <Link href='/supervisor/documentation'>
-                    <ListItem button className={router.pathname === '/supervisor/documentation' ? classes.drawerListItemActive : classes.drawerListItem}>
-                        <ListItemIcon>
-                            <Assignment className={classes.iconColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Documentation"}  style={{whiteSpace:'normal'}} />
-                    </ListItem>
-                </Link>
+                <DrawerLink href='/supervisor/documentation'>
+                    <ListItemIcon>
+                        <Assignment className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Documentation"}  style={{whiteSpace:'normal'}} />
+                </DrawerLink>
             </List>
         </Fragment>
 

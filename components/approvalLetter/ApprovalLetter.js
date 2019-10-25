@@ -117,7 +117,7 @@ const ApprovalLetter = ({title,date,students,supervisor,chairmanName}) => (
                 </View>
                 <View >
                     <Text style={{textIndent:50}} > The Department has allocated project titled above to
-                        <Text style={{ fontFamily: 'Times-Bold'}} > {students.map((student,index) => `${index === 2? 'and':''} Mr. ${student.name} Registration No: ${student.student_details.regNo}`)}.
+                        <Text style={{ fontFamily: 'Times-Bold'}} > {students.map((student,index) => `${index === 1? ' and':''} Mr. ${student.name} Registration No: ${student.student_details.regNo}`)}.
                             {` ${supervisor.name}, ${supervisor.supervisor_details.position},`}
                         </Text>
                         <Text> Department of Computer Science & Software Engineering, Faculty of Basic & Applied Sciences, International Islamic University, Islamabad,

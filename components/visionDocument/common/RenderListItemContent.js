@@ -1,9 +1,9 @@
 import {Badge, Chip, Grid, Tooltip, Typography, Zoom} from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
 import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import React from "react";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
+import UserAvatarComponent from "../../UserAvatarComponent";
 
 export const RenderListItemContent = ({doc,project})=>{
     const classes = useListItemStyles();
@@ -11,12 +11,10 @@ export const RenderListItemContent = ({doc,project})=>{
         <Grid container spacing={1} className={classes.listItem} >
             <Grid item xs={12} sm={2} className={classes.gridTransition}>
                 <div className={classes.grid1} >
-                    <div>
+                    <div style={{display:'flex',flexDirection:'row'}}>
                         {
                             project.students.map((student,index) =>(
-                                <Tooltip key={index} title={student.student_details.regNo} placement="top" TransitionComponent={Zoom}>
-                                    <Avatar className={classes.avatar}>{student.name.charAt(0).toUpperCase()}</Avatar>
-                                </Tooltip>
+                                <UserAvatarComponent user={student} key={index}/>
                             ))
                         }
                     </div>

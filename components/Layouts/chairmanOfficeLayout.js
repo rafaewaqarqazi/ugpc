@@ -7,7 +7,6 @@ import {
     CssBaseline,
     Divider,
     IconButton,
-    ListItem,
     ListItemText,
     ListItemIcon,
     Tooltip,
@@ -16,19 +15,19 @@ import {
     Toolbar,
     Avatar,
 } from '@material-ui/core';
-import Link from "next/link";
 import {
-    AssignmentTurnedInOutlined,
-    AssignmentOutlined,
-
-    ChevronLeft,
-    ChevronRight,
+    AssignmentTurnedIn,
+    Assignment,
 } from "@material-ui/icons";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import MenuIcon from "@material-ui/icons/Menu";
 import UserContext from "../../context/user/user-context";
 import ProfileMenu from "../profile/ProfileMenu";
 import Router from 'next/router';
+import DrawerLink from "./DrawerLink";
+import MobileDrawer from "./MobileDrawer";
+import DrawerLayout from "./DrawerLayout";
+import AppBarWithAddMenu from "./AppBarWithAddMenu";
 const ChairmanOfficeLayout = ({children})=> {
     const userContext = useContext(UserContext);
     useEffect(()=>{
@@ -49,39 +48,30 @@ const ChairmanOfficeLayout = ({children})=> {
     const handleClickProfile = ()=>{
         Router.push('/chairmanOffice/profile');
     };
-    const drawer = (
+    const drawerContent = (
         <Fragment>
             <List>
-                <Link href='/chairmanOffice/letter/approval'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <AssignmentOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Approval Letters"} />
-                    </ListItem>
-                </Link>
-
-                <Link href='/chairmanOffice/externals'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <AssignmentOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Externals"}/>
-                    </ListItem>
-                </Link>
-
-
+                <DrawerLink href='/chairmanOffice/letter/approval'>
+                    <ListItemIcon>
+                        <Assignment className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Approval Letters"} />
+                </DrawerLink>
+                <DrawerLink href='/chairmanOffice/externals'>
+                    <ListItemIcon>
+                        <Assignment className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Externals"}/>
+                </DrawerLink>
             </List>
             <Divider/>
             <List>
-                <Link href='/chairmanOffice/completed'>
-                    <ListItem button >
-                        <ListItemIcon>
-                            <AssignmentTurnedInOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary={"Completed"} />
-                    </ListItem>
-                </Link>
+                <DrawerLink href='/chairmanOffice/completed'>
+                    <ListItemIcon>
+                        <AssignmentTurnedIn className={classes.iconColor}/>
+                    </ListItemIcon>
+                    <ListItemText primary={"Completed"} />
+                </DrawerLink>
             </List>
         </Fragment>
 
@@ -110,23 +100,11 @@ const ChairmanOfficeLayout = ({children})=> {
                     <nav  aria-label="mailbox folders">
                         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                         <Hidden smUp >
-                            <Drawer
-                                variant="temporary"
-                                open={mobileOpen}
-                                onClose={handleDrawerToggle()}
-                                ModalProps={{
-                                    keepMounted: true, // Better open performance on mobile.
-                                }}
-                            >
-                                <div style={{width:240}}>
-                                    <div className={classes.avatarDrawer}>
-                                        <Avatar  className={classes.avatarSize}>{!userContext.user.isLoading ? userContext.user.user.name.charAt(0).toUpperCase() : 'U' }</Avatar>
-                                    </div>
-                                    <Divider/>
-                                    {drawer}
-                                </div>
-
-                            </Drawer>
+                            <MobileDrawer
+                                drawerContent={drawerContent}
+                                mobileOpen={mobileOpen}
+                                handleDrawerToggle={handleDrawerToggle}
+                                />
                         </Hidden>
                     </nav>
                     <div>
@@ -138,6 +116,7 @@ const ChairmanOfficeLayout = ({children})=> {
 
             <div className={classes.root}>
                 <Hidden xsDown>
+                    <AppBarWithAddMenu open={open} handleClickProfile={handleClickProfile}/>
                     <Drawer
                         variant="permanent"
                         className={clsx(classes.drawer, {
@@ -152,56 +131,15 @@ const ChairmanOfficeLayout = ({children})=> {
                         }}
                         open={open}
                     >
-                        <div className={classes.side}>
-                            <div className={classes.sidebar}>
-                                <div className={classes.menuRightButton}>
-                                    {
-                                        !open ?
-                                            <Tooltip title='Expand' placement='right'>
-                                                <IconButton onClick={handleDrawerOpen} style={{color:'#fff'}}>
-                                                    <ChevronRight color='inherit'/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            :
-                                            <div className={classes.blank}/>
-
-                                    }
-                                </div>
-
-                                <div className={classes.menus}>
-                                    <div className={classes.menuRightTopContent} style={{flexGrow:1}}>
-                                        <div >
-                                            <Tooltip title='UGPC-Software' placement='right'>
-                                                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarMargin}/>
-                                            </Tooltip>
-                                        </div>
-                                    </div>
-                                    <div className={classes.menuRightTopContent}>
-                                        <ProfileMenu handleClickProfile={handleClickProfile}/>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className={classes.list}>
-                                <div className={classes.toolbar}>
-                                    <div style={{flexGrow:1}}/>
-                                    {
-                                        open &&
-                                        <Tooltip title='Collapse' placement='right'>
-                                            <IconButton onClick={handleDrawerClose}>
-                                                <ChevronLeft />
-                                            </IconButton>
-                                        </Tooltip>
-                                    }
-                                </div>
-                                <Divider />
-
-                                {drawer}
-
-                            </div>
-                        </div>
+                        <DrawerLayout
+                            drawerContent={drawerContent}
+                            open={open}
+                            handleDrawerOpen={handleDrawerOpen}
+                            handleDrawerClose={handleDrawerClose}
+                            />
                     </Drawer>
                     <main className={classes.content}>
+                        <div className={classes.toolbar}/>
                         {children}
                     </main>
                 </Hidden>

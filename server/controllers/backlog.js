@@ -9,9 +9,9 @@ exports.addNewTask = async (req,res)=>{
         const update={
             ...task,
             createdAt:Date.now()
-        }
+        };
         const result = await Projects.findByIdAndUpdate(projectId,{
-            $push:{
+            $addToSet:{
                 "details.backlog":update
             }
         },{new:true})
@@ -19,7 +19,7 @@ exports.addNewTask = async (req,res)=>{
             .populate({path:'details.backlog.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.backlog.discussion.author',model:'Users',select:'name profileImage'})
             .populate({path:'details.backlog.createdBy',model:'Users',select:'name'})
-            .sort({"details.backlog.priority":1})
+            .sort({"details.backlog.priority":1});
 
         await res.json(result)
     }
@@ -42,8 +42,8 @@ exports.planSprint = async (req,res)=>{
             {
                 $match:{"details.backlog._id":{$in:ids}}
             }
-        ])
-        const filteredTasks = await tasks.map(task => task.details.backlog)
+        ]);
+        const filteredTasks = await tasks.map(task => task.details.backlog);
         const result = await Projects.findOneAndUpdate(
             {"_id":projectId},
             {
@@ -64,7 +64,7 @@ exports.planSprint = async (req,res)=>{
         };
         const updatedResult = await Projects.findByIdAndUpdate(projectId,
             {
-                $push: {
+                $addToSet: {
                     "details.sprint": update
                 }
             },{new:true})
@@ -72,7 +72,7 @@ exports.planSprint = async (req,res)=>{
             .populate({path:'details.backlog.assignee',model:'Users',select:'name department student_details email profileImage'})
             .populate({path:'details.backlog.discussion.author',model:'Users',select:'name profileImage'})
             .populate({path:'details.backlog.createdBy',model:'Users',select:'name'})
-            .sort({"details.backlog.priority":1})
+            .sort({"details.backlog.priority":1});
        await res.json(updatedResult)
     }catch (e) {
         await res.json(e.message)

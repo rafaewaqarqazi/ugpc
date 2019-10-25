@@ -38,9 +38,12 @@ const RemoveUserComponent = ({userId,type,setSuccess}) => {
 
             <ErrorSnackBar open={error} message="Couldn't Remove User!" handleSnackBar={()=>setError(false)}/>
             <Tooltip  title='Remove User' placement="top" TransitionComponent={Zoom}>
-                <IconButton edge="end" aria-label="delete" onClick={()=>setConfirm(true)} size='small'>
-                    <Delete color='error'/>
-                </IconButton>
+                <div>
+                    <IconButton edge="end" aria-label="delete" disabled={userContext.user.user._id === userId} onClick={()=>setConfirm(true)} size='small'>
+                        <Delete color={userContext.user.user._id === userId ? 'inherit' :'error'}/>
+                    </IconButton>
+                </div>
+
             </Tooltip>
             <Dialog open={confirm} onClose={()=>setConfirm(false)} fullWidth maxWidth='xs'>
                 {loading && <LinearProgress/>}

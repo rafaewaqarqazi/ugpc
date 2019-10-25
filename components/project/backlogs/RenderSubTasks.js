@@ -50,7 +50,7 @@ const RenderSubTasks = ({subTasks}) => {
                                                 <Typography
                                                     component='div'
                                                     variant="caption"
-                                                    color="textSecondary"
+                                                    color="textPrimary"
                                                     className={classes.wrapText}
                                                 >
                                                     {subTask.description}

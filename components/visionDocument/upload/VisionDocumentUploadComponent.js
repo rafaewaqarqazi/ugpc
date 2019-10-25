@@ -120,7 +120,7 @@ class VisionDocumentUploadComponent extends Component{
         this.setState({
             success:false
         });
-        router.push('/student/overview')
+        router.push('/student/roadmap')
     };
 
     handleNext = ()=> {

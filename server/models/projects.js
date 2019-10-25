@@ -30,7 +30,8 @@ const projectsSchema = new mongoose.Schema({
             ],
             uploadedAt:Date,
             updatedAt:Date,
-            meetingDate:Date
+            meetingDate:Date,
+            venue:String
         }],
         finalDocumentation:[{
             uploadedAt:Date,
@@ -41,7 +42,7 @@ const projectsSchema = new mongoose.Schema({
     details:{
         marks:{
           visionDocument: String,
-            supervisor:String,
+          supervisor:String,
           internal: String,
           external: String
         },
@@ -53,10 +54,12 @@ const projectsSchema = new mongoose.Schema({
         internal:{
             examiner:{type:ObjectId, ref:"Users"},
             date:Date,
+            venue:String
         },
         external:{
             examiner:{type:ObjectId, ref:"Users"},
             date:Date,
+            venue:String
         },
         acceptanceLetter:{
             name:String,

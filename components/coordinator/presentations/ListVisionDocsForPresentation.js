@@ -9,29 +9,15 @@ import {
     DialogContent,
     DialogTitle,
     LinearProgress,
-    Grid,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Collapse,
-    FormControl,
-    FormControlLabel,
-    RadioGroup,
-    Radio
 } from "@material-ui/core";
-import {ExpandLess,ExpandMore, LocationOnOutlined, MeetingRoomOutlined} from '@material-ui/icons'
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import {makeStyles} from "@material-ui/styles";
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 import {formatData} from "./formatData";
 import VisionDocDetailsDialog from "../../visionDocument/higherAuthority/list/VisionDocDetailsDialog";
-import {DateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from '@date-io/date-fns';
 import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {RenderListItemContent} from "../../visionDocument/common/RenderListItemContent";
-import {getClassRooms, getLabs, getOtherRooms} from "./rooms";
 import SchedulingDialogContent from "./SchedulingDialogContent";
 
 const useStyles = makeStyles(theme =>({

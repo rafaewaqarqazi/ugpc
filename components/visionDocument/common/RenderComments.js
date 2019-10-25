@@ -6,13 +6,11 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
-    Typography,
-    Avatar
+    Typography
 } from "@material-ui/core";
 import {ExpandLess, ExpandMore} from "@material-ui/icons";
 import React, {Fragment, useState} from "react";
 import {makeStyles} from "@material-ui/styles";
-import {getRandomColor} from "../../../src/material-styles/randomColors";
 import UserAvatarComponent from "../../UserAvatarComponent";
 import moment from "moment";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
@@ -21,10 +19,7 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
         overflow: 'auto',
         maxHeight: 300,
-    },
-    avatar:{
-        backgroundColor:getRandomColor()
-    },
+    }
 }));
 export const RenderComments = ({comments})=>{
     const classes = useStyles();

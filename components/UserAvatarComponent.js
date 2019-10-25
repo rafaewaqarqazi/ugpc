@@ -10,7 +10,7 @@ const UserAvatarComponent = ({user}) => {
             {
                 user.profileImage && user.profileImage.filename ?
                     <Tooltip title={user.name} placement='top'>
-                        <Avatar  className={avatarClasses.imageAvatar}  src={`${serverUrl}/../static/images/${user.profileImage.filename }`}  />
+                        <Avatar  className={avatarClasses.imageAvatar} alt={user.name} src={`${serverUrl}/../static/images/${user.profileImage.filename }`}  />
                     </Tooltip>
                     :
                     <Tooltip title={user.name} placement='top'>

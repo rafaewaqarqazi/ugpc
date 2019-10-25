@@ -13,6 +13,10 @@ const useStyles = makeStyles(theme=>({
         },
         borderRadius:'4px 0 0 4px',
     },
+    assignees:{
+        display:'flex',
+        flexDirection:'row'
+    }
 }))
 const RenderBacklogTaskItem = ({task}) => {
     const classes = useStyles();
@@ -39,11 +43,14 @@ const RenderBacklogTaskItem = ({task}) => {
                     }
                 </Grid>
                 <Grid item xs={2} sm={2}>
-                    {
-                        task.assignee.map((student,index) =>(
-                            <UserAvatarComponent user={student} key={index}/>
-                        ))
-                    }
+                    <div className={classes.assignees}>
+                        {
+                            task.assignee.map((student,index) =>(
+                                <UserAvatarComponent user={student} key={index}/>
+                            ))
+                        }
+                    </div>
+
                 </Grid>
                 <Grid item xs={1} sm={1}>
                     <Tooltip  title='Sub Tasks' placement="top" TransitionComponent={Zoom}>

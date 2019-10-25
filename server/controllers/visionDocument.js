@@ -7,7 +7,6 @@ const _ = require('lodash');
 exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
     try {
         const {committees} = req.query;
-        console.log(committees)
         const dep = committees.split(',');
         const results= await Projects.aggregate([
             {$match:{department:{$in:dep}}},
@@ -22,7 +21,7 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
             {$sort:{"documentation.visionDocument.updatedAt":1}}
         ]);
         const result = await Projects.populate(results,[
-            {path:"projects.students",model:'Users',select:'_id name department student_details.regNo'},
+            {path:"projects.students",model:'Users',select:'_id name department student_details.regNo profileImage'},
             {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
             {path:"projects.details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
         ])
@@ -77,20 +76,47 @@ exports.commentOnVision = (req, res) =>{
         .catch(err => res.json(err))
 }
 
-exports.changeStatus = (req, res)=>{
-    const {status, projectId,documentId} = req.body;
-    Projects.update(
-        {"_id":projectId, "documentation.visionDocument._id":documentId},
-        {
-            $set:{
-                "documentation.visionDocument.$.status":status,
-                "documentation.visionDocument.$.updatedAt":Date.now()
+exports.changeStatus =async (req, res)=>{
+    try {
+        const {status, projectId,documentId} = req.body;
+        const result = await Projects.findOneAndUpdate(
+            {"_id":projectId, "documentation.visionDocument._id":documentId},
+            {
+                $set:{
+                    "documentation.visionDocument.$.status":status,
+                    "documentation.visionDocument.$.updatedAt":Date.now()
+                }
             }
-        }
-    ).then(result => {
-        res.json(result)
-    })
-        .catch(err => res.json(err))
+        )
+            .select('students')
+            .populate('students','email');
+        const emails = await result.students.map(student => student.email);
+        const studentEmailData = {
+            from: "noreply@node-react.com",
+            to: emails,
+            subject: "Project Status Changed",
+            text: `Dear Student,\nYour Project's status has changed to ${status},\nRegards`,
+            html: `
+                <p>Dear Student,</p>
+                <p>Your Project's status has changed to <b>${status}</b></p>
+                <br/>
+                <p>Learn About Project's Statuses:</p>
+                <p><b>Waiting for Initial Approval:</b> Your VisionDocument is submitted for initial approval to check its its scope and whether its being developed or not.</p>
+                <p><b>Approved for Meeting:</b> Your VisionDocument is accepted for Meeting.</p>
+                <p><b>Meeting Scheduled:</b> Your Project's defence meeting is scheduled.</p>
+                <p><b>Approved:</b> Your Project is approved by Defence Committee.</p>
+                <p><b>Approved With Changes:</b> Your Project is approved by Defence Committee but with changes.</p>
+                <p><b>Rejected:</b> Your is Rejected by Defence Committee or Committee Coordinator.</p>
+                <br/>
+                <p>Regards!</p>
+            `
+        };
+        await sendEmail(studentEmailData);
+        await res.json(result)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+
 }
 
 exports.scheduleVisionDefence = async (req,res)=>{

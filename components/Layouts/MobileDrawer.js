@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {serverUrl} from "../../utils/config";
 import {Avatar, Divider, Drawer} from "@material-ui/core";
 import UserContext from "../../context/user/user-context";

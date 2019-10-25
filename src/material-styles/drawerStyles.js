@@ -159,7 +159,8 @@ export const useDrawerStyles = makeStyles(theme => ({
         backgroundColor:getRandomColor(),
         width:32,
         height:32,
-        fontSize:16
+        fontSize:16,
+        marginRight:theme.spacing(0.3)
     },
     profileAvatarColor:{
         backgroundColor:getRandomColor()
@@ -167,6 +168,7 @@ export const useDrawerStyles = makeStyles(theme => ({
     imageAvatar:{
         width:32,
         height:32,
+        marginRight:theme.spacing(0.3)
     },
     avatarSize:{
         width:100,

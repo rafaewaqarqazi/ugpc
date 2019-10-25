@@ -53,7 +53,7 @@ exports.findByProjectId = (req,res,next,id)=>{
         .populate('students','_id name department student_details profileImage')
         .populate('documentation.visionDocument.comments.author','_id name role department profileImage')
         .populate('details.supervisor','_id name supervisor_details.position profileImage')
-        .populate('details.backlog.assignee', '_id name department student_details')
+        .populate('details.backlog.assignee', '_id name department student_details profileImage')
         .populate('details.backlog.createdBy', 'name')
         .populate({path:'details.backlog.discussion.author',model:'Users',select:'name profileImage'})
         .populate({path:'details.sprint.tasks.assignee',model:'Users',select:'name department student_details email profileImage'})
@@ -319,7 +319,8 @@ exports.scheduleInternal = async (req,res)=>{
         const project =await Projects.findOneAndUpdate(projectId,
             {
                 "details.internal.examiner":examiner._id,
-                "details.internal.date":selectedDate
+                "details.internal.date":selectedDate,
+                "details.internal.venue":venue
             },
             {new:true}
         ).populate('students','-_id name email student_details.regNo')
@@ -389,7 +390,8 @@ exports.scheduleExternalDate = async (req,res)=>{
         //Assigning ExternalDate Project
         const project =await Projects.findOneAndUpdate(projectId,
             {
-                "details.external.date":selectedDate
+                "details.external.date":selectedDate,
+                "details.external.venue":venue
             },
             {new:true}
         ).populate('students','-_id email student_details.regNo')

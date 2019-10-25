@@ -16,7 +16,7 @@ export const getCompletionPercentage = details =>{
             total +=todos + inProgress + inReview + done;
         }
     });
-    return parseFloat(((completed / total) * 100).toFixed(2));
+    return total=== 0 ? 0 : parseFloat(((completed / total) * 100).toFixed(2));
 };
 export const getTotalTasksCount = details =>{
     let totaltasks = 0;
@@ -58,7 +58,7 @@ export const getSprintsPercentage = details =>{
 
     });
 
-    return parseFloat(((count / details.sprint.length) * 100).toFixed(2))
+    return details.sprint.length === 0 ? 0 : parseFloat(((count / details.sprint.length) * 100).toFixed(2))
 };
 export const getSprintDataSet = details =>{
     let todos = 0;

@@ -321,64 +321,68 @@ const Externals = () => {
                         <Divider/>
                         {
                             loading.main ? <CircularLoading/> :
-                                filter.length === 0  ?
-                                    <div className={styles.emptyListContainer}>
-                                        <div className={styles.emptyList}>
-                                            No Projects Found
-                                        </div>
-                                    </div>:
-                                    <div className={tableClasses.tableWrapper}>
+                            <div className={tableClasses.tableWrapper}>
 
-                                        <Table size='small'>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell align="left">RegistrationNo</TableCell>
-                                                    <TableCell align="left">Title</TableCell>
-                                                    <TableCell align="left">Department</TableCell>
-                                                    <TableCell align="left">Batch</TableCell>
-                                                    <TableCell align="left">Status</TableCell>
-                                                    <TableCell align="left">Supervisor</TableCell>
-                                                    <TableCell align="left">Internal</TableCell>
-                                                    <TableCell align="left">External</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
+                                <Table size='small'>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="left">RegistrationNo</TableCell>
+                                            <TableCell align="left">Title</TableCell>
+                                            <TableCell align="left">Department</TableCell>
+                                            <TableCell align="left">Batch</TableCell>
+                                            <TableCell align="left">Status</TableCell>
+                                            <TableCell align="left">Supervisor</TableCell>
+                                            <TableCell align="left">Internal</TableCell>
+                                            <TableCell align="left">External</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
 
-                                                {
-                                                    filter.map((project,index) => (
-                                                        <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom} onClick={()=>handleDetails(project)}>
-                                                            <TableRow className={tableClasses.tableRow} >
-                                                                <TableCell >
-                                                                    {
-                                                                        project.students.map((student,index) =>
-                                                                            <div key={index}>
-                                                                                {`${student.student_details.regNo.slice(0,4)} ${index === 1 ? '& ':''}`}
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell  >{project.documentation.visionDocument.title}</TableCell>
-                                                                <TableCell  >{project.department}</TableCell>
-                                                                <TableCell >{project.students[0].student_details.batch}</TableCell>
+                                        {
+                                            filter.length === 0  ?
+                                            <TableRow >
+                                                <TableCell colSpan={8}>
+                                                    <div className={styles.emptyListContainer}>
+                                                        <div className={styles.emptyList}>
+                                                            No Projects Found
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>:
+                                            filter.map((project,index) => (
+                                                <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom} onClick={()=>handleDetails(project)}>
+                                                    <TableRow className={tableClasses.tableRow} >
+                                                        <TableCell >
+                                                            {
+                                                                project.students.map((student,index) =>
+                                                                    <div key={index}>
+                                                                        {`${student.student_details.regNo.slice(0,4)} ${index === 1 ? '& ':''}`}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        </TableCell>
+                                                        <TableCell  >{project.documentation.visionDocument.title}</TableCell>
+                                                        <TableCell  >{project.department}</TableCell>
+                                                        <TableCell >{project.students[0].student_details.batch}</TableCell>
 
-                                                                <TableCell>{project.documentation.finalDocumentation.status}</TableCell>
-                                                                <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
-                                                                    <TableCell  style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
-                                                                </Tooltip>
-                                                                <Tooltip  title={project.details.internal.examiner.ugpc_details.designation} placement="top" TransitionComponent={Zoom}>
-                                                                    <TableCell style={{textTransform:'capitalize'}}>{project.details.internal.examiner.name}</TableCell>
-                                                                </Tooltip>
-                                                                <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
-                                                                    <TableCell  style={{textTransform:'capitalize'}}>{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
-                                                                </Tooltip>
-
-                                                            </TableRow>
+                                                        <TableCell>{project.documentation.finalDocumentation.status}</TableCell>
+                                                        <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
+                                                            <TableCell  style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
                                                         </Tooltip>
-                                                    ))
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </div>
+                                                        <Tooltip  title={project.details.internal.examiner.ugpc_details.designation} placement="top" TransitionComponent={Zoom}>
+                                                            <TableCell style={{textTransform:'capitalize'}}>{project.details.internal.examiner.name}</TableCell>
+                                                        </Tooltip>
+                                                        <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                                            <TableCell  style={{textTransform:'capitalize'}}>{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
+                                                        </Tooltip>
+
+                                                    </TableRow>
+                                                </Tooltip>
+                                            ))
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </div>
                         }
 
                     </div>

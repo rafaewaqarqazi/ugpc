@@ -43,7 +43,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [confirmDialogLoading,setConfirmDialogLoading] = useState(false);
     const [successSnackbar,setSuccessSnackbar] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
-    const [chairmanName,setChairmanName]= useState('');
+    const [chairmanName,setChairmanName]= useState('Not Available Yet');
     const [marks,setMarks] = useState('');
     const [saveButton,setSaveButton]= useState(true);
     const userContext = useContext(UserContext);
@@ -78,16 +78,14 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 if (result.name){
                     setChairmanName(result.name);
                 }
-                else {
-                    setChairmanName('Not Available Yet')
-                }
                 setLetterViewer(true);
             })
             .catch(error => {
                 setResError({
                     show:true,
-                    message:'Error while fetching Chairman Info'
-                })
+                    message:'Could not fetch Chairman Info'
+                });
+                setLetterViewer(true);
             })
 
 
@@ -379,10 +377,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             currentDocument.details && currentDocument.details.acceptanceLetter.name &&
                                 <Button onClick={openLetterViewer} >View Acceptance Letter</Button>
                         )
-
-
                     }
-
                     {
                         changeStatus !== 'No Change' &&
                         <Button onClick={()=>setConfirmDialog(true)} variant='contained' className={classes.buttonSuccess}>
@@ -413,6 +408,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 </DialogActions>
             </Dialog>
             <Dialog open={letterViewer} onClose={closeLetterViewer} fullScreen>
+                <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=>setResError({show:false,message:''})}/>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
 
@@ -426,7 +422,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 </AppBar>
                 <DialogContent style={{height:500}}>
                     {
-                        currentDocument.details &&(
+                        currentDocument.details && currentDocument.details.acceptanceLetter &&(
                         <ApprovalLetter
                             title={currentDocument.documentation.visionDocument.title}
                             students={currentDocument.students}

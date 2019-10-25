@@ -15,8 +15,7 @@ import {
     InputLabel,
     Select,
     OutlinedInput,
-    MenuItem,
-    Divider
+    MenuItem
 } from "@material-ui/core";
 import {Done,Close, Add} from '@material-ui/icons'
 import {makeStyles} from "@material-ui/styles";
@@ -24,6 +23,7 @@ import ProjectContext from '../../../context/project/project-context';
 import {isTaskValid} from "../../../utils/clientSideValidators/createTaskValidator";
 import {isAuthenticated} from "../../../auth";
 import RenderSubTasks from "./RenderSubTasks";
+import DialogTitleComponent from "../../DialogTitleComponent";
 const useStyles = makeStyles(theme =>({
     content:{
         marginBottom:theme.spacing(2)
@@ -187,7 +187,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
 
             aria-labelledby="title"
         >
-            <DialogTitle id='title'>Create New Task</DialogTitle>
+            <DialogTitleComponent title='Create New Task' handleClose={handleCreateTaskClose}/>
             <DialogContent dividers>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -284,7 +284,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 <Add style={{fontSize:20}}/> Add New
                             </Button>
                             <Dialog open={showSubTaskInput} onClose={handleSubTaskDialogClose}>
-                                <DialogTitle>Add New SubTask</DialogTitle>
+                                <DialogTitleComponent title='Add New SubTask' handleClose={handleSubTaskDialogClose}/>
                                 <DialogContent>
                                     <TextField
                                         label='Title'

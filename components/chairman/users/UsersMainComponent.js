@@ -76,28 +76,28 @@ const UsersMainComponent = () => {
                 >
                     <TabPanel value={value} index={0} dir={theme.direction}>
                         {
-                            userContext.user.users.isLoading ? <CircularLoading/>  :
+                            userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/>  :
                                 <RenderStudents students={userContext.user.users.allUsers.filter(users => users._id === 'Student')[0]}/>
                         }
 
                     </TabPanel>
                     <TabPanel value={value} index={1} dir={theme.direction}>
                         {
-                            userContext.user.users.isLoading ? <CircularLoading/>  :
+                            userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/>  :
                                 <RenderSupervisors supervisors={userContext.user.users.allUsers.filter(users => users._id === 'Supervisor')[0]}/>
                         }
 
                     </TabPanel>
                     <TabPanel value={value} index={2} dir={theme.direction}>
                         {
-                            userContext.user.users.isLoading ? <CircularLoading/>  :
+                            userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/>  :
                                 <RenderUGPCMembers ugpcMembers={userContext.user.users.allUsers.filter(users => users._id === 'UGPC_Member')[0]}/>
                         }
 
                     </TabPanel>
                     <TabPanel value={value} index={3} dir={theme.direction}>
                         {
-                            userContext.user.users.isLoading ? <CircularLoading/>  :
+                            userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/>  :
                                 <RenderOfficeUsers chairmanOffice={userContext.user.users.allUsers.map(users => {
                                     if (users._id === 'Chairman DCSSE' || users._id === 'Chairman_Office' || users._id === 'Program_Office'){
                                         return users

@@ -23,6 +23,7 @@ import {RenderDocBasicDetails} from "../common/RenderDocBasicDetails";
 import {RenderDocumentAttachments} from "../common/RenderDocumentAttachments";
 import DialogTitleComponent from "../../DialogTitleComponent";
 import UserContext from '../../../context/user/user-context';
+import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 
 const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
     const classes = useDocDetailsDialogStyles();
@@ -36,7 +37,11 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
     const [file,setFile]=useState([]);
     const [fileError,setFileError] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
-    const [chairmanName,setChairmanName]= useState('');
+    const [chairmanName,setChairmanName]= useState('Not Available Yet');
+    const [resError,setResError] = useState({
+        show:false,
+        message:''
+    });
     const handleClickAttachDocumentMenu = (event)=> {
         setAnchorEl(event.currentTarget);
     };
@@ -90,15 +95,19 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
     const openLetterViewer = ()=>{
         getChairmanName()
             .then(result=>{
-                console.log(result);
                 if (result.name){
                     setChairmanName(result.name);
                 }
-                else {
-                    setChairmanName('Not Available Yet')
-                }
                 setLetterViewer(true);
             })
+            .catch(error => {
+                setResError({
+                    show:true,
+                    message:'Could not fetch Chairman Info'
+                });
+                setLetterViewer(true);
+            })
+
 
     }
     const handleUploadFile = type=>{
@@ -127,6 +136,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
 
     return (
         <>
+
         <Dialog
             fullWidth={true}
             maxWidth='lg'
@@ -228,7 +238,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                 </DialogContent>
                 <DialogActions>
                     {
-                        project.details && project.details.acceptanceLetter.name && (
+                        project.details && project.details.acceptanceLetter && project.details.acceptanceLetter.name && (
                             <Button onClick={openLetterViewer} className={classes.buttonSuccess} variant='contained'>View Acceptance Letter</Button>
                         )
                     }
@@ -288,22 +298,20 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                 </DialogActions>
             </Dialog>
             <Dialog open={letterViewer} onClose={closeLetterViewer} fullScreen>
+                <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=>setResError({show:false,message:''})}/>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
                         <Typography variant="h6" className={classes.title} noWrap>
                             Auto Generated Acceptance Letter
                         </Typography>
-                        <Button color="inherit" onClick={closeLetterViewer}>
-                            Download
-                        </Button>
+                        <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
+                            <CloseIcon />
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 <DialogContent style={{height:500}}>
                     {
-                        project.details &&(
+                        project.details && project.details.acceptanceLetter &&(
                             <ApprovalLetter
                                 title={currentDocument.title}
                                 students={project.students}

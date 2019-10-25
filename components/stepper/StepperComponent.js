@@ -4,7 +4,7 @@ import {makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => ({
     button: {
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(3),
         marginRight: theme.spacing(1),
     },
     actionsContainer: {
