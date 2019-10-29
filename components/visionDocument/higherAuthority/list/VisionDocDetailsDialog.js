@@ -40,7 +40,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     const [changeStatus,setChangeStatus] = useState('No Change');
     const [commentText,setCommentText] = useState('');
     const [confirmDialog,setConfirmDialog] = useState(false);
-    const [confirmDialogLoading,setConfirmDialogLoading] = useState(false);
+    const [confirmDialogLoading,setConfirmDialogLoading] = useState({
+        show:false,
+        status:''
+    });
     const [successSnackbar,setSuccessSnackbar] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
     const [chairmanName,setChairmanName]= useState('Not Available Yet');
@@ -149,6 +152,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             profileImage:userContext.user.user.profileImage
                         }
                     });
+                    setCommentText('');
                     setCurrentDocument({
                         ...currentDocument,
                         a
@@ -164,28 +168,44 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
     };
     const handleConfirm = ()=>{
-        setConfirmDialogLoading(true);
+        setConfirmDialogLoading({
+            show:true,
+            status:'Please wait...'
+        });
         const statusDetails = {
             status:changeStatus,
             projectId:currentDocument._id,
             documentId:currentDocument.documentation.visionDocument._id,
         };
-        visionDocsContext.changeStatus(statusDetails)
-            .then(res =>{
-                if (changeStatus === 'Approved' || changeStatus === 'Approved With Changes'){
-                    visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title,currentDocument.students[0].student_details.regNo)
-                        .then(result => {
-                            if (result.error){
-                                setResError({
-                                    show:true,
-                                    message:result.error
-                                });
-                                return;
-                            }
+        if (changeStatus === 'Approved' || changeStatus === 'Approved With Changes') {
+            setConfirmDialogLoading({
+                show:true,
+                status:'Assigning Supervisor...'
+            });
+            visionDocsContext.assignSupervisorAuto(currentDocument._id,currentDocument.documentation.visionDocument.title,currentDocument.students[0].student_details.regNo)
+                .then(result => {
+                    if (result.error){
+                        setResError({
+                            show:true,
+                            message:result.error
+                        });
+                        setConfirmDialog(false);
+                        setConfirmDialogLoading({
+                            show:false,
+                            status:''
+                        });
+                        return;
+                    }
+                    setConfirmDialogLoading({
+                        show:true,
+                        status:'Changing Status...'
+                    });
+                    visionDocsContext.changeStatus(statusDetails)
+                        .then(res =>{
 
                             setCurrentDocument({...currentDocument,
                                 details:{
-                                ...currentDocument.details,
+                                    ...currentDocument.details,
                                     supervisor:result.supervisor,
                                     acceptanceLetter: result.acceptanceLetter
                                 },
@@ -199,7 +219,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             setChangeStatus('No Change');
                             setSuccessSnackbar(true);
                             setConfirmDialog(false);
-                            setConfirmDialogLoading(false);
+                            setConfirmDialogLoading({
+                                show:false,
+                                status:''
+                            });
                         })
                         .catch(err =>{
                             setResError({
@@ -207,7 +230,25 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 message:'Something went wrong please try again'
                             })
                         })
-                }else {
+                })
+                .catch(err =>{
+                    setResError({
+                        show:true,
+                        message:'Something went wrong please try again'
+                    });
+                    setConfirmDialogLoading({
+                        show:false,
+                        status:''
+                    });
+                })
+        }
+        else {
+            setConfirmDialogLoading({
+                show:true,
+                status:'Changing Status...'
+            });
+            visionDocsContext.changeStatus(statusDetails)
+                .then(res =>{
                     setCurrentDocument({...currentDocument,documentation:{
                             ...currentDocument.documentation,
                             visionDocument: {
@@ -218,18 +259,23 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                     setChangeStatus('No Change');
                     setSuccessSnackbar(true);
                     setConfirmDialog(false);
-                    setConfirmDialogLoading(false);
-                }
-
-
-
-            })
-            .catch(err =>{
-                setResError({
-                    show:true,
-                    message:'Something went wrong please try again'
+                    setConfirmDialogLoading({
+                        show:false,
+                        status:''
+                    });
                 })
-            })
+                .catch(err =>{
+                    setResError({
+                        show:true,
+                        message:'Something went wrong please try again'
+                    });
+                    setConfirmDialogLoading({
+                        show:false,
+                        status:''
+                    });
+                })
+        }
+
     };
     const closeSnackbar = ()=>{
         setSuccessSnackbar(false);
@@ -396,13 +442,15 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 open={confirmDialog}
                 onClose={handleCloseConfirmDialog}
             >
-                {confirmDialogLoading && <LinearProgress color='secondary'/>}
+                {confirmDialogLoading.show && <LinearProgress color='secondary'/>}
+                <Typography variant='caption' component='div' style={{textAlign:"center"}}>{confirmDialogLoading.status}</Typography>
                 <DialogTitle>Confirm Changes?</DialogTitle>
                 <DialogActions>
+
                     <Button onClick={handleCloseConfirmDialog}>
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirm} color='primary'>
+                    <Button onClick={handleConfirm} disabled={confirmDialogLoading.show} color='primary'>
                         Confirm
                     </Button>
                 </DialogActions>

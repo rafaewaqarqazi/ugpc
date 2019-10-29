@@ -108,7 +108,7 @@ exports.assignSupervisor = async (req,res)=>{
 
         //Choosing Supervisor Randomly from minimum Numbers
         if (supervisors.length === 0){
-            await res.json({error:'Seems like no Supervisor has been registered Yet!'})
+           return await res.json({error:'Seems like no Supervisor has been registered Yet!'})
         }
         const supervisor = await _.sample(supervisors[0].details);
         const date = Date.now();
@@ -311,7 +311,7 @@ exports.scheduleInternal = async (req,res)=>{
 
         //Choosing Examiner Randomly from minimum Numbers
         if (examiners.length === 0){
-            await res.json({error:'Seems like no Examiner has been registered Yet!'})
+           return await res.json({error:'Seems like no Examiner has been registered Yet!'})
         }
         const examiner = await _.sample(examiners[0].details);
 
