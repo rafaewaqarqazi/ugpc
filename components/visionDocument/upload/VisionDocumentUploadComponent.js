@@ -266,7 +266,6 @@ class VisionDocumentUploadComponent extends Component{
             <div className={classes.root}>
                 {this.state.loading && <LinearProgress color='secondary'/>}
                 <SuccessSnackBar open={this.state.success} message='Vision Document Uploaded' handleClose={this.handleSuccess}/>
-                <TitleComponent title='Vision Document Upload'/>
                <StepperComponent
                    steps={['Overview', 'Details', 'Upload']}
                    handleBack={this.handleBack}

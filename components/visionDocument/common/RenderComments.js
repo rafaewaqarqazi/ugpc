@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 export const RenderComments = ({comments})=>{
     const classes = useStyles();
     const classes1 = useDocDetailsDialogStyles();
-    const [showComments,setShowComments] = useState(false);
+    const [showComments,setShowComments] = useState(true);
     const handleShowComments = e =>{
         setShowComments(!showComments);
     };
