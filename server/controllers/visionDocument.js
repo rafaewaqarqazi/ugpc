@@ -22,7 +22,7 @@ exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
         ]);
         const result = await Projects.populate(results,[
             {path:"projects.students",model:'Users',select:'_id name department student_details.regNo profileImage'},
-            {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
+            {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department profileImage'},
             {path:"projects.details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
         ])
 
@@ -47,9 +47,9 @@ exports.fetchBySupervisor = async (req,res)=>{
         ]);
         const result = await Projects.populate(results,[
             {path:"students",model:'Users',select:'_id name department student_details.regNo'},
-            {path:"documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
+            {path:"documentation.visionDocument.comments.author",model:'Users',select:'_id name role department profileImage'},
             {path:"details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
-        ])
+        ]);
 
         await res.json(result)
     }
@@ -194,10 +194,10 @@ exports.fetchMeetings =async (req,res)=>{
         },
     ]);
     const projects =await Projects.populate(projectsResult,[
-        {path:'projects.students',model:'Users',select:'-_id name department student_details.regNo'},
-        {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department'},
+        {path:'projects.students',model:'Users',select:'-_id name department student_details.regNo profileImage'},
+        {path:"projects.documentation.visionDocument.comments.author",model:'Users',select:'_id name role department profileImage'},
         {path:"projects.details.supervisor",model:'Users',select:'_id name supervisor_details.position'}
-    ])
+    ]);
     await res.json(projects)
 };
 exports.addMarks = async (req,res)=>{

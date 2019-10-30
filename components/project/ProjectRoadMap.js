@@ -8,6 +8,8 @@ import {formatRoadmapSprintData, getScheduleSprint} from "../coordinator/present
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import UserContext from "../../context/user/user-context";
+import Router from 'next/router';
+import Link from 'next/link';
 
 const ProjectRoadMap = () => {
     const classes = useListContainerStyles();
@@ -17,7 +19,8 @@ const ProjectRoadMap = () => {
     const userContext = useContext(UserContext);
     const handleError = error=>{
         setEmpty(true)
-    }
+    };
+
     return (
         <ProjectContext.Consumer>
             {
@@ -77,7 +80,9 @@ const ProjectRoadMap = () => {
                                                             </Typography>
                                                             {
                                                                 !userContext.user.isLoading && userContext.user.user.role === 'Student' &&
-                                                                <Button variant='outlined' color='primary' style={{marginTop:10}} size='small'>Click To Plan</Button>
+                                                                    <Link href='/student/project/backlog'>
+                                                                        <Button variant='outlined' color='primary' style={{marginTop:10}} size='small' >Click To Plan</Button>
+                                                                    </Link>
                                                             }
 
                                                         </div>

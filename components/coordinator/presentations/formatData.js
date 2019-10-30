@@ -106,30 +106,6 @@ export const formatScrumBoard = sprint => {
                 [done._id]:done
             }
         })
-        // sprint.todos.map(todo => {
-        //     tasks = {
-        //         ...tasks,
-        //         [todo._id]:todo
-        //     }
-        // })
-        // sprint.inProgress.map(inPrg => {
-        //     tasks = {
-        //         ...tasks,
-        //         [inPrg._id]:inPrg
-        //     }
-        // })
-        // sprint.inReview.map(inRev => {
-        //     tasks = {
-        //         ...tasks,
-        //         [inRev._id]:inRev
-        //     }
-        // })
-        // sprint.done.map(done => {
-        //     tasks = {
-        //         ...tasks,
-        //         [done._id]:done
-        //     }
-        // })
     }
     const data = {
         tasks,

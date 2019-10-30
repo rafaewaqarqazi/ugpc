@@ -175,7 +175,7 @@ const SignUpComponent = () => {
             setLoading(true);
             const user = {
                 name:values.name,
-                email:values.email,
+                email:values.email.toLowerCase(),
                 password:values.password,
                 department:values.department,
                 student_details:{

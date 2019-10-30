@@ -156,7 +156,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
             return;
         }else{
            const userRole = userContext.user.user.role;
-           if (userRole === 'Student' && start.id === 'inReview' && finish.id === 'done'){
+           if (userRole === 'Student' && (start.id === 'todos' || start.id === 'inProgress' || start.id === 'inReview') && finish.id === 'done'){ // inProgress & todos
                setOpenInfoSnackBar(true)
                return;
            }

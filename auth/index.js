@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-unfetch';
 import {serverUrl} from "../utils/config";
 import cookie from 'js-cookie';
-import Router from 'next/router'
+import Router from 'next/router';
 import nextCookie from 'next-cookies';
 
 export const signup = user =>{
@@ -36,7 +36,7 @@ export const signin = user =>{
 
 export const authenticate = (data)=>{
     cookie.set('token',data,{expires: 7});
-    Router.push('/')
+    Router.push('/', '/');
 };
 
 export const signout = ()=>{

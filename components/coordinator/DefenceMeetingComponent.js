@@ -20,7 +20,7 @@ const DefenceMeetingComponent = () => {
     const [results,setResults] = useState([]);
     const [loading,setLoading] = useState(true);
     const containerClasses = useListContainerStyles();
-    const [meetingsDates,setMeetingsDate] = useState([])
+    const [meetingsDates,setMeetingsDate] = useState([]);
     const [selectedDate,setSelectedDate] = useState('All');
     const [filter,setFilter] = useState([]);
     const fetchData = ()=>{
@@ -32,19 +32,19 @@ const DefenceMeetingComponent = () => {
                         doc.projects.map(project => {
                             data = [...data, project]
                         })
-                    })
+                    });
                     setResults(result);
                     setMeetings(data);
                     setFilter(data);
                     let date = [];
                     result.map(r => {
                         date = [...date, moment(r._id).format('LLL')]
-                    })
+                    });
                     setMeetingsDate([...date])
                 }
                 setLoading(false);
             })
-    }
+    };
     useEffect(()=>{
         fetchData();
     },[]);
@@ -58,19 +58,19 @@ const DefenceMeetingComponent = () => {
                     doc.projects.map(project => {
                         data = [...data, project]
                     })
-                })
+                });
                 setMeetings(data);
                 setFilter(data);
                 break;
             case event.target.value :
                 results.map(doc => {
-                    const date = moment(doc._id).format('LLL')
+                    const date = moment(doc._id).format('LLL');
                     if (date === event.target.value){
                         doc.projects.map(project => {
                             data = [...data, project]
                         })
                     }
-                })
+                });
                 setMeetings(data);
                 setFilter(data);
                 break;

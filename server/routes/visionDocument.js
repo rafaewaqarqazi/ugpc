@@ -21,5 +21,5 @@ router.get('/fetch/visionDocsPieData',fetchVisionDocsPieData);
 router.put('/comment',commentOnVision);
 router.put('/changeStatus',changeStatus);
 router.put('/scheduleDefence',scheduleVisionDefence);
-router.put('/addMarks',addMarks)
+router.put('/addMarks',addMarks);
 module.exports = router;

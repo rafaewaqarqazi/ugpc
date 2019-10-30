@@ -158,10 +158,15 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
             let taskNo = 0;
             taskNo +=projectContext.project.project.details.backlog.length;
             projectContext.project.project.details.sprint.map(sprint =>{
+                const todos = sprint.tasks.filter(task => task.status === 'todo').length;
+                const inProgress = sprint.tasks.filter(task => task.status === 'inProgress').length;
+                const inReview = sprint.tasks.filter(task => task.status === 'inReview').length;
+                const done = sprint.tasks.filter(task => task.status === 'done').length;
                 if (sprint.status === 'Completed'){
-                    taskNo += sprint.done.length
+                    taskNo += done
                 }else {
-                    taskNo += sprint.todos.length + sprint.inProgress.length + sprint.inReview.length + sprint.done.length
+
+                    taskNo += todos + inProgress + inReview + done
                 }
             });
             const data = {

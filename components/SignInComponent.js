@@ -37,7 +37,7 @@ const SignInComponent = () => {
     const handleSubmit = e =>{
         e.preventDefault();
         const user = {
-            email:state.email,
+            email:state.email.toLowerCase(),
             password:state.password
         };
         setLoading(true);
@@ -51,7 +51,6 @@ const SignInComponent = () => {
                     setLoading(false)
                 }else {
                     setLoading(false)
-                    console.log(data)
                     authenticate(data)
                 }
 

@@ -22,7 +22,7 @@ class MyApp extends App {
 
                 <Container>
                     <Head>
-                        <title>UGPC</title>
+                        <title>UGPC - Software</title>
                     </Head>
                     <UserState>
                         <ThemeProvider theme={theme}>
