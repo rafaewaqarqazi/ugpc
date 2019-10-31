@@ -147,6 +147,7 @@ const StudentFinalDocumentationComponent = () => {
                         onChange={handleDropZone}
                         acceptedFiles={['application/pdf']}
                         filesLimit={1}
+                        maxFileSize={10000000}
                         dropzoneText='Drag and drop document file here or click'
                     />
                     {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }

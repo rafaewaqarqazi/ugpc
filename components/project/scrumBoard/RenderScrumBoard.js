@@ -112,6 +112,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         inComplete:0
     });
     const sprintInit = ()=>{
+        console.log(sprintNames)
         setSelectedSprint(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0]);
         const data = sprint;
         const filter = data.filter(d => d.name === sprintNames[0] && d.status === 'InComplete')[0];

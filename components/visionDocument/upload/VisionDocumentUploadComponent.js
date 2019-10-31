@@ -248,6 +248,7 @@ class VisionDocumentUploadComponent extends Component{
                                 onChange={this.handleDropZone}
                                 acceptedFiles={['application/pdf']}
                                 filesLimit={1}
+                                maxFileSize={10000000}
                                 dropzoneText='Drag and drop document file here or click'
                             />
                             {this.state.fileError.show && <Typography variant='caption' color='error'>{this.state.fileError.message}</Typography> }
