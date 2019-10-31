@@ -15,23 +15,25 @@ import {
 
 import Link from "next/link";
 import UserContext from '../../context/user/user-context';
-import Router, {useRouter} from "next/router";
+import Router from "next/router";
 import ProfileMenu from "../profile/ProfileMenu";
 
 
-const CommitteeMemberLayout = ({children,committeeType})=> {
-    const router = useRouter();
+const CommitteeMemberLayout = ({children,committeeType,position})=> {
+
     const userContext = useContext(UserContext);
     useEffect(()=>{
         userContext.fetchUserById();
     },[]);
     const handleClickProfile = ()=>{
-        if (committeeType === 'Defence'){
+        if (committeeType === 'Defence' && position === 'Member'){
             Router.push('/committee/defence/member/profile');
-        }else if (committeeType === 'Evaluation'){
+        }else if (committeeType === 'Defence' && position === 'Chairman_Committee'){
+            Router.push('/committee/defence/chairman/profile');
+        }
+        else if (committeeType === 'Evaluation'){
             Router.push('/committee/evaluation/member/profile');
         }
-
     };
     const accountSwitch = (
         userContext.user.isLoading ? <div /> : userContext.user.user.role === 'Supervisor' ?

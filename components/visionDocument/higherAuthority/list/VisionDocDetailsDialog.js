@@ -429,6 +429,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                         />
                                     }
                                     fileName={currentDocument.details.acceptanceLetter.name}
+                                    style={{textDecoration:'none'}}
                                 >
                                     {
                                         ({loading}) =>
@@ -455,7 +456,6 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                         Close
                     </Button>
                 </DialogActions>
-            }
             </Dialog>
             <Dialog
                 fullWidth

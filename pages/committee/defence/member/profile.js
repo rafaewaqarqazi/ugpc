@@ -4,7 +4,7 @@ import {withDefenceMemberAuthSync} from "../../../../components/routers/defenceM
 
 const Profile = () => {
     return (
-        <CommitteeMemberLayout committeeType='Defence'>
+        <CommitteeMemberLayout committeeType='Defence' position='Member'>
             <ProfileComponent/>
         </CommitteeMemberLayout>
     );

@@ -47,11 +47,11 @@ export const useListItemStyles = makeStyles(theme =>({
     grid1:{
         display:'flex',
         backgroundColor:getRandomColor(),
-        flexDirection: 'column',
-        padding:theme.spacing(0.2),
+        flexDirection: 'row',
+        padding:theme.spacing(1),
         justifyContent: 'space-between',
         alignItems: 'center',
-        height:theme.spacing(15),
+        height:theme.spacing(10),
         color:theme.palette.background.paper,
         [theme.breakpoints.up('sm')]: {
             display:'flex',

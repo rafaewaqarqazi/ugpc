@@ -251,6 +251,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                                         />
                                     }
                                     fileName={project.details.acceptanceLetter.name}
+                                    style={{textDecoration:'none'}}
                                 >
                                     {
                                         ({loading}) =>

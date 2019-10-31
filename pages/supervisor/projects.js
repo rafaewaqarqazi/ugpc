@@ -74,7 +74,7 @@ const Projects = () => {
                         </div>
                         {
                             userContext.user.isLoading ? <CircularLoading/> :
-                                userContext.user.user.supervisor_details.projects.length === 0 ?
+                                userContext.user.user.supervisor_details.projects && userContext.user.user.supervisor_details.projects.length === 0 ?
                                     <div className={emptyStyles.emptyListContainer}>
                                         <div className={emptyStyles.emptyList}>
                                             No Projects Assigned Yet
@@ -94,7 +94,7 @@ const Projects = () => {
                                             </TableHead>
                                             <TableBody >
                                                 {
-                                                    userContext.user.user.supervisor_details.projects.length === 0 ?
+                                                    userContext.user.user.supervisor_details.projects && userContext.user.user.supervisor_details.projects.length === 0 ?
                                                     <TableRow >
                                                         <TableCell colSpan={6}>
                                                             <div className={emptyStyles.emptyListContainer}>
@@ -104,7 +104,7 @@ const Projects = () => {
                                                             </div>
                                                         </TableCell>
                                                     </TableRow>:
-                                                    userContext.user.user.supervisor_details.projects.map(({title,project,_id},index) => (
+                                                        userContext.user.user.supervisor_details.projects && userContext.user.user.supervisor_details.projects.map(({title,project,_id},index) => (
                                                         <Tooltip key={index} title='Click to view Details' placement="top" TransitionComponent={Zoom}>
                                                             <TableRow className={projectsClasses.tableRow} onClick={()=>handleClickProject(project._id)}>
                                                                 <TableCell align="left">

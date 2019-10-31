@@ -1,13 +1,13 @@
 import CommitteeMemberLayout from "../../../../components/Layouts/CommitteeMemberLayout";
 import DefenceMeetingComponent from "../../../../components/coordinator/DefenceMeetingComponent";
-import {withDefenceMemberAuthSync} from "../../../../components/routers/defenceMemberAuth";
+import {withChairmanDefenceAuthSync} from "../../../../components/routers/chairmanDefenceAuth";
 
 const Index = () => {
     return (
-        <CommitteeMemberLayout committeeType='Defence' position='Member'>
+        <CommitteeMemberLayout committeeType='Defence' position='Chairman_Committee'>
             <DefenceMeetingComponent/>
         </CommitteeMemberLayout>
     );
 };
 
-export default withDefenceMemberAuthSync(Index);
+export default withChairmanDefenceAuthSync(Index);
