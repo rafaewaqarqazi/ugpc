@@ -112,17 +112,15 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         inComplete:0
     });
     const sprintInit = ()=>{
-        console.log(sprintNames)
+        const filter = sprint.filter(d => d.name === sprintNames[0] && d.status === 'InComplete')[0];
         setSelectedSprint(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0]);
-        const data = sprint;
-        const filter = data.filter(d => d.name === sprintNames[0] && d.status === 'InComplete')[0];
+
         if (sprintNames.length !== 0){
             setDates({
                 startDate: filter.startDate,
                 endDate: filter.endDate
             });
         }
-
         setState(formatScrumBoard(filter));
         setLoading(false)
     };
@@ -204,7 +202,10 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
         setState(newState);
     };
     const handleSelectSprint = event => {
-        setSelectedSprint(event.target.value)
+        setSelectedSprint(event.target.value);
+        if (event.target.value === 'No Sprint Created'){
+            return;
+        }
         const data = sprint;
         const filter = data.filter(d => d.name === event.target.value && d.status === 'InComplete')[0];
         setDates({
@@ -241,14 +242,18 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
                 setCompleteSprintLoading(false);
                 setOpenSuccessSnackBar(true);
                 setCompleteSprintDialog(false);
-                sprintInit();
+
             })
             .catch(error => console.log(error))
     };
+    const handleCloseSuccess = ()=>{
+        setOpenSuccessSnackBar(false);
+        sprintInit();
+    }
     return (
         !loading &&
         <div>
-            <SuccessSnackBar message='Sprint Completed' open={openSuccessSnackBar} handleClose={()=>setOpenSuccessSnackBar(false)} />
+            <SuccessSnackBar message='Sprint Completed' open={openSuccessSnackBar} handleClose={handleCloseSuccess} />
             <InfoSnackBar message='Only supervisor can move to Done' open={openInfoSnackBar} setOpen={setOpenInfoSnackBar} />
             <div className={classes.actions}>
                 <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
@@ -460,4 +465,4 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     );
 };
 
-export default RenderScrumBoard;
+export default React.memo(RenderScrumBoard);

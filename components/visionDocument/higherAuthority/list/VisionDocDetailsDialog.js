@@ -10,12 +10,12 @@ import {
     Select, TextField,
     Typography,
     AppBar,
-    Toolbar
+    Toolbar, Hidden, CircularProgress
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {isAuthenticated} from "../../../../auth";
 
-import { Send} from "@material-ui/icons";
+import {GetAppOutlined, Send} from "@material-ui/icons";
 import VisionDocsContext from "../../../../context/visionDocs/visionDocs-context";
 
 import {getVisionDocsStatusChipColor} from "../../../../src/material-styles/visionDocsListBorderColor";
@@ -31,7 +31,7 @@ import ErrorSnackBar from "../../../snakbars/ErrorSnackBar";
 import DialogTitleComponent from "../../../DialogTitleComponent";
 import UserContext from "../../../../context/user/user-context";
 import {fetchMarksDistributionAPI} from "../../../../utils/apiCalls/projects";
-
+import { PDFDownloadLink,PDFViewer } from '@react-pdf/renderer';
 
 
 const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument}) => {
@@ -409,21 +409,42 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                             <div className={classes.detailsContent}>
                                 <RenderComments comments={currentDocument.documentation.visionDocument.comments}/>
                             </div>
-
-
-
                         </Grid>
                     </Grid>
 
 
                 </DialogContent>
                 <DialogActions>
-                    {
-                        (currentDocument.documentation.visionDocument.status === 'Approved' || currentDocument.documentation.visionDocument.status === 'Approved With Changes') &&(
-                            currentDocument.details && currentDocument.details.acceptanceLetter.name &&
-                                <Button onClick={openLetterViewer} >View Acceptance Letter</Button>
-                        )
-                    }
+                    <Hidden smUp>
+                        {
+                            currentDocument.details && currentDocument.details.acceptanceLetter && currentDocument.details.acceptanceLetter.name && (
+                                <PDFDownloadLink
+                                    document={
+                                        <ApprovalLetter
+                                            title={currentDocument.documentation.visionDocument.title}
+                                            students={currentDocument.students}
+                                            supervisor={currentDocument.details.supervisor}
+                                            date={currentDocument.details.acceptanceLetter.issueDate}
+                                            chairmanName={chairmanName}
+                                        />
+                                    }
+                                    fileName={currentDocument.details.acceptanceLetter.name}
+                                >
+                                    {
+                                        ({loading}) =>
+                                            (loading ? <CircularProgress/> :  <Button size='small' startIcon={<GetAppOutlined/>}>Acceptance Letter</Button>)
+                                    }
+                                </PDFDownloadLink>
+                            )
+                        }
+                    </Hidden>
+                    <Hidden xsDown>
+                        {
+                            currentDocument.details && currentDocument.details.acceptanceLetter && currentDocument.details.acceptanceLetter.name && (
+                                <Button onClick={openLetterViewer} >Acceptance Letter</Button>
+                            )
+                        }
+                    </Hidden>
                     {
                         changeStatus !== 'No Change' &&
                         <Button onClick={()=>setConfirmDialog(true)} variant='contained' className={classes.buttonSuccess}>
@@ -471,13 +492,16 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 <DialogContent style={{height:500}}>
                     {
                         currentDocument.details && currentDocument.details.acceptanceLetter &&(
-                        <ApprovalLetter
-                            title={currentDocument.documentation.visionDocument.title}
-                            students={currentDocument.students}
-                            supervisor={currentDocument.details.supervisor}
-                            date={currentDocument.details.acceptanceLetter.issueDate}
-                            chairmanName={chairmanName}
-                        />)
+                            <PDFViewer style={{width:'100%',height:'100%'}}>
+                                <ApprovalLetter
+                                    title={currentDocument.documentation.visionDocument.title}
+                                    students={currentDocument.students}
+                                    supervisor={currentDocument.details.supervisor}
+                                    date={currentDocument.details.acceptanceLetter.issueDate}
+                                    chairmanName={chairmanName}
+                                />
+                            </PDFViewer>
+                        )
                     }
 
                 </DialogContent>

@@ -26,9 +26,10 @@ const ScrumBoard = () => {
                                         if (sprint.status === 'InComplete'){
                                             return sprint.name
                                         }
-                                    })
+                                    });
+                                    console.log('ScrumBoard',sprintNames.filter(name => name !== undefined));
                                     return (
-                                        <RenderScrumBoard sprint={project.project.details.sprint} sprintNames={sprintNames.filter(name => name !== undefined)}/>
+                                        <RenderScrumBoard sprint={project.project.details.sprint.filter(spr => spr.status === 'InComplete')} sprintNames={sprintNames.filter(name => name !== undefined)}/>
                                     )
                                 }
 

@@ -179,10 +179,10 @@ const ShowProgress = () => {
                                                                No Sprint created yet
                                                            </div>
                                                        </div>:
-                                                       <Bar width={3}
-                                                            height={1}
+                                                       <Bar width={'100%'}
+                                                            height={300}
                                                             options={{
-                                                                maintainAspectRatio: true,
+                                                                maintainAspectRatio: false,
                                                                 plugins: {
                                                                     colorschemes: {
                                                                         scheme: 'brewer.Paired12'

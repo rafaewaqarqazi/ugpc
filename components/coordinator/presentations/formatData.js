@@ -62,17 +62,9 @@ export const formatBacklog = backlog => {
 
 export const formatScrumBoard = sprint => {
     const todos = sprint ? sprint.tasks.filter(task => task.status === 'todo').sort((a,b)=>a.priority-b.priority):[];
-    console.log('todos',todos);
     const inProgress = sprint ? sprint.tasks.filter(task => task.status === 'inProgress').sort((a,b)=>a.priority-b.priority):[];
-    console.log('inProgress',inProgress);
     const inReview = sprint ? sprint.tasks.filter(task => task.status === 'inReview').sort((a,b)=>a.priority-b.priority):[];
-    console.log('inReview',inReview);
     const done = sprint ? sprint.tasks.filter(task => task.status === 'done').sort((a,b)=>a.priority-b.priority):[];
-    console.log('done',done);
-    // const sortedTodos =sprint ? sprint.todos.sort((a,b)=>a.priority-b.priority):[];
-    // const sortedInProgress = sprint ? sprint.inProgress.sort((a,b)=>a.priority-b.priority):[];
-    // const sortedInReview = sprint ? sprint.inReview.sort((a,b)=>a.priority-b.priority):[];
-    // const sortedDone = sprint ? sprint.done.sort((a,b)=>a.priority-b.priority):[];
     const todoIds =sprint ? todos.map(todo => todo._id) :[];
     const inProgressIds =sprint ?  inProgress.map(inPrg => inPrg._id) :[];
     const inReviewIds =sprint ?  inReview.map(inRev => inRev._id) :[];
@@ -87,7 +79,6 @@ export const formatScrumBoard = sprint => {
                 [todo._id]:todo
             }
         });
-        console.log(todoTasks)
         inProgress.map(inPrg => {
             tasks = {
                 ...tasks,

@@ -67,7 +67,8 @@ const ProjectState = (props) => {
     };
     const completeSprint = async data =>{
         const result = await completeSprintAPI(data);
-       await dispatch(addSprintAction(result.details.sprint))
+       dispatch(addSprintAction(result.details.sprint));
+        return await result;
     };
     const uploadFinalDocumentation = async (data) =>{
         uploadFinalDocumentationAPI(data).then(result =>{

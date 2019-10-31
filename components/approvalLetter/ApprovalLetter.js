@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet,PDFViewer,Image} from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet,Image} from '@react-pdf/renderer';
 import moment from 'moment';
 // Create styles
 const styles = StyleSheet.create({
@@ -18,10 +18,6 @@ const styles = StyleSheet.create({
         alignItems:'center',
         border:'1px solid #000',
         padding:5
-    },
-    page: {
-      width:'100%',
-        height:'100%'
     },
     logo:{
         width:60,
@@ -92,109 +88,107 @@ const styles = StyleSheet.create({
 });
 
 const ApprovalLetter = ({title,date,students,supervisor,chairmanName}) => (
-    <PDFViewer style={styles.page}>
-        <Document >
-            <Page size="A4" style={styles.body} >
-                <View style={styles.header}>
-                    <Image src='/static/images/avatar/iiui-logo.jpg' style={styles.logo}/>
-                    <View style={styles.headerTitle}>
-                        <Text>INTERNATIONAL ISLAMIC UNIVERSITY, ISLAMABAD</Text>
-                        <Text>FACULTY OF BASIC AND APPLIED SCIENCES</Text>
-                        <Text>DEPARTMENT OF COMPUTER SCIENCE & SOFTWARE ENGINEERING</Text>
-                    </View>
+    <Document >
+        <Page size="A4" style={styles.body} >
+            <View style={styles.header}>
+                <Image src='/static/images/avatar/iiui-logo.jpg' style={styles.logo}/>
+                <View style={styles.headerTitle}>
+                    <Text>INTERNATIONAL ISLAMIC UNIVERSITY, ISLAMABAD</Text>
+                    <Text>FACULTY OF BASIC AND APPLIED SCIENCES</Text>
+                    <Text>DEPARTMENT OF COMPUTER SCIENCE & SOFTWARE ENGINEERING</Text>
                 </View>
-                <View style={styles.divider}/>
-                <View style={styles.NoDate}>
-                    <Text >{`No.IIU/FBAS/DCS&SE/${(new Date().getFullYear())}-`}</Text>
-                    <Text >{`Date: ${moment(date).format('DD-MM-YYYY')}`}</Text>
+            </View>
+            <View style={styles.divider}/>
+            <View style={styles.NoDate}>
+                <Text >{`No.IIU/FBAS/DCS&SE/${(new Date().getFullYear())}-`}</Text>
+                <Text >{`Date: ${moment(date).format('DD-MM-YYYY')}`}</Text>
+            </View>
+            <View style={styles.subject}>
+                <Text >Subject: </Text>
+                <View style={{flexGrow:1,marginLeft:10}}>
+                    <Text style={styles.subjectText}>Allocation of Provisional Supervision letter for bsse project,</Text>
+                    <Text>{`"${title}"`}</Text>
                 </View>
-                <View style={styles.subject}>
-                    <Text >Subject: </Text>
-                    <View style={{flexGrow:1,marginLeft:10}}>
-                        <Text style={styles.subjectText}>Allocation of Provisional Supervision letter for bsse project,</Text>
-                        <Text>{`"${title}"`}</Text>
-                    </View>
-                </View>
-                <View >
-                    <Text style={{textIndent:50}} > The Department has allocated project titled above to
-                        <Text style={{ fontFamily: 'Times-Bold'}} > {students.map((student,index) => `${index === 1? ' and':''} Mr. ${student.name} Registration No: ${student.student_details.regNo}`)}.
-                            {` ${supervisor.name}, ${supervisor.supervisor_details.position},`}
-                        </Text>
-                        <Text> Department of Computer Science & Software Engineering, Faculty of Basic & Applied Sciences, International Islamic University, Islamabad,
-                            will supervise the project. The work should be completed withing one semester.
-                            <Text style={{fontFamily:'Times-Italic'}}> If the project is not completed within
-                                prescribed period, then you have to re-register in the next semester with only registration fee. Students failing to
-                                complete project even in the additional duration will have to pay full fee for subsequent semester that will include
-                                the project fee plus the registration fee.
-                            </Text>
+            </View>
+            <View >
+                <Text style={{textIndent:50}} > The Department has allocated project titled above to
+                    <Text style={{ fontFamily: 'Times-Bold'}} > {students.map((student,index) => `${index === 1? ' and':''} Mr. ${student.name} Registration No: ${student.student_details.regNo}`)}.
+                        {` ${supervisor.name}, ${supervisor.supervisor_details.position},`}
+                    </Text>
+                    <Text> Department of Computer Science & Software Engineering, Faculty of Basic & Applied Sciences, International Islamic University, Islamabad,
+                        will supervise the project. The work should be completed withing one semester.
+                        <Text style={{fontFamily:'Times-Italic'}}> If the project is not completed within
+                            prescribed period, then you have to re-register in the next semester with only registration fee. Students failing to
+                            complete project even in the additional duration will have to pay full fee for subsequent semester that will include
+                            the project fee plus the registration fee.
                         </Text>
                     </Text>
-                    <Text style={{textIndent:50}} >
-                        Weekly progress report duly signed by the supervisor must also be submitted to the Program Coordinator. Project presentation
-                        within the concerned SIG after every three weeks is mandatory. Project will be evaluated as per the following criteria
-                    </Text>
+                </Text>
+                <Text style={{textIndent:50}} >
+                    Weekly progress report duly signed by the supervisor must also be submitted to the Program Coordinator. Project presentation
+                    within the concerned SIG after every three weeks is mandatory. Project will be evaluated as per the following criteria
+                </Text>
+            </View>
+            <View style={styles.list}>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Scope</Text>
                 </View>
-                <View style={styles.list}>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Scope</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Project utility</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Innovation</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Selection of appropriate technology</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Approach/ Implementation</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Report write-up</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <View style={styles.listDot}/>
-                        <Text>Demo/ Presentation</Text>
-                    </View>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Project utility</Text>
                 </View>
-                <View>
-                    <Text style={{textIndent:50}}>The student must submit the copies of the project report within three months after the Viva Voce exam;
-                        otherwise whole process will be done again
-                    </Text>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Innovation</Text>
                 </View>
-                <View style={styles.chairman}>
-                    <View style={{display:'flex', flexDirection:'column',alignItems:'center',justifyContent: 'center'}}>
-                        <Text style={{fontFamily:'Times-Bold'}}>{`(${chairmanName})`}</Text>
-                        <Text>Chairman, DCS&SE, FBAS, IIUI</Text>
-                    </View>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Selection of appropriate technology</Text>
                 </View>
-                <Text>CC To:</Text>
-                <View style={styles.list}>
-                    <View style={styles.listItem}>
-                        <Image src='/static/images/avatar/right-arrow.jpg' style={styles.listArrow}/>
-                        <Text>Supervisor of the Student</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <Image src='/static/images/avatar/right-arrow.jpg' style={styles.listArrow}/>
-                        <Text>Student Concerned</Text>
-                    </View>
-                    <View style={styles.listItem}>
-                        <Image src='/static/images/avatar/right-arrow.jpg' style={styles.listArrow}/>
-                        <Text>Program office</Text>
-                    </View>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Approach/ Implementation</Text>
                 </View>
-                <Text style={styles.footer} fixed>Science Block, Sector H-10, Islamabad. Phone +92 51 9257951 Email: HDCS@iiu.edu.pk</Text>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Report write-up</Text>
+                </View>
+                <View style={styles.listItem}>
+                    <View style={styles.listDot}/>
+                    <Text>Demo/ Presentation</Text>
+                </View>
+            </View>
+            <View>
+                <Text style={{textIndent:50}}>The student must submit the copies of the project report within three months after the Viva Voce exam;
+                    otherwise whole process will be done again
+                </Text>
+            </View>
+            <View style={styles.chairman}>
+                <View style={{display:'flex', flexDirection:'column',alignItems:'center',justifyContent: 'center'}}>
+                    <Text style={{fontFamily:'Times-Bold'}}>{`(${chairmanName})`}</Text>
+                    <Text>Chairman, DCS&SE, FBAS, IIUI</Text>
+                </View>
+            </View>
+            <Text>CC To:</Text>
+            <View style={styles.list}>
+                <View style={styles.listItem}>
+                    <Image src='/static/images/avatar/right-arrow.jpg' style={styles.listArrow}/>
+                    <Text>Supervisor of the Student</Text>
+                </View>
+                <View style={styles.listItem}>
+                    <Image src='/static/images/avatar/right-arrow.jpg' style={styles.listArrow}/>
+                    <Text>Student Concerned</Text>
+                </View>
+                <View style={styles.listItem}>
+                    <Image src='/static/images/avatar/right-arrow.jpg' style={styles.listArrow}/>
+                    <Text>Program office</Text>
+                </View>
+            </View>
+            <Text style={styles.footer} fixed>Science Block, Sector H-10, Islamabad. Phone +92 51 9257951 Email: HDCS@iiu.edu.pk</Text>
 
-            </Page>
-        </Document>
-    </PDFViewer>
+        </Page>
+    </Document>
 );
 
 export default ApprovalLetter;

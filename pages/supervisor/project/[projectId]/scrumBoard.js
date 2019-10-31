@@ -28,7 +28,8 @@ const ScrumBoard = () => {
                                         if (sprint.status === 'InComplete'){
                                             return sprint.name
                                         }else return
-                                    })
+                                    });
+
                                     return (
                                         <RenderScrumBoard sprint={project.project.details.sprint} sprintNames={sprintNames.filter(name => name !== undefined)}/>
                                     )

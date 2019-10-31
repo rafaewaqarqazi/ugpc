@@ -1,16 +1,16 @@
 import React, {useContext, useState} from 'react';
 import {
     Button,
-    Chip,Dialog, DialogActions,
+    Chip, Dialog, DialogActions,
     DialogContent,
     Tooltip,
     IconButton, InputAdornment,
     Menu, MenuItem,
     TextField,
     Typography, ListItemIcon, AppBar, Toolbar,
-    Grid,
+    Grid, Hidden, CircularProgress,
 } from "@material-ui/core";
-import {Assignment, Send, AttachFile, PictureAsPdfOutlined} from "@material-ui/icons";
+import {Assignment, Send, AttachFile, PictureAsPdfOutlined, GetAppOutlined} from "@material-ui/icons";
 import VisionDocsContext from "../../../context/visionDocs/visionDocs-context";
 import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import {DropzoneArea} from "material-ui-dropzone";
@@ -24,7 +24,7 @@ import {RenderDocumentAttachments} from "../common/RenderDocumentAttachments";
 import DialogTitleComponent from "../../DialogTitleComponent";
 import UserContext from '../../../context/user/user-context';
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
-
+import { PDFDownloadLink,PDFViewer } from '@react-pdf/renderer';
 const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
     const classes = useDocDetailsDialogStyles();
     const userContext = useContext(UserContext);
@@ -237,11 +237,37 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    {
-                        project.details && project.details.acceptanceLetter && project.details.acceptanceLetter.name && (
-                            <Button onClick={openLetterViewer} className={classes.buttonSuccess} variant='contained'>View Acceptance Letter</Button>
-                        )
-                    }
+                    <Hidden smUp>
+                        {
+                            project.details && project.details.acceptanceLetter && project.details.acceptanceLetter.name && (
+                                <PDFDownloadLink
+                                    document={
+                                        <ApprovalLetter
+                                            title={currentDocument.title}
+                                            students={project.students}
+                                            supervisor={project.details.supervisor}
+                                            date={project.details.acceptanceLetter.issueDate}
+                                            chairmanName={chairmanName}
+                                        />
+                                    }
+                                    fileName={project.details.acceptanceLetter.name}
+                                >
+                                    {
+                                        ({loading}) =>
+                                            (loading ? <CircularProgress/> :  <Button size='small' startIcon={<GetAppOutlined/>}>Acceptance Letter</Button>)
+                                    }
+                                </PDFDownloadLink>
+                            )
+                        }
+                    </Hidden>
+                    <Hidden xsDown>
+                        {
+                            project.details && project.details.acceptanceLetter && project.details.acceptanceLetter.name && (
+                                <Button onClick={openLetterViewer} >Acceptance Letter</Button>
+                            )
+                        }
+                    </Hidden>
+
                     <Button onClick={handleClose} color="primary" variant='contained'>
                         Close
                     </Button>
@@ -312,13 +338,16 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                 <DialogContent style={{height:500}}>
                     {
                         project.details && project.details.acceptanceLetter &&(
-                            <ApprovalLetter
-                                title={currentDocument.title}
-                                students={project.students}
-                                supervisor={project.details.supervisor}
-                                date={project.details.acceptanceLetter.issueDate}
-                                chairmanName={chairmanName}
-                            />)
+                            <PDFViewer style={{width:'100%',height:'100%'}}>
+                                <ApprovalLetter
+                                    title={currentDocument.title}
+                                    students={project.students}
+                                    supervisor={project.details.supervisor}
+                                    date={project.details.acceptanceLetter.issueDate}
+                                    chairmanName={chairmanName}
+                                />
+                            </PDFViewer>
+                            )
                     }
 
                 </DialogContent>
