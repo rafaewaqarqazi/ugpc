@@ -35,10 +35,7 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    resetPasswordLink: {
-        data: String,
-        default: ""
-    },
+    resetPasswordLink: String,
     emailVerificationCode:{
         type:String
     },

@@ -36,7 +36,7 @@ export const signin = user =>{
 
 export const authenticate = (data)=>{
     cookie.set('token',data,{expires: 7});
-    Router.push('/', '/');
+    Router.push('/sign-in');
 };
 
 export const signout = ()=>{
@@ -311,35 +311,27 @@ export const landingAuth = ctx => {
 };
 
 //
-// export const forgotPassword = email => {
-//     console.log("email: ", email);
-//     return fetch(`/api/forgot-password`, {
-//         method: "PUT",
-//         headers: {
-//             Accept: "application/json",
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify({ email })
-//     })
-//         .then(response => {
-//             console.log("forgot password response: ", response);
-//             return response.json();
-//         })
-//         .catch(err => console.log(err));
-// };
-//
-// export const resetPassword = resetInfo => {
-//     return fetch(`/api/reset-password`, {
-//         method: "PUT",
-//         headers: {
-//             Accept: "application/json",
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify(resetInfo)
-//     })
-//         .then(response => {
-//             console.log("forgot password response: ", response);
-//             return response.json();
-//         })
-//         .catch(err => console.log(err));
-// };
+export const forgotPassword = async email => {
+    console.log("email: ", email);
+    const res = await fetch(`${serverUrl}/auth/forgot-password`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+    });
+    return await res.json();
+};
+
+export const resetPassword = async resetInfo => {
+    const res = await fetch(`${serverUrl}/auth/reset-password`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(resetInfo)
+    });
+    return await res.json();
+};

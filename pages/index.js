@@ -80,7 +80,7 @@ const Index = () => {
                             <Typography variant='h5' color='textPrimary' className={landingClasses.mainTitle}>
                                 An Agile Software Development tool for FYPs
                             </Typography>
-                            <Link href={'/student/sign-up'}>
+                            <Link href='/student/sign-up'>
                                 <Button variant='contained' color='primary'>Start Now</Button>
                             </Link>
                         </div>

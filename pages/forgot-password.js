@@ -1,24 +1,19 @@
-import {useRouter} from "next/router";
-import {
-    Container,
-    TextField,
-    Button,
-    Typography,
-    Box,
-    LinearProgress
-} from "@material-ui/core";
 import React, {useState} from 'react';
-import {useStyles} from "../../../src/material-styles/page-loading";
-import CopyrightComponent from "../../../components/CopyrightComponent";
-import SuccessSnackBar from "../../../components/snakbars/SuccessSnackBar";
-import ErrorSnackBar from "../../../components/snakbars/ErrorSnackBar";
-import {authenticate, isAuthenticated, verifyEmail} from "../../../auth";
+import {Box, Button, Container, LinearProgress, TextField, Typography} from "@material-ui/core";
+import SuccessSnackBar from "../components/snakbars/SuccessSnackBar";
+import ErrorSnackBar from "../components/snakbars/ErrorSnackBar";
+import CopyrightComponent from "../components/CopyrightComponent";
+import {useStyles} from "../src/material-styles/page-loading";
+import {useRouter} from "next/router";
+import {forgotPassword} from "../auth";
+import LandingPageLayout from "../components/Layouts/LandingPageLayout";
+import {withLandingAuthSync} from "../components/routers/landingAuth";
 
-const VerifyEmail = () => {
+const ForgotPassword = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
-    const [code,setCode] = useState('');
+    const [email,setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [resMessage,setResMessage] = useState({
         open:false,
@@ -29,36 +24,21 @@ const VerifyEmail = () => {
         message:''
     });
     const handleChange =event => {
-        setCode(event.target.value);
+        setEmail(event.target.value);
     };
     const handleSubmit = e => {
         e.preventDefault();
         setLoading(true);
-        const data = {
-            _id:id,
-            emailVerificationCode:code
-        };
-        verifyEmail(data)
+        forgotPassword(email)
             .then(res => {
                 if (res.error){
                     setError({open:true,
                         message:res.error})
                 }else {
-
-                    if (isAuthenticated()){
-                        const jwt = {
-                            ...isAuthenticated(),
-                            user:{
-                                ...isAuthenticated().user,
-                                isEmailVerified:true
-                            }
-                        };
-                        authenticate(jwt,()=>{
-                            setResMessage({open:true, message:res.message});
-                        })
-                    }else {
-                        setResMessage({open:true, message:res.message});
-                    }
+                    setResMessage({
+                        open:true,
+                        message:res.message
+                    });
                 }
 
             })
@@ -72,13 +52,13 @@ const VerifyEmail = () => {
             message:''})
     };
     return (
-        <div >
+        <LandingPageLayout>
             {loading && <LinearProgress color='secondary'/>}
             <SuccessSnackBar message={resMessage.message} open={resMessage.open} handleClose={handleClose}/>
             <ErrorSnackBar open={error.open} message={error.message} handleSnackBar={handleError}/>
             <Container component='main' maxWidth='xs'>
                 <Typography variant={'h4'} className={classes.paper}>
-                    Verify Email
+                    Reset Password
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -86,10 +66,9 @@ const VerifyEmail = () => {
                         margin="normal"
                         required
                         fullWidth
-                        name="verCode"
-                        label="Email Verification Code"
-                        id="verCode"
-                        value={code}
+                        name="forgotPassword"
+                        label="Your Email"
+                        value={email}
                         onChange={handleChange}
                     />
                     <Button
@@ -97,19 +76,16 @@ const VerifyEmail = () => {
                         fullWidth
                         variant="contained"
                         color="secondary"
-
                     >
-                        Verify
+                        Reset
                     </Button>
                 </form>
                 <Box mt={5}>
                     <CopyrightComponent />
                 </Box>
             </Container>
-        </div>
+        </LandingPageLayout>
     );
 };
 
-
-
-export default VerifyEmail;
+export default withLandingAuthSync(ForgotPassword);

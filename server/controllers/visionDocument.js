@@ -1,9 +1,9 @@
 const Projects = require('../models/projects');
-const Users = require('../models/users');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const {sendEmail} = require("../helpers");
 const moment = require('moment');
 const _ = require('lodash');
+
 exports.fetchVisionDocsByCommitteeCoordinator =async (req, res)=>{
     try {
         const {committees} = req.query;
@@ -111,7 +111,7 @@ exports.changeStatus =async (req, res)=>{
                 <p>Regards!</p>
             `
         };
-        await sendEmail(studentEmailData);
+        sendEmail(studentEmailData);
         await res.json(result)
     }catch (e) {
         await res.json({error:e.message})
@@ -162,10 +162,8 @@ exports.scheduleVisionDefence = async (req,res)=>{
             `
         };
 
-        sendEmail(emailData)
-            .then(()=>{
-                return  res.json({message:'Success'})
-            });
+        sendEmail(emailData);
+        await res.json({message:'Success'})
     }
     catch (e) {
         await res.json({error:e.message})

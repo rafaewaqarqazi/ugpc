@@ -79,7 +79,7 @@ exports.createProject = (req, res) => {
 
 exports.assignSupervisor = async (req,res)=>{
     try {
-        const {projectId,title,regNo} = req.body;
+        const {projectId,title,regNo,filename} = req.body;
         //Finding Supervisor with minimum Numbers of Projects
         const supervisors =await Users.aggregate([
             {$match:{"role":'Supervisor'}},
@@ -156,7 +156,8 @@ exports.assignSupervisor = async (req,res)=>{
                 <p>is assigned to you for supervision</p>
                 <br/>
                 <p>Regards!</p>
-            `
+            `,
+            attachments:[{filename,path:`${process.env.CLIENT_URL}/static/pdf/${filename}`}]
         };
         const studentsEmailData = {
             from: "noreply@node-react.com",
@@ -171,8 +172,8 @@ exports.assignSupervisor = async (req,res)=>{
                    <p>Regards!</p>
             `
         };
-        await sendEmail(supervisorEmailData);
-        await sendEmail(studentsEmailData);
+        sendEmail(supervisorEmailData);
+        sendEmail(studentsEmailData);
         await res.json({success:'Assigned',supervisor:project.details.supervisor,acceptanceLetter:project.details.acceptanceLetter})
     }
     catch (e) {
@@ -228,7 +229,7 @@ exports.changeFDStatus = async (req,res)=>{
                 <p>Regards!</p>
             `
         };
-        await sendEmail(studentEmailData);
+        sendEmail(studentEmailData);
         await res.json({message:'Success'})
     }catch (e) {
         await res.json(e.message)
@@ -375,8 +376,8 @@ exports.scheduleInternal = async (req,res)=>{
                 <p>Regards!</p>
             `
         };
-        await sendEmail(examinerEmailData);
-        await sendEmail(studentsEmailData);
+        sendEmail(examinerEmailData);
+        sendEmail(studentsEmailData);
         await res.json({success:'Assigned',examiner:project.details.internal.examiner})
     }catch (e) {
         await res.json({error:e.message})
@@ -417,7 +418,7 @@ exports.scheduleExternalDate = async (req,res)=>{
                 <p>Regards!</p>
             `
         };
-        await sendEmail(studentsEmailData);
+        sendEmail(studentsEmailData);
         await res.json({success:'Scheduled'})
     }catch (e) {
         await res.json({error:e.message})
@@ -520,8 +521,8 @@ exports.assignExternalAuto = async (req,res)=>{
                 <p>Regards!</p>
             `
             };
-            await sendEmail(examinerEmailData);
-            await sendEmail(studentsEmailData);
+            sendEmail(examinerEmailData);
+            sendEmail(studentsEmailData);
             await res.json({success:'Assigned',examiner:project.details.external.examiner})
         }
 
@@ -623,8 +624,8 @@ exports.assignExternalManual = async (req,res)=>{
             <p>Regards!</p>
         `
         };
-        await sendEmail(examinerEmailData);
-        await sendEmail(studentsEmailData);
+        sendEmail(examinerEmailData);
+        sendEmail(studentsEmailData);
         await res.json({success:'Assigned',examiner:project.details.external.examiner})
 
     }catch (e) {
@@ -839,7 +840,7 @@ exports.scheduleMeetingSupervisor = async (req,res) =>{
             <p>Regards!</p>
         `
         };
-        await sendEmail(studentsEmailData);
+        sendEmail(studentsEmailData);
         await res.json(result.details.meetings)
 
     }catch (e) {
@@ -866,7 +867,8 @@ exports.requestMeetingSupervisor = async (req,res) =>{
             <p>Regards!</p>
         `
         };
-        await sendEmail(emailData);
+        sendEmail(emailData);
+
         await res.json({message:'Success'})
     }catch (e) {
         await res.json({error:e.message})

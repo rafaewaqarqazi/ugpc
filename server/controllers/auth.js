@@ -30,12 +30,10 @@ exports.studentSignup = async (req, res)=>{
         };
 
         sendEmail(emailData)
-            .then(()=>{
-                return res.status(200).json({
-                    _id:student._id,
-                    message: `Please check your email for Verification`
-                });
-            });
+        await res.json({
+            _id:student._id,
+            message: `Please check your email for Verification`
+        });
     }
 };
 
@@ -82,12 +80,8 @@ exports.ugpcSignup = async (req, res)=>{
 `
         };
 
-        sendEmail(emailData)
-            .then(()=>{
-                return res.status(200).json({
-                    message: `Account has been created`
-                });
-            });
+        sendEmail(emailData);
+        await res.json({message: `Account has been created`});
     }
 };
 exports.signin = (req, res) => {
@@ -122,9 +116,6 @@ exports.signin = (req, res) => {
             token,
             user:loggedInUser
         });
-
-
-
     })
 };
 
@@ -220,15 +211,14 @@ exports.forgotPassword = (req, res) => {
     if (!req.body.email)
         return res.status(400).json({ message: "No Email in request body" });
 
-    console.log("forgot password finding user with that email");
     const { email } = req.body;
-    console.log("signin req.body", email);
+
     // find the user based on email
     User.findOne({ email }, (err, user) => {
         // if err or no user
         if (err || !user)
             return res.status("401").json({
-                error: "User with that email does not exist!"
+                error: "User with this email does not exist!"
             });
 
         // generate a token with user id and secret
@@ -256,7 +246,7 @@ exports.forgotPassword = (req, res) => {
             } else {
                 sendEmail(emailData);
                 return res.status(200).json({
-                    message: `Email has been sent to ${email}. Follow the instructions to reset your password.`
+                    message: `Email has been sent with reset password link.`
                 });
             }
         });
@@ -289,7 +279,7 @@ exports.resetPassword = (req, res) => {
                 });
             }
             res.json({
-                message: `Great! Now you can login with your new password.`
+                message: `Great! You can login with new Password Now.`
             });
         });
     });

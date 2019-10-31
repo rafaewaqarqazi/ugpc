@@ -1,10 +1,7 @@
-
 const Users = require('../models/users');
 require('dotenv').config();
 const Projects = require('../models/projects');
-const path = require('path');
 const {sendEmail} = require("../helpers");
-const mongoose = require('mongoose');
 
 exports.changeEligibility = (req, res)=>{
     Users.findOneAndUpdate({_id:req.params.userId},
@@ -36,11 +33,8 @@ exports.changeEligibility = (req, res)=>{
                 html: emailHtml
             };
 
-            sendEmail(emailData)
-                .then(()=>{
-                    return  res.json({message:'Success'})
-                });
-
+            sendEmail(emailData);
+            res.json({message:'Success'})
         })
         .catch(err => {
             res.status(400).json({error:err})
@@ -113,10 +107,8 @@ exports.uploadFinalDocumentation =  (req,res)=>{
                 attachments:[{filename:req.file.originalname,path:`${process.env.CLIENT_URL}/static/pdf/${req.file.filename}`}]
             };
 
-            sendEmail(emailData)
-                .then(()=>{
-                    return res.json(project);
-                });
+            sendEmail(emailData);
+            res.json(project);
         })
         .catch(err => console.log(err.message));
 

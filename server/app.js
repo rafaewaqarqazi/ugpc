@@ -95,7 +95,7 @@ app.prepare()
             return handle(req, res)
         });
 
-        server.listen(process.env.PORT,'192.168.10.11', ()=>{
+        server.listen(process.env.PORT, ()=>{
             console.log(`Server Running on PORT: ${process.env.PORT}`)
         });
     })

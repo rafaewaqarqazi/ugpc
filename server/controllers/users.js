@@ -239,10 +239,8 @@ exports.addMemberToCommittee = async (req,res)=>{
             `
             };
 
-            sendEmail(emailData)
-                .then(()=>{
-                    return res.json({message:'Member Added Successfully'});
-                });
+            sendEmail(emailData);
+            await res.json({message:'Member Added Successfully'});
 
     }catch (e) {
         await res.json({error:e.message})
@@ -272,12 +270,8 @@ exports.removeFromCommitteeDepartment = async (req,res) =>{
             `
         };
 
-        sendEmail(emailData)
-            .then(()=>{
-                return res.json({message:'Member Removed Successfully'})
-            });
-
-
+        sendEmail(emailData);
+        await res.json({message:'Member Removed Successfully'})
     }catch (e) {
         await res.json({error:e.message})
     }
@@ -308,10 +302,8 @@ exports.removeFromCommittee = async (req,res) =>{
             `
         };
 
-        sendEmail(emailData)
-            .then(()=>{
-                return res.json({message:'Member Removed Successfully'})
-            });
+        sendEmail(emailData);
+        await res.json({message:'Member Removed Successfully'})
 
     }catch (e) {
         await res.json({error:e.message})
