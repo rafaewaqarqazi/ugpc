@@ -21,9 +21,11 @@ const {
     addMarksSupervisor,
     scheduleMeetingSupervisor,
     requestMeetingSupervisor,
-    markMeetingSupervisorAsAttended
+    markMeetingSupervisorAsAttended,
+    uploadPlagiarismReport
 } = require('../controllers/projects');
 const {requireSignin,isUGPCAuth, isChairmanOfficeAuth} = require('../controllers/auth');
+const upload = require('../upload');
 
 router.get('/by/studentId/:byStudentId',requireSignin,(req,res)=>{
     res.json(req.project);
@@ -35,6 +37,7 @@ router.get('/all',requireSignin,getAllProjects);
 
 //UGPC Member's Routes
 router.put('/supervisor/assign',requireSignin,isUGPCAuth,assignSupervisor);
+router.put('/supervisor/add/plagiarismReport/:type',requireSignin,upload.single('file'),uploadPlagiarismReport);
 router.put('/changeFDStatus',requireSignin,changeFDStatus);
 router.put('/schedule/internal',requireSignin,isUGPCAuth,scheduleInternal);
 router.put('/schedule/external/date',requireSignin,isUGPCAuth,scheduleExternalDate);
@@ -52,7 +55,7 @@ router.get('/fetch/forExternalLetter',requireSignin,isChairmanOfficeAuth,fetchFo
 
 
 router.get('/fetch/finalDocumentation/by/supervisor/:supervisorId',requireSignin,fetchFinalDocumentationsBySupervisor);
-router.put('/marks/supervisor',requireSignin,addMarksSupervisor)
+router.put('/marks/supervisor',requireSignin,addMarksSupervisor);
 router.put('/meetings/supervisor/schedule',requireSignin,scheduleMeetingSupervisor);
 router.put('/meetings/supervisor/request',requireSignin,requestMeetingSupervisor);
 router.put('/meetings/supervisor/attended',requireSignin,markMeetingSupervisorAsAttended);

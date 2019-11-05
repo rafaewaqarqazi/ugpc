@@ -172,15 +172,6 @@ const ProfileComponent = () => {
                 },
             });
             return false;
-        }else if (!oldPassword.match(/\d/)){
-            setError({
-                ...error,
-                oldPassword:{
-                    show:true,
-                    message:'Password should contain at-least a Number'
-                },
-            });
-            return false;
         }else if (!newPassword.match(/\d/)){
             setError({
                 ...error,

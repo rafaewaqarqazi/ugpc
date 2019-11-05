@@ -197,7 +197,6 @@ exports.fetchFinalDocumentationsBySupervisor = async (req,res)=>{
 
 exports.changeFDStatus = async (req,res)=>{
     try {
-        console.log('change Status');
         const {status,projectId,documentId,comment} = req.body;
         const result = await Projects.findOneAndUpdate({"_id":projectId,"documentation.finalDocumentation._id":documentId},
             {
@@ -217,10 +216,11 @@ exports.changeFDStatus = async (req,res)=>{
             html: `
                 <p>Dear Student,</p>
                 <p>Your Project's Evaluation status has changed to <b>${status}</b></p>
-                ${comment !== undefined ? `<p><b>Comments:</b> ${comment}</p>` :''}
+                ${comment !== undefined ? `<p><b>Reason:</b> ${comment}</p>` :''}
                 <br/>
                 <p>Learn About Evaluation Statuses:</p>
                 <p><b>NotApproved:</b> Your Documentation is rejected by supervisor or it needs changes.</p>
+                <p><b>ReSubmit:</b> Your Documentation is rejected by examiner or it needs changes.</p>
                 <p><b>Approved:</b> Your Documentation is accepted by supervisor.</p>
                 <p><b>Available for Internal:</b> Your Project is sent to evaluation Committee for internal scheduling.</p>
                 <p><b>Internal Scheduled:</b> Your Project's internal is scheduled.</p>
@@ -662,10 +662,10 @@ exports.fetchAssignedForEvaluation = async (req,res) =>{
         ]);
         const projects = await Projects.populate(results,[
             {path:"details.supervisor",model:"Users",select:"name supervisor_details.position"},
-            {path:"students",model:"Users",select:"name student_details.regNo"}
+            {path:"students",model:"Users",select:"name student_details.regNo profileImage"}
             ]);
         const marks = await Users.findOne({"role":"Chairman DCSSE"})
-            .select('chairman_details.settings.marksDistribution.internal chairman_details.settings.marksDistribution.external -_id')
+            .select('chairman_details.settings.marksDistribution.internal chairman_details.settings.marksDistribution.external -_id');
         await res.json({projects,marks:marks?marks.chairman_details.settings.marksDistribution: {proposal: 10,supervisor: 10,internal: 30,external: 50}})
     }
     catch (e) {
@@ -884,6 +884,42 @@ exports.markMeetingSupervisorAsAttended = async (req,res) =>{
         },{new:true})
         .select('details.meetings');
         await res.json(result.details.meetings)
+    }catch (e) {
+        await res.json({error:e.message})
+    }
+};
+
+exports.uploadPlagiarismReport = async (req,res) =>{
+    try {
+        const {projectId,documentId} = req.body;
+        const result = await Projects.findOneAndUpdate({"_id":projectId,"documentation.finalDocumentation._id":documentId},{
+            $set:{
+                "documentation.finalDocumentation.$.plagiarismReport":{
+                    "originalname":req.file.originalname,
+                    "filename":req.file.filename,
+                }
+            }
+        },{new:true})
+            .select('students')
+            .populate('students','email');
+        const emails = await result.students.map(student => student.email);
+        const emailData = {
+            from: "rafaewaqar@gmail.com",
+            to: emails,
+            subject: "Plagiarism Report Uploaded",
+            text: `Dear Student,\n Your Supervisor has uploaded Plagiarism Report of your Project. you can Check / Download it now`,
+            html: `
+            <p>Dear Student,</p>
+            <p>Your Supervisor has uploaded Plagiarism Report of your Project.</p>
+            <p>You can Check / Download it now</p>
+            <p>Plagiarism Report is Attached with this email. You can also download it from UGPC - Software</p>
+            <br/>
+            <p>Regards!</p>
+        `,
+            attachments:[{filename:req.file.originalname,path:`${process.env.CLIENT_URL}/static/pdf/${req.file.filename}`}]
+        };
+        sendEmail(emailData);
+        await res.json({message:'Success'})
     }catch (e) {
         await res.json({error:e.message})
     }

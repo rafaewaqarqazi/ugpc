@@ -35,6 +35,8 @@ import {
 import {useTableStyles} from "../../src/material-styles/tableStyles";
 import RenderStudents from "../../components/visionDocument/common/RenderStudents";
 import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
+import SuccessSnackBar from "../../components/snakbars/SuccessSnackBar";
+import ErrorSnackBar from "../../components/snakbars/ErrorSnackBar";
 
 const Externals = () => {
     const tableClasses = useTableStyles();
@@ -53,6 +55,14 @@ const Externals = () => {
     const [selectedExaminerId,setSelectedExaminerId] = useState('');
     const [openExaminersList,setOpenExaminersList] = useState(true);
     const [error,setError] = useState(false);
+    const [success,setSuccess] = useState({
+        open:false,
+        message:''
+    });
+    const [resError,setResError] = useState({
+        open:false,
+        message:''
+    });
     const [dialog,setDialog] = useState({
         details:false,
         externalAssign:false
@@ -66,7 +76,6 @@ const Externals = () => {
         setLoading({...loading,main:true});
         fetchForExternalLetterAPI()
             .then(result =>{
-                console.log(result);
                 setProjects(result);
                 setFilter(result);
                 setFilteredProjects(result);
@@ -156,13 +165,11 @@ const Externals = () => {
                                 ...loading,
                                 confirm:false
                             });
-
-                            setDialog({
-                                ...dialog,
-                                externalAssign:false
+                            setResError({
+                                open:true,
+                                message:result.error
                             });
-                            // setError(true);
-                            return
+                            return;
                         }else {
                             const statusData = {
                                 projectId:details._id,
@@ -178,9 +185,13 @@ const Externals = () => {
 
                                     setDialog({
                                         ...dialog,
-                                        externalAssign:false
+                                        externalAssign:false,
+                                        details:false
                                     });
-                                    fetchData();
+                                    setSuccess({
+                                        open:true,
+                                        message:'Success'
+                                    });
                                 })
                         }
 
@@ -207,12 +218,10 @@ const Externals = () => {
                             ...loading,
                             confirm:false
                         });
-
-                        setDialog({
-                            ...dialog,
-                            externalAssign:false
+                        setResError({
+                            open:true,
+                            message:result.error
                         });
-                        // setError(true);
                         return
                     }else {
                         const statusData = {
@@ -229,9 +238,13 @@ const Externals = () => {
 
                                 setDialog({
                                     ...dialog,
-                                    externalAssign:false
+                                    externalAssign:false,
+                                    details:false
                                 });
-                                fetchData();
+                                setSuccess({
+                                    open:true,
+                                    message:'Success'
+                                });
                             })
                     }
 
@@ -249,13 +262,19 @@ const Externals = () => {
                 })
         }
     };
-    const handleListItemClick = index => event => {
+    const handleListItemClick = index => {
         setError(false);
         setSelectedIndex(index);
         setSelectedExaminerId(examiners[index]._id)
     };
+    const handleSuccess = () =>{
+        setSuccess({open:false,message:''});
+        fetchData();
+    };
     return (
         <ChairmanOfficeLayout>
+            <SuccessSnackBar open={success.open} message={success.message} handleClose={handleSuccess}/>
+            <ErrorSnackBar open={resError.open} message={resError.message} handleSnackBar={()=>setResError({open:false,message:''})}/>
             <Container>
                 <div className={classes.listContainer}>
                     <div className={classes.top}>
@@ -369,11 +388,11 @@ const Externals = () => {
                                                         <Tooltip  title={project.details.supervisor.supervisor_details.position} placement="top" TransitionComponent={Zoom}>
                                                             <TableCell  style={{textTransform:'capitalize'}}>{project.details.supervisor.name}</TableCell>
                                                         </Tooltip>
-                                                        <Tooltip  title={project.details.internal.examiner.ugpc_details.designation} placement="top" TransitionComponent={Zoom}>
-                                                            <TableCell style={{textTransform:'capitalize'}}>{project.details.internal.examiner.name}</TableCell>
+                                                        <Tooltip  title={project.details.internal && project.details.internal.examiner.ugpc_details.designation} placement="top" TransitionComponent={Zoom}>
+                                                            <TableCell style={{textTransform:'capitalize'}}>{project.details.internal && project.details.internal.examiner.name}</TableCell>
                                                         </Tooltip>
-                                                        <Tooltip  title={project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
-                                                            <TableCell  style={{textTransform:'capitalize'}}>{project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
+                                                        <Tooltip  title={project.details.external && project.details.external.examiner ? project.details.external.examiner.ugpc_details.designation : 'Not Assigned'} placement="top" TransitionComponent={Zoom}>
+                                                            <TableCell  style={{textTransform:'capitalize'}}>{project.details.external && project.details.external.examiner ? project.details.external.examiner.name : 'Not Assigned'}</TableCell>
                                                         </Tooltip>
 
                                                     </TableRow>
@@ -434,10 +453,10 @@ const Externals = () => {
                                             </Typography>
                                             <Container>
                                                 <Typography variant='body2' style={{textTransform:"capitalize"}} className={classes.wrapText}>
-                                                    {details.details.internal.examiner.name}
+                                                    {details.details.internal && details.details.internal.examiner? details.details.internal.examiner.name: 'Not Assigned'}
                                                 </Typography>
                                                 <Typography variant='caption' color='textSecondary'  className={classes.wrapText}>
-                                                    {details.details.internal.examiner.ugpc_details.designation}
+                                                    {details.details.internal && details.details.internal.examiner && details.details.internal.examiner.ugpc_details.designation}
                                                 </Typography>
                                             </Container>
                                         </div>
@@ -447,7 +466,7 @@ const Externals = () => {
                                             </Typography>
                                             <Container>
                                                 {
-                                                    details.details.external.examiner ?
+                                                    details.details.external && details.details.external.examiner ?
                                                         <div>
                                                             <Typography variant='body2' style={{textTransform:"capitalize"}} className={classes.wrapText}>
                                                                 {details.details.external.examiner.name}

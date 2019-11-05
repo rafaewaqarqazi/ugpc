@@ -179,7 +179,7 @@ const ShowProgress = () => {
                                                                No Sprint created yet
                                                            </div>
                                                        </div>:
-                                                       <Bar width={'100%'}
+                                                       <Bar
                                                             height={300}
                                                             options={{
                                                                 maintainAspectRatio: false,

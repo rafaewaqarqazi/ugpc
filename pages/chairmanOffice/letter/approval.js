@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ChairmanOfficeLayout from "../../../components/Layouts/chairmanOfficeLayout";
 import {
     AppBar,
@@ -27,6 +27,7 @@ import ApprovalLetter from "../../../components/approvalLetter/ApprovalLetter";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
 import CircularLoading from "../../../components/loading/CircularLoading";
 import {useTableStyles} from "../../../src/material-styles/tableStyles";
+import {PDFViewer} from "@react-pdf/renderer";
 
 const Approval = () => {
     const tableClasses = useTableStyles();
@@ -283,13 +284,16 @@ const Approval = () => {
                 <DialogContent style={{height:500}}>
                     {
                         document.details &&(
+                            <PDFViewer style={{width:'100%',height:'100%'}}>
                             <ApprovalLetter
                                 title={document.documentation.visionDocument.title}
                                 students={document.students}
                                 supervisor={document.details.supervisor}
                                 date={document.details.acceptanceLetter.issueDate}
                                 chairmanName={chairmanName ? chairmanName : "No Chairman"}
-                            />)
+                            />
+                            </PDFViewer>
+                            )
                     }
 
                 </DialogContent>

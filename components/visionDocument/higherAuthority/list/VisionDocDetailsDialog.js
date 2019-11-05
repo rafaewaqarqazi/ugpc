@@ -32,6 +32,7 @@ import DialogTitleComponent from "../../../DialogTitleComponent";
 import UserContext from "../../../../context/user/user-context";
 import {fetchMarksDistributionAPI} from "../../../../utils/apiCalls/projects";
 import { PDFDownloadLink,PDFViewer } from '@react-pdf/renderer';
+import CircularLoading from "../../../loading/CircularLoading";
 
 
 const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument}) => {
@@ -308,45 +309,49 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                 <Chip style={getVisionDocsStatusChipColor(currentDocument.documentation.visionDocument.status)} label={currentDocument.documentation.visionDocument.status}  size="small"/>
                             </div>
                             {
-                                isAuthenticated().user.additionalRole === 'UGPC_Member' &&
-                                <div className={classes.detailsContent}>
-                                    <Typography color='textSecondary'>
-                                        Change Status
-                                    </Typography>
-                                    <FormControl variant="outlined" margin='dense' className={classes.formControl}>
-                                        <InputLabel  htmlFor="changeStatus">
-                                            Status
-                                        </InputLabel>
-                                        <Select
-                                            value={changeStatus}
-                                            onChange={handleChangeStatus}
-                                            input={<OutlinedInput labelWidth={47} name="changeStatus" id="changeStatus" />}
-                                        >
-                                            <MenuItem value='No Change'>No Change</MenuItem>
-                                            {
-                                                isAuthenticated().user.ugpc_details.position === 'Coordinator' &&
-                                                currentDocument.documentation.visionDocument.status === 'Waiting for Initial Approval' &&
-                                                <MenuItem value='Approved for Meeting'>Approve for Meeting</MenuItem>
-                                            }
-                                            {
-                                                currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
-                                                <MenuItem value='Approved With Changes'>Approve With Changes</MenuItem>
-                                            }
-                                            {
-                                                currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
-                                                <MenuItem value='Approved'>Approve</MenuItem>
-                                            }
-                                            {
-                                                currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
-                                                <MenuItem value='Approved for Meeting'>Re Schedule</MenuItem>
-                                            }
-                                            {
-                                                currentDocument.documentation.visionDocument.status !== 'Approved' && currentDocument.documentation.visionDocument.status !== 'Approved With Changes' &&
-                                                <MenuItem value='Rejected'>Reject</MenuItem>
-                                            }
-                                        </Select>
-                                    </FormControl>
-                                </div>
+                                userContext.user.isLoading ? <CircularLoading/> :
+                                    userContext.user.user.additionalRole === 'UGPC_Member' &&
+                                    <div className={classes.detailsContent}>
+
+                                        <Typography color='textSecondary'>
+                                            Change Status
+                                        </Typography>
+                                        <FormControl variant="outlined" margin='dense' className={classes.formControl}>
+                                            <InputLabel  htmlFor="changeStatus">
+                                                Status
+                                            </InputLabel>
+                                            <Select
+                                                value={changeStatus}
+                                                onChange={handleChangeStatus}
+                                                input={<OutlinedInput labelWidth={47} name="changeStatus" id="changeStatus" />}
+                                            >
+                                                <MenuItem value='No Change'>No Change</MenuItem>
+                                                {
+                                                    userContext.user.user.ugpc_details.position === 'Coordinator' &&
+                                                    currentDocument.documentation.visionDocument.status === 'Waiting for Initial Approval' &&
+                                                    <MenuItem value='Approved for Meeting'>Approve for Meeting</MenuItem>
+                                                }
+                                                {
+                                                    userContext.user.user.ugpc_details.position === 'Chairman_Committee' &&
+                                                    currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
+                                                    <MenuItem value='Approved With Changes'>Approve With Changes</MenuItem>
+                                                }
+                                                {
+                                                    userContext.user.user.ugpc_details.position === 'Chairman_Committee' &&
+                                                    currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
+                                                    <MenuItem value='Approved'>Approve</MenuItem>
+                                                }
+                                                {
+                                                    currentDocument.documentation.visionDocument.status === 'Meeting Scheduled' &&
+                                                    <MenuItem value='Approved for Meeting'>Re Schedule</MenuItem>
+                                                }
+                                                {
+                                                    currentDocument.documentation.visionDocument.status !== 'Approved' && currentDocument.documentation.visionDocument.status !== 'Approved With Changes' &&
+                                                    <MenuItem value='Rejected'>Reject</MenuItem>
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                             }
                             <RenderDocBasicDetails
                                 project={currentDocument}
@@ -356,6 +361,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                         <Grid item xs={12} sm={6}>
                             <RenderDocumentAttachments documents={currentDocument.documentation.visionDocument.documents} />
                             {
+                                userContext.user.isLoading ? <CircularLoading/> :
                                 (currentDocument.documentation.visionDocument.status === 'Approved' || currentDocument.documentation.visionDocument.status === 'Approved With Changes') &&
                                 <div className={classes.detailsContent}>
                                     <Typography variant='subtitle2'>
@@ -367,6 +373,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 <Typography variant='h6' color='textSecondary'>{`(${currentDocument.details.marks.visionDocument}/${marksDistribution})`}</Typography>
                                             </Container>
                                              :
+                                            userContext.user.user.ugpc_details.position === 'Chairman_Committee' ?
                                             <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                                                 <TextField
                                                     label="Add Marks"
@@ -378,6 +385,10 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                 />
                                                 <Button onClick={()=>setMarksConfirm(true)} disabled={saveButton} style={{marginLeft:2}} variant='outlined' color='primary'>Save</Button>
                                             </div>
+                                                :
+                                                <Container>
+                                                    <Typography variant='h6' color='textSecondary'>Not Provided</Typography>
+                                                </Container>
                                     }
 
                                 </div>
@@ -415,37 +426,39 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
                 </DialogContent>
                 <DialogActions>
-                    <Hidden smUp>
+
                         {
                             currentDocument.details && currentDocument.details.acceptanceLetter && currentDocument.details.acceptanceLetter.name && (
-                                <PDFDownloadLink
-                                    document={
-                                        <ApprovalLetter
-                                            title={currentDocument.documentation.visionDocument.title}
-                                            students={currentDocument.students}
-                                            supervisor={currentDocument.details.supervisor}
-                                            date={currentDocument.details.acceptanceLetter.issueDate}
-                                            chairmanName={chairmanName}
-                                        />
-                                    }
-                                    fileName={currentDocument.details.acceptanceLetter.name}
-                                    style={{textDecoration:'none'}}
-                                >
-                                    {
-                                        ({loading}) =>
-                                            (loading ? <CircularProgress/> :  <Button size='small' startIcon={<GetAppOutlined/>}>Acceptance Letter</Button>)
-                                    }
-                                </PDFDownloadLink>
+                                <div>
+                                    <Hidden smUp>
+                                        <PDFDownloadLink
+                                            document={
+                                                <ApprovalLetter
+                                                    title={currentDocument.documentation.visionDocument.title}
+                                                    students={currentDocument.students}
+                                                    supervisor={currentDocument.details.supervisor}
+                                                    date={currentDocument.details.acceptanceLetter.issueDate}
+                                                    chairmanName={chairmanName}
+                                                />
+                                            }
+                                            fileName={currentDocument.details.acceptanceLetter.name}
+                                            style={{textDecoration:'none'}}
+                                        >
+                                            {
+                                                ({loading}) =>
+                                                    (loading ? <CircularProgress/> :  <Button size='small' startIcon={<GetAppOutlined/>}>Acceptance Letter</Button>)
+                                            }
+                                        </PDFDownloadLink>
+                                    </Hidden>
+                                    <Hidden xsDown>
+                                        <Button onClick={openLetterViewer} >Acceptance Letter</Button>
+                                    </Hidden>
+                                </div>
+
                             )
                         }
-                    </Hidden>
-                    <Hidden xsDown>
-                        {
-                            currentDocument.details && currentDocument.details.acceptanceLetter && currentDocument.details.acceptanceLetter.name && (
-                                <Button onClick={openLetterViewer} >Acceptance Letter</Button>
-                            )
-                        }
-                    </Hidden>
+
+
                     {
                         changeStatus !== 'No Change' &&
                         <Button onClick={()=>setConfirmDialog(true)} variant='contained' className={classes.buttonSuccess}>

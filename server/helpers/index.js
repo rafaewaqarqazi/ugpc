@@ -1,13 +1,10 @@
 const nodeMailer = require("nodemailer");
 
-const defaultEmailData = { from: "noreply@node-react.com" };
-
 exports.sendEmail = emailData => {
     const transporter = nodeMailer.createTransport({
         host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        requireTLS: true,
+        port: 465,
+        secure: true,
         auth: {
             user: "rafaewaqar@gmail.com",
             pass: "gqikrscbwhfwuzxm"

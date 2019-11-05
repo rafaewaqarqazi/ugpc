@@ -43,7 +43,7 @@ const EvaluationComponent = () => {
         setLoading(true);
         fetchAssignedForEvaluationProjects()
             .then(result =>{
-                console.log(result)
+                console.log(result);
                 if (result.error){
                     console.log('Error: ',result.error);
                     setLoading(false);
@@ -98,7 +98,7 @@ const EvaluationComponent = () => {
                             loading ? <CircularLoading/> :
                                 !userContext.user.isLoading &&
                                 <RenderInternalsExternals
-                                    projects={projects.filter(project => project.details.internal.examiner === userContext.user.user._id)}
+                                    projects={projects.filter(project => project.details.internal && project.details.internal.examiner === userContext.user.user._id)}
                                     marks={marks}
                                     type='internal'
                                     fetchData={fetchData}
@@ -110,7 +110,7 @@ const EvaluationComponent = () => {
                             loading ? <CircularLoading/> :
                                 !userContext.user.isLoading &&
                                 <RenderInternalsExternals
-                                    projects={projects.filter(project => project.details.external.examiner === userContext.user.user._id)}
+                                    projects={projects.filter(project => project.details.external && project.details.external.examiner === userContext.user.user._id)}
                                     marks={marks}
                                     type='external'
                                     fetchData={fetchData}

@@ -1,7 +1,11 @@
 import React, { useEffect, useState} from 'react';
 
 
-import {fetchFinalDocumentationsBySupervisorAPI, fetchMarksDistributionAPI} from "../../../utils/apiCalls/projects";
+import {
+    fetchFinalDocumentationsBySupervisorAPI,
+    fetchMarksDistributionAPI,
+    uploadPlagiarismReportAPI
+} from "../../../utils/apiCalls/projects";
 import {
     LinearProgress,
     Table,
@@ -20,14 +24,15 @@ import {
     OutlinedInput,
     FormControl,
     TextField,
-    Dialog, DialogTitle, Zoom, DialogContent, DialogContentText, DialogActions
+    Dialog,  Zoom, DialogContent, DialogContentText, DialogActions
 } from "@material-ui/core";
 import {
     PictureAsPdfOutlined,
     MoreVertOutlined,
     ThumbDownAltOutlined,
     ThumbUpAltOutlined,
-    SendOutlined, Close
+    SendOutlined, Close,
+    PublishOutlined
 } from "@material-ui/icons";
 import {makeStyles} from "@material-ui/styles";
 import moment from "moment";
@@ -37,8 +42,8 @@ import {addSupervisorMarksAPI, changeFinalDocumentationStatusAPI} from "../../..
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 import CircularLoading from "../../loading/CircularLoading";
 import DialogTitleComponent from "../../DialogTitleComponent";
-import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
+import {DropzoneArea} from "material-ui-dropzone";
 
 
 const useStyles = makeStyles(theme => ({
@@ -67,6 +72,13 @@ const SupervisorFinalDocumentation = () => {
     const [confirmDialog,setConfirmDialog] = useState(false);
     const [notApprovedDialog,setNotApprovedDialog] = useState(false);
     const [marksDialog,setMarksDialog] = useState(false);
+    const [uploadDialog,setUploadDialog] = useState({
+        confirm:false,
+        open:false
+    });
+    const [currentDoc,setCurrentDoc] = useState({})
+    const [file,setFile]=useState([]);
+    const [fileError,setFileError] = useState(false);
     const [success,setSuccess] = useState(false);
     const [marks,setMarks] = useState({
         marks:'',
@@ -85,10 +97,14 @@ const SupervisorFinalDocumentation = () => {
     });
     const [anchorEl, setAnchorEl] = useState(null);
     const classes = useStyles();
+
+    const handleDropZone = files=>{
+        setFileError(false);
+        setFile(files[0])
+    };
     const fetchData =()=>{
         fetchFinalDocumentationsBySupervisorAPI()
             .then(result =>{
-                console.log(result)
                 setDocuments(result);
                 setFilteredDocs(result);
                 setLoading({...loading,main:false})
@@ -127,6 +143,42 @@ const SupervisorFinalDocumentation = () => {
             setConfirmDialog(true)
         }
     };
+    const handleClickUploadPlagiarismReport = (projectId,documentId) =>{
+        setStatus({
+            ...status,projectId,documentId
+        });
+        setUploadDialog({
+            ...uploadDialog,
+            open:true
+        });
+    };
+    const handleUploadPlagiarismReport = ()=>{
+        if (file.length === 0){
+            setFileError(true)
+        }
+        else {
+            setLoading(true);
+            let formData = new FormData();
+            formData.set('file',file);
+            formData.set('projectId',status.projectId);
+            formData.set('documentId',status.documentId);
+
+            uploadPlagiarismReportAPI(formData)
+                .then(res => {
+                    setSuccess(true);
+                    setLoading({main:true,dialog: false});
+                    setTimeout(()=>{
+                        setUploadDialog({
+                            confirm:false,
+                            open:false
+                        });
+                        fetchData();
+                    },3000);
+                })
+                .catch(error => console.error(error))
+        }
+
+    };
     const handleComment = event =>{
         setComment({error:false,text:event.target.value})
     };
@@ -136,6 +188,7 @@ const SupervisorFinalDocumentation = () => {
             setComment({...comment,error:true});
             return;
         }
+
         setLoading({...loading,dialog: true});
         const data = {
             ...status,
@@ -154,7 +207,7 @@ const SupervisorFinalDocumentation = () => {
             });
     };
     const handleAddMarks = ()=>{
-        if (marks.marks < 0 || marks.marks > marksDistribution){
+        if (marks.marks === '' ||  marks.marks < 0 || marks.marks > marksDistribution){
             setMarks({...marks,error:true});
             return;
         }
@@ -165,162 +218,191 @@ const SupervisorFinalDocumentation = () => {
             .catch(err => console.error(err.message))
 
     };
+    const openMenu = (status,docId,projectId,event) => {
+        setCurrentDoc({
+            status,docId,projectId
+        });
+        setAnchorEl(event.currentTarget)
+    }
+    const ActionsMenu = () => (
+        <div>
+            <MenuItem onClick={()=>handleClickUploadPlagiarismReport(currentDoc.projectId,currentDoc.docId)}>
+                <ListItemIcon>
+                    <PublishOutlined />
+                </ListItemIcon>
+                <Typography variant="inherit" noWrap>
+                    Plagiarism Report
+                </Typography>
+            </MenuItem>
+            {
+                currentDoc.status === 'Waiting for Approval' &&
+                <div>
+                    <MenuItem onClick={()=>handleClickChangeStatusMenu('Approved',currentDoc.projectId,currentDoc.docId)}>
+                        <ListItemIcon>
+                            <ThumbUpAltOutlined />
+                        </ListItemIcon>
+                        <Typography variant="inherit" noWrap>
+                            Approve
+                        </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={()=>handleClickChangeStatusMenu('NotApproved',currentDoc.projectId,currentDoc.docId)}>
+                        <ListItemIcon>
+                            <ThumbDownAltOutlined />
+                        </ListItemIcon>
+                        <Typography variant="inherit" noWrap>
+                            Disapprove
+                        </Typography>
+                    </MenuItem>
+                </div>
+            }
+            {
+                currentDoc.status === 'Approved' &&
+                <MenuItem onClick={()=>handleClickChangeStatusMenu('Available for Internal',currentDoc.projectId,currentDoc.docId)}>
+                    <ListItemIcon>
+                        <SendOutlined />
+                    </ListItemIcon>
+                    <Typography variant="inherit" noWrap>
+                        Send for Internal
+                    </Typography>
+                </MenuItem>
+            }
+
+            <MenuItem onClick={()=>setAnchorEl(null)}>
+                <ListItemIcon>
+                    <Close />
+                </ListItemIcon>
+                <Typography variant="inherit" noWrap>
+                    Cancel
+                </Typography>
+            </MenuItem>
+        </div>
+    );
     return (
         <div>
 
             {
                 loading.main ? <CircularLoading/> :
-
-                        <div >
-                            <div>
-                                <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
-                                    <InputLabel htmlFor="depSwitch">
-                                        Department
-                                    </InputLabel>
-                                    <Select
-                                        value={filterDepartment}
-                                        onChange={handleDepChange}
-                                        input={<OutlinedInput  labelWidth={88} fullWidth name="depSwitch" id="depSwitch" required/>}
-                                    >
-                                        <MenuItem value='All' style={{fontSize:14}}>All</MenuItem>
-                                        <MenuItem value='BSSE' style={{fontSize:14}}>BSSE</MenuItem>
-                                        <MenuItem value='BSCS' style={{fontSize:14}}>BSCS</MenuItem>
-                                        <MenuItem value='BSIT' style={{fontSize:14}}>BSIT</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </div>
-                            <div className={classes.tableWrapper}>
-                                <Table  size='small'>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="left">Title</TableCell>
-                                            <TableCell align="left">Department</TableCell>
-                                            <TableCell align="left">Students</TableCell>
-                                            <TableCell align="left">Status</TableCell>
-                                            <TableCell align="left">UploadedAt</TableCell>
-                                            <TableCell align="left">File</TableCell>
-                                            <TableCell align="left">Marks</TableCell>
-                                            <TableCell align="left">Actions</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody >
-                                        {
-                                            filteredDocs.map((doc,index) => {
-                                                const title = doc.documentation.visionDocument.map(vDoc => {
-                                                    if (vDoc.status === 'Approved' || vDoc.status === 'Approved With Changes'){
-                                                        return vDoc.title
-                                                    }
-                                                });
-                                                return(
-                                                    doc.documentation.finalDocumentation.length === 0?
-                                                    <TableRow key={index}>
-                                                        <TableCell align="left" >{title}</TableCell>
-                                                        <TableCell align="left" >{doc.department}</TableCell>
-                                                        <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
-                                                            <TableCell align="left" >{doc.students[0].name}</TableCell>
+                <div >
+                    <div>
+                        <FormControl variant="outlined" margin='dense' style={{minWidth:160}}>
+                            <InputLabel htmlFor="depSwitch">
+                                Department
+                            </InputLabel>
+                            <Select
+                                value={filterDepartment}
+                                onChange={handleDepChange}
+                                input={<OutlinedInput  labelWidth={88} fullWidth name="depSwitch" id="depSwitch" required/>}
+                            >
+                                <MenuItem value='All' style={{fontSize:14}}>All</MenuItem>
+                                <MenuItem value='BSSE' style={{fontSize:14}}>BSSE</MenuItem>
+                                <MenuItem value='BSCS' style={{fontSize:14}}>BSCS</MenuItem>
+                                <MenuItem value='BSIT' style={{fontSize:14}}>BSIT</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className={classes.tableWrapper}>
+                        <Table  size='small'>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="left">Title</TableCell>
+                                    <TableCell align="left">Department</TableCell>
+                                    <TableCell align="left">Students</TableCell>
+                                    <TableCell align="left">Status</TableCell>
+                                    <TableCell align="left">UploadedAt</TableCell>
+                                    <TableCell align="left">File</TableCell>
+                                    <TableCell align="left">Marks</TableCell>
+                                    <TableCell align="left">PlagiarismReport</TableCell>
+                                    <TableCell align="left">Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody >
+                                {
+                                    filteredDocs.map((doc,index) => {
+                                        const title = doc.documentation.visionDocument.map(vDoc => {
+                                            if (vDoc.status === 'Approved' || vDoc.status === 'Approved With Changes'){
+                                                return vDoc.title
+                                            }
+                                        });
+                                        return(
+                                            doc.documentation.finalDocumentation.length === 0?
+                                            <TableRow key={index}>
+                                                <TableCell align="left" >{title}</TableCell>
+                                                <TableCell align="left" >{doc.department}</TableCell>
+                                                <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
+                                                    <TableCell align="left" >{doc.students[0].name}</TableCell>
+                                                </Tooltip>
+                                                <TableCell colSpan={4}>
+                                                    <div className={emptyStyles.emptyListContainer}>
+                                                        <div className={emptyStyles.emptyList}>
+                                                            No Documents Found
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>:
+                                            doc.documentation.finalDocumentation.map(finalDoc => (
+                                                <TableRow  key={index} className={classes.tableRow} >
+                                                    <TableCell align="left" >{title}</TableCell>
+                                                    <TableCell align="left" >{doc.department}</TableCell>
+                                                    <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
+                                                        <TableCell align="left" >{doc.students[0].name}</TableCell>
+                                                    </Tooltip>
+                                                    <TableCell >{finalDoc.status}</TableCell>
+                                                    <TableCell align="left">{moment(finalDoc.uploadedAt).format('MMM DD, YYYY')}</TableCell>
+                                                    <TableCell align="center">
+                                                        <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
+                                                            <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.document.filename}`} target="_blank" >
+                                                                <PictureAsPdfOutlined />
+                                                            </a>
                                                         </Tooltip>
-                                                        <TableCell colSpan={4}>
-                                                            <div className={emptyStyles.emptyListContainer}>
-                                                                <div className={emptyStyles.emptyList}>
-                                                                    No Documents Found
-                                                                </div>
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>:
-                                                    doc.documentation.finalDocumentation.map(finalDoc => (
-                                                        <TableRow  key={index} className={classes.tableRow} >
-                                                            <TableCell align="left" >{title}</TableCell>
-                                                            <TableCell align="left" >{doc.department}</TableCell>
-                                                            <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
-                                                                <TableCell align="left" >{doc.students[0].name}</TableCell>
-                                                            </Tooltip>
-                                                            <TableCell >{finalDoc.status}</TableCell>
-                                                            <TableCell align="left">{moment(finalDoc.uploadedAt).format('MMM DD, YYYY')}</TableCell>
-                                                            <TableCell >
+                                                    </TableCell>
+                                                    <TableCell >{doc.details.marks && doc.details.marks.supervisor ? doc.details.marks.supervisor : 'Not Provided'}</TableCell>
+                                                    <TableCell align="center">
+                                                        {
+                                                            finalDoc.plagiarismReport ?
                                                                 <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
-                                                                    <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.document.filename}`} target="_blank" >
+                                                                    <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${finalDoc.plagiarismReport.filename}`} target="_blank" >
                                                                         <PictureAsPdfOutlined />
                                                                     </a>
                                                                 </Tooltip>
-                                                            </TableCell>
-                                                            <TableCell >{doc.details.marks && doc.details.marks.supervisor ? doc.details.marks.supervisor : 'Not Provided'}</TableCell>
-                                                            <TableCell >
-                                                                <Tooltip title='Click for Actions' placement='top'>
-                                                                    <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
-                                                                        <MoreVertOutlined/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                                <Menu
-                                                                    id="simple-menu"
-                                                                    anchorEl={anchorEl}
-                                                                    keepMounted
-                                                                    open={Boolean(anchorEl)}
-                                                                    onClose={()=>setAnchorEl(null)}
-                                                                >
-                                                                    {
-                                                                        finalDoc.status === 'Waiting for Approval' &&
-                                                                        <div>
-                                                                            <MenuItem onClick={()=>handleClickChangeStatusMenu('Approved',doc._id,finalDoc._id)}>
-                                                                                <ListItemIcon>
-                                                                                    <ThumbUpAltOutlined />
-                                                                                </ListItemIcon>
-                                                                                <Typography variant="inherit" noWrap>
-                                                                                    Approve
-                                                                                </Typography>
-                                                                            </MenuItem>
-                                                                            <MenuItem onClick={()=>handleClickChangeStatusMenu('NotApproved',doc._id,finalDoc._id)}>
-                                                                                <ListItemIcon>
-                                                                                    <ThumbDownAltOutlined />
-                                                                                </ListItemIcon>
-                                                                                <Typography variant="inherit" noWrap>
-                                                                                    Disapprove
-                                                                                </Typography>
-                                                                            </MenuItem>
-                                                                        </div>
-                                                                    }
-                                                                    {
-                                                                        finalDoc.status === 'Approved' &&
-                                                                        <MenuItem onClick={()=>handleClickChangeStatusMenu('Available for Internal',doc._id,finalDoc._id)}>
-                                                                            <ListItemIcon>
-                                                                                <SendOutlined />
-                                                                            </ListItemIcon>
-                                                                            <Typography variant="inherit" noWrap>
-                                                                                Send for Internal
-                                                                            </Typography>
-                                                                        </MenuItem>
-                                                                    }
-                                                                    <MenuItem onClick={()=>setAnchorEl(null)}>
-                                                                        <ListItemIcon>
-                                                                            <Close />
-                                                                        </ListItemIcon>
-                                                                        <Typography variant="inherit" noWrap>
-                                                                            Cancel
-                                                                        </Typography>
-                                                                    </MenuItem>
+                                                                :
+                                                                'Not Uploaded'
+                                                        }
 
-                                                                </Menu>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                )
-                                            })
-                                        }
-                                    </TableBody>
-                                </Table>
-                            </div>
-                        </div>
+                                                    </TableCell>
+                                                    <TableCell >
+                                                        <Tooltip title='Click for Actions' placement='top'>
+                                                            <IconButton size='small' onClick={(event)=>openMenu(finalDoc.status,finalDoc._id,doc._id,event)}>
+                                                                <MoreVertOutlined/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        {
+                                                            currentDoc &&
+                                                            <Menu
+                                                                id="menu"
+                                                                anchorEl={anchorEl}
+                                                                keepMounted
+                                                                open={Boolean(anchorEl)}
+                                                                onClose={()=>setAnchorEl(null)}
+                                                            >
+                                                                <ActionsMenu/>
+                                                            </Menu>
+                                                        }
+
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </div>
+                </div>
             }
             <Dialog fullWidth maxWidth='xs' open={confirmDialog} onClose={()=>setConfirmDialog(false)} >
                 {loading.dialog && <LinearProgress/>}
                 <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
-                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Confirm</Typography>
-                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=>setConfirmDialog(false)}>
-                            <Close/>
-                        </IconButton>
-                    </Tooltip>
-                </DialogTitle>
+                <DialogTitleComponent title='Confirm' handleClose={()=>setConfirmDialog(false)}/>
                 <DialogContent dividers>
                     <DialogContentText>Are You sure?</DialogContentText>
                 </DialogContent>
@@ -332,14 +414,7 @@ const SupervisorFinalDocumentation = () => {
             <Dialog fullWidth maxWidth='xs' open={notApprovedDialog} onClose={()=>setNotApprovedDialog(false)} >
                 {loading.dialog && <LinearProgress/>}
                 <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
-                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Confirm</Typography>
-                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=>setNotApprovedDialog(false)}>
-                            <Close/>
-                        </IconButton>
-                    </Tooltip>
-                </DialogTitle>
+                <DialogTitleComponent title='Confirm' handleClose={()=>setNotApprovedDialog(false)}/>
                 <DialogContent dividers>
                     <DialogContentText>Write a reason in Comment</DialogContentText>
                     <TextField
@@ -388,6 +463,29 @@ const SupervisorFinalDocumentation = () => {
                 <DialogActions>
                     <Button onClick={()=>setMarksDialog(false)}>Cancel</Button>
                     <Button variant='contained' color='secondary' onClick={handleAddMarks}>Confirm</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog fullWidth maxWidth='xs' open={uploadDialog.open} onClose={()=>setUploadDialog({...uploadDialog,open:false})}>
+                {loading.dialog && <LinearProgress/>}
+                <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
+                <DialogTitleComponent title={'Upload Plagiarism Report'} handleClose={()=>setUploadDialog({...uploadDialog,open:false})}/>
+                <DialogContent>
+                    <DropzoneArea
+                        onChange={handleDropZone}
+                        acceptedFiles={['application/pdf']}
+                        filesLimit={1}
+                        maxFileSize={5000000}
+                        dropzoneText='Drag and drop document file here or click'
+                    />
+                    {fileError && <Typography variant='caption' color='error'>Please Add a File</Typography> }
+                </DialogContent>
+                <DialogActions>
+                    <Button color='primary' onClick={()=>setUploadDialog({...uploadDialog,open:false})}>
+                        Cancel
+                    </Button>
+                    <Button color='secondary' onClick={handleUploadPlagiarismReport}>
+                        Upload
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>

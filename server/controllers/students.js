@@ -83,13 +83,16 @@ exports.uploadFinalDocumentation =  (req,res)=>{
                     "type":req.file.mimetype,
                 }
             }
+        },
+        $set:{
+            "details.marks.supervisor":undefined
         }
     };
 
     Projects.findByIdAndUpdate(req.body.projectId,update,{new:true})
         .select('documentation.finalDocumentation')
     .populate('details.supervisor','email')
-        .populate('students','name student-details.regNo')
+        .populate('students','name student_details.regNo')
         .then(project =>{
             const emailData = {
                 from: "noreply@node-react.com",

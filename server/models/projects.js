@@ -36,7 +36,11 @@ const projectsSchema = new mongoose.Schema({
         finalDocumentation:[{
             uploadedAt:Date,
             status:String,
-            document:{}
+            document:{},
+            plagiarismReport:{
+                originalname:String,
+                filename:String
+            }
         }]
     },
     details:{

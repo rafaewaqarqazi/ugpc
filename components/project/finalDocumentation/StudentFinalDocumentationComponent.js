@@ -76,9 +76,11 @@ const StudentFinalDocumentationComponent = () => {
         <div>
             <SuccessSnackBar message='Uploaded Successfully' open={success} handleClose={()=>setSuccess(false)}/>
             {
+
                 projectContext.project.project.documentation.visionDocument.filter(doc => doc.status === 'Approved' || doc.status === 'Approved With Changes').length > 0 &&
                 (projectContext.project.project.phase === 'Documentation' ||
-                projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved').length > 0) &&
+                projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved' || fDoc.status === 'ReSubmit').length > 0 ||
+                !moment(Date.now()).isBefore(projectContext.project.project.details.estimatedDeadline)) &&
                 <div className={classes.listHeader}>
                     <Button variant='outlined' color='primary' onClick={()=>setOpenUploadDialog(true)}>
                         Upload New Document
@@ -140,27 +142,27 @@ const StudentFinalDocumentationComponent = () => {
                 </Table>
             </div>
             <Dialog fullWidth maxWidth='xs' open={openUploadDialog} onClose={()=>setOpenUploadDialog(false)}>
-                {loading && <LinearProgress/>}
-                <DialogTitleComponent title={'Upload Final Documentation'} handleClose={()=>setOpenUploadDialog(false)}/>
-                <DialogContent>
-                    <DropzoneArea
-                        onChange={handleDropZone}
-                        acceptedFiles={['application/pdf']}
-                        filesLimit={1}
-                        maxFileSize={10000000}
-                        dropzoneText='Drag and drop document file here or click'
-                    />
-                    {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }
-                </DialogContent>
-                <DialogActions>
-                    <Button color='primary' onClick={()=>setOpenUploadDialog(false)}>
-                        Cancel
-                    </Button>
-                    <Button color='secondary' onClick={handleUploadFile}>
-                        Upload
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {loading && <LinearProgress/>}
+            <DialogTitleComponent title={'Upload Final Documentation'} handleClose={()=>setOpenUploadDialog(false)}/>
+            <DialogContent>
+                <DropzoneArea
+                    onChange={handleDropZone}
+                    acceptedFiles={['application/pdf']}
+                    filesLimit={1}
+                    maxFileSize={10000000}
+                    dropzoneText='Drag and drop document file here or click'
+                />
+                {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }
+            </DialogContent>
+            <DialogActions>
+                <Button color='primary' onClick={()=>setOpenUploadDialog(false)}>
+                    Cancel
+                </Button>
+                <Button color='secondary' onClick={handleUploadFile}>
+                    Upload
+                </Button>
+            </DialogActions>
+        </Dialog>
         </div>
     );
 };

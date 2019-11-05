@@ -214,6 +214,17 @@ export const addAttachmentsToTaskAPI = async data =>{
     });
     return await res.json();
 };
+export const uploadPlagiarismReportAPI = async data =>{
+    const res = await fetch(`${serverUrl}/projects/supervisor/add/plagiarismReport/pdf`,{
+        method:'PUT',
+        headers:{
+            Accept:'application/json',
+            Authorization:`Bearer ${isAuthenticated().token}`
+        },
+        body:data
+    });
+    return await res.json();
+};
 export const addCommentToTaskAPI = async commentDetails =>{
     const res = await fetch(`${serverUrl}/backlog/task/add/comment`,{
         method:'PUT',

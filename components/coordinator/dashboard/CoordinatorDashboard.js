@@ -43,10 +43,10 @@ const CoordinatorDashboard = ({projects ,students,visionDocs}) => {
                             {
                                 students.isLoading ? <CircularLoading/> :
                                     <div className={progressClasses.topProgressBarContainer}>
-                                        <Bar width={3}
-                                             height={1}
+                                        <Bar
+                                            height={300}
                                              options={{
-                                                 maintainAspectRatio: true,
+                                                 maintainAspectRatio: false,
                                                  plugins: {
                                                      colorschemes: {
                                                          scheme: 'brewer.Paired12'

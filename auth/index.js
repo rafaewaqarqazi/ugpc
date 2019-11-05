@@ -249,6 +249,11 @@ export const landingAuth = ctx => {
         ctx.res.end();
         return
     }
+    else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.committeeType === 'None') {
+        ctx.res.writeHead(302, { Location: '/UGPC_Member/profile' });
+        ctx.res.end();
+        return
+    }
     else if (ctx.req && token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member' && user.user.ugpc_details.committeeType === 'Defence') {
         ctx.res.writeHead(302, { Location: '/committee/defence/member' });
         ctx.res.end();
@@ -290,6 +295,9 @@ export const landingAuth = ctx => {
     }
     else if (token && user.user.role === 'Program_Office') {
         Router.push('/program-office')
+    }
+    else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.committeeType === 'None') {
+        Router.push('/UGPC_Member/profile')
     }
     else if (token && user.user.additionalRole === 'UGPC_Member' && user.user.ugpc_details.position === 'Member' && user.user.ugpc_details.committeeType === 'Defence') {
         Router.push('/committee/defence/member')

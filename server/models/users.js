@@ -67,22 +67,10 @@ const userSchema = new mongoose.Schema({
     chairman_details:{
         settings:{
             marksDistribution:{
-                proposal:{
-                    type:String,
-                    default:'10'
-                },
-                supervisor:{
-                    type:String,
-                    default:'10'
-                },
-                internal:{
-                    type:String,
-                    default:'30'
-                },
-                external:{
-                    type:String,
-                    default:'50'
-                }
+                proposal:String,
+                supervisor:String,
+                internal:String,
+                external:String,
             },
             batches:[]
         }

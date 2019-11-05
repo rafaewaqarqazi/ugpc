@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {
-    Avatar, Dialog, DialogActions, DialogContent, DialogTitle,
+    Dialog, DialogActions, DialogContent, DialogTitle,
     IconButton, LinearProgress, ListItemIcon,
     Menu,
     MenuItem,
@@ -11,10 +11,10 @@ import {
     TableRow, TextField,
     Tooltip, Typography,
     Zoom,
-    Button, FormControl, InputLabel, Select, OutlinedInput, InputAdornment
+    Button, FormControl, InputLabel, Select, OutlinedInput, InputAdornment, DialogContentText
 } from "@material-ui/core";
 import moment from "moment";
-import {AssignmentTurnedInOutlined, Close, MoreVertOutlined, PictureAsPdfOutlined, Search} from "@material-ui/icons";
+import {AssignmentTurnedInOutlined, Close, MoreVertOutlined, PictureAsPdfOutlined, Search, Replay} from "@material-ui/icons";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import {makeStyles} from "@material-ui/styles";
 import {serverUrl} from "../../utils/config";
@@ -23,28 +23,24 @@ import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import SchedulingDialogContent from "../coordinator/presentations/SchedulingDialogContent";
-const useStyles = makeStyles(theme =>({
-    tableRow:{
-        "&:hover":{
+import UserAvatarComponent from "../UserAvatarComponent";
+import {useTableStyles} from "../../src/material-styles/tableStyles";
+import DialogTitleComponent from "../DialogTitleComponent";
 
-            boxShadow:theme.shadows[6]
-        }
-    },
-    tableWrapper:{
-        padding:theme.spacing(0.5),
-        overflow:'auto',
-        maxHeight:450
-    }
-}));
 const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
-    const projectsClasses = useStyles();
+    const tableClasses = useTableStyles();
     const classes = useListContainerStyles();
     const [filter,setFilter] = useState(projects);
     const emptyStyles = useListItemStyles();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [comment,setComment] = useState({
+        text:'',
+        error:false
+    });
     const [loading,setLoading]= useState({
         evaluation:false,
-        schedule:false
+        schedule:false,
+        reSubmit:false
     });
     const [filtered,setFiltered] = useState(projects);
     const [department,setDepartment] = useState('All');
@@ -65,7 +61,8 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
     });
     const [dialog,setDialog] = useState({
         evaluation:false,
-        schedule:false
+        schedule:false,
+        reSubmit:false
     });
     const handleClickEvaluate = (documentId,projectId)=>{
         setError({show:false,message:''});
@@ -77,6 +74,18 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
         setDialog({
             ...dialog,
             evaluation:true
+        })
+    };
+    const handleClickReSubmit = (documentId,projectId)=>{
+        setError({show:false,message:''});
+        setData({
+            ...data,
+            documentId,
+            projectId
+        });
+        setDialog({
+            ...dialog,
+            reSubmit:true
         })
     };
     const handleClickScheduleExternal = (documentId,projectId)=>{
@@ -101,8 +110,8 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
         }
     };
     const handleConfirmEvaluation = ()=>{
-        if (data.marks < 0 || data.marks > marks.internal){
-            setError({show:true,message:`Provide Marks in 0-${marks.internal} Limit`})
+        if (data.marks === '' || data.marks < 0 || data.marks > (type === 'internal' ? marks.internal:marks.external)){
+            setError({show:true,message:`Provide Marks in 0-${type === 'internal' ? marks.internal:marks.external} Limit`})
         }else {
             setLoading({
                 ...loading,
@@ -162,7 +171,6 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
         scheduleExternalDateAPI({venue,selectedDate,projectId:data.projectId})
             .then(result =>{
                 if (result.error){
-                    console.log(result.error)
                     setLoading({
                         ...loading,
                         schedule:false
@@ -178,7 +186,6 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                 changeFinalDocumentationStatusAPI(sData)
                     .then(res => {
                         if (res.error){
-                            console.log(res.error);
                             setLoading({
                                 ...loading,
                                 schedule:false
@@ -230,6 +237,47 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
         const data = filtered;
         setFilter(e.target.value !==''? data.filter(doc => doc.documentation.visionDocument.title.toLowerCase().includes(e.target.value.toLowerCase())) : filtered)
     };
+    const handleComment = event =>{
+        setComment({error:false,text:event.target.value})
+    };
+    const handleResubmit = ()=>{
+        if (comment.text === ''){
+            setComment({...comment,error:true});
+            return;
+        }
+        const sData = {
+            projectId:data.projectId,
+            documentId:data.documentId,
+            status:'ReSubmit',
+            comment:comment.text
+        };
+        changeFinalDocumentationStatusAPI(sData)
+            .then(res => {
+                if (res.error){
+                    setLoading({
+                        ...loading,
+                        reSubmit:false
+                    });
+                    setDialog({
+                        ...dialog,
+                        reSubmit:false
+                    })
+                }
+                setLoading({
+                    ...loading,
+                    reSubmit:false
+                });
+                setDialog({
+                    ...dialog,
+                    reSubmit:false
+                });
+                setSuccess({
+                    open:true,
+                    message:'Success'
+                });
+                fetchData();
+            })
+    };
     return (
         <div>
             <SuccessSnackBar message={success.message} open={success.open} handleClose={()=>setSuccess({open:false,message:''})}/>
@@ -266,7 +314,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                 />
             </div>
             {
-                <div className={projectsClasses.tableWrapper}>
+                <div className={tableClasses.tableWrapper}>
 
                     <Table size='small'>
                         <TableHead>
@@ -278,6 +326,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                 <TableCell align="left">Status</TableCell>
                                 <TableCell align="left">Date</TableCell>
                                 <TableCell align="left">Document</TableCell>
+                                <TableCell align="left">PlagiarismReport</TableCell>
                                 <TableCell align="left">Marks</TableCell>
                                 <TableCell align="left">Actions</TableCell>
                             </TableRow>
@@ -299,19 +348,13 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                     :
                                 filter.map((project,index) => (
                                     <Tooltip key={index} title='Click to view Details' placement="top-start" TransitionComponent={Zoom}>
-                                        <TableRow className={projectsClasses.tableRow} >
+                                        <TableRow className={tableClasses.tableRow} >
                                             <TableCell align="left" >{project.documentation.visionDocument.title}</TableCell>
                                             <TableCell align="left" >{project.department}</TableCell>
                                             <TableCell style={{display:'flex'}}>
                                                 {
                                                     project.students.map((student,index) =>
-                                                        <Tooltip key={index} title={student.student_details.regNo} placement='top'>
-                                                            <Avatar className={emptyStyles.avatar}>
-                                                                {
-                                                                    student.name.charAt(0).toUpperCase()
-                                                                }
-                                                            </Avatar>
-                                                        </Tooltip>
+                                                        <UserAvatarComponent user={student} key={index}/>
                                                     )
                                                 }
                                             </TableCell>
@@ -325,12 +368,25 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                                     :
                                                     project.details.external.date ? moment(project.details.external.date).format('LLL')  : 'Not Assigned'
                                             }</TableCell>
-                                            <TableCell align="left">
+                                            <TableCell align="center">
                                                 <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
                                                     <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${project.documentation.finalDocumentation.document.filename}`} target="_blank" >
                                                         <PictureAsPdfOutlined />
                                                     </a>
                                                 </Tooltip>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                {
+                                                    project.documentation.finalDocumentation.plagiarismReport ?
+                                                        <Tooltip  title='Click to View/Download Document' placement="top" TransitionComponent={Zoom}>
+                                                            <a style={{textDecoration:'none',color:'grey'}} href={`${serverUrl}/../pdf/${project.documentation.finalDocumentation.plagiarismReport.filename}`} target="_blank" >
+                                                                <PictureAsPdfOutlined />
+                                                            </a>
+                                                        </Tooltip>
+                                                        :
+                                                        'Not Uploaded'
+                                                }
+
                                             </TableCell>
                                             <TableCell align="left">{
                                                 type === 'internal' ?
@@ -352,7 +408,20 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                                     onClose={()=>setAnchorEl(null)}
                                                 >
                                                     {
-                                                        project.documentation.finalDocumentation.status === 'Internal Scheduled' && type === 'internal' &&
+                                                        project.documentation.finalDocumentation.status !== 'ReSubmit' &&
+                                                        <MenuItem onClick={()=>handleClickReSubmit(project.documentation.finalDocumentation._id,project._id)}>
+                                                            <ListItemIcon>
+                                                                <Replay />
+                                                            </ListItemIcon>
+                                                            <Typography variant="inherit" noWrap>
+                                                                Re Submit
+                                                            </Typography>
+                                                        </MenuItem>
+                                                    }
+
+
+                                                    {
+                                                        (project.documentation.finalDocumentation.status === 'Internal Scheduled' && type === 'internal') &&
                                                         <MenuItem onClick={()=>handleClickEvaluate(project.documentation.finalDocumentation._id,project._id)}>
                                                             <ListItemIcon>
                                                                 <AssignmentTurnedInOutlined />
@@ -374,7 +443,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                                                         </MenuItem>
                                                     }
                                                     {
-                                                        project.documentation.finalDocumentation.status === 'External Scheduled' && type === 'external' &&
+                                                        (project.documentation.finalDocumentation.status === 'External Scheduled' && type === 'external') &&
                                                         <MenuItem onClick={()=>handleClickEvaluate(project.documentation.finalDocumentation._id,project._id)}>
                                                             <ListItemIcon>
                                                                 <AssignmentTurnedInOutlined />
@@ -410,14 +479,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                 maxWidth='xs'
             >
                 {loading.evaluation && <LinearProgress/>}
-                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Evaluate</Typography>
-                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=> setDialog({...dialog, evaluation:false})}>
-                            <Close/>
-                        </IconButton>
-                    </Tooltip>
-                </DialogTitle>
+                <DialogTitleComponent title='Evaluate' handleClose={()=> setDialog({...dialog, evaluation:false})}/>
                 <DialogContent>
                     <Typography>Please Provide marks obtained</Typography>
                     <TextField
@@ -429,7 +491,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                         onChange={handleChangeMarksObtained}
                         error={error.show}
                         helperText={error.message}
-                        placeholder={`0-${marks.internal}`}
+                        placeholder={`0-${type === 'internal' ? marks.internal : marks.external}`}
                         />
                 </DialogContent>
                 <DialogActions>
@@ -440,31 +502,50 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
 
         {/*External Scheduling Dialog*/}
             <Dialog fullWidth maxWidth='sm' open={dialog.schedule} onClose={()=> setDialog({...dialog, schedule:false})}>
-                {loading.schedule && <LinearProgress/>}
-                <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
-                    <Typography variant='h6' noWrap style={{flexGrow:1}}>Schedule Internal</Typography>
-                    <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
-                        <IconButton size='small' onClick={()=> setDialog({...dialog, schedule:false})}>
-                            <Close/>
-                        </IconButton>
-                    </Tooltip>
-                </DialogTitle>
-                <DialogContent dividers>
-                    <SchedulingDialogContent
-                        venue={venue}
-                        handleDateChange={handleDateChange}
-                        selectedDate={selectedDate}
-                        setVenue={setVenue}
-                    />
+            {loading.schedule && <LinearProgress/>}
+            <DialogTitleComponent title='Schdule External' handleClose={()=> setDialog({...dialog, schedule:false})}/>
+            <DialogContent dividers>
+                <SchedulingDialogContent
+                    venue={venue}
+                    handleDateChange={handleDateChange}
+                    selectedDate={selectedDate}
+                    setVenue={setVenue}
+                />
 
-                </DialogContent>
+            </DialogContent>
+            <DialogActions>
                 <DialogActions>
-                    <DialogActions>
-                        <Button onClick={()=> setDialog({...dialog, schedule:false})}>Cancel</Button>
-                        <Button variant='outlined' color='secondary' onClick={handleExternalSchedule}>Confirm</Button>
-                    </DialogActions>
+                    <Button onClick={()=> setDialog({...dialog, schedule:false})}>Cancel</Button>
+                    <Button variant='outlined' color='secondary' onClick={handleExternalSchedule}>Confirm</Button>
                 </DialogActions>
-            </Dialog>
+            </DialogActions>
+        </Dialog>
+        {/*    ReSubmit Dialog*/}
+        <Dialog fullWidth maxWidth='sm' open={dialog.reSubmit} onClose={()=> setDialog({...dialog, reSubmit:false})}>
+            {loading.confirm && <LinearProgress/>}
+            <DialogTitleComponent title='Confirm' handleClose={()=> setDialog({...dialog, reSubmit:false})}/>
+            <DialogContent dividers>
+                <DialogContentText>Write a reason in Comment</DialogContentText>
+                <TextField
+                    fullWidth
+                    required
+                    autoFocus
+                    variant='outlined'
+                    value={comment.text}
+                    onChange={handleComment}
+                    margin='dense'
+                    error={comment.error}
+                    helperText={comment.error && 'Please write a comment'}
+                    label='Comment'
+                />
+            </DialogContent>
+            <DialogActions>
+                <DialogActions>
+                    <Button onClick={()=> setDialog({...dialog, reSubmit:false})}>Cancel</Button>
+                    <Button variant='outlined' color='secondary' onClick={handleResubmit}>Confirm</Button>
+                </DialogActions>
+            </DialogActions>
+        </Dialog>
         </div>
     );
 };

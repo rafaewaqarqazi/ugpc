@@ -118,6 +118,10 @@ export const getEvaluationListBorderColor = status =>{
         return {
             borderLeft:'6px solid #4caf50',
         }
+    } else if (status === 'ReSubmit'){
+        return {
+            borderLeft:'6px solid #b71c1c',
+        }
     }
 };
 
