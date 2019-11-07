@@ -160,6 +160,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
     const handleAddMember = ()=>{
         if(selectedIndex === undefined){
             setError({
+                ...error,
                 emptyUser: true
             });
             return

@@ -212,7 +212,7 @@ const SignUpComponent = () => {
             {loading && <LinearProgress color='secondary'/>}
             <Container component="main" maxWidth="xs">
                 <div className={classes.paper}>
-                    <Avatar alt="IIUI-LOGO" src="/static/avatar/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                    <Avatar alt="IIUI-LOGO" src="/static/avatar/iiui-logo.jpg" className={classes.avatar}/>
 
                     <Typography component="h1" variant="h5">
                         Student Sign up

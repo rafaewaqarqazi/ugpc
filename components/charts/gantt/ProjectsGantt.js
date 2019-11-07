@@ -63,15 +63,18 @@ const ProjectsGantt = ({projects}) => {
                             />
                             :
                             (
-                                <div className={emptyClasses.emptyList}>
-                                    <div className={emptyClasses.emptyListContainer}>
-                                        <div className={emptyClasses.emptyList}>
-                                            <Typography variant='subtitle2' color='textSecondary'>
-                                                No Projects Found!
-                                            </Typography>
+                                <div style={{width:'100%'}}>
+                                    <div className={emptyClasses.emptyList}>
+                                        <div className={emptyClasses.emptyListContainer}>
+                                            <div className={emptyClasses.emptyList}>
+                                                <Typography variant='subtitle2' color='textSecondary'>
+                                                    No Projects Found!
+                                                </Typography>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                             )
                 }
             </div>

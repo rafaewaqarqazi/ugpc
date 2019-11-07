@@ -26,7 +26,7 @@ const DashboardComponent = ({projects}) => {
 
                 <Typography variant='subtitle1' className={progressClasses.title} color='textSecondary'>Dashboard</Typography>
                 {
-                    userContext.user.users.isLoading ? <CircularLoading/> :
+                    userContext.user.users.isLoading ? <div style={{width:'100%'}}><CircularLoading/> </div> :
                         <div className={progressClasses.container}>
                             <div className={progressClasses.top}>
                                 <div >

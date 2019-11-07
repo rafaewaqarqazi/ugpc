@@ -33,7 +33,8 @@ const ForgotPassword = () => {
             .then(res => {
                 if (res.error){
                     setError({open:true,
-                        message:res.error})
+                        message:res.error});
+                    setLoading(false);
                 }else {
                     setResMessage({
                         open:true,
