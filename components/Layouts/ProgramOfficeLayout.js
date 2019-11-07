@@ -48,7 +48,7 @@ const ProgramOfficeLayout =  props => {
                             <div>
                                 <Link href='/'>
                                     <Avatar alt="IIUI-LOGO"
-                                            src="/static/images/avatar/iiui-logo.jpg"
+                                            src="/static/avatar/avatar/iiui-logo.jpg"
                                             className={classes.avatar}
                                     />
                                 </Link>

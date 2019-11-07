@@ -164,7 +164,7 @@ const SupervisorLayout = ({children})=> {
                             </Hidden>
                             <div style={{flexGrow:1}}>
                                 <Tooltip title='UGPC-Software' placement='right'>
-                                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
+                                    <Avatar alt="IIUI-LOGO" src="/static/avatar/avatar/iiui-logo.jpg" />
                                 </Tooltip>
                             </div>
                             <ProfileMenu handleClickProfile={handleClickProfile}/>

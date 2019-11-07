@@ -86,6 +86,7 @@ exports.ugpcSignup = async (req, res)=>{
 };
 exports.signin = (req, res) => {
     const {email, password} = req.body;
+    console.log(req.body)
     User.findOne({email},(err, user) => {
         if (err || !user){
             return res.status(401).json({

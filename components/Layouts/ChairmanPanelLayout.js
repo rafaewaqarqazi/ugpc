@@ -18,7 +18,6 @@ import {
     Avatar,
     Typography, Select
 } from '@material-ui/core';
-import Link from "next/link";
 import {
     Group,
     SupervisorAccountOutlined,
@@ -116,7 +115,7 @@ const ChairmanPanelLayout = ({children})=> {
                             </Hidden>
                             <div style={{flexGrow:1}}>
                                 <Tooltip title='UGPC-Software' placement='right'>
-                                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" />
+                                    <Avatar alt="IIUI-LOGO" src="/static/avatar/avatar/iiui-logo.jpg" />
                                 </Tooltip>
                             </div>
                             <AddMenu addMenuContent={addMenuContent}/>
