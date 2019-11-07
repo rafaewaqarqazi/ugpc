@@ -26,7 +26,7 @@ app.prepare()
         //MongoDB Connection
         mongoose.set('useNewUrlParser', true);
         mongoose.set('useFindAndModify', false);
-        mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ugpc')
+        mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://ugpc:ugpc5919@cluster0-ursyi.mongodb.net/ugpcapi?retryWrites=true&w=majority')
             .then(()=>{
                 console.log('Connected to database');
             })
@@ -65,6 +65,11 @@ app.prepare()
             app.serveStatic(req,res,file)
         });
         server.get('/images/:fileName',(req,res)=>{
+            const file = path.join(__dirname,'..','static',req.path)
+            // console.log(path.join(__dirname,'..',''))
+            app.serveStatic(req,res,file)
+        });
+        server.get('/avatar/:fileName',(req,res)=>{
             const file = path.join(__dirname,'..','static',req.path)
             // console.log(path.join(__dirname,'..',''))
             app.serveStatic(req,res,file)

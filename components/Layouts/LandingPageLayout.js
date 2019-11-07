@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
     const drawer = (
         <div className={classes.list}>
             <div className={classes.avatarMargin}>
-                <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatarDrawer}/>
+                <Avatar alt="IIUI-LOGO" src='/static/avatar/iiui-logo.jpg' className={classes.avatarDrawer}/>
             </div>
             <Divider />
             <List>
@@ -110,7 +110,7 @@ const useStyles = makeStyles(theme => ({
                         </Hidden>
                         <Link href='/'>
                             <Avatar alt="IIUI-LOGO"
-                                    src="/static/images/avatar/iiui-logo.jpg"
+                                    src="/static/avatar/iiui-logo.jpg"
                                     className={classes.avatar}
                             />
                         </Link>

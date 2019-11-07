@@ -7,6 +7,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import {useEffect} from "react";
 import Link from 'next/link';
+import {serverUrl} from "../utils/config";
 const useStyles = makeStyles(theme => ({
     textContainer:{
         marginTop:theme.spacing(4),
@@ -86,10 +87,10 @@ const Index = () => {
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={7}  className={landingClasses.textContainer}>
-                        <img src='/static/images/frontImage1.png' alt='UGPC Software' className={landingClasses.image}/>
+                        <img src='/static/avatar/frontImage1.png' alt='UGPC Software' className={landingClasses.image}/>
                     </Grid>
                     <Grid item xs={12} sm={7}  className={landingClasses.textContainer} data-aos="fade-right">
-                        <img src='/static/images/frontImage2.png' alt='UGPC Software' className={landingClasses.image}/>
+                        <img src='/static/avatar/frontImage2.png' alt='UGPC Software' className={landingClasses.image}/>
                     </Grid>
                     <Grid item xs={12} sm={5}  className={landingClasses.textContainer} data-aos="fade-right">
                         <div className={landingClasses.firstHeadingContainer}>
@@ -118,7 +119,7 @@ const Index = () => {
 
                     </Grid>
                     <Grid item xs={12} sm={7}  className={landingClasses.textContainer} data-aos="fade-left">
-                        <img src='/static/images/frontImage3.png' alt='UGPC Software' className={landingClasses.image}/>
+                        <img src='/static/avatar/frontImage3.png' alt='UGPC Software' className={landingClasses.image}/>
                     </Grid>
                 </Grid>
                 <Container maxWidth='md' className={landingClasses.margin}>
@@ -126,7 +127,7 @@ const Index = () => {
                     <Grid container spacing={8} >
                         <Grid item xs={12} sm={4} >
                             <div className={landingClasses.developerDetails} data-aos="fade-right">
-                                <Avatar src='/static/images/developer1.jpg' alt='Developer' className={landingClasses.avatar}/>
+                                <Avatar src='/static/avatar/developer1.jpg' alt='Developer' className={landingClasses.avatar}/>
                                 <Typography variant='h6'>Rafae Waqar Qazi</Typography>
                                 <Typography variant='subtitle2' color='textSecondary'>Full Stack Lead</Typography>
                                 <Typography  variant='body2' color='textSecondary'>Rafae is a Software Engineer and Lead Full Stack Developer in this project. With expertise in Mongdb, Node.js, express, React, Next.js </Typography>
@@ -134,7 +135,7 @@ const Index = () => {
                         </Grid>
                         <Grid item xs={12} sm={4} >
                             <div className={landingClasses.developerDetails} data-aos="zoom-in-down">
-                                <Avatar src='/static/images/supervisor.jpg' alt='Supervisor' className={landingClasses.avatar}/>
+                                <Avatar src='/static/avatar/supervisor.jpg' alt='Supervisor' className={landingClasses.avatar}/>
                                 <Typography variant='h6'>Dr. Jamal Abdul Nasir</Typography>
                                 <Typography variant='subtitle2' color='textSecondary'>Supervisor</Typography>
                                 <Typography  variant='body2' color='textSecondary'>Dr. Jamal Abdul Nasir is an Assistant Professor in International Islamic University Islamabad. With Expertise in Data Science, Artificial Intelligence & NLP </Typography>
@@ -142,7 +143,7 @@ const Index = () => {
                         </Grid>
                         <Grid item xs={12} sm={4} >
                             <div className={landingClasses.developerDetails} data-aos="fade-left">
-                                <Avatar src='/static/images/developer2.jpg' alt='Developer' className={landingClasses.avatar}/>
+                                <Avatar src='/static/avatar/developer2.jpg' alt='Developer' className={landingClasses.avatar}/>
                                 <Typography variant='h6'>Sohail Ahmed</Typography>
                                 <Typography variant='subtitle2' color='textSecondary'>Frontend Developer / Designer</Typography>
                                 <Typography variant='body2' color='textSecondary'>Sohail is a Software Engineer and a Frontend Developer / Designer with expertise in PS/ID/Ai along with React.js</Typography>
