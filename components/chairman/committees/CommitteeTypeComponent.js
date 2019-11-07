@@ -70,7 +70,7 @@ const CommitteeTypeComponent = ({setSuccess,type}) => {
                     userContext.user.committees.isLoading ? <CircularLoading/> :
                         <RenderCommitteeDepartmentsComponent
                             department='BSSE'
-                            members={userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
+                            members={userContext.user.committees.committeeType.length === 0 ? [] : userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
                             committeeType={type}
                             setSuccess={setSuccess}
                         />
@@ -82,7 +82,7 @@ const CommitteeTypeComponent = ({setSuccess,type}) => {
                     userContext.user.committees.isLoading ? <CircularLoading/> :
                         <RenderCommitteeDepartmentsComponent
                             department='BSCS'
-                            members={userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
+                            members={userContext.user.committees.committeeType.length === 0 ? [] :userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
                             committeeType={type}
                             setSuccess={setSuccess}
                         />
@@ -94,7 +94,7 @@ const CommitteeTypeComponent = ({setSuccess,type}) => {
                     userContext.user.committees.isLoading ? <CircularLoading/> :
                         <RenderCommitteeDepartmentsComponent
                             department='BSIT'
-                            members={userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
+                            members={userContext.user.committees.committeeType.length === 0 ? [] :userContext.user.committees.committeeType.filter(committee => committee._id === type)[0].members}
                             committeeType={type}
                             setSuccess={setSuccess}
                         />

@@ -18,10 +18,12 @@ import {Search} from "@material-ui/icons";
 import {serverUrl} from "../../../utils/config";
 import moment from "moment";
 import RemoveUserComponent from "./RemoveUserComponent";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 const RenderUgpcMembers = ({ugpcMembers}) => {
     const userClasses = useChairmanUsersStyles();
     const avatarClasses = useDrawerStyles();
+    const emptyStyles = useListItemStyles();
     const [filter,setFilter] = useState(ugpcMembers ? ugpcMembers.users : []);
     const tableClasses = useTableStyles();
     const [success,setSuccess] = useState(false);
@@ -70,7 +72,16 @@ const RenderUgpcMembers = ({ugpcMembers}) => {
                     </TableHead>
                     <TableBody >
                         {
-
+                            filter.length === 0 ?
+                                <TableRow>
+                                    <TableCell colSpan={8}>
+                                        <div className={emptyStyles.emptyListContainer}>
+                                            <div className={emptyStyles.emptyList}>
+                                                No Member Found
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>:
                             filter.map((ugpcMember,index) => (
 
                                 <TableRow key={index} className={tableClasses.tableRow} >

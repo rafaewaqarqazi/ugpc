@@ -18,10 +18,12 @@ import {serverUrl} from "../../../utils/config";
 import {useDrawerStyles} from "../../../src/material-styles/drawerStyles";
 import RemoveUserComponent from "./RemoveUserComponent";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 const RenderStudents = ({students}) => {
     const userClasses = useChairmanUsersStyles();
     const avatarClasses = useDrawerStyles();
+    const emptyStyles = useListItemStyles();
     const [filter,setFilter] = useState(students ? students.users :[]);
     const tableClasses = useTableStyles();
     const [success,setSuccess] = useState(false);
@@ -70,7 +72,16 @@ const RenderStudents = ({students}) => {
                     </TableHead>
                     <TableBody >
                         {
-
+                            filter.length === 0 ?
+                                <TableRow>
+                                    <TableCell colSpan={8}>
+                                        <div className={emptyStyles.emptyListContainer}>
+                                            <div className={emptyStyles.emptyList}>
+                                                No Students Found
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>:
                             filter.map((student,index) => (
 
                                 <TableRow key={index} className={tableClasses.tableRow} >

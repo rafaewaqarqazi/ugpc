@@ -7,7 +7,7 @@ import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 const DrawerLayout = ({open,handleDrawerOpen,handleDrawerClose,accountSwitch,projectSwitch,drawerContent}) => {
     const classes = useDrawerStyles();
     return (
-        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
+        <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/avatar/sidebar.jpg")`}}>
             <div className={classes.list}>
                 {
                     !open &&

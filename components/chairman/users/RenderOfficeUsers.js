@@ -23,6 +23,7 @@ import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 const RenderOfficeUsers = ({chairmanOffice}) => {
     const userClasses = useChairmanUsersStyles();
     const avatarClasses = useDrawerStyles();
+
     const [users,setUsers] = useState([]);
     const [filter,setFilter] = useState([]);
     const tableClasses = useTableStyles();
@@ -90,10 +91,10 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
                         {
                             filter.length === 0 ?
                             <TableRow>
-                                <TableCell colSpan={5}>
+                                <TableCell colSpan={6}>
                                     <div className={emptyStyles.emptyListContainer}>
                                         <div className={emptyStyles.emptyList}>
-                                            No Supervisor Found
+                                            No User Found
                                         </div>
                                     </div>
                                 </TableCell>

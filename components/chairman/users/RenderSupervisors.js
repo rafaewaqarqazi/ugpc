@@ -17,10 +17,12 @@ import {Search} from "@material-ui/icons";
 import {serverUrl} from "../../../utils/config";
 import moment from "moment";
 import RemoveUserComponent from "./RemoveUserComponent";
+import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 
 const RenderSupervisors = ({supervisors}) => {
     const userClasses = useChairmanUsersStyles();
     const avatarClasses = useDrawerStyles();
+    const emptyStyles = useListItemStyles();
     const [filter,setFilter] = useState(supervisors ? supervisors.users: []);
     const tableClasses = useTableStyles();
     const [success,setSuccess] = useState(false);
@@ -69,7 +71,16 @@ const RenderSupervisors = ({supervisors}) => {
                     </TableHead>
                     <TableBody >
                         {
-
+                            filter.length === 0 ?
+                                <TableRow>
+                                    <TableCell colSpan={7}>
+                                        <div className={emptyStyles.emptyListContainer}>
+                                            <div className={emptyStyles.emptyList}>
+                                                No Supervisor Found
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>:
                             filter.map((supervisor,index) => (
 
                                 <TableRow key={index} className={tableClasses.tableRow} >
