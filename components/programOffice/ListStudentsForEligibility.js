@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Container,
     Divider,
@@ -13,7 +13,6 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    DialogTitle,
     DialogContent,
     DialogContentText,
     DialogActions,
@@ -34,13 +33,14 @@ import DialogTitleComponent from "../DialogTitleComponent";
 import CircularLoading from "../loading/CircularLoading";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import {useTableStyles} from "../../src/material-styles/tableStyles";
-
+import SuccessSnackBar from "../snakbars/SuccessSnackBar";
+import ErrorSnackBar from "../snakbars/ErrorSnackBar";
 
 const ListStudentsForEligibility = ({studentsList}) => {
     const classes = useListContainerStyles();
     const emptyStyles = useListItemStyles();
     const tableClasses = useTableStyles();
-    const inputLabel = useRef(null);
+
     const [studentList,setStudentList] =useState([]);
     const [loading, setLoading] = useState(true);
     const [dialogLoading, setDialogLoading] = useState(false);
@@ -49,10 +49,15 @@ const ListStudentsForEligibility = ({studentsList}) => {
     const [dialogOpen,setDialogOpen] = useState(false);
     const [students,setStudents]=useState([]);
     const [filter,setFilter] = useState([]);
-    const [labelWidth, setLabelWidth] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [res,setRes] = useState({
+        success:false,
+        error:{
+            open:false,
+            message:''
+        }
+    });
     useEffect(() => {
-        setLabelWidth(inputLabel.current.offsetWidth);
         setStudentList(studentsList);
         setStudents(studentsList);
         setFilter(studentsList);
@@ -84,16 +89,25 @@ const ListStudentsForEligibility = ({studentsList}) => {
         const data = students;
         setFilter(e.target.value !==''? data.filter(student => student.student_details.regNo.toLowerCase().includes(e.target.value.toLowerCase())) : students)
     };
-    const handleConfirm = (status,id)=>{
-        setChangedStatus({status,id});
+    const handleConfirm = (status)=>{
+        setChangedStatus({...changedStatus,status});
         setDialogOpen(true);
-    }
-    const handleChangeStatus = (newStatus) =>{
+    };
+    const handleChangeStatus = () =>{
         setDialogLoading(true);
-        changeEligibility(newStatus.status,newStatus.id)
-            .then(res => {
-                if (res.error){
-                  console.log(res.error)
+        changeEligibility(changedStatus.status,changedStatus.student.id)
+            .then(response => {
+                if (response.error){
+                    setRes({
+                        ...res,
+                        error:{
+                            open:true,
+                            message:response.error
+                        }
+                    });
+                    setDialogOpen(false);
+                    setDialogLoading(false);
+                    return;
                 }
                 fetchStudentsForEligibility().then(result => {
                     setStudentList(result);
@@ -101,15 +115,25 @@ const ListStudentsForEligibility = ({studentsList}) => {
                     setFilter(result);
                     setDialogOpen(false);
                     setDialogLoading(false);
+                    setRes({
+                        ...res,
+                        success:true
+                    });
                 })
             })
 
     };
     const handleClose = ()=>{
         setDialogOpen(false);
-    }
+    };
+    const handleClickActionMenu = (student,event) =>{
+        setChangedStatus({...changedStatus,student});
+        setAnchorEl(event.currentTarget);
+    };
     return (
         <div>
+            <SuccessSnackBar open={res.success} message={'Success'} handleClose={()=>setRes({...res,success:false})}/>
+            <ErrorSnackBar open={res.error.open} message={res.error.message} handleSnackBar={()=>setRes({...res,error:{open:false,message:''}})}/>
             <Container>
                 <div className={classes.listContainer}>
                     <div className={classes.top}>
@@ -124,13 +148,13 @@ const ListStudentsForEligibility = ({studentsList}) => {
 
                    <div className={classes.listHeader}>
                        <FormControl variant="outlined" margin='dense' className={classes.formControl}>
-                           <InputLabel ref={inputLabel} htmlFor="status">
+                           <InputLabel  htmlFor="status">
                                Status
                            </InputLabel>
                            <Select
                                value={status}
                                onChange={handleChange}
-                               input={<OutlinedInput labelWidth={labelWidth} name="status" id="status" />}
+                               input={<OutlinedInput labelWidth={47} name="status" id="status" />}
                            >
                                <MenuItem value='All'>All</MenuItem>
                                <MenuItem value='Pending'>Pending</MenuItem>
@@ -192,10 +216,11 @@ const ListStudentsForEligibility = ({studentsList}) => {
                                                         <TableCell align="left">{student.student_details.isEligible}</TableCell>
                                                         <TableCell align="left">
                                                             <Tooltip title='Click for Actions' placement='top'>
-                                                                <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
+                                                                <IconButton size='small' onClick={(event)=>handleClickActionMenu(student,event)}>
                                                                     <MoreVertOutlined/>
                                                                 </IconButton>
                                                             </Tooltip>
+
                                                             <Menu
                                                                 id="simple-menu"
                                                                 anchorEl={anchorEl}
@@ -204,8 +229,8 @@ const ListStudentsForEligibility = ({studentsList}) => {
                                                                 onClose={()=>setAnchorEl(null)}
                                                             >
                                                                 {
-                                                                    student.student_details.isEligible === 'Not Eligible'?
-                                                                        <MenuItem onClick={()=>handleConfirm('Eligible',student._id)}>
+                                                                    changedStatus.student && changedStatus.student.student_details.isEligible === 'Not Eligible' ?
+                                                                        <MenuItem onClick={()=>handleConfirm('Eligible')}>
                                                                             <ListItemIcon>
                                                                                 <CheckCircleOutlined />
                                                                             </ListItemIcon>
@@ -215,7 +240,7 @@ const ListStudentsForEligibility = ({studentsList}) => {
                                                                         </MenuItem>
                                                                         :
                                                                         <div>
-                                                                            <MenuItem onClick={()=>handleConfirm('Eligible',student._id)}>
+                                                                            <MenuItem onClick={()=>handleConfirm('Eligible')}>
                                                                                 <ListItemIcon>
                                                                                     <CheckCircleOutlined />
                                                                                 </ListItemIcon>
@@ -223,7 +248,7 @@ const ListStudentsForEligibility = ({studentsList}) => {
                                                                                     Eligible
                                                                                 </Typography>
                                                                             </MenuItem>
-                                                                            <MenuItem onClick={()=>handleConfirm('Not Eligible',student._id)}>
+                                                                            <MenuItem onClick={()=>handleConfirm('Not Eligible')}>
                                                                                 <ListItemIcon>
                                                                                     <NotInterested />
                                                                                 </ListItemIcon>
@@ -243,7 +268,6 @@ const ListStudentsForEligibility = ({studentsList}) => {
                                                                 </MenuItem>
 
                                                             </Menu>
-
                                                         </TableCell>
                                                     </TableRow>
                                                 ))
@@ -270,7 +294,7 @@ const ListStudentsForEligibility = ({studentsList}) => {
                         <Button onClick={handleClose} >
                             Cancel
                         </Button>
-                        <Button onClick={()=>handleChangeStatus(changedStatus)} color="primary">
+                        <Button onClick={handleChangeStatus} color="primary">
                             Confirm
                         </Button>
                     </DialogActions>
