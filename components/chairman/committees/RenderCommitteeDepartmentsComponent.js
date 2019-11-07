@@ -113,16 +113,23 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
         setSuccess({show:true,message:result.message});
 
     };
-    const handleClickRemoveMember = (userId,committees,removeType)=>{
+    const handleClickRemoveMember = (removeType)=>{
         setRemoveData({
-            userId,
-            committees,
+            ...removeData,
             removeType
         });
         setDialog({
             ...dialog,
             removeMember:true
         });
+    };
+    const handleClickActionMenu = (userId,committees,event)=>{
+        setRemoveData({
+            ...removeData,
+            userId,
+            committees
+        });
+        setAnchorEl(event.currentTarget);
     };
     const handleClickAddMember = ()=>{
         setLoading({
@@ -218,99 +225,100 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
             <div style={{display:'flex',justifyContent:'flex-end'}}>
                 <Button startIcon={<Add/>} color='primary' onClick={handleClickAddMember}>Add Member</Button>
             </div>
+            <div className={tableClasses.tableWrapper}>
 
-            {
-                filter.length === 0 ?
-                    <div className={emptyStyles.emptyListContainer} >
-                        <div className={emptyStyles.emptyList}>
-                            No Member Found
-                        </div>
-                    </div>:
+                <Table size='small'>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left"></TableCell>
+                            <TableCell align="left">Name</TableCell>
+                            <TableCell align="left">Email</TableCell>
+                            <TableCell align="left">Position</TableCell>
+                            <TableCell align="left">Designation</TableCell>
+                            <TableCell align="left">Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody >
+                        {
+                            filter.length === 0 ?
+                                <TableRow >
+                                    <TableCell colSpan={6}>
+                                        <div className={emptyStyles.emptyListContainer} >
+                                            <div className={emptyStyles.emptyList}>
+                                                No Member Found
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>:
+                            filter.map((member,index) => (
 
-                    <div className={tableClasses.tableWrapper}>
+                                <TableRow key={index} className={tableClasses.tableRow} >
+                                    <TableCell align="left">
+                                        {
+                                            member.profileImage && member.profileImage.filename ?
+                                                <Avatar  className={avatarClasses.imageAvatar}  src={`${serverUrl}/../static/images/${member.profileImage.filename }`}  />
+                                                :
+                                                <Avatar className={avatarClasses.avatarColor}>
+                                                    { member.name.charAt(0).toUpperCase()}
+                                                </Avatar>
+                                        }
+                                    </TableCell>
+                                    <TableCell align="left">{member.name}</TableCell>
+                                    <TableCell >{member.email}</TableCell>
+                                    <TableCell >
+                                        <Chip
+                                            label={member.ugpc_details.position}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="left">{member.ugpc_details.designation ? member.ugpc_details.designation : 'Not Provided'}</TableCell>
+                                    <TableCell align="left">
+                                        <Tooltip title='more' placement='top'>
+                                            <IconButton size='small' onClick={(event)=>handleClickActionMenu(member._id,member.ugpc_details.committees,event)}>
+                                                <MoreVertOutlined/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Menu
+                                            id="simple-menu"
+                                            anchorEl={anchorEl}
+                                            keepMounted
+                                            open={Boolean(anchorEl)}
+                                            onClose={()=>setAnchorEl(null)}
+                                        >
 
-                        <Table size='small'>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left"></TableCell>
-                                    <TableCell align="left">Name</TableCell>
-                                    <TableCell align="left">Email</TableCell>
-                                    <TableCell align="left">Position</TableCell>
-                                    <TableCell align="left">Designation</TableCell>
-                                    <TableCell align="left">Actions</TableCell>
+                                            <MenuItem onClick={()=>handleClickRemoveMember('Department')}>
+                                                <ListItemIcon>
+                                                    <Delete color='error'/>
+                                                </ListItemIcon>
+                                                <Typography variant="inherit" noWrap>
+                                                    Remove From Department only
+                                                </Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={()=>handleClickRemoveMember('Committee')}>
+                                                <ListItemIcon>
+                                                    <Delete color='error'/>
+                                                </ListItemIcon>
+                                                <Typography variant="inherit" noWrap>
+                                                    Remove From Committee
+                                                </Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={()=>setAnchorEl(null)}>
+                                                <ListItemIcon>
+                                                    <Close />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit" noWrap>
+                                                    Cancel
+                                                </Typography>
+                                            </MenuItem>
+
+                                        </Menu>
+                                    </TableCell>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody >
-                                {
-                                    filter.map((member,index) => (
+                            ))
+                        }
+                    </TableBody>
+                </Table>
+            </div>
 
-                                        <TableRow key={index} className={tableClasses.tableRow} >
-                                            <TableCell align="left">
-                                                {
-                                                    member.profileImage && member.profileImage.filename ?
-                                                        <Avatar  className={avatarClasses.imageAvatar}  src={`${serverUrl}/../static/images/${member.profileImage.filename }`}  />
-                                                        :
-                                                        <Avatar className={avatarClasses.avatarColor}>
-                                                            { member.name.charAt(0).toUpperCase()}
-                                                        </Avatar>
-                                                }
-                                            </TableCell>
-                                            <TableCell align="left">{member.name}</TableCell>
-                                            <TableCell >{member.email}</TableCell>
-                                            <TableCell >
-                                                <Chip
-                                                    label={member.ugpc_details.position}
-                                                />
-                                            </TableCell>
-                                            <TableCell align="left">{member.ugpc_details.designation ? member.ugpc_details.designation : 'Not Provided'}</TableCell>
-                                            <TableCell align="left">
-                                                <Tooltip title='more' placement='top'>
-                                                    <IconButton size='small' onClick={(event)=>setAnchorEl(event.currentTarget)}>
-                                                        <MoreVertOutlined/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Menu
-                                                    id="simple-menu"
-                                                    anchorEl={anchorEl}
-                                                    keepMounted
-                                                    open={Boolean(anchorEl)}
-                                                    onClose={()=>setAnchorEl(null)}
-                                                >
-
-                                                    <MenuItem onClick={()=>handleClickRemoveMember(member._id,member.ugpc_details.committees,'Department')}>
-                                                        <ListItemIcon>
-                                                            <Delete color='error'/>
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit" noWrap>
-                                                            Remove From Department only
-                                                        </Typography>
-                                                    </MenuItem>
-                                                    <MenuItem onClick={()=>handleClickRemoveMember(member._id,member.ugpc_details.committees,'Committee')}>
-                                                        <ListItemIcon>
-                                                            <Delete color='error'/>
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit" noWrap>
-                                                            Remove From Committee
-                                                        </Typography>
-                                                    </MenuItem>
-                                                    <MenuItem onClick={()=>setAnchorEl(null)}>
-                                                        <ListItemIcon>
-                                                            <Close />
-                                                        </ListItemIcon>
-                                                        <Typography variant="inherit" noWrap>
-                                                            Cancel
-                                                        </Typography>
-                                                    </MenuItem>
-
-                                                </Menu>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                }
-                            </TableBody>
-                        </Table>
-                    </div>
-            }
             <Dialog open={dialog.addMember} onClose={()=>setDialog({...dialog,addMember: false})} fullWidth maxWidth='sm'>
                 {loading.addMember && <LinearProgress/>}
 
