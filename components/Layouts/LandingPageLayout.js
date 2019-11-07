@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     AppBar,
@@ -19,6 +19,7 @@ import {
 import {Input} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from "next/link";
+import UserContext from '../../context/user/user-context';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -61,7 +62,10 @@ const useStyles = makeStyles(theme => ({
  const LandingPageLayout =  props => {
     const classes = useStyles();
     const [open,setOpen] = useState(false);
-
+     const userContext = useContext(UserContext);
+     useEffect(()=>{
+         userContext.removeUserState();
+     },[]);
     const drawer = (
         <div className={classes.list}>
             <div className={classes.avatarMargin}>
