@@ -1,6 +1,6 @@
 const express = require('express');
 const next = require('next');
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const StudentsRouter = require('./routes/students');
 const AuthRouter = require('./routes/auth');
@@ -17,16 +17,16 @@ const dev = process.env.NODE_ENV !== 'production';
 
 const app = next({ dev });
 const handle = app.getRequestHandler();
-
+const PORT = process.env.PORT || 3000;
 app.prepare()
     .then(()=>{
-        dotenv.config();
+
         const server = express();
         server.use(compression())
         //MongoDB Connection
         mongoose.set('useNewUrlParser', true);
         mongoose.set('useFindAndModify', false);
-        mongoose.connect(process.env.MONGO_URI)
+        mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ugpc')
             .then(()=>{
                 console.log('Connected to database');
             })
@@ -95,8 +95,8 @@ app.prepare()
             return handle(req, res)
         });
 
-        server.listen(process.env.PORT,'192.168.1.4', ()=>{
-            console.log(`Server Running on PORT: ${process.env.PORT}`)
+        server.listen(PORT, ()=>{
+            console.log(`Server Running on PORT: ${PORT}`)
         });
     })
     .catch((ex) => {
