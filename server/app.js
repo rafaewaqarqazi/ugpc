@@ -63,7 +63,12 @@ app.prepare()
             const file = path.join(__dirname,'..','static',req.path)
             // console.log(path.join(__dirname,'..',''))
             app.serveStatic(req,res,file)
-        })
+        });
+        server.get('/images/:fileName',(req,res)=>{
+            const file = path.join(__dirname,'..','static',req.path)
+            // console.log(path.join(__dirname,'..',''))
+            app.serveStatic(req,res,file)
+        });
         server.get('/',(req, res)=>{
             return app.render(req, res, '/',req.query)
         });
