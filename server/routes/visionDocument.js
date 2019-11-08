@@ -14,12 +14,12 @@ const {requireSignin} = require('../controllers/auth');
 
 
 
-router.get('/fetch/byMeetings',fetchMeetings);
-router.get('/fetch/bySupervisor/:supervisorId',fetchBySupervisor);
-router.get('/fetch/byCommittees',fetchVisionDocsByCommitteeCoordinator);
-router.get('/fetch/visionDocsPieData',fetchVisionDocsPieData);
-router.put('/comment',commentOnVision);
-router.put('/changeStatus',changeStatus);
-router.put('/scheduleDefence',scheduleVisionDefence);
-router.put('/addMarks',addMarks);
+router.get('/fetch/byMeetings',requireSignin,fetchMeetings);
+router.get('/fetch/bySupervisor/:supervisorId',requireSignin,fetchBySupervisor);
+router.get('/fetch/byCommittees',requireSignin,fetchVisionDocsByCommitteeCoordinator);
+router.get('/fetch/visionDocsPieData',requireSignin,fetchVisionDocsPieData);
+router.put('/comment',requireSignin,commentOnVision);
+router.put('/changeStatus',requireSignin,changeStatus);
+router.put('/scheduleDefence',requireSignin,scheduleVisionDefence);
+router.put('/addMarks',requireSignin,addMarks);
 module.exports = router;

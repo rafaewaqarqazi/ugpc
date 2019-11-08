@@ -1,9 +1,6 @@
 const express = require('express');
 const {createProject} = require("../controllers/projects");
 const {
-    createProjectValidator,
-} = require("../validator");
-const {
     requireSignin,
     isStudent
 } = require("../controllers/auth");

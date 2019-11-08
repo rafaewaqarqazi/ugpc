@@ -9,7 +9,6 @@ const visionDocumentRouter = require('./routes/visionDocument');
 const backlogRouter = require('./routes/backlog');
 const userRouter = require('./routes/users');
 const morgan = require('morgan');
-const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const path = require('path');
@@ -40,7 +39,6 @@ app.prepare()
         server.use(morgan('dev'));
         server.use(express.json());
         server.use(cookieParser());
-        server.use(expressValidator());
         //Routes
         server.use('/api/students',StudentsRouter);
         server.use('/api/auth',AuthRouter);
