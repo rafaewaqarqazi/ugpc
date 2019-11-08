@@ -65,7 +65,7 @@ const EvaluationChairmanLayout = ({children})=> {
                             <Tooltip title='UGPC-Software' placement='right'>
                                 <div style={{marginRight:10}}>
                                     <Link href='/committee/evaluation/chairman'>
-                                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" style={{cursor:'pointer'}}/>
+                                        <Avatar alt="IIUI-LOGO" src="/static/avatar/iiui-logo.jpg" style={{cursor:'pointer'}}/>
                                     </Link>
                                 </div>
                             </Tooltip>

@@ -18,7 +18,7 @@ const MobileDrawer = ({drawerContent,accountSwitch,projectSwitch,mobileOpen,hand
 
         >
             <div  style={{width:250,height:'100%'}}>
-                <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/images/sidebar.jpg")`}}>
+                <div className={classes.sideBarImage} style={{backgroundImage:`url("${serverUrl}/../static/avatar/sidebar.jpg")`}}>
                     <div className={classes.list}>
                         <div className={classes.avatarDrawer}>
                             {
