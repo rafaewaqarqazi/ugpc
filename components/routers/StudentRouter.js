@@ -42,7 +42,7 @@ const StudentRouter= props =>{
         if (context.project.isLoading){
             return (<LinearProgress/>)
         }
-        else if (!context.project.project && r.pathname !== '/student/project/create'){
+        else if (!context.project.project && r.pathname !== '/student/project/create' && r.pathname !== '/student/profile'){
             return (
                 <NoProjectComponent/>
             )

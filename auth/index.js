@@ -105,7 +105,7 @@ export const studentAuth = ctx => {
     else if (token &&  user.user.role !== 'Student') {
         Router.push('/sign-in')
     } else if (!user.user.isEmailVerified && typeof window !== 'undefined'){
-        Router.push(`/student/verify-email?id=${user.user._id}`, `/student/verify-email/${user.user._id}`)
+        Router.push(`/student/verify-email/[id]`, `/student/verify-email/${user.user._id}`)
     }
     return token
 
