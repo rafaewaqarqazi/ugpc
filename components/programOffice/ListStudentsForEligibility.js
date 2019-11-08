@@ -45,10 +45,7 @@ const ListStudentsForEligibility = ({studentsList}) => {
     const [loading, setLoading] = useState(true);
     const [dialogLoading, setDialogLoading] = useState(false);
     const [status, setStatus] = useState('All');
-    const [changedStatus,setChangedStatus] = useState({
-        student:{},
-        status:''
-    });
+    const [changedStatus,setChangedStatus] = useState({});
     const [dialogOpen,setDialogOpen] = useState(false);
     const [students,setStudents]=useState([]);
     const [filter,setFilter] = useState([]);
