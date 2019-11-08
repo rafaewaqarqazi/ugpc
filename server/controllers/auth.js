@@ -12,6 +12,10 @@ exports.studentSignup = async (req, res)=>{
     if (userExists) return res.status(403).json({
         error: "User Already Exists"
     });
+    const regNoExists = await User.findOne({"student_details.regNo": req.body.student_details.regNo});
+    if (regNoExists) return res.status(403).json({
+        error: "Registration No Must be Unique"
+    });
     const emailVerCode = Math.floor(Math.random() * 1000000);
 
     const user = await new User({
@@ -86,7 +90,6 @@ exports.ugpcSignup = async (req, res)=>{
 };
 exports.signin = (req, res) => {
     const {email, password} = req.body;
-    console.log(req.body)
     User.findOne({email},(err, user) => {
         if (err || !user){
             return res.status(401).json({
