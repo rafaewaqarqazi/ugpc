@@ -13,7 +13,7 @@ const OverviewComponent = ({titleError,title,handleChange,abstract,abstractError
                     placeholder='Project Title here'
                     required
                     error={titleError.show}
-                    helperText={titleError.message}
+                    helperText={titleError.show ? titleError.message : `${title.length}/100`}
                     value={title}
                     onChange={handleChange}
 
@@ -28,7 +28,7 @@ const OverviewComponent = ({titleError,title,handleChange,abstract,abstractError
                     placeholder='Project Abstract here'
                     required
                     error={abstractError.show}
-                    helperText={abstractError.message}
+                    helperText={abstractError.show ? abstractError.message : `${abstract.length}/500`}
                     value={abstract}
                     onChange={handleChange}
                     multiline
@@ -44,7 +44,7 @@ const OverviewComponent = ({titleError,title,handleChange,abstract,abstractError
                     placeholder='Project Scope here'
                     required
                     error={scopeError.show}
-                    helperText={scopeError.message}
+                    helperText={scopeError.show ? scopeError.message : `${scope.length}/500`}
                     value={scope}
                     onChange={handleChange}
                     multiline

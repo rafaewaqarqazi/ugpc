@@ -10,12 +10,12 @@ export const isValid = (data,setErrors,errors,activeStep)=>{
             }
         });
         error = true;
-    }else if ((description.length <= 50 || description.length > 200) && activeStep === 1 ){
+    }else if ((description.length <= 50 || description.length > 400) && activeStep === 1 ){
         setErrors({
             ...errors,
             description:{
                 show:true,
-                message:'Description Must Be between 50-200 Characters'
+                message:'Description Must Be between 50-400 Characters'
             }
         });
         error = true;

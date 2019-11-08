@@ -10,7 +10,7 @@ const NotEligible = () => {
 
             <Container  component="main" maxWidth="md">
                 <div className={classes.paper}>
-                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                    <Avatar alt="IIUI-LOGO" src="/static/avatar/iiui-logo.jpg" className={classes.avatar}/>
                     <Typography paragraph className={`${classes.message} ${classes.notEligible}`}>
                         Sorry! You are not Eligible for FYP
                     </Typography>

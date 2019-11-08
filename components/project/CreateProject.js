@@ -112,7 +112,7 @@ const useStyles = makeStyles(theme => ({
                                  placeholder='Your Group name here'
                                  required
                                  error={errors.groupName.show}
-                                 helperText={errors.groupName.message}
+                                 helperText={errors.groupName.show ? errors.groupName.message : `${data.groupName.length}/50`}
                                  value={data.groupName}
                                  onChange={handleChange}
 

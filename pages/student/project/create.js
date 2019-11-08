@@ -19,7 +19,7 @@ const Create = () => {
                         project.project ?
                             <Container maxWidth='xs'>
                                 <div className={classes.paper}>
-                                    <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                                    <Avatar alt="IIUI-LOGO" src="/static/avatar/iiui-logo.jpg" className={classes.avatar}/>
                                     <Typography paragraph className={classes.message} color='textSecondary'>
                                         Dear Student You Already have created a Project
                                     </Typography>

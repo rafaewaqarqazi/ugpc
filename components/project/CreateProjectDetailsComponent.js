@@ -90,7 +90,7 @@ const CreateProjectDetailsComponent = ({data, setData,error, setErrors,value,set
                     value={data.description}
                     onChange={handleChangeDesc}
                     error={error.description.show}
-                    helperText={error.description.message}
+                    helperText={error.description.show ? error.description.message: `${data.description.length}/400`}
                 />
             </Grid>
             <Grid item xs={12} sm={10} md={8}>

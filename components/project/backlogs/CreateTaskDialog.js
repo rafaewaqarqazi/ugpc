@@ -20,7 +20,7 @@ import {
 import {Done,Close, Add} from '@material-ui/icons'
 import {makeStyles} from "@material-ui/styles";
 import ProjectContext from '../../../context/project/project-context';
-import {isTaskValid} from "../../../utils/clientSideValidators/createTaskValidator";
+import {isSubTaskValid, isTaskValid} from "../../../utils/clientSideValidators/createTaskValidator";
 import {isAuthenticated} from "../../../auth";
 import RenderSubTasks from "./RenderSubTasks";
 import DialogTitleComponent from "../../DialogTitleComponent";
@@ -145,11 +145,13 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
 
     };
     const addSubTask = ()=>{
-        setState({
-            ...state,
-            subTasks:[...state.subTasks,subTask]
-        });
-        setShowSubTaskInput(false)
+        if (isSubTaskValid(subTask,error,setError)){
+            setState({
+                ...state,
+                subTasks:[...state.subTasks,subTask]
+            });
+            setShowSubTaskInput(false)
+        }
     };
     const handleCreateTask = ()=>{
 
@@ -209,7 +211,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 value={state.description}
                                 onChange={handleChange}
                                 error={error.description.show}
-                                helperText={error.description.message}
+                                helperText={error.description.show ? error.description.message : `${state.description.length}/1000`}
                             />
 
                         </div>
@@ -301,7 +303,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                         value={subTask.title}
                                         onChange={handleSubTaskChange}
                                         error={error.subTask.title.show}
-                                        helperText={error.subTask.title.message}
+                                        helperText={error.subTask.title.show ? error.subTask.title.message : `${subTask.title.length}/100`}
                                     />
                                     <TextField
                                         label='Description'
@@ -315,7 +317,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                         value={subTask.description}
                                         onChange={handleSubTaskChange}
                                         error={error.subTask.description.show}
-                                        helperText={error.subTask.description.message}
+                                        helperText={error.subTask.description.show ? error.subTask.description.message : `${subTask.description.length}/500`}
                                     />
                                 </DialogContent>
                                 <DialogActions>
@@ -324,7 +326,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                                 </DialogActions>
                             </Dialog>
                         </div>
-                        <div className={`${classes.content} `}>
+                        <div className={classes.content}>
                             <RenderSubTasks subTasks={state.subTasks}/>
                         </div>
                     </Grid>

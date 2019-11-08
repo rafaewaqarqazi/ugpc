@@ -20,7 +20,7 @@ const VisionDocument = () => {
                             project.project && (project.project.documentation.visionDocument.length > 0 && project.project.documentation.visionDocument.filter(doc => doc.status === 'Rejected').length === 0)?
                                 <Container maxWidth='xs'>
                                     <div className={classes.paper}>
-                                        <Avatar alt="IIUI-LOGO" src="/static/images/avatar/iiui-logo.jpg" className={classes.avatar}/>
+                                        <Avatar alt="IIUI-LOGO" src="/static/avatar/iiui-logo.jpg" className={classes.avatar}/>
                                         <Typography paragraph className={classes.message} color='textSecondary'>
                                             Dear Student You Already have submitted a Vision Document
                                         </Typography>

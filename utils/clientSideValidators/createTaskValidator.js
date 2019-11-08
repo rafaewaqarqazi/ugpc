@@ -1,10 +1,10 @@
 export const isTaskValid = (state,error, setError)=>{
-   if (state.description.length <=20 || state.description.length >=200){
+   if (state.description.length <=20 || state.description.length >=1000){
         setError({
             ...error,
             description:{
                 show:true,
-                message:'Description should be between 20-200 chars'
+                message:'Description should be between 20-1000 characters'
             }
         })
         return false;
@@ -27,6 +27,37 @@ export const isTaskValid = (state,error, setError)=>{
                 message:'Please Specify Story Points'
             }
         })
+        return false;
+    }
+    return true;
+
+};
+
+export const isSubTaskValid = (subTask,error, setError)=>{
+    if (subTask.title.length <=2 || subTask.title.length >=100){
+        setError({
+            ...error,
+            subTask:{
+                ...error.subTask,
+                title:{
+                show:true,
+                message:'Title must be between 2-100 characters'
+                }
+            }
+        });
+        return false;
+    }
+    else if (subTask.description.length <=10 || subTask.description.length >=500){
+        setError({
+            ...error,
+            subTask:{
+                ...error.subTask,
+                description:{
+                    show:true,
+                    message:'Description must be between 10-500 characters'
+                }
+            }
+        });
         return false;
     }
     return true;
