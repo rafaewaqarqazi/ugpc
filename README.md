@@ -7,6 +7,7 @@ An Agile Software development tool for Final Year of BSCS/SE/IT students and Pro
 * Proposal Submission.
 * Scheduling Presentations by dragging and dropping into schedule container.
 * Assigning Supervisors automatically.
+* Generating Acceptance letter automatically.
 * Creating Backlog.
 * Planning Sprints.
 * Changing Priority of tasks.
