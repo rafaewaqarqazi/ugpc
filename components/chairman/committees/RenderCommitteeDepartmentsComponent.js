@@ -53,7 +53,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
     const classes = useListContainerStyles();
     const [newMembers,setNewMembers] = useState([]);
     const [usersList,setUsersList] = useState([]);
-    const [filter,setFilter] = useState(members.filter(member => member.ugpc_details.committees.includes(department)));
+    const [filter,setFilter] = useState(members && members.members ? members.members.filter(member => member.ugpc_details.committees.includes(department)) : []);
     const [openList,setOpenList] = useState(false);
     const [position,setPosition] = useState('Member');
     const [selectedIndex,setSelectedIndex]=useState();
