@@ -1,6 +1,6 @@
 const express = require('express');
 const next = require('next');
-// const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const StudentsRouter = require('./routes/students');
 const AuthRouter = require('./routes/auth');
@@ -22,10 +22,11 @@ app.prepare()
 
         const server = express();
         server.use(compression())
+        // dotenv.config();
         //MongoDB Connection
         mongoose.set('useNewUrlParser', true);
         mongoose.set('useFindAndModify', false);
-        mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://ugpc:ugpc5919@cluster0-ursyi.mongodb.net/ugpcapi?retryWrites=true&w=majority')
+        mongoose.connect(process.env.MONGODB_URI)
             .then(()=>{
                 console.log('Connected to database');
             })

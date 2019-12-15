@@ -1,5 +1,5 @@
 export const isTaskValid = (state,error, setError)=>{
-   if (state.description.length <=20 || state.description.length >=1000){
+   if (state.description.trim().length <=20 || state.description.trim().length >=1000){
         setError({
             ...error,
             description:{
@@ -19,7 +19,7 @@ export const isTaskValid = (state,error, setError)=>{
         })
         return false;
     }
-    else if (state.storyPoints.length === 0){
+    else if (state.storyPoints.trim().length === 0){
         setError({
             ...error,
             storyPoints:{
@@ -34,7 +34,7 @@ export const isTaskValid = (state,error, setError)=>{
 };
 
 export const isSubTaskValid = (subTask,error, setError)=>{
-    if (subTask.title.length <=2 || subTask.title.length >=100){
+    if (subTask.title.trim().length <=2 || subTask.title.trim().length >=100){
         setError({
             ...error,
             subTask:{
@@ -47,7 +47,7 @@ export const isSubTaskValid = (subTask,error, setError)=>{
         });
         return false;
     }
-    else if (subTask.description.length <=10 || subTask.description.length >=500){
+    else if (subTask.description.trim().length <=10 || subTask.description.trim().length >=500){
         setError({
             ...error,
             subTask:{

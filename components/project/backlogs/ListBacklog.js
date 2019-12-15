@@ -5,7 +5,7 @@ import {
     IconButton,
     Divider,
     Typography,
-    Grid, Tooltip, Zoom, Hidden, Dialog, DialogContent, DialogTitle,
+    Grid, Tooltip, Zoom, Hidden, Dialog, DialogContent,
     DialogActions, FormControl, InputLabel, Select, OutlinedInput, MenuItem, DialogContentText
 } from "@material-ui/core";
 import {Add,Close,Delete} from '@material-ui/icons'
@@ -17,6 +17,7 @@ import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import moment from "moment";
 import ProjectContext from '../../../context/project/project-context';
+import UserContext from '../../../context/user/user-context';
 import RenderTaskDetails from "../common/RenderTaskDetails";
 import DialogTitleComponent from "../../DialogTitleComponent";
 
@@ -79,6 +80,7 @@ const useStyles = makeStyles(theme =>({
 
 const ListBacklog = ({backlog}) => {
     const projectContext = useContext(ProjectContext);
+    const userContext = useContext(UserContext);
     const [state,setState] = useState({});
     const classes = useStyles();
     const [loading,setLoading] = useState(true);
@@ -434,9 +436,11 @@ const ListBacklog = ({backlog}) => {
                                         <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
                                     </Tooltip>
                                     <Tooltip  title='Remove Task' placement="top" TransitionComponent={Zoom}>
-                                        <IconButton size='small' onClick={()=>setRemoveTaskDialog(true)}>
-                                            <Delete color='error'/>
-                                        </IconButton>
+                                        <div>
+                                            <IconButton size='small' disabled={details.createdBy.role !== userContext.user.user.role} onClick={()=>setRemoveTaskDialog(true)}>
+                                                <Delete color={(details.createdBy.role === userContext.user.user.role) ? 'error' : 'disabled' }/>
+                                            </IconButton>
+                                        </div>
                                     </Tooltip>
                                     <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
                                         <IconButton size='small' onClick={closeDetails}>

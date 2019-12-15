@@ -41,7 +41,7 @@ const CreateProjectDetailsComponent = ({data, setData,error, setErrors,value,set
 
     const handleChange = (event)=> {
         setValue(event.target.value);
-        setData({...data, team:event.target.value});
+        setData({...data, team:event.target.value.trim()});
     };
     const [studentsList,setStudents] = useState({
         loading:true,

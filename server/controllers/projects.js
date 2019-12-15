@@ -33,11 +33,11 @@ exports.findByStudentId = (req,res,next,id)=>{
         .populate('documentation.visionDocument.comments.author','_id name role department profileImage')
         .populate('details.supervisor','_id name email supervisor_details.position profileImage')
         .populate('details.backlog.assignee', '_id name department student_details profileImage')
-        .populate('details.backlog.createdBy', 'name')
+        .populate('details.backlog.createdBy', 'name role')
         .populate({path:'details.backlog.discussion.author',model:'Users',select:'name profileImage'})
         .populate({path:'details.sprint.tasks.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.tasks.discussion.author',model:'Users',select:'name profileImage'})
-        .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name'})
+        .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name role'})
         .then(project => {
             req.project = project[0];
             next()
@@ -54,11 +54,11 @@ exports.findByProjectId = (req,res,next,id)=>{
         .populate('documentation.visionDocument.comments.author','_id name role department profileImage')
         .populate('details.supervisor','_id name supervisor_details.position profileImage')
         .populate('details.backlog.assignee', '_id name department student_details profileImage')
-        .populate('details.backlog.createdBy', 'name')
+        .populate('details.backlog.createdBy', 'name role')
         .populate({path:'details.backlog.discussion.author',model:'Users',select:'name profileImage'})
         .populate({path:'details.sprint.tasks.assignee',model:'Users',select:'name department student_details email profileImage'})
         .populate({path:'details.sprint.tasks.discussion.author',model:'Users',select:'name profileImage'})
-        .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name'})
+        .populate({path:'details.sprint.tasks.createdBy',model:'Users',select:'name role'})
         .then(project => {
             req.project = project;
             next()
