@@ -52,7 +52,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
         setComment(e.target.value)
     };
     const handleComment = ()=>{
-        if (comment !== ''){
+        if (comment.trim() !== ''){
             const commentDetails = {
                 text:comment,
                 projectId:project._id,

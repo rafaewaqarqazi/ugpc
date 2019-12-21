@@ -68,7 +68,7 @@ const NewUserComponent = ({open,onClose}) => {
     const handleSubmit= e =>{
         e.preventDefault();
 
-        if (isValid(data)){
+        if (isValid(data) && data.name.trim() !== ''){
             setLoading(true);
             userContext.createUser({...data,settings:userContext.user.user.chairman_details.settings})
                 .then(res => {

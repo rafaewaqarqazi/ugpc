@@ -193,7 +193,7 @@ class VisionDocumentUploadComponent extends Component{
     };
     handleSubmitModule = e =>{
         e.preventDefault();
-        if (this.state.currentModule !== ''){
+        if (this.state.currentModule.trim() !== ''){
             this.setState({
                 modules:[
                     ...this.state.modules,

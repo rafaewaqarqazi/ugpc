@@ -78,7 +78,7 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
         setComment(event.target.value);
     };
     const handleComment = ()=>{
-        if (comment !== ''){
+        if (comment.trim() !== ''){
             const commentDetails = {
                 text:comment,
                 projectId:projectContext.project.project._id,

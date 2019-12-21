@@ -1,7 +1,7 @@
 export const isValid = (data,setErrors,errors,activeStep)=>{
     const {groupName, description, partnerId, team} = data;
     let error = false;
-    if ((groupName.trim().length <=2 || groupName.trim().length > 50) && activeStep === 0){
+    if ((groupName.trim().length < 2 || groupName.trim().length > 50) && activeStep === 0){
         setErrors({
             ...errors,
             groupName:{
@@ -10,7 +10,7 @@ export const isValid = (data,setErrors,errors,activeStep)=>{
             }
         });
         error = true;
-    }else if ((description.trim().length <= 50 || description.trim().length > 400) && activeStep === 1 ){
+    }else if ((description.trim().length < 50 || description.trim().length > 400) && activeStep === 1 ){
         setErrors({
             ...errors,
             description:{

@@ -1,6 +1,6 @@
 export const isValid = (state,setTitleError,setAbstractError,setScopeError,setModulesError,setFileError)=>{
     const {title, abstract, scope, modules,file,activeStep} = state;
-    if ((title.trim().length <=2 || title.trim().length > 100) && activeStep === 0){
+    if ((title.trim().length < 2 || title.trim().length > 100) && activeStep === 0){
         setTitleError();
 
        return true;
@@ -12,7 +12,7 @@ export const isValid = (state,setTitleError,setAbstractError,setScopeError,setMo
         setScopeError();
 
         return true;
-    }else if (modules.trim().length === 0 && activeStep === 1 ){
+    }else if (modules.length === 0 && activeStep === 1 ){
         setModulesError();
 
         return true;

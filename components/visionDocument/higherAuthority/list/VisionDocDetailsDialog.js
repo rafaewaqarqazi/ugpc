@@ -68,13 +68,14 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
     },[]);
     const handleMarksChange = event =>{
-        if (event.target.value === ''){
+        console.log()
+        if (event.target.value.trim() === '' || !event.target.value.match(/^[0-9]*$/)){
             setSaveButton(true)
         }else{
             setSaveButton(false)
         }
 
-        setMarks(event.target.value);
+        setMarks(event.target.value.trim());
     };
     const openLetterViewer = ()=>{
         getChairmanName()
@@ -135,7 +136,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
 
     const handleComment = ()=>{
-        if (commentText !== ''){
+        if (commentText.trim() !== ''){
             const commentDetails = {
                 text:commentText,
                 projectId:currentDocument._id,

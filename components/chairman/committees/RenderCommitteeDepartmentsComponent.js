@@ -45,8 +45,7 @@ import CircularLoading from "../../loading/CircularLoading";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 
-const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,setSuccess}) => {
-
+const RenderCommitteeDepartmentsComponent = ({members = {id: '', members: []},department,committeeType,setSuccess}) => {
     const tableClasses = useTableStyles();
     const avatarClasses = useDrawerStyles();
     const emptyStyles = useListItemStyles();
@@ -142,7 +141,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
                     ...loading,
                     newMembers: false
                 });
-                const otherMembers = members.filter(member => !member.ugpc_details.committees.includes(department) && member.ugpc_details.position === 'Member');
+                const otherMembers = members.members.filter(member => !member.ugpc_details.committees.includes(department) && member.ugpc_details.position === 'Member');
                 setNewMembers(result);
                 setUsersList([...result,...otherMembers]);
             })
@@ -154,7 +153,7 @@ const RenderCommitteeDepartmentsComponent = ({members,department,committeeType,s
 
     const handleChangePosition = event =>{
         setPosition(event.target.value);
-        const otherMembers = members.filter(member => !member.ugpc_details.committees.includes(department) && member.ugpc_details.position === event.target.value);
+        const otherMembers = members.members.filter(member => !member.ugpc_details.committees.includes(department) && member.ugpc_details.position === event.target.value);
         setUsersList([...newMembers,...otherMembers]);
     };
     const handleAddMember = ()=>{

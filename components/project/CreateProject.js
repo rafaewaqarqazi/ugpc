@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
                 message:''
             }
         });
-        setData({...data, groupName: e.target.value.trim()})
+        setData({...data, groupName: e.target.value})
     };
      const getStepContent = step => {
          switch (step) {
