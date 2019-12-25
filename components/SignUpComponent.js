@@ -100,10 +100,10 @@ const SignUpComponent = () => {
                 message:''
             },
         });
-        setValues({...values,[event.target.name]:event.target.value.trim()})
+        setValues({...values,[event.target.name]:event.target.value})
     };
     const isValid = () =>{
-        if (values.name.length === 0 ){
+        if (values.name.trim().length === 0 ){
             setFormErrors({
                 ...formErrors,
                 name:{
