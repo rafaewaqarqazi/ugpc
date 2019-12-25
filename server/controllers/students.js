@@ -180,7 +180,11 @@ exports.resubmitVisionDoc =async (req,res)=>{
             }
         )
 
-        await res.json(result)
+        await res.json({
+            originalname:req.file.originalname,
+            filename:req.file.filename,
+            type:req.file.mimetype
+        })
     }catch (e) {
         await res.json({error:e.message})
     }

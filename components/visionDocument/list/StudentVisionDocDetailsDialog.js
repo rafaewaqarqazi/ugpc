@@ -25,6 +25,7 @@ import DialogTitleComponent from "../../DialogTitleComponent";
 import UserContext from '../../../context/user/user-context';
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import { PDFDownloadLink,PDFViewer } from '@react-pdf/renderer';
+import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
     const classes = useDocDetailsDialogStyles();
     const userContext = useContext(UserContext);
@@ -38,6 +39,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
     const [fileError,setFileError] = useState(false);
     const [letterViewer,setLetterViewer] = useState(false);
     const [chairmanName,setChairmanName]= useState('Not Available Yet');
+    const [successSnackbar, setSuccessSnackbar] = useState(false);
     const [resError,setResError] = useState({
         show:false,
         message:''
@@ -124,7 +126,16 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
 
             visionDocsContext.submitAdditionFilesVisionDoc(formData,type)
                 .then(res => {
-                    // setUploadSuccess(true);
+                    console.log(res)
+                    setSuccessSnackbar(true);
+                    setCurrentDocument({
+                        ...currentDocument,
+                        documents: [...currentDocument.documents, {
+                            originalname: res.originalname,
+                            filename: res.filename,
+                            type: res.type
+                        }]
+                    })
                     setOpenDocUploadDialog(false);
                     setOpenPPTUploadDialog(false);
                     setFileDialogLoading(false);
@@ -133,226 +144,224 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
         }
 
     };
-
     return (
         <>
-
-        <Dialog
-            fullWidth={true}
-            maxWidth='lg'
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="dialog-title"
-        >
-
-            <DialogTitleComponent title={currentDocument.title} handleClose={handleClose}/>
-            {open && <>
-                <DialogContent dividers>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <div className={classes.detailsContent}>
-                                <Typography color='textSecondary'>
-                                    STATUS
-                                </Typography>
-                                <Chip style={getVisionDocsStatusChipColor(currentDocument.status)} label={currentDocument.status}  size="small"/>
-                            </div>
-                            <RenderDocBasicDetails
-                                currentDocument={currentDocument}
-                                project={project}
-                                />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <RenderDocumentAttachments documents={currentDocument.documents}/>
-                            {
-                                (currentDocument.status === 'Meeting Scheduled' || currentDocument.status === 'Approved With Changes') &&
-                                <IconButton
-                                    aria-controls="attachment-menu"
-                                    aria-haspopup="true"
-                                    onClick={handleClickAttachDocumentMenu}
-                                    style={{borderRadius:0,backgroundColor:'#eee'}}
+            <Dialog
+                fullWidth={true}
+                maxWidth='lg'
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="dialog-title"
+            >
+                <SuccessSnackBar open={successSnackbar} message={'Success'} handleClose={()=> setSuccessSnackbar(false)}/>
+                <DialogTitleComponent title={currentDocument.title} handleClose={handleClose}/>
+                {open && <>
+                    <DialogContent dividers>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <div className={classes.detailsContent}>
+                                    <Typography color='textSecondary'>
+                                        STATUS
+                                    </Typography>
+                                    <Chip style={getVisionDocsStatusChipColor(currentDocument.status)} label={currentDocument.status}  size="small"/>
+                                </div>
+                                <RenderDocBasicDetails
+                                    currentDocument={currentDocument}
+                                    project={project}
+                                    />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <RenderDocumentAttachments documents={currentDocument.documents}/>
+                                {
+                                    (currentDocument.status === 'Meeting Scheduled' || currentDocument.status === 'Approved With Changes') &&
+                                    <IconButton
+                                        aria-controls="attachment-menu"
+                                        aria-haspopup="true"
+                                        onClick={handleClickAttachDocumentMenu}
+                                        style={{borderRadius:0,backgroundColor:'#eee'}}
+                                    >
+                                        <AttachFile/>
+                                    </IconButton>
+                                }
+                                <Menu
+                                    id="attachment-menu"
+                                    anchorEl={anchorEl}
+                                    keepMounted
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleCloseAttachDocumentMenu}
                                 >
-                                    <AttachFile/>
-                                </IconButton>
-                            }
-                            <Menu
-                                id="attachment-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleCloseAttachDocumentMenu}
-                            >
-                                {
-                                    currentDocument.status === 'Approved With Changes' &&
-                                    <MenuItem onClick={()=>setOpenDocUploadDialog(true)}>
-                                        <ListItemIcon>
-                                            <PictureAsPdfOutlined />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit" noWrap>
-                                            ReSubmit Vision Document
-                                        </Typography>
-                                    </MenuItem>
-                                }
+                                    {
+                                        currentDocument.status === 'Approved With Changes' &&
+                                        <MenuItem onClick={()=>setOpenDocUploadDialog(true)}>
+                                            <ListItemIcon>
+                                                <PictureAsPdfOutlined />
+                                            </ListItemIcon>
+                                            <Typography variant="inherit" noWrap>
+                                                ReSubmit Vision Document
+                                            </Typography>
+                                        </MenuItem>
+                                    }
 
-                                {
-                                    currentDocument.status === 'Meeting Scheduled' &&
-                                    <MenuItem onClick={()=>setOpenPPTUploadDialog(true)}>
-                                        <ListItemIcon>
-                                            <Assignment />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit" noWrap>
-                                            Presentation File
-                                        </Typography>
-                                    </MenuItem>
-                                }
+                                    {
+                                        currentDocument.status === 'Meeting Scheduled' &&
+                                        <MenuItem onClick={()=>setOpenPPTUploadDialog(true)}>
+                                            <ListItemIcon>
+                                                <Assignment />
+                                            </ListItemIcon>
+                                            <Typography variant="inherit" noWrap>
+                                                Presentation File
+                                            </Typography>
+                                        </MenuItem>
+                                    }
 
-                            </Menu>
-                            <div className={classes.detailsContent}>
-                                <TextField
-                                    label="Add Comment"
-                                    margin="dense"
-                                    variant="outlined"
-                                    multiline
-                                    fullWidth
-                                    value={comment}
-                                    onChange={handleCommentChange}
-                                    rowsMax="4"
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <Tooltip title='Add' placement='top'>
-                                                    <IconButton size='small' onClick={handleComment}>
-                                                        <Send />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </div>
-                            <div className={classes.detailsContent}>
-                                <RenderComments comments={currentDocument.comments}/>
-                            </div>
-
-                        </Grid>
-                    </Grid>
-                </DialogContent>
-                <DialogActions>
-
-                        {
-                            project.details && project.details.acceptanceLetter && project.details.acceptanceLetter.name && (
-                                <div>
-                                    <Hidden smUp>
-                                        <PDFDownloadLink
-                                            document={
-                                                <ApprovalLetter
-                                                    title={currentDocument.title}
-                                                    students={project.students}
-                                                    supervisor={project.details.supervisor}
-                                                    date={project.details.acceptanceLetter.issueDate}
-                                                    chairmanName={chairmanName}
-                                                />
-                                            }
-                                            fileName={project.details.acceptanceLetter.name}
-                                            style={{textDecoration:'none'}}
-                                        >
-                                            {
-                                                ({loading}) =>
-                                                    (loading ? <CircularProgress/> :  <Button size='small' startIcon={<GetAppOutlined/>}>Acceptance Letter</Button>)
-                                            }
-                                        </PDFDownloadLink>
-                                    </Hidden>
-                                    <Hidden xsDown>
-                                        <Button onClick={openLetterViewer} >Acceptance Letter</Button>
-                                    </Hidden>
+                                </Menu>
+                                <div className={classes.detailsContent}>
+                                    <TextField
+                                        label="Add Comment"
+                                        margin="dense"
+                                        variant="outlined"
+                                        multiline
+                                        fullWidth
+                                        value={comment}
+                                        onChange={handleCommentChange}
+                                        rowsMax="4"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <Tooltip title='Add' placement='top'>
+                                                        <IconButton size='small' onClick={handleComment}>
+                                                            <Send />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </div>
+                                <div className={classes.detailsContent}>
+                                    <RenderComments comments={currentDocument.comments}/>
                                 </div>
 
-                            )
-                        }
-                    <Button onClick={handleClose} color="primary" variant='contained'>
-                        Close
-                    </Button>
-                </DialogActions>
-            </>
-            }
-        </Dialog>
-            <Dialog
-                open={openDocUploadDialog}
-                onClose={handleOnCloseDocDialog}
-                maxWidth='md'
-                fullWidth
-            >
-                <DialogContent>
-                    <DropzoneArea
-                        onChange={handleDropZone}
-                        acceptedFiles={['application/pdf']}
-                        filesLimit={1}
-                        dropzoneText='Drag and drop document file here or click'
-                    />
-                    {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }
-                </DialogContent>
-                <DialogActions>
-                    <Button color='primary' onClick={handleOnCloseDocDialog}>
-                        Cancel
-                    </Button>
-                    <Button color='secondary' onClick={()=>handleUploadFile('pdf')}>
-                        Upload
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog
-                open={openPPTUploadDialog}
-                onClose={handleOnClosePPTDialog}
-                maxWidth='md'
-                fullWidth
-            >
-                <DialogContent>
-                    <DropzoneArea
-                        onChange={handleDropZone}
-                        acceptedFiles={['application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation']}
-                        filesLimit={1}
-                        dropzoneText='Drag and drop Presentation file here or click'
-                    />
-                    {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }
-                </DialogContent>
-                <DialogActions>
-                    <Button color='primary' onClick={handleOnClosePPTDialog}>
-                        Cancel
-                    </Button>
-                    <Button color='secondary' onClick={()=>handleUploadFile('presentation')}>
-                        Upload
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={letterViewer} onClose={closeLetterViewer} fullScreen>
-                <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=>setResError({show:false,message:''})}/>
-                <AppBar className={classes.appBar}>
-                    <Toolbar>
-                        <Typography variant="h6" className={classes.title} noWrap>
-                            Auto Generated Acceptance Letter
-                        </Typography>
-                        <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <DialogContent style={{height:500}}>
-                    {
-                        project.details && project.details.acceptanceLetter &&(
-                            <PDFViewer style={{width:'100%',height:'100%'}}>
-                                <ApprovalLetter
-                                    title={currentDocument.title}
-                                    students={project.students}
-                                    supervisor={project.details.supervisor}
-                                    date={project.details.acceptanceLetter.issueDate}
-                                    chairmanName={chairmanName}
-                                />
-                            </PDFViewer>
-                            )
-                    }
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
 
-                </DialogContent>
+                            {
+                                project.details && project.details.acceptanceLetter && project.details.acceptanceLetter.name && (
+                                    <div>
+                                        <Hidden smUp>
+                                            <PDFDownloadLink
+                                                document={
+                                                    <ApprovalLetter
+                                                        title={currentDocument.title}
+                                                        students={project.students}
+                                                        supervisor={project.details.supervisor}
+                                                        date={project.details.acceptanceLetter.issueDate}
+                                                        chairmanName={chairmanName}
+                                                    />
+                                                }
+                                                fileName={project.details.acceptanceLetter.name}
+                                                style={{textDecoration:'none'}}
+                                            >
+                                                {
+                                                    ({loading}) =>
+                                                        (loading ? <CircularProgress/> :  <Button size='small' startIcon={<GetAppOutlined/>}>Acceptance Letter</Button>)
+                                                }
+                                            </PDFDownloadLink>
+                                        </Hidden>
+                                        <Hidden xsDown>
+                                            <Button onClick={openLetterViewer} >Acceptance Letter</Button>
+                                        </Hidden>
+                                    </div>
+
+                                )
+                            }
+                        <Button onClick={handleClose} color="primary" variant='contained'>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </>
+                }
             </Dialog>
-            </>
+                <Dialog
+                    open={openDocUploadDialog}
+                    onClose={handleOnCloseDocDialog}
+                    maxWidth='md'
+                    fullWidth
+                >
+                    <DialogContent>
+                        <DropzoneArea
+                            onChange={handleDropZone}
+                            acceptedFiles={['application/pdf']}
+                            filesLimit={1}
+                            dropzoneText='Drag and drop document file here or click'
+                        />
+                        {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color='primary' onClick={handleOnCloseDocDialog}>
+                            Cancel
+                        </Button>
+                        <Button color='secondary' onClick={()=>handleUploadFile('pdf')}>
+                            Upload
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={openPPTUploadDialog}
+                    onClose={handleOnClosePPTDialog}
+                    maxWidth='md'
+                    fullWidth
+                >
+                    <DialogContent>
+                        <DropzoneArea
+                            onChange={handleDropZone}
+                            acceptedFiles={['application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation']}
+                            filesLimit={1}
+                            dropzoneText='Drag and drop Presentation file here or click'
+                        />
+                        {fileError && <Typography variant='caption' color='error'>Please Upload File</Typography> }
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color='primary' onClick={handleOnClosePPTDialog}>
+                            Cancel
+                        </Button>
+                        <Button color='secondary' onClick={()=>handleUploadFile('presentation')}>
+                            Upload
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={letterViewer} onClose={closeLetterViewer} fullScreen>
+                    <ErrorSnackBar open={resError.show} message={resError.message} handleSnackBar={()=>setResError({show:false,message:''})}/>
+                    <AppBar className={classes.appBar}>
+                        <Toolbar>
+                            <Typography variant="h6" className={classes.title} noWrap>
+                                Auto Generated Acceptance Letter
+                            </Typography>
+                            <IconButton edge="start" color="inherit" onClick={closeLetterViewer} aria-label="close">
+                                <CloseIcon />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                    <DialogContent style={{height:500}}>
+                        {
+                            project.details && project.details.acceptanceLetter &&(
+                                <PDFViewer style={{width:'100%',height:'100%'}}>
+                                    <ApprovalLetter
+                                        title={currentDocument.title}
+                                        students={project.students}
+                                        supervisor={project.details.supervisor}
+                                        date={project.details.acceptanceLetter.issueDate}
+                                        chairmanName={chairmanName}
+                                    />
+                                </PDFViewer>
+                                )
+                        }
+
+                    </DialogContent>
+                </Dialog>
+        </>
     );
 };
 

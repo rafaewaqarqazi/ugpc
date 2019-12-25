@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     Typography,
     Container,
@@ -9,6 +9,7 @@ import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetails
 
 export const RenderDocumentAttachments = ({documents}) =>{
     const classes = useDocDetailsDialogStyles();
+    useEffect(()=>{},[documents])
     return (
         <div className={classes.detailsContent}>
             <Typography variant='subtitle2'>

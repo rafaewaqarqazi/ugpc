@@ -30,7 +30,8 @@ export const useDocDetailsDialogStyles = makeStyles(theme => ({
     },
     documentsList:{
         display: 'flex',
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
+        flexWrap: 'wrap'
     },
 
     commentList:{
