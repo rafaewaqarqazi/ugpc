@@ -1,7 +1,4 @@
 .idea/
 .env
 node_modules/
-static/images/
-static/pdf/
-static/presentation/
 .next
