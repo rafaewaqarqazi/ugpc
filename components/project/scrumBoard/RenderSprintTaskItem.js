@@ -1,7 +1,6 @@
 import React from 'react';
 import {getSprintTaskPriorityColor} from "../../../src/material-styles/visionDocsListBorderColor";
-import {makeStyles, Typography, Grid, Tooltip, Zoom, Chip, Divider, Badge} from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
+import {makeStyles, Typography, Grid, Tooltip, Zoom, Chip} from "@material-ui/core";
 import {getRandomColor} from "../../../src/material-styles/randomColors";
 import UserAvatarComponent from "../../UserAvatarComponent";
 

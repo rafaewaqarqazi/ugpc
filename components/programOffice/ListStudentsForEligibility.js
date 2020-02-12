@@ -35,12 +35,13 @@ import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import {useTableStyles} from "../../src/material-styles/tableStyles";
 import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../snakbars/ErrorSnackBar";
+import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 
 const ListStudentsForEligibility = ({studentsList}) => {
     const classes = useListContainerStyles();
     const emptyStyles = useListItemStyles();
     const tableClasses = useTableStyles();
-
+    const dialogClasses = useDialogStyles()
     const [studentList,setStudentList] =useState([]);
     const [loading, setLoading] = useState(true);
     const [dialogLoading, setDialogLoading] = useState(false);
@@ -282,6 +283,7 @@ const ListStudentsForEligibility = ({studentsList}) => {
                 <Dialog
                     open={dialogOpen}
                     onClose={handleClose}
+                    classes={{paper: dialogClasses.root}}
                 >
                     {dialogLoading && <LinearProgress/>}
                     <DialogTitleComponent title='Confirm' handleClose={handleClose}/>

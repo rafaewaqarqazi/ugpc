@@ -1,10 +1,8 @@
 import React, {Fragment} from 'react';
-import {Avatar, Container, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography} from "@material-ui/core";
-import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
+import {Container, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography} from "@material-ui/core";
 import UserAvatarComponent from "../../UserAvatarComponent";
 
 const RenderStudents = ({students}) => {
-    const classes = useDocDetailsDialogStyles();
     return (
         <div>
             <Typography variant='subtitle2'>

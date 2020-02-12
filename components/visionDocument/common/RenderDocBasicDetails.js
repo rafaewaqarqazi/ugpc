@@ -1,15 +1,7 @@
 import {
-    Avatar,
     Chip,
-    Container,
-    Grid,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
     Typography
 } from "@material-ui/core";
-import {getVisionDocsStatusChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import React from "react";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
 import RenderStudents from "./RenderStudents";

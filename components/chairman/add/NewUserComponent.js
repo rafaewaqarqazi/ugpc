@@ -19,9 +19,11 @@ import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {useSignInStyles} from "../../../src/material-styles/signin-styles";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import UserContext from '../../../context/user/user-context';
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 const NewUserComponent = ({open,onClose}) => {
     const userContext = useContext(UserContext);
     const classes = useSignInStyles();
+    const dialogStyles = useDialogStyles();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState({
         open:false,
@@ -105,7 +107,7 @@ const NewUserComponent = ({open,onClose}) => {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth='xs'>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth='xs' classes={{paper: dialogStyles.root}}>
 
                 {loading && <LinearProgress color='secondary'/>}
                 <SuccessSnackBar open={success.open} message={success.message} handleClose={handleSuccess}/>

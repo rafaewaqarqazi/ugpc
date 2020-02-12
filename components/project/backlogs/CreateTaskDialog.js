@@ -3,7 +3,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     Button,
     Grid,
     Typography,
@@ -24,6 +23,7 @@ import {isSubTaskValid, isTaskValid} from "../../../utils/clientSideValidators/c
 import {isAuthenticated} from "../../../auth";
 import RenderSubTasks from "./RenderSubTasks";
 import DialogTitleComponent from "../../DialogTitleComponent";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 const useStyles = makeStyles(theme =>({
     content:{
         marginBottom:theme.spacing(2)
@@ -42,6 +42,7 @@ const useStyles = makeStyles(theme =>({
 }))
 const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
     const classes = useStyles();
+    const dialogClasses = useDialogStyles();
     const projectContext = useContext(ProjectContext);
     const [state,setState] = useState({
         description:'',
@@ -191,7 +192,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
             onClose={handleCreateTaskClose}
             fullWidth
             maxWidth='sm'
-
+            classes={{paper: dialogClasses.root}}
             aria-labelledby="title"
         >
             <DialogTitleComponent title='Create New Task' handleClose={handleCreateTaskClose}/>
@@ -290,7 +291,7 @@ const CreateTaskDialog = ({openCreateTask,handleCreateTaskClose}) => {
                             >
                                 <Add style={{fontSize:20}}/> Add New
                             </Button>
-                            <Dialog open={showSubTaskInput} onClose={handleSubTaskDialogClose}>
+                            <Dialog open={showSubTaskInput} onClose={handleSubTaskDialogClose} classes={{paper: dialogClasses.root}}>
                                 <DialogTitleComponent title='Add New SubTask' handleClose={handleSubTaskDialogClose}/>
                                 <DialogContent>
                                     <TextField

@@ -9,7 +9,6 @@ import ProjectContext from '../../../context/project/project-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {isValid} from '../../../utils/clientSideValidators/uploadVisionValidator';
 import router from 'next/router';
-import TitleComponent from "../../title/TitleComponent";
 import DetailsComponent from "./DetailsComponent";
 import OverviewComponent from "./OverviewComponent";
 import StepperComponent from "../../stepper/StepperComponent";

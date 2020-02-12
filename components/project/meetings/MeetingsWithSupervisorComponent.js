@@ -22,12 +22,14 @@ import {DateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import ProjectContext from '../../../context/project/project-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {getSupervisorMeetingChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 const MeetingsWithSupervisorComponent = ({meetings,role}) => {
     const userContext = useContext(UserContext);
     const projectContext = useContext(ProjectContext);
     const emptyStyles = useListItemStyles();
     const tableClasses = useTableStyles();
+    const dialogClasses = useDialogStyles();
     const [dialog,setDialog] = useState({
         scheduleMeeting:false,
         requestMeeting:false
@@ -164,7 +166,7 @@ const MeetingsWithSupervisorComponent = ({meetings,role}) => {
                 </Table>
             </div>
 
-        <Dialog open={dialog.scheduleMeeting} onClose={()=>setDialog({...dialog,scheduleMeeting:false})} fullWidth maxWidth='xs'>
+        <Dialog open={dialog.scheduleMeeting} onClose={()=>setDialog({...dialog,scheduleMeeting:false})} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
             {loading && <LinearProgress/>}
             <DialogTitleComponent title={'Schedule Meeting'} handleClose={()=>setDialog({...dialog,scheduleMeeting:false})}/>
             <DialogContent dividers>
@@ -195,7 +197,7 @@ const MeetingsWithSupervisorComponent = ({meetings,role}) => {
                 <Button onClick={handleScheduleMeeting} color='primary' disabled={purpose.trim() === ''}>Schedule</Button>
             </DialogActions>
         </Dialog>
-        <Dialog open={dialog.requestMeeting} onClose={()=>setDialog({...dialog,requestMeeting:false})} fullWidth maxWidth='xs'>
+        <Dialog open={dialog.requestMeeting} onClose={()=>setDialog({...dialog,requestMeeting:false})} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
             {loading && <LinearProgress/>}
             <DialogTitleComponent title={'Request for Meeting'} handleClose={()=>setDialog({...dialog,requestMeeting:false})}/>
             <DialogContent dividers>

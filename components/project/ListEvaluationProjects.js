@@ -27,6 +27,7 @@ import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
 import ErrorSnackBar from "../snakbars/ErrorSnackBar";
 import {getGrade} from "../../utils";
 import {getEvaluationListBorderColor, getGradeChipColor} from "../../src/material-styles/visionDocsListBorderColor";
+import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 const useStyles = makeStyles(theme =>({
     tableRow:{
         "&:hover":{
@@ -54,6 +55,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
     const [documentId,setDocumentId] = useState('');
     const [openError,setOpenError] = useState(false);
     const emptyStyles = useListItemStyles();
+    const dialogClasses = useDialogStyles();
     const [data,setData] = useState({
         status:'',
         projectId:'',
@@ -214,7 +216,7 @@ const ListEvaluationProjects = ({filter,fetchData}) => {
             }
 
             {/*Internal Dialog*/}
-            <Dialog fullWidth maxWidth='sm' open={openDialog} onClose={()=>setOpenDialog(false)}>
+            <Dialog fullWidth maxWidth='sm' open={openDialog} onClose={()=>setOpenDialog(false)} classes={{paper: dialogClasses.root}}>
                 {loading && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Schedule Internal</Typography>

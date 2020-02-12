@@ -26,10 +26,12 @@ import UserAvatarComponent from "../UserAvatarComponent";
 import {useTableStyles} from "../../src/material-styles/tableStyles";
 import DialogTitleComponent from "../DialogTitleComponent";
 import ErrorSnackBar from "../snakbars/ErrorSnackBar";
+import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 
 const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
     const tableClasses = useTableStyles();
     const classes = useListContainerStyles();
+    const dialogClasses = useDialogStyles()
     const [filter,setFilter] = useState(projects);
     const emptyStyles = useListItemStyles();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -496,6 +498,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
                 onClose={()=> setDialog({...dialog, evaluation:false})}
                 fullWidth
                 maxWidth='xs'
+                classes={{paper: dialogClasses.root}}
             >
                 {loading.evaluation && <LinearProgress/>}
                 <DialogTitleComponent title='Evaluate' handleClose={()=> setDialog({...dialog, evaluation:false})}/>
@@ -520,7 +523,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
             </Dialog>
 
         {/*External Scheduling Dialog*/}
-            <Dialog fullWidth maxWidth='sm' open={dialog.schedule} onClose={()=> setDialog({...dialog, schedule:false})}>
+            <Dialog fullWidth maxWidth='sm' open={dialog.schedule} onClose={()=> setDialog({...dialog, schedule:false})} classes={{paper: dialogClasses.root}}>
             {loading.schedule && <LinearProgress/>}
             <DialogTitleComponent title='Schdule External' handleClose={()=> setDialog({...dialog, schedule:false})}/>
             <DialogContent dividers>
@@ -540,7 +543,7 @@ const RenderInternalsExternals = ({projects,marks,type,fetchData}) => {
             </DialogActions>
         </Dialog>
         {/*    ReSubmit Dialog*/}
-        <Dialog fullWidth maxWidth='sm' open={dialog.reSubmit} onClose={()=> setDialog({...dialog, reSubmit:false})}>
+        <Dialog fullWidth maxWidth='sm' open={dialog.reSubmit} onClose={()=> setDialog({...dialog, reSubmit:false})} classes={{paper: dialogClasses.root}}>
             {loading.confirm && <LinearProgress/>}
             <DialogTitleComponent title='Confirm' handleClose={()=> setDialog({...dialog, reSubmit:false})}/>
             <DialogContent dividers>

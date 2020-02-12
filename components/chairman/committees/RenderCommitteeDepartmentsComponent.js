@@ -44,12 +44,14 @@ import {
 import CircularLoading from "../../loading/CircularLoading";
 import {useListContainerStyles} from "../../../src/material-styles/listContainerStyles";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 const RenderCommitteeDepartmentsComponent = ({members = {id: '', members: []},department,committeeType,setSuccess}) => {
     const tableClasses = useTableStyles();
     const avatarClasses = useDrawerStyles();
     const emptyStyles = useListItemStyles();
     const classes = useListContainerStyles();
+    const dialogClasses = useDialogStyles();
     const [newMembers,setNewMembers] = useState([]);
     const [usersList,setUsersList] = useState([]);
     const [filter,setFilter] = useState(members && members.members ? members.members.filter(member => member.ugpc_details.committees.includes(department)) : []);
@@ -319,7 +321,7 @@ const RenderCommitteeDepartmentsComponent = ({members = {id: '', members: []},de
                 </Table>
             </div>
 
-            <Dialog open={dialog.addMember} onClose={()=>setDialog({...dialog,addMember: false})} fullWidth maxWidth='sm'>
+            <Dialog open={dialog.addMember} onClose={()=>setDialog({...dialog,addMember: false})} fullWidth maxWidth='sm' classes={{root: dialogClasses.root}}>
                 {loading.addMember && <LinearProgress/>}
 
                 <ErrorSnackBar open={error.addMember.show} message={error.addMember.message} handleSnackBar={()=>setError({...error,addMember: {show:false,message:''}})}/>
@@ -431,7 +433,7 @@ const RenderCommitteeDepartmentsComponent = ({members = {id: '', members: []},de
                     <Button color='primary' onClick={handleAddMember}>Add</Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={dialog.removeMember} onClose={()=>setDialog({...dialog,removeMember: false})} fullWidth maxWidth='xs'>
+            <Dialog open={dialog.removeMember} onClose={()=>setDialog({...dialog,removeMember: false})} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
                 {loading.remove && <LinearProgress/>}
                 <ErrorSnackBar open={error.remove.show} message={error.remove.message} handleSnackBar={()=>setError({...error,remove: {show:false,message:''}})}/>
 

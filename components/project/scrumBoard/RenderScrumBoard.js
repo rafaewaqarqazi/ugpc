@@ -23,6 +23,7 @@ import UserContext from '../../../context/user/user-context';
 import InfoSnackBar from "../../snakbars/InfoSnackBar";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import moment from "moment";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 const useStyles = makeStyles(theme =>({
     container:{
         border:'1.7px dashed grey',
@@ -94,6 +95,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
     const userContext = useContext(UserContext);
     const [state,setState] = useState({});
     const classes = useStyles();
+    const dialogClasses = useDialogStyles();
     const [selectedSprint,setSelectedSprint] = useState(sprintNames.length === 0 ? 'No Sprint Created' :sprintNames[0]);
     const [loading,setLoading] = useState(true);
     const [finalIds,setFinalIds] = useState([]);
@@ -406,7 +408,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
 
 
             </DragDropContext>
-            <Dialog fullWidth maxWidth='sm' open={openDetails} onClose={closeDetails}>
+            <Dialog fullWidth maxWidth='sm' open={openDetails} onClose={closeDetails} classes={{paper: dialogClasses.root}}>
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>{details.title}</Typography>
                     <Tooltip  title='Close Details' placement="top" TransitionComponent={Zoom}>
@@ -423,7 +425,7 @@ const RenderScrumBoard = ({sprint,sprintNames}) => {
 
                 </DialogContent>
             </Dialog>
-            <Dialog fullWidth maxWidth='xs' open={completeSprintDialog} onClose={()=>setCompleteSprintDialog(false)}>
+            <Dialog fullWidth maxWidth='xs' open={completeSprintDialog} onClose={()=>setCompleteSprintDialog(false)} classes={{paper: dialogClasses.root}}>
                 {completeSprintLoading && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Complete Sprint</Typography>

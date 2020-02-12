@@ -13,11 +13,12 @@ import {
 import {Close, Delete} from "@material-ui/icons";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import UserContext from "../../../context/user/user-context";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 const RemoveUserComponent = ({userId,type,setSuccess}) => {
     const userContext = useContext(UserContext);
     const [confirm,setConfirm] = useState(false);
     const [loading,setLoading] = useState(false);
-
+    const dialogClasses = useDialogStyles()
     const [error,setError] = useState(false);
     const handleClickRemoveUser = ()=>{
         setLoading(true);
@@ -45,7 +46,7 @@ const RemoveUserComponent = ({userId,type,setSuccess}) => {
                 </div>
 
             </Tooltip>
-            <Dialog open={confirm} onClose={()=>setConfirm(false)} fullWidth maxWidth='xs'>
+            <Dialog open={confirm} onClose={()=>setConfirm(false)} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
                 {loading && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Confirm</Typography>

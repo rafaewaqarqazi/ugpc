@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
         },
     },
     image:{
-        maxWidth:'100%',
+        maxWidth:'90%',
         padding:theme.spacing(2)
     },
     firstHeadingContainer:{

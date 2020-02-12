@@ -22,9 +22,11 @@ import {useDocDetailsDialogStyles} from "../../src/material-styles/docDetailsDia
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import {fetchCompletedProjectsAPI} from "../../utils/apiCalls/projects";
 import {getGrade} from "../../utils";
+import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 
 const Completed = () => {
     const tableClasses = useTableStyles();
+    const dialogClasses = useDialogStyles();
     const classes = useListContainerStyles();
     const detailsClasses = useDocDetailsDialogStyles();
     const styles = useListItemStyles();
@@ -238,7 +240,7 @@ const Completed = () => {
             </Container>
             {
                 openDetails &&
-                <Dialog open={openDetails} onClose={()=>setOpenDetails(false)} fullWidth maxWidth='md'>
+                <Dialog open={openDetails} onClose={()=>setOpenDetails(false)} fullWidth maxWidth='md' classes={{paper: dialogClasses.root}}>
                     <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                         <Typography variant='h6' noWrap style={{flexGrow:1}}>Details</Typography>
                         <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>

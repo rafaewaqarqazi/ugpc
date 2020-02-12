@@ -26,8 +26,10 @@ import UserContext from '../../../context/user/user-context';
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import { PDFDownloadLink,PDFViewer } from '@react-pdf/renderer';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument,project}) => {
     const classes = useDocDetailsDialogStyles();
+    const dialogClasses = useDialogStyles();
     const userContext = useContext(UserContext);
     const visionDocsContext = useContext(VisionDocsContext);
     const [comment,setComment] = useState('');
@@ -152,6 +154,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="dialog-title"
+                classes={{paper: dialogClasses.root}}
             >
                 <SuccessSnackBar open={successSnackbar} message={'Success'} handleClose={()=> setSuccessSnackbar(false)}/>
                 <DialogTitleComponent title={currentDocument.title} handleClose={handleClose}/>
@@ -289,6 +292,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                     onClose={handleOnCloseDocDialog}
                     maxWidth='md'
                     fullWidth
+                    classes={{paper: dialogClasses.root}}
                 >
                     <DialogContent>
                         <DropzoneArea
@@ -313,6 +317,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurr
                     onClose={handleOnClosePPTDialog}
                     maxWidth='md'
                     fullWidth
+                    classes={{paper: dialogClasses.root}}
                 >
                     <DialogContent>
                         <DropzoneArea

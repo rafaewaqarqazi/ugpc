@@ -25,6 +25,7 @@ import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import {RenderComments} from "../../visionDocument/common/RenderComments";
 import UserContext from '../../../context/user/user-context';
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 const useStyles = makeStyles(theme =>({
     wrapText:{
@@ -53,6 +54,7 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
     const userContext = useContext(UserContext);
     const projectContext = useContext(ProjectContext);
     const classes = useStyles();
+    const dialogClasses = useDialogStyles();
     const [openAddAttachmentDialog,setOpenAddAttachmentDialog] = useState(false);
     const [files,setFiles]=useState([]);
     const [fileError,setFileError] = useState(false);
@@ -340,7 +342,7 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
                     </div>
                 </Grid>
             </Grid>
-            <Dialog open={openAddAttachmentDialog} onClose={()=>setOpenAddAttachmentDialog(false)} fullWidth maxWidth='sm'>
+            <Dialog open={openAddAttachmentDialog} onClose={()=>setOpenAddAttachmentDialog(false)} fullWidth maxWidth='sm' classes={{paper: dialogClasses.root}}>
                 {loading && <LinearProgress/>}
                 <DialogTitleComponent title='Add Attachments' handleClose={()=>setOpenAddAttachmentDialog(false)}/>
                 <DialogContent dividers>
@@ -362,7 +364,7 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
             </Dialog>
 
 
-            <Dialog open={removeAttachment.show} onClose={()=>setRemoveAttachment({show:false,filename:''})} fullWidth maxWidth='sm'>
+            <Dialog open={removeAttachment.show} onClose={()=>setRemoveAttachment({show:false,filename:''})} fullWidth maxWidth='sm' classes={{paper: dialogClasses.root}}>
                 {loading && <LinearProgress/>}
                 <DialogTitleComponent title='Confirm' handleClose={()=>setRemoveAttachment({show:false,filename:''})}/>
                 <DialogContent dividers>
@@ -375,7 +377,7 @@ const RenderTaskDetails = ({details,setDetails,taskIn,sprintId}) => {
             </Dialog>
             {
                 image.show &&
-                <Dialog open={image.show} onClose={()=>setImage({show:false,image:{}})} fullWidth maxWidth='lg'>
+                <Dialog open={image.show} onClose={()=>setImage({show:false,image:{}})} fullWidth maxWidth='lg' classes={{paper: dialogClasses.root}}>
                     <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                         <Typography variant='h6' noWrap style={{flexGrow:1}}>{image.image.originalname}</Typography>
                         <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>

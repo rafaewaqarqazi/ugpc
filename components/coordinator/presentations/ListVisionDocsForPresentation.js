@@ -19,6 +19,7 @@ import VisionDocsContext from '../../../context/visionDocs/visionDocs-context';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {RenderListItemContent} from "../../visionDocument/common/RenderListItemContent";
 import SchedulingDialogContent from "./SchedulingDialogContent";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 const useStyles = makeStyles(theme =>({
     scheduleContainer:{
@@ -81,6 +82,7 @@ const ListVisionDocsForPresentation = ({docs}) => {
     const classes = useListContainerStyles();
     const visionDocsContext = useContext(VisionDocsContext);
     const presentationClasses = useStyles();
+    const dialogClasses = useDialogStyles();
     const [state,setState] = useState({});
     const [loading, setLoading] = useState(true);
     const [currentDocument,setCurrentDocument] = useState({});
@@ -331,7 +333,9 @@ const ListVisionDocsForPresentation = ({docs}) => {
                 open={dialogOpen}
                 onClose={handleCloseDialog}
                 aria-labelledby="title"
-                aria-describedby="description">
+                aria-describedby="description"
+                classes={{paper: dialogClasses.root}}
+            >
                 {
                     dialogLoading && <LinearProgress color='secondary'/>
                 }

@@ -24,6 +24,7 @@ import UserContext from '../../context/user/user-context';
 import CircularLoading from "../../components/loading/CircularLoading";
 import SuccessSnackBar from "../../components/snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../components/snakbars/ErrorSnackBar";
+import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -59,6 +60,7 @@ const Settings = () => {
     const userContext = useContext(UserContext);
     const settingsClasses = useStyles();
     const classes = useListContainerStyles();
+    const dialogClasses = useDialogStyles();
     const finalStepStyle = useListItemStyles();
     const [expanded, setExpanded] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
@@ -384,7 +386,7 @@ const Settings = () => {
                     </div>
                 </div>
             </Container>
-            <Dialog fullWidth maxWidth='xs' open={newBatchDialog} onClose={()=>setNewBatchDialog(false)}>
+            <Dialog fullWidth maxWidth='xs' open={newBatchDialog} onClose={()=>setNewBatchDialog(false)} classes={{paper: dialogClasses.root}}>
                 {loading && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Add New Batch</Typography>

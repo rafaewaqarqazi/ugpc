@@ -20,6 +20,7 @@ import {getGrade} from "../../../utils";
 import {getGradeChipColor} from "../../../src/material-styles/visionDocsListBorderColor";
 import DialogTitleComponent from "../../DialogTitleComponent";
 import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 const useStyles = makeStyles(theme => ({
     listHeader:{
@@ -43,6 +44,7 @@ const StudentFinalDocumentationComponent = () => {
     const projectContext = useContext(ProjectContext);
     const [openUploadDialog,setOpenUploadDialog] = useState(false);
     const classes = useStyles();
+    const dialogClasses = useDialogStyles();
     const emptyStyles = useListItemStyles();
     const [file,setFile]=useState([]);
     const [fileError,setFileError] = useState(false);
@@ -141,7 +143,7 @@ const StudentFinalDocumentationComponent = () => {
                     </TableBody>
                 </Table>
             </div>
-            <Dialog fullWidth maxWidth='xs' open={openUploadDialog} onClose={()=>setOpenUploadDialog(false)}>
+            <Dialog fullWidth maxWidth='xs' open={openUploadDialog} onClose={()=>setOpenUploadDialog(false)} classes={{paper: dialogClasses.root}}>
             {loading && <LinearProgress/>}
             <DialogTitleComponent title={'Upload Final Documentation'} handleClose={()=>setOpenUploadDialog(false)}/>
             <DialogContent>

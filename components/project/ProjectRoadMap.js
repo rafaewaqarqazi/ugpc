@@ -8,7 +8,6 @@ import {formatRoadmapSprintData, getScheduleSprint} from "../coordinator/present
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import UserContext from "../../context/user/user-context";
-import Router from 'next/router';
 import Link from 'next/link';
 
 const ProjectRoadMap = () => {

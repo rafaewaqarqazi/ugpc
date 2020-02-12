@@ -20,6 +20,7 @@ import ProjectContext from '../../../context/project/project-context';
 import UserContext from '../../../context/user/user-context';
 import RenderTaskDetails from "../common/RenderTaskDetails";
 import DialogTitleComponent from "../../DialogTitleComponent";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 const useStyles = makeStyles(theme =>({
     backlogContainer:{
@@ -83,6 +84,7 @@ const ListBacklog = ({backlog}) => {
     const userContext = useContext(UserContext);
     const [state,setState] = useState({});
     const classes = useStyles();
+    const dialogClasses = useDialogStyles();
     const [loading,setLoading] = useState(true);
     const [openPlanSprintDialog,setOpenPlanSprintDialog] = useState(false);
     const [finalIds,setFinalIds] = useState([]);
@@ -461,7 +463,7 @@ const ListBacklog = ({backlog}) => {
             <Hidden smUp>
                 {
                     openDetails &&
-                    <Dialog fullScreen style={{marginTop:48,marginBottom:48}} open={openDetails} onClose={closeDetails}>
+                    <Dialog fullScreen style={{marginTop:48,marginBottom:48}} open={openDetails} onClose={closeDetails} classes={{paper: dialogClasses.root}}>
                         <DialogTitleComponent title={details.title} handleClose={closeDetails}/>
                         <DialogContent dividers>
                             <RenderTaskDetails details={details} taskIn='Backlog' setDetails={setDetails}/>
@@ -472,7 +474,7 @@ const ListBacklog = ({backlog}) => {
             </Hidden>
             {
                 openPlanSprintDialog &&
-                <Dialog open={openPlanSprintDialog} onClose={()=>setOpenPlanSprintDialog(false)} fullWidth maxWidth='xs'>
+                <Dialog open={openPlanSprintDialog} onClose={()=>setOpenPlanSprintDialog(false)} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
                     <DialogTitleComponent title={'Plan Sprint'} handleClose={()=>setOpenPlanSprintDialog(false)}/>
                     <DialogContent dividers>
                         <div>
@@ -539,7 +541,7 @@ const ListBacklog = ({backlog}) => {
 
             {
                 lessWeekConfirmation &&
-                <Dialog open={lessWeekConfirmation} onClose={()=>setLessWeekConfirmation(false)} fullWidth maxWidth='xs'>
+                <Dialog open={lessWeekConfirmation} onClose={()=>setLessWeekConfirmation(false)} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
                     <DialogTitleComponent title={'Confirm'} handleClose={()=>setLessWeekConfirmation(false)}/>
                     <DialogContent dividers>
                         <DialogContentText>Tasks in sprint require less time than specified weeks, do you want to continue?</DialogContentText>
@@ -552,7 +554,7 @@ const ListBacklog = ({backlog}) => {
             }
             {
                 removeTaskDialog &&
-                <Dialog open={removeTaskDialog} onClose={()=>setRemoveTaskDialog(false)} fullWidth maxWidth='xs'>
+                <Dialog open={removeTaskDialog} onClose={()=>setRemoveTaskDialog(false)} fullWidth maxWidth='xs' classes={{paper: dialogClasses.root}}>
                     <DialogTitleComponent title={'Confirm'} handleClose={()=>setRemoveTaskDialog(false)}/>
                     <DialogContent dividers>
                         <DialogContentText>Are you sure you want to remove this task?</DialogContentText>

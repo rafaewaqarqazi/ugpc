@@ -37,12 +37,14 @@ import RenderStudents from "../../components/visionDocument/common/RenderStudent
 import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
 import SuccessSnackBar from "../../components/snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../components/snakbars/ErrorSnackBar";
+import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 
 const Externals = () => {
     const tableClasses = useTableStyles();
     const classes = useListContainerStyles();
     const detailsClasses = useDocDetailsDialogStyles();
     const styles = useListItemStyles();
+    const dialogClasses = useDialogStyles();
     const [status, setStatus] = useState('All');
     const [batch,setBatch] = useState('All');
     const [projects,setProjects]=useState([]);
@@ -409,7 +411,7 @@ const Externals = () => {
             </Container>
             {
                 dialog.details &&
-                <Dialog open={dialog.details} onClose={()=>setDialog({...dialog,details:false})} fullWidth maxWidth='md'>
+                <Dialog open={dialog.details} onClose={()=>setDialog({...dialog,details:false})} fullWidth maxWidth='md' classes={{paper: dialogClasses.root}}>
                     <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                         <Typography variant='h6' noWrap style={{flexGrow:1}}>Details</Typography>
                         <Tooltip  title='Close' placement="top" TransitionComponent={Zoom}>
@@ -511,7 +513,7 @@ const Externals = () => {
                     </DialogActions>
                 </Dialog>
             }
-            <Dialog open={dialog.externalAssign} onClose={()=>setDialog({...dialog,externalAssign: false})} fullWidth maxWidth='sm'>
+            <Dialog open={dialog.externalAssign} onClose={()=>setDialog({...dialog,externalAssign: false})} fullWidth maxWidth='sm' classes={{paper: dialogClasses.root}}>
                 {loading.confirm && <LinearProgress/>}
                 <DialogTitle style={{display:'flex', flexDirection:'row'}} disableTypography>
                     <Typography variant='h6' noWrap style={{flexGrow:1}}>Assign External Examiner</Typography>

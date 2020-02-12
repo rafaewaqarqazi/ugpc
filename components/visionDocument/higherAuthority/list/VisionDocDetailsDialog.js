@@ -33,10 +33,12 @@ import UserContext from "../../../../context/user/user-context";
 import {fetchMarksDistributionAPI} from "../../../../utils/apiCalls/projects";
 import { PDFDownloadLink,PDFViewer } from '@react-pdf/renderer';
 import CircularLoading from "../../../loading/CircularLoading";
+import {useDialogStyles} from "../../../../src/material-styles/dialogStyles";
 
 
 const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocument}) => {
     const classes = useDocDetailsDialogStyles();
+    const dialogClasses = useDialogStyles()
     const visionDocsContext = useContext(VisionDocsContext);
     const [changeStatus,setChangeStatus] = useState('No Change');
     const [commentText,setCommentText] = useState('');
@@ -296,6 +298,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="dialog-title"
+                classes={{paper: dialogClasses.root}}
             >
 
                 <DialogTitleComponent title={currentDocument.documentation.visionDocument.title} handleClose={handleClose}/>
@@ -476,6 +479,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                 maxWidth='xs'
                 open={confirmDialog}
                 onClose={handleCloseConfirmDialog}
+                classes={{paper: dialogClasses.root}}
             >
                 {confirmDialogLoading.show && <LinearProgress color='secondary'/>}
                 <Typography variant='caption' component='div' style={{textAlign:"center"}}>{confirmDialogLoading.status}</Typography>
@@ -520,7 +524,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
 
                 </DialogContent>
             </Dialog>
-            <Dialog maxWidth='xs' fullWidth open={marksConfirm} onClose={()=>setMarksConfirm(false)}>
+            <Dialog maxWidth='xs' fullWidth open={marksConfirm} onClose={()=>setMarksConfirm(false)} classes={{paper: dialogClasses.root}}>
                 <DialogTitleComponent title='Confirm' handleClose={()=>setMarksConfirm(false)}/>
                 <DialogContent dividers>
                     <Typography variant='caption' component='span'>Note: </Typography>

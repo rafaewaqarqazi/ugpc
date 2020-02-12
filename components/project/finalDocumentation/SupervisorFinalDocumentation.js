@@ -44,6 +44,7 @@ import CircularLoading from "../../loading/CircularLoading";
 import DialogTitleComponent from "../../DialogTitleComponent";
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {DropzoneArea} from "material-ui-dropzone";
+import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
 
 const useStyles = makeStyles(theme => ({
@@ -62,6 +63,7 @@ const useStyles = makeStyles(theme => ({
 }));
 const SupervisorFinalDocumentation = () => {
     const emptyStyles = useListItemStyles();
+    const dialogClasses = useDialogStyles();
     const [filterDepartment,setFilterDepartment] = useState('All');
     const [loading,setLoading]=useState({
         main:true,
@@ -399,7 +401,7 @@ const SupervisorFinalDocumentation = () => {
                     </div>
                 </div>
             }
-            <Dialog fullWidth maxWidth='xs' open={confirmDialog} onClose={()=>setConfirmDialog(false)} >
+            <Dialog fullWidth maxWidth='xs' open={confirmDialog} onClose={()=>setConfirmDialog(false)} classes={{paper: dialogClasses.root}} >
                 {loading.dialog && <LinearProgress/>}
                 <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
                 <DialogTitleComponent title='Confirm' handleClose={()=>setConfirmDialog(false)}/>
@@ -411,7 +413,7 @@ const SupervisorFinalDocumentation = () => {
                     <Button variant='outlined' color='secondary' onClick={handleConfirm}>Confirm</Button>
                 </DialogActions>
             </Dialog>
-            <Dialog fullWidth maxWidth='xs' open={notApprovedDialog} onClose={()=>setNotApprovedDialog(false)} >
+            <Dialog fullWidth maxWidth='xs' open={notApprovedDialog} onClose={()=>setNotApprovedDialog(false)} classes={{paper: dialogClasses.root}} >
                 {loading.dialog && <LinearProgress/>}
                 <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
                 <DialogTitleComponent title='Confirm' handleClose={()=>setNotApprovedDialog(false)}/>
@@ -440,6 +442,7 @@ const SupervisorFinalDocumentation = () => {
                 onClose={()=> setMarksDialog(false)}
                 fullWidth
                 maxWidth='xs'
+                classes={{paper: dialogClasses.root}}
             >
                 {loading.dialog && <LinearProgress/>}
                 <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
@@ -465,7 +468,7 @@ const SupervisorFinalDocumentation = () => {
                     <Button variant='contained' color='secondary' onClick={handleAddMarks}>Confirm</Button>
                 </DialogActions>
             </Dialog>
-            <Dialog fullWidth maxWidth='xs' open={uploadDialog.open} onClose={()=>setUploadDialog({...uploadDialog,open:false})}>
+            <Dialog fullWidth maxWidth='xs' open={uploadDialog.open} onClose={()=>setUploadDialog({...uploadDialog,open:false})} classes={{paper: dialogClasses.root}}>
                 {loading.dialog && <LinearProgress/>}
                 <SuccessSnackBar open={success} message={'Success'} handleClose={()=>setSuccess(false)}/>
                 <DialogTitleComponent title={'Upload Plagiarism Report'} handleClose={()=>setUploadDialog({...uploadDialog,open:false})}/>
