@@ -91,9 +91,6 @@ const UserState = (props) => {
     const removeUserState = ()=>{
         dispatch(userLoading());
     };
-    useEffect(()=>{
-        console.log('User State:',state)
-    },[state]);
     return (
         <UserContext.Provider value={{
             user:state,

@@ -65,9 +65,6 @@ const VisionDocsState = (props) => {
             await dispatch(docsFailedAction('Failed to load Documents'))
         }
     };
-useEffect(()=>{
-    console.log('Vision Docs State:',state)
-},[state])
     return (
         <VisionDocsContext.Provider value={{
             visionDocs:state,

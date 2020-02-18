@@ -122,9 +122,6 @@ const ProjectState = (props) => {
         await dispatch(addSupervisorMeetingAction(result));
         return await result;
     }
-useEffect(()=>{
-    console.log('Project State:',state)
-},[state]);
     return (
         <ProjectContext.Provider value={{
             project:state,
