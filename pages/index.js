@@ -74,7 +74,7 @@ const Index = () => {
     },[])
     return (
         <LandingPageLayout>
-            <Container>
+            <Container style={{overflow: 'hidden'}}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={5} className={landingClasses.textContainer} >
                         <div className={landingClasses.textRightContainer}>
@@ -89,10 +89,10 @@ const Index = () => {
                     <Grid item xs={12} sm={7}  className={landingClasses.textContainer}>
                         <img src='/static/avatar/frontImage1.png' alt='UGPC Software' className={landingClasses.image}/>
                     </Grid>
-                    <Grid item xs={12} sm={7}  className={landingClasses.textContainer} data-aos="fade-right">
+                    <Grid item xs={12} sm={7}  className={landingClasses.textContainer} >
                         <img src='/static/avatar/frontImage2.png' alt='UGPC Software' className={landingClasses.image}/>
                     </Grid>
-                    <Grid item xs={12} sm={5}  className={landingClasses.textContainer} data-aos="fade-right">
+                    <Grid item xs={12} sm={5}  className={landingClasses.textContainer} >
                         <div className={landingClasses.firstHeadingContainer}>
                             <Typography variant='h6' color='textPrimary' >Propose</Typography>
                             <Typography variant='subtitle1' color='textPrimary' >Propose your innovative idea and start building it</Typography>

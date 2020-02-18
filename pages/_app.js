@@ -19,19 +19,17 @@ class MyApp extends App {
         const { Component, pageProps } = this.props;
 
         return (
-
-                <Container>
-                    <Head>
-                        <title>UGPC - Software</title>
-                    </Head>
-                    <UserState>
-                        <ThemeProvider theme={theme}>
-                            <CssBaseline />
-                            <Component {...pageProps} />
-                        </ThemeProvider>
-                    </UserState>
-                </Container>
-
+            <div>
+                <Head>
+                    <title>UGPC - Software</title>
+                </Head>
+                <UserState>
+                    <ThemeProvider theme={theme}>
+                        <CssBaseline />
+                        <Component {...pageProps} />
+                    </ThemeProvider>
+                </UserState>
+            </div>
         );
     }
 }
