@@ -108,7 +108,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
     };
 
     const handleMarksSave = ()=>{
-        if (marks < 0 || marks > marksDistribution){
+        if (parseInt(marks) < 0 || parseInt(marks) > marksDistribution){
             setMarksConfirm(false);
             setResError({show:true,message:`Should be between 0-${marksDistribution}`});
             return;
@@ -383,6 +383,7 @@ const VisionDocDetailsDialog = ({currentDocument,open,handleClose,setCurrentDocu
                                                     label="Add Marks"
                                                     margin="dense"
                                                     variant="outlined"
+                                                    type="number"
                                                     value={marks}
                                                     onChange={handleMarksChange}
                                                     placeholder={`0-${marksDistribution}`}

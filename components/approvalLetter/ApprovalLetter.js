@@ -91,7 +91,7 @@ const ApprovalLetter = ({title,date,students,supervisor,chairmanName}) => (
     <Document >
         <Page size="A4" style={styles.body} >
             <View style={styles.header}>
-                <Image src='/static/images/avatar/iiui-logo.jpg' style={styles.logo}/>
+                <Image src='/static/avatar/iiui-logo.jpg' style={styles.logo}/>
                 <View style={styles.headerTitle}>
                     <Text>INTERNATIONAL ISLAMIC UNIVERSITY, ISLAMABAD</Text>
                     <Text>FACULTY OF BASIC AND APPLIED SCIENCES</Text>

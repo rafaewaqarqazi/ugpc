@@ -87,7 +87,6 @@ const SupervisorFinalDocumentation = () => {
         error:false
     });
     const [marksDistribution,setMarksDistribution] = useState(10);
-
     const [status,setStatus] = useState({
         status:'',
         projectId:'',
@@ -209,7 +208,7 @@ const SupervisorFinalDocumentation = () => {
             });
     };
     const handleAddMarks = ()=>{
-        if (marks.marks === '' ||  marks.marks < 0 || marks.marks > marksDistribution){
+        if (parseInt(marks.marks) < 0 || parseInt(marks.marks) > marksDistribution){
             setMarks({...marks,error:true});
             return;
         }
@@ -333,7 +332,7 @@ const SupervisorFinalDocumentation = () => {
                                                 <Tooltip title={doc.students[0].student_details.regNo} placement='top'>
                                                     <TableCell align="left" >{doc.students[0].name}</TableCell>
                                                 </Tooltip>
-                                                <TableCell colSpan={4}>
+                                                <TableCell colSpan={6}>
                                                     <div className={emptyStyles.emptyListContainer}>
                                                         <div className={emptyStyles.emptyList}>
                                                             No Documents Found
@@ -456,6 +455,7 @@ const SupervisorFinalDocumentation = () => {
                         margin='dense'
                         variant='outlined'
                         name='marks'
+                        type="number"
                         value={marks.marks}
                         onChange={event => setMarks({...marks,marks:event.target.value})}
                         error={marks.error}
