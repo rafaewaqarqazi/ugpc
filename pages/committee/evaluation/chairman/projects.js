@@ -6,11 +6,11 @@ import EvaluationComponent from "../../../../components/evaluation/EvaluationCom
 
 const Projects = () => {
 
-    return (
-        <EvaluationChairmanLayout>
-            <EvaluationComponent/>
-        </EvaluationChairmanLayout>
-    );
+  return (
+    <EvaluationChairmanLayout>
+      <EvaluationComponent/>
+    </EvaluationChairmanLayout>
+  );
 };
 
 export default withChairmanEvaluationAuthSync(Projects);

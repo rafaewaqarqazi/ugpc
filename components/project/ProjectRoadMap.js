@@ -11,93 +11,95 @@ import UserContext from "../../context/user/user-context";
 import Link from 'next/link';
 
 const ProjectRoadMap = () => {
-    const classes = useListContainerStyles();
-    const [empty,setEmpty] = useState(false);
-    const emptyClasses = useListItemStyles();
+  const classes = useListContainerStyles();
+  const [empty, setEmpty] = useState(false);
+  const emptyClasses = useListItemStyles();
 
-    const userContext = useContext(UserContext);
-    const handleError = error=>{
-        setEmpty(true)
-    };
+  const userContext = useContext(UserContext);
+  const handleError = error => {
+    setEmpty(true)
+  };
 
-    return (
-        <ProjectContext.Consumer>
-            {
-                ({project}) => {
-                    if (project.isLoading){
-                        return <LinearProgress/>
+  return (
+    <ProjectContext.Consumer>
+      {
+        ({project}) => {
+          if (project.isLoading) {
+            return <LinearProgress/>
+          }
+          if (!project.isLoading) {
+            return (
+              <Container>
+                <div className={classes.listContainer}>
+                  <div className={classes.top}>
+                    <div className={classes.topIconBox}>
+                      <DashboardOutlined className={classes.headerIcon}/>
+                    </div>
+                    <div className={classes.topTitle}>
+                      <Typography variant='h5'>Roadmap</Typography>
+                    </div>
+                  </div>
+                  <div>
+                    {
+                      getScheduleSprint(project.project.details.sprint) ?
+                        <Typography paragraph>Great! everything is on Schedule</Typography> :
+                        <Typography variant='caption' color='error' paragraph>Some of your sprint's deadline have
+                          crossed </Typography>
                     }
-                    if (!project.isLoading){
-                        return (
-                            <Container >
-                                <div className={classes.listContainer}>
-                                    <div className={classes.top}>
-                                        <div className={classes.topIconBox} >
-                                            <DashboardOutlined className={classes.headerIcon}/>
-                                        </div>
-                                        <div className={classes.topTitle} >
-                                            <Typography variant='h5'>Roadmap</Typography>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        {
-                                            getScheduleSprint(project.project.details.sprint) ?
-                                                <Typography paragraph>Great! everything is on Schedule</Typography>:
-                                                <Typography variant='caption' color='error' paragraph>Some of your sprint's deadline have crossed </Typography>
-                                        }
-                                    </div>
-                                    {
-                                        !empty ?
-                                            <Chart
-                                                width={'100%'}
-                                                height={(formatRoadmapSprintData(project.project.details).sprintData.length+1) * 52}
-                                                chartType="Gantt"
-                                                legendToggle
-                                                loader={<CircularLoading/>}
-                                                chartEvents={[
-                                                    {
-                                                        eventName:'error',
-                                                        callback:handleError
-                                                    }
-                                                ]}
-                                                data={formatRoadmapSprintData(project.project.details).data}
-                                                options={{
-                                                    gantt: {
-                                                        trackHeight: 30,
-                                                        criticalPathEnabled: false,
-                                                    }
-                                                }}
-                                                rootProps={{ 'data-testid': '1' }}
-                                            />
-                                            :
-                                            (
-                                                <div className={emptyClasses.emptyList}>
-                                                    <div className={emptyClasses.emptyListContainer}>
-                                                        <div className={emptyClasses.emptyList}>
-                                                            <Typography variant='subtitle2' color='textSecondary'>
-                                                                Nothing has Planned Yet!
-                                                            </Typography>
-                                                            {
-                                                                !userContext.user.isLoading && userContext.user.user.role === 'Student' &&
-                                                                    <Link href='/student/project/backlog'>
-                                                                        <Button variant='outlined' color='primary' style={{marginTop:10}} size='small' >Click To Plan</Button>
-                                                                    </Link>
-                                                            }
+                  </div>
+                  {
+                    !empty ?
+                      <Chart
+                        width={'100%'}
+                        height={(formatRoadmapSprintData(project.project.details).sprintData.length + 1) * 52}
+                        chartType="Gantt"
+                        legendToggle
+                        loader={<CircularLoading/>}
+                        chartEvents={[
+                          {
+                            eventName: 'error',
+                            callback: handleError
+                          }
+                        ]}
+                        data={formatRoadmapSprintData(project.project.details).data}
+                        options={{
+                          gantt: {
+                            trackHeight: 30,
+                            criticalPathEnabled: false,
+                          }
+                        }}
+                        rootProps={{'data-testid': '1'}}
+                      />
+                      :
+                      (
+                        <div className={emptyClasses.emptyList}>
+                          <div className={emptyClasses.emptyListContainer}>
+                            <div className={emptyClasses.emptyList}>
+                              <Typography variant='subtitle2' color='textSecondary'>
+                                Nothing has Planned Yet!
+                              </Typography>
+                              {
+                                !userContext.user.isLoading && userContext.user.user.role === 'Student' &&
+                                <Link href='/student/project/backlog'>
+                                  <Button variant='outlined' color='primary' style={{marginTop: 10}} size='small'>Click
+                                    To Plan</Button>
+                                </Link>
+                              }
 
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                    }
-                                </div>
-                            </Container>
-                        )
-                    }
-                }
-            }
+                            </div>
+                          </div>
+                        </div>
+                      )
+                  }
+                </div>
+              </Container>
+            )
+          }
+        }
+      }
 
-        </ProjectContext.Consumer>
-    );
+    </ProjectContext.Consumer>
+  );
 };
 
 export default ProjectRoadMap;

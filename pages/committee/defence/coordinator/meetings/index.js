@@ -5,13 +5,13 @@ import DefenceMeetingComponent from "../../../../../components/coordinator/Defen
 
 const Index = () => {
 
-    return (
-        <VisionDocsState>
-            <CoordinatorLayout>
-                <DefenceMeetingComponent/>
-            </CoordinatorLayout>
-        </VisionDocsState>
-    );
+  return (
+    <VisionDocsState>
+      <CoordinatorLayout>
+        <DefenceMeetingComponent/>
+      </CoordinatorLayout>
+    </VisionDocsState>
+  );
 };
 
 

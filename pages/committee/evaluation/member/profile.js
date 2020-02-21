@@ -3,11 +3,11 @@ import {withEvaluationMemberAuthSync} from "../../../../components/routers/evalu
 import ProfileComponent from "../../../../components/profile/ProfileComponent";
 
 const Profile = () => {
-    return (
-        <CommitteeMemberLayout committeeType='Evaluation'>
-           <ProfileComponent/>
-        </CommitteeMemberLayout>
-    );
+  return (
+    <CommitteeMemberLayout committeeType='Evaluation'>
+      <ProfileComponent/>
+    </CommitteeMemberLayout>
+  );
 };
 
 export default withEvaluationMemberAuthSync(Profile);

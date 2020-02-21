@@ -4,13 +4,13 @@ import DocsListComponent from "../../../../../components/visionDocument/higherAu
 import {withCoordinatorAuthSync} from "../../../../../components/routers/coordinatorAuth";
 
 const Index = () => {
-    return (
-        <VisionDocsState>
-            <CoordinatorLayout>
-                <DocsListComponent />
-            </CoordinatorLayout>
-        </VisionDocsState>
-    );
+  return (
+    <VisionDocsState>
+      <CoordinatorLayout>
+        <DocsListComponent/>
+      </CoordinatorLayout>
+    </VisionDocsState>
+  );
 };
 
 export default withCoordinatorAuthSync(Index);

@@ -5,34 +5,34 @@ import clsx from "clsx";
 import {useDrawerStyles} from "../../src/material-styles/drawerStyles";
 import AddMenu from "./AddMenu";
 
-const AppBarWithAddMenu = ({open,addMenuContent,handleClickProfile}) => {
+const AppBarWithAddMenu = ({open, addMenuContent, handleClickProfile}) => {
 
-    const classes = useDrawerStyles();
-    return (
-        <AppBar
-            position="fixed"
-            color='inherit'
-            className={clsx(classes.appBar, {
-                [classes.appBarShift]: open,
-            })}
-        >
-            <Toolbar>
-                <div className={classes.appBarContent}>
-                    {
-                        addMenuContent &&
-                        <AddMenu addMenuContent={addMenuContent}/>
-                    }
+  const classes = useDrawerStyles();
+  return (
+    <AppBar
+      position="fixed"
+      color='inherit'
+      className={clsx(classes.appBar, {
+        [classes.appBarShift]: open,
+      })}
+    >
+      <Toolbar>
+        <div className={classes.appBarContent}>
+          {
+            addMenuContent &&
+            <AddMenu addMenuContent={addMenuContent}/>
+          }
 
-                    <div className={classes.profile}>
-                        <ProfileMenu handleClickProfile={handleClickProfile}/>
-                    </div>
+          <div className={classes.profile}>
+            <ProfileMenu handleClickProfile={handleClickProfile}/>
+          </div>
 
-                </div>
+        </div>
 
 
-            </Toolbar>
-        </AppBar>
-    );
+      </Toolbar>
+    </AppBar>
+  );
 };
 
 export default AppBarWithAddMenu;

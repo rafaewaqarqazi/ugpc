@@ -5,11 +5,11 @@ import SupervisorProjectsComponent from "../../components/project/SupervisorProj
 
 
 const SupervisorProjects = () => {
-    return (
-        <SupervisorLayout>
-            <SupervisorProjectsComponent/>
-        </SupervisorLayout>
-    );
+  return (
+    <SupervisorLayout>
+      <SupervisorProjectsComponent/>
+    </SupervisorLayout>
+  );
 };
 
 export default withSupervisorAuthSync(SupervisorProjects);

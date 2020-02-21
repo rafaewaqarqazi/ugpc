@@ -9,37 +9,38 @@ import BacklogAndSprintContainer from "../../../components/project/BacklogAndSpr
 
 
 const ScrumBoard = () => {
-    return (
-        <ProjectState>
-            <StudentPanelLayout>
-                <BacklogAndSprintContainer title={'Scrum Board'}>
-                    <ProjectContext.Consumer>
-                        {
-                            ({project})=>{
-                                if (project.isLoading){
-                                    return (
-                                        <LinearProgress color='secondary'/>
-                                    )
-                                }
-                                if (!project.isLoading){
-                                    const sprintNames = project.project.details.sprint.map(sprint =>{
-                                        if (sprint.status === 'InComplete'){
-                                            return sprint.name
-                                        }
-                                    });
-                                    console.log('ScrumBoard',sprintNames.filter(name => name !== undefined));
-                                    return (
-                                        <RenderScrumBoard sprint={project.project.details.sprint.filter(spr => spr.status === 'InComplete')} sprintNames={sprintNames.filter(name => name !== undefined)}/>
-                                    )
-                                }
+  return (
+    <ProjectState>
+      <StudentPanelLayout>
+        <BacklogAndSprintContainer title={'Scrum Board'}>
+          <ProjectContext.Consumer>
+            {
+              ({project}) => {
+                if (project.isLoading) {
+                  return (
+                    <LinearProgress color='secondary'/>
+                  )
+                }
+                if (!project.isLoading) {
+                  const sprintNames = project.project.details.sprint.map(sprint => {
+                    if (sprint.status === 'InComplete') {
+                      return sprint.name
+                    }
+                  });
+                  console.log('ScrumBoard', sprintNames.filter(name => name !== undefined));
+                  return (
+                    <RenderScrumBoard sprint={project.project.details.sprint.filter(spr => spr.status === 'InComplete')}
+                                      sprintNames={sprintNames.filter(name => name !== undefined)}/>
+                  )
+                }
 
-                            }
-                        }
-                    </ProjectContext.Consumer>
-                </BacklogAndSprintContainer>
-            </StudentPanelLayout>
-        </ProjectState>
-    );
+              }
+            }
+          </ProjectContext.Consumer>
+        </BacklogAndSprintContainer>
+      </StudentPanelLayout>
+    </ProjectState>
+  );
 };
 
 

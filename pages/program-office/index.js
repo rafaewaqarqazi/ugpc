@@ -4,16 +4,16 @@ import ListStudentsForEligibility from "../../components/programOffice/ListStude
 import {fetchStudentsForEligibility} from "../../utils/apiCalls/programOffice";
 
 const Index = ({students}) => {
-    return (
-        <ProgramOfficeLayout>
-            <ListStudentsForEligibility studentsList={students}/>
-        </ProgramOfficeLayout>
-    );
+  return (
+    <ProgramOfficeLayout>
+      <ListStudentsForEligibility studentsList={students}/>
+    </ProgramOfficeLayout>
+  );
 };
 
-Index.getInitialProps = async ()=>{
-    const students = await fetchStudentsForEligibility();
-    return  {students}
+Index.getInitialProps = async () => {
+  const students = await fetchStudentsForEligibility();
+  return {students}
 };
 
 export default withProgramOfficeAuthSync(Index);

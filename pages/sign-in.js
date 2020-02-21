@@ -2,13 +2,13 @@ import SignInComponent from "../components/SignInComponent";
 import LandingPageLayout from "../components/Layouts/LandingPageLayout";
 import {withLandingAuthSync} from "../components/routers/landingAuth";
 
-const SignIn = ()  => {
+const SignIn = () => {
 
-    return (
-        <LandingPageLayout>
-            <SignInComponent/>
-        </LandingPageLayout>
-    );
+  return (
+    <LandingPageLayout>
+      <SignInComponent/>
+    </LandingPageLayout>
+  );
 };
 
 

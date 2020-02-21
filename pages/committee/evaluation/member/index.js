@@ -3,11 +3,11 @@ import EvaluationComponent from "../../../../components/evaluation/EvaluationCom
 import {withEvaluationMemberAuthSync} from "../../../../components/routers/evaluationMemberAuth";
 
 const Index = () => {
-    return (
-        <CommitteeMemberLayout committeeType='Evaluation'>
-            <EvaluationComponent/>
-        </CommitteeMemberLayout>
-    );
+  return (
+    <CommitteeMemberLayout committeeType='Evaluation'>
+      <EvaluationComponent/>
+    </CommitteeMemberLayout>
+  );
 };
 
 export default withEvaluationMemberAuthSync(Index);

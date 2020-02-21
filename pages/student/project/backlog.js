@@ -9,35 +9,35 @@ import BacklogAndSprintContainer from "../../../components/project/BacklogAndSpr
 
 const Backlog = () => {
 
-    return (
-        <ProjectState>
-            <StudentPanelLayout>
-                <Container maxWidth='md'>
-                    <BacklogAndSprintContainer title={'Backlog'}>
-                            <ProjectContext.Consumer>
-                                {
-                                    ({project})=>{
-                                        if (project.isLoading){
-                                            return (
-                                                <LinearProgress color='secondary'/>
-                                            )
-                                        }
-                                        if (!project.isLoading){
-                                            return (
+  return (
+    <ProjectState>
+      <StudentPanelLayout>
+        <Container maxWidth='md'>
+          <BacklogAndSprintContainer title={'Backlog'}>
+            <ProjectContext.Consumer>
+              {
+                ({project}) => {
+                  if (project.isLoading) {
+                    return (
+                      <LinearProgress color='secondary'/>
+                    )
+                  }
+                  if (!project.isLoading) {
+                    return (
 
-                                                    <ListBacklog backlog={project.project.details.backlog} />
+                      <ListBacklog backlog={project.project.details.backlog}/>
 
-                                            )
-                                        }
+                    )
+                  }
 
-                                    }
-                                }
-                            </ProjectContext.Consumer>
-                    </BacklogAndSprintContainer>
-                </Container>
-            </StudentPanelLayout>
-        </ProjectState>
-    );
+                }
+              }
+            </ProjectContext.Consumer>
+          </BacklogAndSprintContainer>
+        </Container>
+      </StudentPanelLayout>
+    </ProjectState>
+  );
 };
 
 export default withStudentAuthSync(Backlog);

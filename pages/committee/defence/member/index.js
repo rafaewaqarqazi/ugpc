@@ -3,11 +3,11 @@ import DefenceMeetingComponent from "../../../../components/coordinator/DefenceM
 import {withDefenceMemberAuthSync} from "../../../../components/routers/defenceMemberAuth";
 
 const Index = () => {
-    return (
-        <CommitteeMemberLayout committeeType='Defence' position='Member'>
-            <DefenceMeetingComponent/>
-        </CommitteeMemberLayout>
-    );
+  return (
+    <CommitteeMemberLayout committeeType='Defence' position='Member'>
+      <DefenceMeetingComponent/>
+    </CommitteeMemberLayout>
+  );
 };
 
 export default withDefenceMemberAuthSync(Index);

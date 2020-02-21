@@ -6,15 +6,15 @@ import ProjectState from "../../../../context/project/ProjectState";
 import ShowProgress from "../../../../components/project/ShowProgress";
 
 const Progress = () => {
-    const router = useRouter();
-    const {projectId} = router.query;
-    return (
-        <ProjectState>
-            <SupervisorProjectLayout projectId={projectId}>
-                <ShowProgress/>
-            </SupervisorProjectLayout>
-        </ProjectState>
-    );
+  const router = useRouter();
+  const {projectId} = router.query;
+  return (
+    <ProjectState>
+      <SupervisorProjectLayout projectId={projectId}>
+        <ShowProgress/>
+      </SupervisorProjectLayout>
+    </ProjectState>
+  );
 };
 
 export default withSupervisorAuthSync(Progress);

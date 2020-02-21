@@ -4,13 +4,13 @@ import {withChairmanDefenceAuthSync} from "../../../../components/routers/chairm
 import VisionDocsState from "../../../../context/visionDocs/VisionDocsState";
 
 const Index = () => {
-    return (
-        <CommitteeMemberLayout committeeType='Defence' position='Chairman_Committee'>
-            <VisionDocsState>
-                <DefenceMeetingComponent/>
-            </VisionDocsState>
-        </CommitteeMemberLayout>
-    );
+  return (
+    <CommitteeMemberLayout committeeType='Defence' position='Chairman_Committee'>
+      <VisionDocsState>
+        <DefenceMeetingComponent/>
+      </VisionDocsState>
+    </CommitteeMemberLayout>
+  );
 };
 
 export default withChairmanDefenceAuthSync(Index);

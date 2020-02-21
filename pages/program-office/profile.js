@@ -4,11 +4,11 @@ import ProfileComponent from "../../components/profile/ProfileComponent";
 import {withProgramOfficeAuthSync} from "../../components/routers/programOfficeAuth";
 
 const Profile = () => {
-    return (
-        <ProgramOfficeLayout>
-            <ProfileComponent/>
-        </ProgramOfficeLayout>
-    );
+  return (
+    <ProgramOfficeLayout>
+      <ProfileComponent/>
+    </ProgramOfficeLayout>
+  );
 };
 
 export default withProgramOfficeAuthSync(Profile);

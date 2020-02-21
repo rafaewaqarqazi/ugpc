@@ -7,15 +7,15 @@ import ProjectRoadMap from "../../../../components/project/ProjectRoadMap";
 import {useRouter} from "next/router";
 
 const Roadmap = () => {
-    const router = useRouter();
-    const {projectId} = router.query;
-    return (
-        <ProjectState>
-            <SupervisorProjectLayout projectId={projectId}>
-                <ProjectRoadMap/>
-            </SupervisorProjectLayout>
-        </ProjectState>
-    );
+  const router = useRouter();
+  const {projectId} = router.query;
+  return (
+    <ProjectState>
+      <SupervisorProjectLayout projectId={projectId}>
+        <ProjectRoadMap/>
+      </SupervisorProjectLayout>
+    </ProjectState>
+  );
 };
 
 export default withSupervisorAuthSync(Roadmap);

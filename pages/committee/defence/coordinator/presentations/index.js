@@ -5,13 +5,13 @@ import {withCoordinatorAuthSync} from "../../../../../components/routers/coordin
 
 
 const Index = () => {
-    return (
-        <VisionDocsState>
-            <CoordinatorLayout>
-                <PresentationComponent />
-            </CoordinatorLayout>
-        </VisionDocsState>
-    );
+  return (
+    <VisionDocsState>
+      <CoordinatorLayout>
+        <PresentationComponent/>
+      </CoordinatorLayout>
+    </VisionDocsState>
+  );
 };
 
 

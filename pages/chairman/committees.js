@@ -5,16 +5,16 @@ import {useContext, useEffect} from "react";
 import UserContext from "../../context/user/user-context";
 
 const Committees = () => {
-    const userContext = useContext(UserContext);
-    useEffect(()=>{
-        userContext.fetchCommittees()
-            .catch(error => console.error(error.message));
-    },[]);
-    return (
-        <ChairmanPanelLayout>
-            <CommitteesComponent/>
-        </ChairmanPanelLayout>
-    );
+  const userContext = useContext(UserContext);
+  useEffect(() => {
+    userContext.fetchCommittees()
+      .catch(error => console.error(error.message));
+  }, []);
+  return (
+    <ChairmanPanelLayout>
+      <CommitteesComponent/>
+    </ChairmanPanelLayout>
+  );
 };
 
 export default withChairmanAuthSync(Committees);

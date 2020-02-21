@@ -5,20 +5,20 @@ import VisionDocListItem from "./higherAuthority/list/VisionDocListItem";
 import CircularLoading from "../loading/CircularLoading";
 
 const SupervisorVisionDocs = () => {
-    const visionDocsContext = useContext(VisionDocsContext);
-    useEffect(()=>{
-        visionDocsContext.fetchBySupervisor(true);
-    },[]);
-    return (
-        <div >
-            {visionDocsContext.visionDocs.isLoading ? <CircularLoading /> :(
-                <VisionDocListItem
-                    filter={visionDocsContext.visionDocs.visionDocs}
-                    userType='Supervisor'
-                />
-            )}
-        </div>
-    );
+  const visionDocsContext = useContext(VisionDocsContext);
+  useEffect(() => {
+    visionDocsContext.fetchBySupervisor(true);
+  }, []);
+  return (
+    <div>
+      {visionDocsContext.visionDocs.isLoading ? <CircularLoading/> : (
+        <VisionDocListItem
+          filter={visionDocsContext.visionDocs.visionDocs}
+          userType='Supervisor'
+        />
+      )}
+    </div>
+  );
 };
 
 export default SupervisorVisionDocs;

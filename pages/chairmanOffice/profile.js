@@ -3,11 +3,11 @@ import {withChairmanOfficeAuthSync} from "../../components/routers/chairmanOffic
 import ProfileComponent from "../../components/profile/ProfileComponent";
 
 const Profile = () => {
-    return (
-        <ChairmanOfficeLayout>
-            <ProfileComponent/>
-        </ChairmanOfficeLayout>
-    );
+  return (
+    <ChairmanOfficeLayout>
+      <ProfileComponent/>
+    </ChairmanOfficeLayout>
+  );
 };
 
 export default withChairmanOfficeAuthSync(Profile);

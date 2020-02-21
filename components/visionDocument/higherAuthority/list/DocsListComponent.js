@@ -6,26 +6,26 @@ import {makeStyles} from "@material-ui/styles";
 
 
 const useStyles = makeStyles(theme => ({
-    container:{
-        marginTop:theme.spacing(4),
-    }
+  container: {
+    marginTop: theme.spacing(4),
+  }
 }));
 const DocsListComponent = () => {
-    const visionDocsContext = useContext(VisionDocsContext);
-    const classes = useStyles();
-    useEffect(()=>{
-        visionDocsContext.fetchByCommittee(true);
-    },[]);
-    return (
-        <div >
-            {visionDocsContext.visionDocs.isLoading ? <LinearProgress /> :(
-                <Container className={classes.container}>
-                    <ListVisionDocs docs={visionDocsContext.visionDocs.visionDocs}/>
-                </Container>)
-                }
+  const visionDocsContext = useContext(VisionDocsContext);
+  const classes = useStyles();
+  useEffect(() => {
+    visionDocsContext.fetchByCommittee(true);
+  }, []);
+  return (
+    <div>
+      {visionDocsContext.visionDocs.isLoading ? <LinearProgress/> : (
+        <Container className={classes.container}>
+          <ListVisionDocs docs={visionDocsContext.visionDocs.visionDocs}/>
+        </Container>)
+      }
 
-        </div>
-    );
+    </div>
+  );
 };
 
 export default DocsListComponent;
