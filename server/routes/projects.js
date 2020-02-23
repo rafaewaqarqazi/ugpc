@@ -8,7 +8,7 @@ const {
   fetchFinalDocumentationsBySupervisor,
   changeFDStatus,
   fetchForEvaluation,
-  scheduleInternal,
+  scheduleInternalAuto,
   scheduleExternalDate,
   assignExternalAuto,
   assignExternalManual,
@@ -24,7 +24,9 @@ const {
   markMeetingSupervisorAsAttended,
   uploadPlagiarismReport,
   fetchSupervisors,
-  assignSupervisorManual
+  assignSupervisorManual,
+  fetchInternalExaminers,
+  scheduleInternalManual
 } = require('../controllers/projects');
 const {requireSignin, isUGPCAuth, isChairmanOfficeAuth} = require('../controllers/auth');
 const upload = require('../upload');
@@ -42,12 +44,14 @@ router.put('/supervisor/assign/auto', requireSignin, isUGPCAuth, assignSuperviso
 router.put('/supervisor/assign/manual', requireSignin, isUGPCAuth, assignSupervisorManual);
 router.put('/supervisor/add/plagiarismReport/:type', requireSignin, upload.single('file'), uploadPlagiarismReport);
 router.put('/changeFDStatus', requireSignin, changeFDStatus);
-router.put('/schedule/internal', requireSignin, isUGPCAuth, scheduleInternal);
+router.put('/schedule/internal/auto', requireSignin, isUGPCAuth, scheduleInternalAuto);
+router.put('/schedule/internal/manual', requireSignin, isUGPCAuth, scheduleInternalManual);
 router.put('/schedule/external/date', requireSignin, isUGPCAuth, scheduleExternalDate);
 router.put('/evaluate/internalExternal', requireSignin, isUGPCAuth, evaluateInternalExternal);
 router.get('/fetch/assignedForEvaluation/:userId', requireSignin, fetchAssignedForEvaluation);
 router.get('/fetch/forEvaluation', requireSignin, fetchForEvaluation);
 router.get('/fetch/supervisor', requireSignin, isUGPCAuth, fetchSupervisors);
+router.get('/fetch/internalExaminers', requireSignin, isUGPCAuth, fetchInternalExaminers);
 //Chairman Office
 router.put('/assign/external/auto', requireSignin, isChairmanOfficeAuth, assignExternalAuto);
 router.put('/assign/external/manual', requireSignin, isChairmanOfficeAuth, assignExternalManual);

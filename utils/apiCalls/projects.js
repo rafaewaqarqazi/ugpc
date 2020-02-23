@@ -62,8 +62,20 @@ export const fetchForEvaluationProjectsAPI = async () => {
   return await res.json();
 };
 
-export const scheduleInternalAPI = async data => {
-  const res = await fetch(`${serverUrl}/projects/schedule/internal`, {
+export const scheduleInternalAutoAPI = async data => {
+  const res = await fetch(`${serverUrl}/projects/schedule/internal/auto`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(data)
+  });
+  return await res.json();
+};
+export const scheduleInternalManualAPI = async data => {
+  const res = await fetch(`${serverUrl}/projects/schedule/internal/manual`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
@@ -205,6 +217,17 @@ export const fetchExaminersAPI = async () => {
 };
 export const fetchSupervisorsAPI = async () => {
   const res = await fetch(`${serverUrl}/projects/fetch/supervisor`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    }
+  });
+  return await res.json();
+};
+export const fetchInternalExaminersAPI = async (id) => {
+  const res = await fetch(`${serverUrl}/projects/fetch/internalExaminers?supervisorId=${id}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

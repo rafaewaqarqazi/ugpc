@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {
-  Chip,
-  Dialog, DialogActions, DialogContent, DialogTitle,
-  IconButton, LinearProgress, ListItemIcon, Menu, MenuItem,
+  Avatar,
+  Chip, Collapse,
+  Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, FormControlLabel, FormLabel,
+  IconButton, LinearProgress, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Menu, MenuItem, Switch,
   Table,
   TableBody,
   TableCell,
@@ -17,17 +18,24 @@ import {getRandomColor} from "../../src/material-styles/randomColors";
 import {
   Close,
   MoreVertOutlined,
-  AccessTimeOutlined,
+  AccessTimeOutlined, ExpandLess, ExpandMore,
 } from "@material-ui/icons";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import Button from "@material-ui/core/Button";
 import SchedulingDialogContent from "../coordinator/presentations/SchedulingDialogContent";
-import {scheduleInternalAPI} from "../../utils/apiCalls/projects";
+import {
+  fetchInternalExaminersAPI,
+  scheduleInternalAutoAPI,
+  scheduleInternalManualAPI
+} from "../../utils/apiCalls/projects";
 import {changeFinalDocumentationStatusAPI} from "../../utils/apiCalls/users";
 import ErrorSnackBar from "../snakbars/ErrorSnackBar";
 import {getGrade} from "../../utils";
 import {getEvaluationListBorderColor, getGradeChipColor} from "../../src/material-styles/visionDocsListBorderColor";
 import {useDialogStyles} from "../../src/material-styles/dialogStyles";
+import CircularLoading from "../loading/CircularLoading";
+import {useDocDetailsDialogStyles} from "../../src/material-styles/docDetailsDialogStyles";
+import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
 
 const useStyles = makeStyles(theme => ({
   tableRow: {
@@ -50,6 +58,8 @@ const useStyles = makeStyles(theme => ({
 }));
 const ListEvaluationProjects = ({filter, fetchData}) => {
   const projectsClasses = useStyles();
+  const detailsClasses = useDocDetailsDialogStyles();
+  const classes = useListContainerStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [venue, setVenue] = useState('Seminar Room');
   const [selectedDate, handleDateChange] = useState(new Date());
@@ -66,42 +76,103 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
     supervisorId: ''
   });
   const [openDialog, setOpenDialog] = useState(false);
-  const [loading, setLoading] = useState(false);
-
+  const [autoAssignInternal, setAutoAssignInternal] = useState(true);
+  const [internals, setInternals] = useState([]);
+  const [selectedInternalId, setSelectedInternalId] = useState('');
+  const [openInternalsList, setOpenInternalsList] = useState(true);
+  const [error, setError] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState();
+  const [dialog, setDialog] = useState({
+    details: false,
+    InternalAssign: false
+  });
+  const [loading, setLoading] = useState({
+    main: true,
+    internals: true,
+    confirm: false
+  });
   const handleOpenDialog = () => {
     setOpenDialog(true)
   };
+  const handleIntnernalsSwitch = event => {
+    setAutoAssignInternal(event.target.checked);
+    if (!event.target.checked) {
+      setLoading({...loading, internals: true});
+      fetchInternalExaminersAPI(data.supervisorId)
+          .then(result => {
+            setLoading({...loading, internals: false});
+            setInternals(result);
+          })
+    }
+  };
+  const handleListItemClick = index => {
+    setError(false);
+    setSelectedIndex(index);
+    setSelectedInternalId(internals[index]._id)
+  };
   const handleInternalSchedule = () => {
-    setLoading(true);
-    const sData = {
-      venue,
-      selectedDate,
-      ...data
+    const statusData = {
+      projectId: data.projectId,
+      status: 'Internal Scheduled',
+      documentId
     };
-    scheduleInternalAPI(sData)
-      .then(result => {
-        if (result.error) {
-          setLoading(false);
+    if (!autoAssignInternal) {
+      if (selectedInternalId === '') {
+        setError(true);
+        return
+      } else {
+        setLoading(true);
+        const sData = {
+          venue,
+          selectedDate,
+          examinerId: selectedInternalId,
+          ...data
+        };
+        scheduleInternalManualAPI(sData)
+            .then(result => {
+              if (result.error) {
+                setLoading(false);
 
-          setOpenDialog(false);
-          setOpenError(true);
-          return
-        } else {
-          const statusData = {
-            projectId: data.projectId,
-            status: 'Internal Scheduled',
-            documentId
-          };
-          changeFinalDocumentationStatusAPI(statusData)
-            .then(res => {
+                setOpenDialog(false);
+                setOpenError(true);
+                return
+              } else {
+                changeFinalDocumentationStatusAPI(statusData)
+                    .then(res => {
+                      setLoading(false);
+
+                      setOpenDialog(false);
+                      fetchData();
+                    })
+              }
+            })
+      }
+    } else {
+      const sData = {
+        venue,
+        selectedDate,
+        ...data
+      };
+      scheduleInternalAutoAPI(sData)
+          .then(result => {
+            if (result.error) {
               setLoading(false);
 
               setOpenDialog(false);
-              fetchData();
-            })
-        }
+              setOpenError(true);
+              return
+            } else {
+              changeFinalDocumentationStatusAPI(statusData)
+                  .then(res => {
+                    setLoading(false);
 
-      })
+                    setOpenDialog(false);
+                    fetchData();
+                  })
+            }
+
+          })
+    }
   };
   const handleClickActionMenu = (status, projectId, supervisorId, filename, originalname, title, docId, event) => {
     setLoading(false);
@@ -234,7 +305,6 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
       {/*Internal Dialog*/}
       <Dialog fullWidth maxWidth='sm' open={openDialog} onClose={() => setOpenDialog(false)}
               classes={{paper: dialogClasses.root}}>
-        {loading && <LinearProgress/>}
         <DialogTitle style={{display: 'flex', flexDirection: 'row'}} disableTypography>
           <Typography variant='h6' noWrap style={{flexGrow: 1}}>Schedule Internal</Typography>
           <Tooltip title='Close' placement="top" TransitionComponent={Zoom}>
@@ -250,14 +320,89 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
             selectedDate={selectedDate}
             setVenue={setVenue}
           />
-          <Typography variant='subtitle2' display='inline'>Note: </Typography>
-          <Typography
-            variant='subtitle1'
-            color='textSecondary'
-            display='inline'
-          >
-            Examiner Will be assigned Automatically based on his load
-          </Typography>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Auto Assign Internal Examiner?</FormLabel>
+            <FormControlLabel
+                control={<Switch checked={autoAssignInternal} onChange={handleIntnernalsSwitch}
+                                 value={autoAssignInternal ? 'Yes' : 'No'}/>}
+                label={autoAssignInternal ? 'Yes' : 'No'}
+            />
+          </FormControl>
+          {
+            !autoAssignInternal &&
+            <div>
+              {
+                loading.internals ? <CircularLoading/> :
+                    <div>
+                      {
+                        error && <Typography variant='caption' color='error'>Please Select Examiner!</Typography>
+                      }
+                      <List>
+                        <ListItem button onClick={() => setOpenInternalsList(!openInternalsList)}>
+                          <ListItemText primary="Choose Supervisor"/>
+                          {openInternalsList ? <ExpandLess/> : <ExpandMore/>}
+                        </ListItem>
+                        <Collapse in={openInternalsList} timeout="auto" unmountOnExit>
+                          <List component="div" disablePadding className={classes.root}>
+                            {
+                              internals.length === 0 ?
+                                  <ListItem>
+                                    <Typography variant='h5' style={{textAlign: "center"}}>No Examiner Found</Typography>
+                                  </ListItem>
+                                  :
+                                  internals.map((internal, index) => (
+                                      <Fragment key={index}>
+                                        <ListItem alignItems="flex-start"
+                                                  selected={selectedIndex === index}
+                                                  onClick={() => handleListItemClick(index)}
+                                        >
+                                          <ListItemAvatar>
+                                            <Avatar
+                                                className={detailsClasses.avatar}>{internal.name.charAt(0)}</Avatar>
+                                          </ListItemAvatar>
+                                          <ListItemText
+                                              primary={internal.name}
+                                              secondary={
+                                                <React.Fragment>
+                                                  <Typography
+                                                      component="span"
+                                                      variant="overline"
+                                                      color="textPrimary"
+                                                  >
+                                                    {internal.ugpc_details.designation || 'Not Provided'}
+                                                  </Typography>
+
+                                                  {` — ${internal.email}`}
+                                                </React.Fragment>
+                                              }
+                                          />
+                                          <ListItemText
+                                              primary={
+                                                <Typography variant='subtitle2'>Projects Count</Typography>
+                                              }
+                                              secondary={
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    color="textPrimary"
+                                                    style={{textAlign: 'center'}}
+                                                >
+                                                  {internal.projectsCount}
+                                                </Typography>
+
+                                              }
+                                          />
+                                        </ListItem>
+                                        <Divider variant="inset" component="li"/>
+                                      </Fragment>
+                                  ))}
+
+                          </List>
+                        </Collapse>
+                      </List>
+                    </div>
+              }
+            </div>
+          }
 
         </DialogContent>
         <DialogActions>

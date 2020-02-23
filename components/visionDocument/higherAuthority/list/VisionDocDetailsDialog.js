@@ -111,7 +111,6 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
 
   }, []);
   const handleMarksChange = event => {
-    console.log()
     if (event.target.value.trim() === '' || !event.target.value.match(/^[0-9]*$/)) {
       setSaveButton(true)
     } else {
