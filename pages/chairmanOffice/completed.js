@@ -222,7 +222,7 @@ const Completed = () => {
                                 <TableCell>{project.students[0].student_details.batch}</TableCell>
 
                                 <TableCell>{project.documentation.finalDocumentation.status}</TableCell>
-                                <Tooltip title={project.details.supervisor.supervisor_details.position} placement="top"
+                                <Tooltip title={project.details.supervisor.supervisor_details ? project.details.supervisor.supervisor_details.position : 'Not Provided'} placement="top"
                                          TransitionComponent={Zoom}>
                                   <TableCell
                                     style={{textTransform: 'capitalize'}}>{project.details.supervisor.name}</TableCell>
@@ -366,7 +366,7 @@ const Completed = () => {
                       {details.details.supervisor.name}
                     </Typography>
                     <Typography variant='caption' color='textSecondary' className={classes.wrapText}>
-                      {details.details.supervisor.supervisor_details.position}
+                      {details.details.supervisor.supervisor_details ? details.details.supervisor.supervisor_details.position : 'Not Provided'}
                     </Typography>
                   </Container>
                 </div>

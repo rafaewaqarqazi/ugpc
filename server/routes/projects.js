@@ -52,10 +52,11 @@ router.get('/fetch/assignedForEvaluation/:userId', requireSignin, fetchAssignedF
 router.get('/fetch/forEvaluation', requireSignin, fetchForEvaluation);
 router.get('/fetch/supervisor', requireSignin, isUGPCAuth, fetchSupervisors);
 router.get('/fetch/internalExaminers', requireSignin, isUGPCAuth, fetchInternalExaminers);
+
+router.put('/assign/external/auto', requireSignin, isUGPCAuth, assignExternalAuto);
+router.put('/assign/external/manual', requireSignin, isUGPCAuth, assignExternalManual);
+router.get('/fetch/externalExaminers', requireSignin, isUGPCAuth, fetchExternalExaminers);
 //Chairman Office
-router.put('/assign/external/auto', requireSignin, isChairmanOfficeAuth, assignExternalAuto);
-router.put('/assign/external/manual', requireSignin, isChairmanOfficeAuth, assignExternalManual);
-router.get('/fetch/externalExaminers', requireSignin, isChairmanOfficeAuth, fetchExternalExaminers);
 router.get('/fetch/forApprovalLetter', requireSignin, isChairmanOfficeAuth, fetchForApprovalLetter);
 router.get('/fetch/completed', requireSignin, isChairmanOfficeAuth, fetchCompleted);
 router.get('/fetch/forExternalLetter', requireSignin, isChairmanOfficeAuth, fetchForExternalLetter);

@@ -206,7 +206,7 @@ const SupervisorFinalDocumentation = () => {
       });
   };
   const handleAddMarks = () => {
-    if (parseInt(marks.marks) < 0 || parseInt(marks.marks) > marksDistribution) {
+    if (parseInt(marks.marks) < 0 || parseInt(marks.marks) > marksDistribution || marks.marks === '') {
       setMarks({...marks, error: true});
       return;
     }

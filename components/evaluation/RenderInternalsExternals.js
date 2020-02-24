@@ -384,14 +384,16 @@ const RenderInternalsExternals = ({projects, marks, type, fetchData}) => {
                     <TableRow key={index} className={tableClasses.tableRow}>
                       <TableCell align="left">{project.documentation.visionDocument.title}</TableCell>
                       <TableCell align="left">{project.department}</TableCell>
-                      <TableCell style={{display: 'flex'}}>
-                        {
-                          project.students.map((student, index) =>
-                            <UserAvatarComponent user={student} key={index}/>
-                          )
-                        }
+                      <TableCell >
+                        <div style={{display: 'flex'}}>
+                          {
+                            project.students.map((student, index) =>
+                              <UserAvatarComponent user={student} key={index}/>
+                            )
+                          }
+                        </div>
                       </TableCell>
-                      <Tooltip title={project.details.supervisor.supervisor_details.position} placement="top"
+                      <Tooltip title={project.details.supervisor.supervisor_details ? project.details.supervisor.supervisor_details.position : 'Not Provided'} placement="top"
                                TransitionComponent={Zoom}>
                         <TableCell align="left"
                                    style={{textTransform: 'capitalize'}}>{project.details.supervisor.name}</TableCell>
@@ -528,6 +530,8 @@ const RenderInternalsExternals = ({projects, marks, type, fetchData}) => {
             margin='dense'
             variant='outlined'
             name='marks'
+            type='number'
+            required
             value={data.marks}
             onChange={handleChangeMarksObtained}
             error={error.show}

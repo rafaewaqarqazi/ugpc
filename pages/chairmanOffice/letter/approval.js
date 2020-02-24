@@ -223,7 +223,7 @@ const Approval = () => {
                                     )
                                   }
                                 </TableCell>
-                                <Tooltip title={project.details.supervisor.supervisor_details.position} placement="top"
+                                <Tooltip title={project.details.supervisor.supervisor_details ? project.details.supervisor.supervisor_details.position : 'Not Provided'} placement="top"
                                          TransitionComponent={Zoom}>
                                   <TableCell align="left"
                                              style={{textTransform: 'capitalize'}}>{project.details.supervisor.name}</TableCell>

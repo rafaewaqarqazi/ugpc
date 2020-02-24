@@ -51,12 +51,6 @@ const Externals = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [filter, setFilter] = useState([]);
   const [details, setDetails] = useState({});
-  const [autoAssignExternal, setAutoAssignExternal] = useState(true);
-  const [examiners, setExaminers] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState();
-  const [selectedExaminerId, setSelectedExaminerId] = useState('');
-  const [openExaminersList, setOpenExaminersList] = useState(true);
-  const [error, setError] = useState(false);
   const [success, setSuccess] = useState({
     open: false,
     message: ''
@@ -142,132 +136,6 @@ const Externals = () => {
   const handleDetails = details => {
     setDetails(details);
     setDialog({...dialog, details: true});
-  };
-  const handleExternalAssign = () => {
-    if (!autoAssignExternal) {
-      if (selectedExaminerId === '') {
-        setError(true);
-        return
-      } else {
-        setLoading({
-          ...loading,
-          confirm: true
-        });
-        const data = {
-          projectId: details._id,
-          originalname: details.documentation.finalDocumentation.document.originalname,
-          filename: details.documentation.finalDocumentation.document.filename,
-          title: details.documentation.visionDocument.title,
-          examinerId: selectedExaminerId
-        };
-        assignExternalManualAPI(data)
-          .then(result => {
-            if (result.error) {
-              setLoading({
-                ...loading,
-                confirm: false
-              });
-              setResError({
-                open: true,
-                message: result.error
-              });
-              return;
-            } else {
-              const statusData = {
-                projectId: details._id,
-                status: 'External Assigned',
-                documentId: details.documentation.finalDocumentation._id
-              };
-              changeFinalDocumentationStatusAPI(statusData)
-                .then(res => {
-                  setLoading({
-                    ...loading,
-                    internal: false
-                  });
-
-                  setDialog({
-                    ...dialog,
-                    externalAssign: false,
-                    details: false
-                  });
-                  setSuccess({
-                    open: true,
-                    message: 'Success'
-                  });
-                })
-            }
-
-          })
-      }
-    } else {
-      setLoading({
-        ...loading,
-        confirm: true
-      });
-      const data = {
-        projectId: details._id,
-        originalname: details.documentation.finalDocumentation.document.originalname,
-        filename: details.documentation.finalDocumentation.document.filename,
-        title: details.documentation.visionDocument.title,
-        supervisorId: details.details.supervisor._id
-      };
-
-
-      assignExternalAutoAPI(data)
-        .then(result => {
-          if (result.error) {
-            setLoading({
-              ...loading,
-              confirm: false
-            });
-            setResError({
-              open: true,
-              message: result.error
-            });
-            return
-          } else {
-            const statusData = {
-              projectId: details._id,
-              status: 'External Assigned',
-              documentId: details.documentation.finalDocumentation._id
-            };
-            changeFinalDocumentationStatusAPI(statusData)
-              .then(res => {
-                setLoading({
-                  ...loading,
-                  internal: false
-                });
-
-                setDialog({
-                  ...dialog,
-                  externalAssign: false,
-                  details: false
-                });
-                setSuccess({
-                  open: true,
-                  message: 'Success'
-                });
-              })
-          }
-
-        })
-    }
-  };
-  const handleExternalSwitch = event => {
-    setAutoAssignExternal(event.target.checked);
-    if (!event.target.checked) {
-      setLoading({...loading, examiners: true});
-      fetchExaminersAPI()
-        .then(result => {
-          setLoading({...loading, examiners: false});
-          setExaminers(result);
-        })
-    }
-  };
-  const handleListItemClick = index => {
-    setError(false);
-    setSelectedIndex(index);
-    setSelectedExaminerId(examiners[index]._id)
   };
   const handleSuccess = () => {
     setSuccess({open: false, message: ''});
@@ -389,7 +257,7 @@ const Externals = () => {
                                 <TableCell>{project.students[0].student_details.batch}</TableCell>
 
                                 <TableCell>{project.documentation.finalDocumentation.status}</TableCell>
-                                <Tooltip title={project.details.supervisor.supervisor_details.position} placement="top"
+                                <Tooltip title={project.details.supervisor.supervisor_details ? project.details.supervisor.supervisor_details.position : 'Not Provided'} placement="top"
                                          TransitionComponent={Zoom}>
                                   <TableCell
                                     style={{textTransform: 'capitalize'}}>{project.details.supervisor.name}</TableCell>
@@ -495,8 +363,6 @@ const Externals = () => {
                                           className={classes.wrapText}>
                                 Not Assigned
                               </Typography>
-                              <Button variant='outlined' size='small' color='primary'
-                                      onClick={() => setDialog({...dialog, externalAssign: true})}>Assign Now</Button>
                             </div>
 
                         }
@@ -527,109 +393,6 @@ const Externals = () => {
           </DialogActions>
         </Dialog>
       }
-      <Dialog open={dialog.externalAssign} onClose={() => setDialog({...dialog, externalAssign: false})} fullWidth
-              maxWidth='sm' classes={{paper: dialogClasses.root}}>
-        {loading.confirm && <LinearProgress/>}
-        <DialogTitle style={{display: 'flex', flexDirection: 'row'}} disableTypography>
-          <Typography variant='h6' noWrap style={{flexGrow: 1}}>Assign External Examiner</Typography>
-          <Tooltip title='Close' placement="top" TransitionComponent={Zoom}>
-            <IconButton size='small' onClick={() => setDialog({...dialog, externalAssign: false})}>
-              <Close/>
-            </IconButton>
-          </Tooltip>
-        </DialogTitle>
-        <DialogContent dividers>
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Auto Assign External Examiner?</FormLabel>
-            <FormControlLabel
-              control={<Switch checked={autoAssignExternal} onChange={handleExternalSwitch}
-                               value={autoAssignExternal ? 'Yes' : 'No'}/>}
-              label={autoAssignExternal ? 'Yes' : 'No'}
-            />
-          </FormControl>
-          {
-            !autoAssignExternal &&
-            <div>
-              {
-                loading.examiners ? <CircularLoading/> :
-                  <div>
-                    {
-                      error && <Typography variant='caption' color='error'>Please Select Examiner!</Typography>
-                    }
-                    <List>
-                      <ListItem button onClick={() => setOpenExaminersList(!openExaminersList)}>
-                        <ListItemText primary="Choose Examiner"/>
-                        {openExaminersList ? <ExpandLess/> : <ExpandMore/>}
-                      </ListItem>
-                      <Collapse in={openExaminersList} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding className={classes.root}>
-                          {
-                            examiners.length === 0 ?
-                              <ListItem>
-                                <Typography variant='h5' style={{textAlign: "center"}}>No Examiner Found</Typography>
-                              </ListItem>
-                              :
-                              examiners.map((examiner, index) => (
-                                <Fragment key={index}>
-                                  <ListItem alignItems="flex-start"
-                                            selected={selectedIndex === index}
-                                            onClick={() => handleListItemClick(index)}
-                                  >
-                                    <ListItemAvatar>
-                                      <Avatar className={detailsClasses.avatar}>{examiner.name.charAt(0)}</Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                      primary={examiner.name}
-                                      secondary={
-                                        <React.Fragment>
-                                          <Typography
-                                            component="span"
-                                            variant="overline"
-                                            className={classes.inline}
-                                            color="textPrimary"
-                                          >
-                                            {examiner.ugpc_details.designation}
-                                          </Typography>
-
-                                          {` — ${examiner.email}`}
-                                        </React.Fragment>
-                                      }
-                                    />
-                                    <ListItemText
-                                      primary={
-                                        <Typography variant='subtitle2'>Projects Count</Typography>
-                                      }
-                                      secondary={
-                                        <Typography
-                                          variant="subtitle1"
-                                          color="textPrimary"
-                                        >
-                                          {examiner.projectsCount}
-                                        </Typography>
-
-                                      }
-                                    />
-                                  </ListItem>
-                                  <Divider variant="inset" component="li"/>
-                                </Fragment>
-                              ))}
-
-                        </List>
-                      </Collapse>
-                    </List>
-                  </div>
-              }
-            </div>
-
-
-          }
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialog({...dialog, externalAssign: false})}>Cancel</Button>
-          <Button onClick={handleExternalAssign} variant='outlined' color='secondary'>Confirm</Button>
-        </DialogActions>
-      </Dialog>
-
     </ChairmanOfficeLayout>
   );
 };

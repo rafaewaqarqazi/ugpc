@@ -136,7 +136,7 @@ const Index = () => {
                 <Typography variant='h6'>Rafae Waqar Qazi</Typography>
                 <Typography variant='subtitle2' color='textSecondary'>Full Stack Lead</Typography>
                 <Typography variant='body2' color='textSecondary'>Rafae is a Software Engineer and Lead Full Stack
-                  Developer in this project. With expertise in Mongdb, Node.js, express, React, Next.js </Typography>
+                  Developer in this project. With expertise in Node.js, express, React, Next.js, Mongodb, MySql, ElasticSearch, Neo4j and many more </Typography>
               </div>
             </Grid>
             <Grid item xs={12} sm={4}>

@@ -452,7 +452,7 @@ exports.scheduleInternalAuto = async (req, res) => {
     const examiner = await _.sample(examiners[0].details);
 
     //Assigning Supervisor-Updating Project
-    const project = await Projects.findOneAndUpdate(projectId,
+    const project = await Projects.findOneAndUpdate({_id: mongoose.Types.ObjectId(projectId)},
       {
         "details.internal.examiner": examiner._id,
         "details.internal.date": selectedDate,
@@ -521,9 +521,8 @@ exports.scheduleInternalAuto = async (req, res) => {
 exports.scheduleInternalManual = async (req, res) => {
   try {
     const {venue, selectedDate, projectId, originalname, filename, title, examinerId} = req.body;
-
     //Assigning Examiner-Updating Project
-    const project = await Projects.findOneAndUpdate(projectId,
+    const project = await Projects.findOneAndUpdate({_id: mongoose.Types.ObjectId(projectId)},
       {
         "details.internal.examiner": examinerId,
         "details.internal.date": selectedDate,
@@ -633,7 +632,7 @@ exports.scheduleExternalDate = async (req, res) => {
     const {venue, selectedDate, projectId} = req.body;
 
     //Assigning ExternalDate Project
-    const project = await Projects.findOneAndUpdate(projectId,
+    const project = await Projects.findOneAndUpdate({_id: mongoose.Types.ObjectId(projectId)},
       {
         "details.external.date": selectedDate,
         "details.external.venue": venue
@@ -715,7 +714,7 @@ exports.assignExternalAuto = async (req, res) => {
 
 
       //Assigning ExternalExaminer-Updating Project
-      const project = await Projects.findOneAndUpdate(projectId,
+      const project = await Projects.findOneAndUpdate({_id: mongoose.Types.ObjectId(projectId)},
         {
           "details.external.examiner": examiner._id
         },
@@ -779,7 +778,7 @@ exports.assignExternalAuto = async (req, res) => {
 };
 exports.fetchExternalExaminers = async (req, res) => {
   try {
-    const {projectId, supervisorId} = req.body;
+    const {projectId, supervisorId} = req.query;
     //Finding Examiner with minimum Numbers of Projects
     const examiners = await Users.aggregate([
       {
@@ -821,7 +820,7 @@ exports.assignExternalManual = async (req, res) => {
     const examiner = await Users.findOne({"_id": examinerId})
       .select('name email -_id');
     //Assigning ExternalExaminer-Updating Project
-    const project = await Projects.findOneAndUpdate(projectId,
+    const project = await Projects.findOneAndUpdate({_id: mongoose.Types.ObjectId(projectId)},
       {
         "details.external.examiner": examinerId
       },
@@ -997,7 +996,7 @@ exports.fetchForExternalLetter = async (req, res) => {
       {$unwind: "$documentation.finalDocumentation"},
       {
         $match: {
-          "documentation.finalDocumentation.status": {$in: ['Available for External', 'External Assigned', 'External Scheduled']}
+          "documentation.finalDocumentation.status": {$nin: ['Available for Internal', 'Completed', 'Internal Scheduled']}
         }
       },
       {

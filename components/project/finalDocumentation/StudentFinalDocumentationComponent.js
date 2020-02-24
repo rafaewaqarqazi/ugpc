@@ -79,9 +79,9 @@ const StudentFinalDocumentationComponent = () => {
       {
 
         projectContext.project.project.documentation.visionDocument.filter(doc => doc.status === 'Approved' || doc.status === 'Approved With Changes').length > 0 &&
-        (projectContext.project.project.phase === 'Documentation' ||
-          projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved' || fDoc.status === 'ReSubmit').length > 0 ||
-          !moment(Date.now()).isBefore(projectContext.project.project.details.estimatedDeadline)) &&
+        // (projectContext.project.project.phase === 'Documentation' ||
+        //   projectContext.project.project.documentation.finalDocumentation.filter(fDoc => fDoc.status === 'NotApproved' || fDoc.status === 'ReSubmit').length > 0 ||
+        //   !moment(Date.now()).isBefore(projectContext.project.project.details.estimatedDeadline)) &&
         <div className={classes.listHeader}>
           <Button variant='outlined' color='primary' onClick={() => setOpenUploadDialog(true)}>
             Upload New Document

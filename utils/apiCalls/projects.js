@@ -204,8 +204,8 @@ export const fetchCompletedProjectsAPI = async () => {
   return await res.json();
 };
 
-export const fetchExaminersAPI = async () => {
-  const res = await fetch(`${serverUrl}/projects/fetch/externalExaminers`, {
+export const fetchExaminersAPI = async (projectId, supervisorId) => {
+  const res = await fetch(`${serverUrl}/projects/fetch/externalExaminers?supervisorId=${supervisorId}&projectId=${projectId}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

@@ -24,6 +24,8 @@ import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import Button from "@material-ui/core/Button";
 import SchedulingDialogContent from "../coordinator/presentations/SchedulingDialogContent";
 import {
+  assignExternalAutoAPI,
+  assignExternalManualAPI, fetchExaminersAPI,
   fetchInternalExaminersAPI,
   scheduleInternalAutoAPI,
   scheduleInternalManualAPI
@@ -36,6 +38,8 @@ import {useDialogStyles} from "../../src/material-styles/dialogStyles";
 import CircularLoading from "../loading/CircularLoading";
 import {useDocDetailsDialogStyles} from "../../src/material-styles/docDetailsDialogStyles";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
+import DialogTitleComponent from "../DialogTitleComponent";
+import SuccessSnackBar from "../snakbars/SuccessSnackBar";
 
 const useStyles = makeStyles(theme => ({
   tableRow: {
@@ -80,16 +84,30 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
   const [internals, setInternals] = useState([]);
   const [selectedInternalId, setSelectedInternalId] = useState('');
   const [openInternalsList, setOpenInternalsList] = useState(true);
-  const [error, setError] = useState(false);
+  const [autoAssignExternal, setAutoAssignExternal] = useState(true);
+  const [examiners, setExaminers] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState();
+  const [selectedExaminerId, setSelectedExaminerId] = useState('');
+  const [openExaminersList, setOpenExaminersList] = useState(true);
+  const [error, setError] = useState(false);
   const [dialog, setDialog] = useState({
     details: false,
-    InternalAssign: false
+    InternalAssign: false,
+    externalAssign: false
   });
   const [loading, setLoading] = useState({
     main: true,
     internals: true,
-    confirm: false
+    confirm: false,
+    externals: false
+  });
+  const [resError, setResError] = useState({
+    open: false,
+    message: ''
+  });
+  const [success, setSuccess] = useState({
+    open: false,
+    message: ''
   });
   const handleOpenDialog = () => {
     setOpenDialog(true)
@@ -187,9 +205,141 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
     setDocumentId(docId);
     setAnchorEl(event.currentTarget);
   }
+  const handleExternalAssign = () => {
+    if (!autoAssignExternal) {
+      if (selectedExaminerId === '') {
+        setError(true);
+        return
+      } else {
+        setLoading({
+          ...loading,
+          confirm: true
+        });
+        const sdata = {
+          projectId: data.projectId,
+          originalname: data.originalname,
+          filename: data.filename,
+          title: data.title,
+          examinerId: selectedExaminerId,
+
+        };
+        assignExternalManualAPI(sdata)
+          .then(result => {
+            if (result.error) {
+              setLoading({
+                ...loading,
+                confirm: false
+              });
+              setResError({
+                open: true,
+                message: result.error
+              });
+              return;
+            } else {
+              const statusData = {
+                projectId: data.projectId,
+                status: 'External Assigned',
+                documentId
+              };
+              changeFinalDocumentationStatusAPI(statusData)
+                .then(res => {
+                  setLoading({
+                    ...loading,
+                    internal: false
+                  });
+
+                  setDialog({
+                    ...dialog,
+                    externalAssign: false,
+                    details: false
+                  });
+                  setSuccess({
+                    open: true,
+                    message: 'Success'
+                  });
+                })
+            }
+
+          })
+      }
+    } else {
+      setLoading({
+        ...loading,
+        confirm: true
+      });
+      const sdata = {
+        projectId: data.projectId,
+        originalname: data.originalname,
+        filename: data.filename,
+        title: data.title,
+        supervisorId: data.supervisorId
+      };
+      assignExternalAutoAPI(sdata)
+        .then(result => {
+          if (result.error) {
+            setLoading({
+              ...loading,
+              confirm: false
+            });
+            setResError({
+              open: true,
+              message: result.error
+            });
+            return
+          } else {
+            const statusData = {
+              projectId: data.projectId,
+              status: 'External Assigned',
+              documentId
+            };
+            changeFinalDocumentationStatusAPI(statusData)
+              .then(res => {
+                setLoading({
+                  ...loading,
+                  internal: false
+                });
+
+                setDialog({
+                  ...dialog,
+                  externalAssign: false,
+                  details: false
+                });
+                setSuccess({
+                  open: true,
+                  message: 'Success'
+                });
+              })
+          }
+
+        })
+    }
+  };
+  const handleSuccess = () => {
+    setSuccess({open: false, message: ''});
+    fetchData();
+  };
+  const handleExternalSwitch = event => {
+    setAutoAssignExternal(event.target.checked);
+    if (!event.target.checked) {
+      setLoading({...loading, examiners: true});
+      fetchExaminersAPI(data.projectId, data.supervisorId)
+        .then(result => {
+          setLoading({...loading, examiners: false});
+          setExaminers(result);
+        })
+    }
+  };
+  const handleListItemExternalClick = index => {
+    setError(false);
+    setSelectedIndex(index);
+    setSelectedExaminerId(examiners[index]._id)
+  };
   return (
     <div>
+      <SuccessSnackBar open={success.open} message={success.message} handleClose={handleSuccess}/>
       <ErrorSnackBar open={openError} handleSnackBar={() => setOpenError(false)} message={'Examiner Not Found!'}/>
+      <ErrorSnackBar open={resError.open} message={resError.message}
+                     handleSnackBar={() => setResError({open: false, message: ''})}/>
       {
         <div className={projectsClasses.tableWrapper}>
           <Table size='small'>
@@ -227,7 +377,7 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
                               style={getEvaluationListBorderColor(project.documentation.finalDocumentation.status)}>
                       <TableCell align="left">{project.documentation.visionDocument.title}</TableCell>
                       <TableCell>{project.department}</TableCell>
-                      <Tooltip title={project.details.supervisor.supervisor_details.position} placement="top"
+                      <Tooltip title={(project.details.supervisor.supervisor_details && project.details.supervisor.supervisor_details.position) || 'Not Provided'} placement="top"
                                TransitionComponent={Zoom}>
                         <TableCell align="left"
                                    style={{textTransform: 'capitalize'}}>{project.details.supervisor.name}</TableCell>
@@ -277,6 +427,17 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
                                 </ListItemIcon>
                                 <Typography variant="inherit" noWrap>
                                   Schedule Internal
+                                </Typography>
+                              </MenuItem>
+                            }
+                            {
+                              data.status === 'Available for External' &&
+                              <MenuItem onClick={() => setDialog({...dialog, externalAssign: true})}>
+                                <ListItemIcon>
+                                  <AccessTimeOutlined/>
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap>
+                                  Assign External
                                 </Typography>
                               </MenuItem>
                             }
@@ -412,6 +573,199 @@ const ListEvaluationProjects = ({filter, fetchData}) => {
           </DialogActions>
         </DialogActions>
       </Dialog>
+
+      {/* External Assigning */}
+      <Dialog open={dialog.externalAssign} onClose={() => setDialog({...dialog, externalAssign: false})} fullWidth
+              maxWidth='sm' classes={{paper: dialogClasses.root}}>
+        {loading.confirm && <LinearProgress/>}
+        <DialogTitleComponent title={'External Assign'} handleClose={() => setDialog({...dialog, externalAssign: false})}/>
+        <DialogContent dividers>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Auto Assign External Examiner?</FormLabel>
+            <FormControlLabel
+              control={<Switch checked={autoAssignExternal} onChange={handleExternalSwitch}
+                               value={autoAssignExternal ? 'Yes' : 'No'}/>}
+              label={autoAssignExternal ? 'Yes' : 'No'}
+            />
+          </FormControl>
+          {
+            !autoAssignExternal &&
+            <div>
+              {
+                loading.examiners ? <CircularLoading/> :
+                  <div>
+                    {
+                      error && <Typography variant='caption' color='error'>Please Select Examiner!</Typography>
+                    }
+                    <List>
+                      <ListItem button onClick={() => setOpenExaminersList(!openExaminersList)}>
+                        <ListItemText primary="Choose Examiner"/>
+                        {openExaminersList ? <ExpandLess/> : <ExpandMore/>}
+                      </ListItem>
+                      <Collapse in={openExaminersList} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding className={classes.root}>
+                          {
+                            examiners.length === 0 ?
+                              <ListItem>
+                                <Typography variant='h5' style={{textAlign: "center"}}>No Examiner Found</Typography>
+                              </ListItem>
+                              :
+                              examiners.map((examiner, index) => (
+                                <Fragment key={index}>
+                                  <ListItem alignItems="flex-start"
+                                            selected={selectedIndex === index}
+                                            onClick={() => handleListItemClick(index)}
+                                  >
+                                    <ListItemAvatar>
+                                      <Avatar className={detailsClasses.avatar}>{examiner.name.charAt(0)}</Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                      primary={examiner.name}
+                                      secondary={
+                                        <React.Fragment>
+                                          <Typography
+                                            component="span"
+                                            variant="overline"
+                                            color="textPrimary"
+                                          >
+                                            {examiner.ugpc_details.designation}
+                                          </Typography>
+
+                                          {` — ${examiner.email}`}
+                                        </React.Fragment>
+                                      }
+                                    />
+                                    <ListItemText
+                                      primary={
+                                        <Typography variant='subtitle2'>Projects Count</Typography>
+                                      }
+                                      secondary={
+                                        <Typography
+                                          variant="subtitle1"
+                                          color="textPrimary"
+                                        >
+                                          {examiner.projectsCount}
+                                        </Typography>
+
+                                      }
+                                    />
+                                  </ListItem>
+                                  <Divider variant="inset" component="li"/>
+                                </Fragment>
+                              ))}
+
+                        </List>
+                      </Collapse>
+                    </List>
+                  </div>
+              }
+            </div>
+          }
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialog({...dialog, externalAssign: false})}>Cancel</Button>
+          <Button onClick={handleExternalAssign} variant='outlined' color='secondary'>Confirm</Button>
+        </DialogActions>
+      </Dialog><Dialog open={dialog.externalAssign} onClose={() => setDialog({...dialog, externalAssign: false})} fullWidth
+                       maxWidth='sm' classes={{paper: dialogClasses.root}}>
+      {loading.confirm && <LinearProgress/>}
+      <DialogTitle style={{display: 'flex', flexDirection: 'row'}} disableTypography>
+        <Typography variant='h6' noWrap style={{flexGrow: 1}}>Assign External Examiner</Typography>
+        <Tooltip title='Close' placement="top" TransitionComponent={Zoom}>
+          <IconButton size='small' onClick={() => setDialog({...dialog, externalAssign: false})}>
+            <Close/>
+          </IconButton>
+        </Tooltip>
+      </DialogTitle>
+      <DialogContent dividers>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Auto Assign External Examiner?</FormLabel>
+          <FormControlLabel
+            control={<Switch checked={autoAssignExternal} onChange={handleExternalSwitch}
+                             value={autoAssignExternal ? 'Yes' : 'No'}/>}
+            label={autoAssignExternal ? 'Yes' : 'No'}
+          />
+        </FormControl>
+        {
+          !autoAssignExternal &&
+          <div>
+            {
+              loading.examiners ? <CircularLoading/> :
+                <div>
+                  {
+                    error && <Typography variant='caption' color='error'>Please Select Examiner!</Typography>
+                  }
+                  <List>
+                    <ListItem button onClick={() => setOpenExaminersList(!openExaminersList)}>
+                      <ListItemText primary="Choose Examiner"/>
+                      {openExaminersList ? <ExpandLess/> : <ExpandMore/>}
+                    </ListItem>
+                    <Collapse in={openExaminersList} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding className={classes.root}>
+                        {
+                          examiners.length === 0 ?
+                            <ListItem>
+                              <Typography variant='h5' style={{textAlign: "center"}}>No Examiner Found</Typography>
+                            </ListItem>
+                            :
+                            examiners.map((examiner, index) => (
+                              <Fragment key={index}>
+                                <ListItem alignItems="flex-start"
+                                          selected={selectedIndex === index}
+                                          onClick={() => handleListItemExternalClick(index)}
+                                >
+                                  <ListItemAvatar>
+                                    <Avatar className={detailsClasses.avatar}>{examiner.name.charAt(0)}</Avatar>
+                                  </ListItemAvatar>
+                                  <ListItemText
+                                    primary={examiner.name}
+                                    secondary={
+                                      <React.Fragment>
+                                        <Typography
+                                          component="span"
+                                          variant="overline"
+                                          className={classes.inline}
+                                          color="textPrimary"
+                                        >
+                                          {examiner.ugpc_details.designation}
+                                        </Typography>
+
+                                        {` — ${examiner.email}`}
+                                      </React.Fragment>
+                                    }
+                                  />
+                                  <ListItemText
+                                    primary={
+                                      <Typography variant='subtitle2'>Projects Count</Typography>
+                                    }
+                                    secondary={
+                                      <Typography
+                                        variant="subtitle1"
+                                        color="textPrimary"
+                                      >
+                                        {examiner.projectsCount}
+                                      </Typography>
+
+                                    }
+                                  />
+                                </ListItem>
+                                <Divider variant="inset" component="li"/>
+                              </Fragment>
+                            ))}
+
+                      </List>
+                    </Collapse>
+                  </List>
+                </div>
+            }
+          </div>
+        }
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setDialog({...dialog, externalAssign: false})}>Cancel</Button>
+        <Button onClick={handleExternalAssign} variant='outlined' color='secondary'>Confirm</Button>
+      </DialogActions>
+    </Dialog>
 
     </div>
   );
