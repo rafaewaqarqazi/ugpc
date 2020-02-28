@@ -11,5 +11,12 @@ export const useStyles = makeStyles(theme => ({
         marginBottom:theme.spacing(10),
         width: 150,
         height: 150,
+    },
+    resendCode: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        marginTop: theme.spacing(2),
+        textDecoration: 'underline',
+        cursor: 'pointer'
     }
 }));

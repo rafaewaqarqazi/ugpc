@@ -10,7 +10,8 @@ const {
   getUser,
   getChairmanName,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  resendVerificationCode
 } = require('../controllers/auth');
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/fetch/chairmanName', getChairmanName);
 router.post('/student/signup', studentSignup);
 router.post('/ugpc/signup', requireSignin, isChairman, ugpcSignup);
 router.put('/verify-email', verifyEmail);
+router.put('/resend/code', resendVerificationCode);
 router.post('/signin', signin);
 router.put('/forgot-password', forgotPassword);
 router.put('/reset-password', resetPassword);

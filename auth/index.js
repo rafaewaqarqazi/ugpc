@@ -79,6 +79,21 @@ export const verifyEmail = data =>{
         .catch(err => console.log(err));
 };
 
+export const resendVerificationCode = data =>{
+    return  fetch(`${serverUrl}/auth/resend/code`,{
+        method:"PUT",
+        headers:{
+            Accept:"application/json",
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(data)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => console.log(err));
+};
+
 export const studentAuth = ctx => {
     const { token } = nextCookie(ctx);
     const user =token ? JSON.parse(token) : {user:{role:''}};

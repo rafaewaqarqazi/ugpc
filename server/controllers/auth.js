@@ -175,7 +175,6 @@ exports.requireSignin = expressjwt({
 
 exports.verifyEmail = (req, res) => {
   const {emailVerificationCode, _id} = req.body;
-  console.log(req.body);
   User.findOne({$and: [{_id}, {emailVerificationCode}]}).then(user => {
     // if err or no user
     if (!user)
@@ -201,6 +200,29 @@ exports.verifyEmail = (req, res) => {
       res.json({
         message: `Your Email Has been verified. You can Sign-in Now`
       });
+    });
+  });
+};
+exports.resendVerificationCode = (req, res) => {
+  const {_id} = req.body;
+  const emailVerCode = Math.floor(Math.random() * 1000000);
+  User.findOneAndUpdate({_id}, { emailVerificationCode: emailVerCode }).then(user => {
+    // if err or no user
+    if (!user)
+      return res.status(401).json({
+        error: "Something Went wrong!"
+      });
+    const emailData = {
+      from: "noreply@node-react.com",
+      to: user.email,
+      subject: "Email Verification Instructions",
+      text: `Please use the following code for email verification ${emailVerCode}`,
+      html: `<p>Please use the following code for email verification</p> <h3>${emailVerCode}</h3>`
+    };
+
+    sendEmail(emailData);
+    res.json({
+      message: `Please check your email for Verification`
     });
   });
 };

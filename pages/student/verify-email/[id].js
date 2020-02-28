@@ -1,4 +1,4 @@
-import {useRouter} from "next/router";
+import router, {useRouter} from "next/router";
 import {
   Container,
   TextField,
@@ -12,7 +12,7 @@ import {useStyles} from "../../../src/material-styles/page-loading";
 import CopyrightComponent from "../../../components/CopyrightComponent";
 import SuccessSnackBar from "../../../components/snakbars/SuccessSnackBar";
 import ErrorSnackBar from "../../../components/snakbars/ErrorSnackBar";
-import {authenticate, isAuthenticated, verifyEmail} from "../../../auth";
+import {authenticate, isAuthenticated, verifyEmail, resendVerificationCode} from "../../../auth";
 
 const VerifyEmail = () => {
   const classes = useStyles();
@@ -21,6 +21,10 @@ const VerifyEmail = () => {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [resMessage, setResMessage] = useState({
+    open: false,
+    message: ''
+  });
+  const [resendMessage, setResendMessage] = useState({
     open: false,
     message: ''
   });
@@ -75,10 +79,34 @@ const VerifyEmail = () => {
       message: ''
     })
   };
+  const resendVerCode = () => {
+    setLoading(true);
+    const data = {
+      _id: id
+    };
+    resendVerificationCode(data)
+      .then(res => {
+        if (res.error) {
+          setError({
+            open: true,
+            message: res.error
+          })
+        } else {
+          setLoading(false);
+          setResendMessage({open: true, message: res.message});
+        }
+
+      })
+  };
+  const handleCloseResend = () => {
+    setResendMessage({open: false, message: ''});
+    router.push(`/student/verify-email/[id]`, `/student/verify-email/${id}`)
+  }
   return (
     <div>
       {loading && <LinearProgress color='secondary'/>}
       <SuccessSnackBar message={resMessage.message} open={resMessage.open} handleClose={handleClose}/>
+      <SuccessSnackBar message={resendMessage.message} open={resendMessage.open} handleClose={handleCloseResend}/>
       <ErrorSnackBar open={error.open} message={error.message} handleSnackBar={handleError}/>
       <Container component='main' maxWidth='xs'>
         <Typography variant={'h4'} className={classes.paper}>
@@ -105,6 +133,7 @@ const VerifyEmail = () => {
           >
             Verify
           </Button>
+          <Typography variant='caption' onClick={resendVerCode} className={classes.resendCode}>Resend Code?</Typography>
         </form>
         <Box mt={5}>
           <CopyrightComponent/>
