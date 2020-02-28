@@ -38,7 +38,7 @@ const NewUserComponent = ({open, onClose}) => {
     name: '',
     email: '',
     role: '',
-    additionalRole: 'None',
+    additionalRole: 'UGPC_Member',
     designation: ''
   });
   const [errors, setErrors] = useState({
@@ -83,7 +83,7 @@ const NewUserComponent = ({open, onClose}) => {
               name: '',
               email: '',
               role: '',
-              additionalRole: 'None',
+              additionalRole: 'UGPC_Member',
               designation: ''
             })
           }
@@ -176,28 +176,6 @@ const NewUserComponent = ({open, onClose}) => {
               </FormControl>
               {errors.role && <Typography variant='caption' color='error'>Required*</Typography>}
             </Grid>
-            {
-              data.role === 'Supervisor' &&
-              <Grid item xs={12}>
-                <FormControl fullWidth required error={errors.additionalRole} variant="outlined"
-                             className={classes.formControl}>
-                  <InputLabel htmlFor="additionalRole">
-                    Additional Role
-                  </InputLabel>
-                  <Select
-                    value={data.additionalRole}
-                    onChange={handleChange}
-                    autoWidth
-                    input={<OutlinedInput labelWidth={115} fullWidth name="additionalRole" id="additionalRole"
-                                          required/>}
-                  >
-                    <MenuItem value='UGPC_Member'>UGPC_Member</MenuItem>
-                    <MenuItem value='None'>None</MenuItem>
-                  </Select>
-                </FormControl>
-                {errors.additionalRole && <Typography variant='caption' color='error'>Required*</Typography>}
-              </Grid>
-            }
             {
               data.role === 'Program_Office' ? (
                   <Grid item xs={12} sm={12}>
