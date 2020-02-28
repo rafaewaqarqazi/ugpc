@@ -132,7 +132,7 @@ const Index = () => {
           <Grid container spacing={8}>
             <Grid item xs={12} sm={4}>
               <div className={landingClasses.developerDetails} data-aos="fade-right">
-                <Avatar src='/static/avatar/developer1.jpg' alt='Developer' className={landingClasses.avatar}/>
+                <Avatar src='/static/avatar/developer1.jpg' alt='Rafae Waqar Qazi' className={landingClasses.avatar}/>
                 <Typography variant='h6'>Rafae Waqar Qazi</Typography>
                 <Typography variant='subtitle2' color='textSecondary'>Full Stack Lead</Typography>
                 <Typography variant='body2' color='textSecondary'>Rafae is a Software Engineer and Lead Full Stack
@@ -141,7 +141,7 @@ const Index = () => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <div className={landingClasses.developerDetails} data-aos="zoom-in-down">
-                <Avatar src='/static/avatar/supervisor.jpg' alt='Supervisor' className={landingClasses.avatar}/>
+                <Avatar src='/static/avatar/SirJamalNasir.jpg' alt='Dr. Jamal Abdul Nasir' className={landingClasses.avatar}/>
                 <Typography variant='h6'>Dr. Jamal Abdul Nasir</Typography>
                 <Typography variant='subtitle2' color='textSecondary'>Supervisor</Typography>
                 <Typography variant='body2' color='textSecondary'>Dr. Jamal Abdul Nasir is an Assistant Professor in
@@ -151,7 +151,7 @@ const Index = () => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <div className={landingClasses.developerDetails} data-aos="fade-left">
-                <Avatar src='/static/avatar/developer2.jpg' alt='Developer' className={landingClasses.avatar}/>
+                <Avatar src='/static/avatar/developer2.jpg' alt='Sohail Ahmad' className={landingClasses.avatar}/>
                 <Typography variant='h6'>Sohail Ahmed</Typography>
                 <Typography variant='subtitle2' color='textSecondary'>Frontend Developer / Designer</Typography>
                 <Typography variant='body2' color='textSecondary'>Sohail is a Software Engineer and a Frontend Developer
