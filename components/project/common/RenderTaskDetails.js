@@ -329,7 +329,7 @@ const RenderTaskDetails = ({details, setDetails, taskIn, sprintId}) => {
 
                       >
                         <img className={classes.gridListItem} onClick={() => setImage({show: true, image: attachment})}
-                             src={`${serverUrl}/../static/images/${attachment.filename}`}
+                             src={`${serverUrl}/../images/${attachment.filename}`}
                              alt={attachment.originalname}/>
                         <GridListTileBar
                           title={attachment.originalname}

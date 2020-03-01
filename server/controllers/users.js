@@ -54,7 +54,7 @@ exports.marksDistribution = async (req, res) => {
 
 exports.uploadProfileImage = (req, res) => {
   const {oldImage, userId} = req.body;
-  fs.unlink(`static/images/${oldImage}`, err => {
+  fs.unlink(`public/static/images/${oldImage}`, err => {
     if (err) {
       console.log(err)
     }

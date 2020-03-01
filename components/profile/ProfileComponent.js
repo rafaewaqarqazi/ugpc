@@ -327,7 +327,7 @@ const ProfileComponent = () => {
                       <Paper className={profileClasses.profileImageContainer}>
                         {
                           userContext.user.user.profileImage.filename ?
-                            <Avatar src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename}`}
+                            <Avatar src={`${serverUrl}/../images/${userContext.user.user.profileImage.filename}`}
                                     className={profileClasses.profileAvatar}/>
                             :
                             <Avatar className={profileClasses.profileAvatar}>
