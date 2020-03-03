@@ -265,7 +265,7 @@ exports.addAttachmentsToTask = async (req, res) => {
 
 exports.removeAttachmentFromTask = (req, res) => {
   const {projectId, taskId, filename, taskIn, sprintId} = req.body;
-  fs.unlink(`static/images/${filename}`, err => {
+  fs.unlink(`public/static/images/${filename}`, err => {
     if (err) {
       res.json({error: err.message})
     }

@@ -21,7 +21,7 @@ const ProfileMenu = ({handleClickProfile}) => {
             :
             userContext.user.user.profileImage.filename ?
               <Avatar onClick={event => setAnchorEl(event.currentTarget)}
-                      src={`${serverUrl}/../static/images/${userContext.user.user.profileImage.filename}`}/>
+                      src={`${serverUrl}/../images/${userContext.user.user.profileImage.filename}`}/>
               :
               <Avatar onClick={event => setAnchorEl(event.currentTarget)} className={classes.profileAvatarColor}>
                 {userContext.user.user.name.charAt(0).toUpperCase()}
