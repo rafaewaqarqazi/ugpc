@@ -77,7 +77,7 @@ const UsersMainComponent = () => {
           <TabPanel value={value} index={0} dir={theme.direction}>
             {
               userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/> :
-                <RenderStudents students={userContext.user.users.allUsers.filter(users => users._id === 'Student')[0]}/>
+                <RenderStudents students={userContext.user.users.allUsers.filter(users => users.role === 'Student')}/>
             }
 
           </TabPanel>
@@ -85,7 +85,7 @@ const UsersMainComponent = () => {
             {
               userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/> :
                 <RenderSupervisors
-                  supervisors={userContext.user.users.allUsers.filter(users => users._id === 'Supervisor')[0]}/>
+                  supervisors={userContext.user.users.allUsers.filter(users => users.role === 'Supervisor')}/>
             }
 
           </TabPanel>
@@ -93,7 +93,7 @@ const UsersMainComponent = () => {
             {
               userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/> :
                 <RenderUGPCMembers
-                  ugpcMembers={userContext.user.users.allUsers.filter(users => users._id === 'UGPC_Member')[0]}/>
+                  ugpcMembers={userContext.user.users.allUsers.filter(users => users.additionalRole === 'UGPC_Member')}/>
             }
 
           </TabPanel>
@@ -101,7 +101,7 @@ const UsersMainComponent = () => {
             {
               userContext.user.isLoading || userContext.user.users.isLoading ? <CircularLoading/> :
                 <RenderOfficeUsers chairmanOffice={userContext.user.users.allUsers.map(users => {
-                  if (users._id === 'Chairman DCSSE' || users._id === 'Chairman_Office' || users._id === 'Program_Office') {
+                  if (users.role === 'Chairman DCSSE' || users.role === 'Chairman_Office' || users.role === 'Program_Office') {
                     return users
                   }
                 }).filter(f => f !== undefined)}/>

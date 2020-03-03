@@ -264,7 +264,7 @@ const RenderCommitteeDepartmentsComponent = ({
                       {
                         member.profileImage && member.profileImage.filename ?
                           <Avatar className={avatarClasses.imageAvatar}
-                                  src={`${serverUrl}/../static/images/${member.profileImage.filename}`}/>
+                                  src={`${serverUrl}/../images/${member.profileImage.filename}`}/>
                           :
                           <Avatar className={avatarClasses.avatarColor}>
                             {member.name.charAt(0).toUpperCase()}

@@ -37,14 +37,14 @@ const DashboardComponent = ({projects}) => {
                 <div className={progressClasses.containerContent}>
                   <Typography variant='body1' color='textSecondary'>Users</Typography>
                   <Typography variant='h5'
-                              color='textSecondary'>{getTotalNoUsers(userContext.user.users.allUsers)}</Typography>
+                              color='textSecondary'>{userContext.user.users.allUsers.length}</Typography>
 
                 </div>
               </div>
               <Divider/>
               <div className={progressClasses.topProgressBarContainer}>
                 {
-                  getTotalNoUsers(userContext.user.users.allUsers) === 0 ?
+                  userContext.user.users.allUsers.length === 0 ?
                     <div className={emptyStyles.emptyListContainer}>
                       <div className={emptyStyles.emptyList}>
                         No Users Found
@@ -61,7 +61,7 @@ const DashboardComponent = ({projects}) => {
                            }
                          }}
                          data={{
-                           labels: getUsersLabel(userContext.user.users.allUsers),
+                           labels: getUsersLabel(),
                            datasets: [{
                              data: getUsersChartData(userContext.user.users.allUsers),
                            }]

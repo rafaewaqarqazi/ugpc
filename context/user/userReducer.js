@@ -102,24 +102,11 @@ export const userReducer = (state, action) => {
         }
       };
     case Actions.REMOVE_USER:
-      const newState = state.users.allUsers.map(users => {
-        if (users._id === action.payload.type) {
-          return {
-            ...users,
-            users: users.users.filter(user => user._id !== action.payload.userId)
-          }
-        } else {
-          return {
-            ...users
-          }
-        }
-      });
-
       return {
         ...state,
         users: {
           ...state.users,
-          allUsers: newState
+          allUsers: state.users.allUsers.filter(user => user._id !== action.payload.userId)
         }
       };
     default:

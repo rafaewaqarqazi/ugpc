@@ -24,21 +24,11 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
   const userClasses = useChairmanUsersStyles();
   const avatarClasses = useDrawerStyles();
 
-  const [users, setUsers] = useState([]);
-  const [filter, setFilter] = useState([]);
+  const [users, setUsers] = useState(chairmanOffice || []);
+  const [filter, setFilter] = useState(chairmanOffice || []);
   const tableClasses = useTableStyles();
   const emptyStyles = useListItemStyles();
   const [success, setSuccess] = useState(false);
-  useEffect(() => {
-    let data = [];
-    chairmanOffice.map(co => {
-      co.users.map(u => {
-        data = [...data, u]
-      })
-    });
-    setUsers(data);
-    setFilter(data)
-  }, [])
   const handleChangeSearch = e => {
     const data = users;
     setFilter(e.target.value !== '' ? data.filter(office => office.name.toLowerCase().includes(e.target.value.toLowerCase())) : users)
@@ -46,14 +36,8 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
 
   const handleSuccess = () => {
     setSuccess(false);
-    let data = [];
-    chairmanOffice.map(co => {
-      co.users.map(u => {
-        data = [...data, u]
-      })
-    });
-    setUsers(data);
-    setFilter(data)
+    setUsers(chairmanOffice || []);
+    setFilter(chairmanOffice || [])
   };
   return (
     <div>
@@ -107,7 +91,7 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
                       {
                         office.profileImage && office.profileImage.filename ?
                           <Avatar className={avatarClasses.imageAvatar}
-                                  src={`${serverUrl}/../static/images/${office.profileImage.filename}`}/>
+                                  src={`${serverUrl}/../images/${office.profileImage.filename}`}/>
                           :
                           <Avatar className={avatarClasses.avatarColor}>
                             {office.name.charAt(0).toUpperCase()}
@@ -119,7 +103,7 @@ const RenderOfficeUsers = ({chairmanOffice}) => {
                     <TableCell>{office.role}</TableCell>
                     <TableCell align="left">{moment(office.createdAt).format('MMM DD, YYYY')}</TableCell>
                     <TableCell align="left">
-                      <RemoveUserComponent userId={office._id} type={office.role} setSuccess={setSuccess}/>
+                      <RemoveUserComponent userId={office._id} setSuccess={setSuccess}/>
                     </TableCell>
                   </TableRow>
                 ))

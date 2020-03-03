@@ -15,7 +15,7 @@ import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import UserContext from "../../../context/user/user-context";
 import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 
-const RemoveUserComponent = ({userId, type, setSuccess}) => {
+const RemoveUserComponent = ({userId, setSuccess}) => {
   const userContext = useContext(UserContext);
   const [confirm, setConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const RemoveUserComponent = ({userId, type, setSuccess}) => {
   const [error, setError] = useState(false);
   const handleClickRemoveUser = () => {
     setLoading(true);
-    userContext.removeUser(userId, type)
+    userContext.removeUser(userId)
       .then(result => {
         setConfirm(false);
         if (result.error) {

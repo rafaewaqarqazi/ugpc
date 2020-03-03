@@ -24,17 +24,17 @@ const RenderStudents = ({students}) => {
   const userClasses = useChairmanUsersStyles();
   const avatarClasses = useDrawerStyles();
   const emptyStyles = useListItemStyles();
-  const [filter, setFilter] = useState(students ? students.users : []);
+  const [filter, setFilter] = useState(students || []);
   const tableClasses = useTableStyles();
   const [success, setSuccess] = useState(false);
   const handleChangeSearch = e => {
-    const data = students.users;
-    setFilter(e.target.value !== '' ? data.filter(student => student.name.toLowerCase().includes(e.target.value.toLowerCase())) : students.users)
+    const data = students;
+    setFilter(e.target.value !== '' ? data.filter(student => student.name.toLowerCase().includes(e.target.value.toLowerCase())) : students)
   };
 
   const handleSuccess = () => {
     setSuccess(false);
-    setFilter(students.users);
+    setFilter(students);
   };
   return (
     <div>
@@ -90,7 +90,7 @@ const RenderStudents = ({students}) => {
                       {
                         student.profileImage && student.profileImage.filename ?
                           <Avatar className={avatarClasses.imageAvatar}
-                                  src={`${serverUrl}/../static/images/${student.profileImage.filename}`}/>
+                                  src={`${serverUrl}/../images/${student.profileImage.filename}`}/>
                           :
                           <Avatar className={avatarClasses.avatarColor}>
                             {student.name.charAt(0).toUpperCase()}
@@ -109,7 +109,7 @@ const RenderStudents = ({students}) => {
                     <TableCell>{student.department}</TableCell>
                     <TableCell align="left">{moment(student.createdAt).format('MMM DD, YYYY')}</TableCell>
                     <TableCell align="left">
-                      <RemoveUserComponent userId={student._id} type={students._id} setSuccess={setSuccess}/>
+                      <RemoveUserComponent userId={student._id} setSuccess={setSuccess}/>
                     </TableCell>
                   </TableRow>
                 ))

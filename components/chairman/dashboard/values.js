@@ -7,18 +7,17 @@ export const getTotalNoUsers = allUsers => {
 };
 
 export const getUsersLabel = allUsers => {
-  let label = [];
-  allUsers.map(users => {
-    label = [...label, users._id]
-  });
-  return label
+  return ['Student', 'Supervisor', 'UGPC_Member', 'Program_Office', 'Chairman DCSSE', 'Chairman_Office']
 };
 export const getUsersChartData = allUsers => {
-  let data = [];
-  allUsers.map(users => {
-    data = [...data, users.users.length]
-  });
-  return data
+  const students = allUsers.filter(user => user.role === 'Student').length
+  const supervisor = allUsers.filter(user => user.role === 'Supervisor').length
+  const ugpc_member = allUsers.filter(user => user.additionalRole === 'UGPC_Member').length
+  const program_office = allUsers.filter(user => user.role === 'Program_Office').length
+  const chairman = allUsers.filter(user => user.role === 'Chairman DCSSE').length
+  const chairman_office = allUsers.filter(user => user.role === 'Chairman_Office').length
+
+  return [students,supervisor,ugpc_member,program_office,chairman,chairman_office]
 };
 
 export const formatProjectsData = projects => {

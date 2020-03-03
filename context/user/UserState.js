@@ -78,9 +78,9 @@ const UserState = (props) => {
     const users = await fetchAllUsersAPI();
     dispatch(addAllUsersAction(users))
   };
-  const removeUser = async (userId, type) => {
+  const removeUser = async (userId) => {
     const result = await removeUserAPI(userId);
-    dispatch(removeUserAction(userId, type));
+    dispatch(removeUserAction(userId));
     return await result
   };
   const fetchCommittees = async () => {

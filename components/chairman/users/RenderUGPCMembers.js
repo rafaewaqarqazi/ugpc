@@ -24,17 +24,17 @@ const RenderUgpcMembers = ({ugpcMembers}) => {
   const userClasses = useChairmanUsersStyles();
   const avatarClasses = useDrawerStyles();
   const emptyStyles = useListItemStyles();
-  const [filter, setFilter] = useState(ugpcMembers ? ugpcMembers.users : []);
+  const [filter, setFilter] = useState(ugpcMembers || []);
   const tableClasses = useTableStyles();
   const [success, setSuccess] = useState(false);
   const handleChangeSearch = e => {
-    const data = ugpcMembers.users;
-    setFilter(e.target.value !== '' ? data.filter(ugpcMember => ugpcMember.name.toLowerCase().includes(e.target.value.toLowerCase())) : ugpcMembers.users)
+    const data = ugpcMembers;
+    setFilter(e.target.value !== '' ? data.filter(ugpcMember => ugpcMember.name.toLowerCase().includes(e.target.value.toLowerCase())) : ugpcMembers)
   };
 
   const handleSuccess = () => {
     setSuccess(false);
-    setFilter(ugpcMembers.users);
+    setFilter(ugpcMembers);
   };
   return (
     <div>
@@ -90,7 +90,7 @@ const RenderUgpcMembers = ({ugpcMembers}) => {
                       {
                         ugpcMember.profileImage && ugpcMember.profileImage.filename ?
                           <Avatar className={avatarClasses.imageAvatar}
-                                  src={`${serverUrl}/../static/images/${ugpcMember.profileImage.filename}`}/>
+                                  src={`${serverUrl}/../images/${ugpcMember.profileImage.filename}`}/>
                           :
                           <Avatar className={avatarClasses.avatarColor}>
                             {ugpcMember.name.charAt(0).toUpperCase()}
@@ -101,10 +101,10 @@ const RenderUgpcMembers = ({ugpcMembers}) => {
                     <TableCell>{ugpcMember.email}</TableCell>
                     <TableCell>{ugpcMember.ugpc_details.committeeType}</TableCell>
                     <TableCell>{ugpcMember.ugpc_details.committees.map((committee, index) => `${committee}${index > 1 ? ',' : ''}`)}</TableCell>
-                    <TableCell>{ugpcMember.ugpc_details.position}</TableCell>
+                    <TableCell>{ugpcMember.ugpc_details.position || 'None'}</TableCell>
                     <TableCell align="left">{moment(ugpcMember.createdAt).format('MMM DD, YYYY')}</TableCell>
                     <TableCell align="left">
-                      <RemoveUserComponent userId={ugpcMember._id} type={ugpcMember._id} setSuccess={setSuccess}/>
+                      <RemoveUserComponent userId={ugpcMember._id} setSuccess={setSuccess}/>
                     </TableCell>
                   </TableRow>
                 ))

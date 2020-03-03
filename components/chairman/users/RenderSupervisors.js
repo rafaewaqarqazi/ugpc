@@ -23,17 +23,17 @@ const RenderSupervisors = ({supervisors}) => {
   const userClasses = useChairmanUsersStyles();
   const avatarClasses = useDrawerStyles();
   const emptyStyles = useListItemStyles();
-  const [filter, setFilter] = useState(supervisors ? supervisors.users : []);
+  const [filter, setFilter] = useState(supervisors || []);
   const tableClasses = useTableStyles();
   const [success, setSuccess] = useState(false);
   const handleChangeSearch = e => {
-    const data = supervisors.users;
-    setFilter(e.target.value !== '' ? data.filter(student => student.name.toLowerCase().includes(e.target.value.toLowerCase())) : supervisors.users)
+    const data = supervisors;
+    setFilter(e.target.value !== '' ? data.filter(student => student.name.toLowerCase().includes(e.target.value.toLowerCase())) : supervisors)
   };
 
   const handleSuccess = () => {
     setSuccess(false);
-    setFilter(supervisors.users);
+    setFilter(supervisors);
   };
   return (
     <div>
@@ -89,7 +89,7 @@ const RenderSupervisors = ({supervisors}) => {
                       {
                         supervisor.profileImage && supervisor.profileImage.filename ?
                           <Avatar className={avatarClasses.imageAvatar}
-                                  src={`${serverUrl}/../static/images/${supervisor.profileImage.filename}`}/>
+                                  src={`${serverUrl}/../images/${supervisor.profileImage.filename}`}/>
                           :
                           <Avatar className={avatarClasses.avatarColor}>
                             {supervisor.name.charAt(0).toUpperCase()}
@@ -102,7 +102,7 @@ const RenderSupervisors = ({supervisors}) => {
                     <TableCell><Chip color='primary' label={supervisor.supervisor_details.projects.length}/></TableCell>
                     <TableCell align="left">{moment(supervisor.createdAt).format('MMM DD, YYYY')}</TableCell>
                     <TableCell align="left">
-                      <RemoveUserComponent userId={supervisor._id} type={supervisor._id} setSuccess={setSuccess}/>
+                      <RemoveUserComponent userId={supervisor._id} setSuccess={setSuccess}/>
                     </TableCell>
                   </TableRow>
                 ))

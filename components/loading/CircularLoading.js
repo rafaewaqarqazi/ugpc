@@ -7,7 +7,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    width: '100%'
   }
 }))
 

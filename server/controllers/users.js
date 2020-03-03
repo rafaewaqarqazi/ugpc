@@ -147,12 +147,6 @@ exports.fetchAllUsers = async (req, res) => {
     const users = await User.aggregate([
       {
         $project: {"hashed_password": 0, "salt": 0, "resetPasswordLink": 0, "emailVerificationCode": 0}
-      },
-      {
-        $group: {
-          "_id": "$role",
-          users: {$push: "$$ROOT"}
-        }
       }
     ]);
     await res.json(users);

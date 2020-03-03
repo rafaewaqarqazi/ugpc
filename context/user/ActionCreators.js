@@ -50,7 +50,7 @@ export const allUsersLoadingAction = () => ({
 export const committeesLoadingAction = () => ({
   type: Actions.COMMITTEES_LOADING
 });
-export const removeUserAction = (userId, type) => ({
+export const removeUserAction = (userId) => ({
   type: Actions.REMOVE_USER,
-  payload: {userId, type}
+  payload: {userId}
 });
