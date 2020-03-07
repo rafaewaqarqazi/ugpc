@@ -283,6 +283,30 @@ export const addCommentToTaskAPI = async commentDetails => {
   });
   return await res.json();
 };
+export const editCommentFromTaskAPI = async commentDetails => {
+  const res = await fetch(`${serverUrl}/backlog/task/change/comment`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(commentDetails)
+  });
+  return await res.json();
+};
+export const deleteCommentFromTaskAPI = async commentDetails => {
+  const res = await fetch(`${serverUrl}/backlog/task/remove/comment`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(commentDetails)
+  });
+  return await res.json();
+};
 export const fetchMarksDistributionAPI = async () => {
   const res = await fetch(`${serverUrl}/users/chairman/settings/fetch/marksDistribution`, {
     method: 'GET',

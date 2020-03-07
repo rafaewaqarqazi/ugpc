@@ -41,5 +41,7 @@ export default React.createContext({
   markSupervisorMeetingAsAttended: data => {
   },
   editComment: data => {},
-  deleteComment: data => {}
+  deleteComment: data => {},
+  editCommentFromTask: commentDetails => {},
+  deleteCommentFromTask: commentDetails => {}
 })

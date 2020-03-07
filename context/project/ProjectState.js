@@ -31,7 +31,9 @@ import {
   addCommentToTaskAPI,
   scheduleSupervisorMeetingAPI,
   requestSupervisorMeetingAPI,
-  markSupervisorMeetingAsAttendedAPI
+  markSupervisorMeetingAsAttendedAPI,
+  editCommentFromTaskAPI,
+  deleteCommentFromTaskAPI
 } from "../../utils/apiCalls/projects";
 
 const ProjectState = (props) => {
@@ -116,6 +118,24 @@ const ProjectState = (props) => {
     }
     return await result
   };
+  const editCommentFromTask = async commentDetails => {
+    const result = await editCommentFromTaskAPI(commentDetails);
+    if (commentDetails.taskIn === 'Backlog') {
+      await dispatch(addBacklogAction(result.details.backlog));
+    } else if (commentDetails.taskIn === 'ScrumBoard') {
+      await dispatch(addSprintAction(result.details.sprint))
+    }
+    return await result
+  };
+  const deleteCommentFromTask = async commentDetails => {
+    const result = await deleteCommentFromTaskAPI(commentDetails);
+    if (commentDetails.taskIn === 'Backlog') {
+      await dispatch(addBacklogAction(result.details.backlog));
+    } else if (commentDetails.taskIn === 'ScrumBoard') {
+      await dispatch(addSprintAction(result.details.sprint))
+    }
+    return await result
+  };
   const scheduleSupervisorMeeting = async meetingData => {
     const result = await scheduleSupervisorMeetingAPI(meetingData);
     await dispatch(addSupervisorMeetingAction(result));
@@ -157,7 +177,9 @@ const ProjectState = (props) => {
       requestSupervisorMeeting,
       markSupervisorMeetingAsAttended,
       editComment,
-      deleteComment
+      deleteComment,
+      editCommentFromTask,
+      deleteCommentFromTask
     }}>
       {props.children}
     </ProjectContext.Provider>

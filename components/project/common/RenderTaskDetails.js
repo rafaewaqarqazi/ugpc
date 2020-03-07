@@ -123,6 +123,62 @@ const RenderTaskDetails = ({details, setDetails, taskIn, sprintId}) => {
         })
     }
   };
+  const editComment = (commentId, commentText) => {
+    if (commentText.trim() !== '') {
+      const commentDetails = {
+        text: commentText,
+        projectId: projectContext.project.project._id,
+        taskId: details._id,
+        taskIn,
+        sprintId,
+        author: userContext.user.user._id,
+        commentId
+      };
+      projectContext.editCommentFromTask(commentDetails)
+        .then(res => {
+          setDetails({
+            ...details,
+            discussion: details.discussion.map(disc => {
+              if (disc._id === commentId) {
+                return {
+                  ...disc,
+                  text: commentText
+                }
+              } else return disc
+            })
+          });
+        })
+        .catch(err => {
+          setResError({
+            show: true,
+            message: 'Something went wrong please try again'
+          })
+        })
+    }
+  };
+  const deleteComment = (commentId) => {
+    const commentDetails = {
+      text: comment,
+      projectId: projectContext.project.project._id,
+      taskId: details._id,
+      taskIn,
+      sprintId,
+      commentId
+    };
+    projectContext.deleteCommentFromTask(commentDetails)
+      .then(res => {
+        setDetails({
+          ...details,
+          discussion: details.discussion.filter(disc => disc._id !== commentId)
+        });
+      })
+      .catch(err => {
+        setResError({
+          show: true,
+          message: 'Something went wrong please try again'
+        })
+      })
+  };
   const handleRemoveAttachment = () => {
     const data = {
       filename: removeAttachment.filename,
@@ -298,7 +354,7 @@ const RenderTaskDetails = ({details, setDetails, taskIn, sprintId}) => {
               }}
             />
 
-            <RenderComments comments={details.discussion}/>
+            <RenderComments comments={details.discussion} editComment={editComment} deleteComment={deleteComment}/>
           </div>
         </Grid>
         <Grid item xs={12}>
@@ -405,7 +461,7 @@ const RenderTaskDetails = ({details, setDetails, taskIn, sprintId}) => {
           </DialogTitle>
           <img
             style={{maxWidth: '100%', height: 'auto'}}
-            src={`${serverUrl}/../static/images/${image.image.filename}`}
+            src={`${serverUrl}/../images/${image.image.filename}`}
             alt={image.image.originalname}
           />
         </Dialog>

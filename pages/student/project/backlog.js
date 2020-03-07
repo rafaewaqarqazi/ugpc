@@ -12,7 +12,7 @@ const Backlog = () => {
   return (
     <ProjectState>
       <StudentPanelLayout>
-        <Container maxWidth='md'>
+        <Container maxWidth='md' style={{padding: 0}}>
           <BacklogAndSprintContainer title={'Backlog'}>
             <ProjectContext.Consumer>
               {

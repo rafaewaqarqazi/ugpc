@@ -381,3 +381,107 @@ exports.addCommentToTask = async (req, res) => {
     await res.json({error: e.message})
   }
 };
+exports.changeTaskComment = async (req, res) => {
+  try {
+    const {projectId, taskId, taskIn, sprintId, text, commentId} = req.body;
+
+    if (taskIn === 'Backlog') {
+      const result = await Projects.findOneAndUpdate({
+        "_id": projectId
+      }, {
+        $set: {
+          "details.backlog.$[backlog].discussion.$[disc].text": text
+        }
+      }, {
+        arrayFilters: [{"backlog._id": mongoose.Types.ObjectId(taskId)}, {"disc._id": mongoose.Types.ObjectId(commentId)}],
+        new: true
+      })
+        .select('details.backlog')
+        .populate({
+          path: 'details.backlog.assignee',
+          model: 'Users',
+          select: 'name department student_details email profileImage'
+        })
+        .populate({path: 'details.backlog.discussion.author', model: 'Users', select: 'name profileImage'})
+        .populate({path: 'details.backlog.createdBy', model: 'Users', select: 'name role'})
+        .sort({"details.backlog.priority": 1});
+
+      await res.json(result)
+    } else if (taskIn === 'ScrumBoard') {
+      const result = await Projects.findOneAndUpdate({"_id": projectId}, {
+        $set: {
+          "details.sprint.$[spr].tasks.$[tsk].discussion.$[disc].text": text
+        }
+      }, {
+        arrayFilters: [{"spr._id": mongoose.Types.ObjectId(sprintId)}, {"tsk._id": mongoose.Types.ObjectId(taskId)}, {"disc._id": mongoose.Types.ObjectId(commentId)}],
+        new: true
+      })
+        .select('details.sprint')
+        .populate({path: 'details.sprint.tasks.discussion.author', model: 'Users', select: 'name profileImage'})
+        .populate({
+          path: 'details.sprint.tasks.assignee',
+          model: 'Users',
+          select: 'name department student_details email profileImage'
+        })
+        .populate({path: 'details.sprint.tasks.createdBy', model: 'Users', select: 'name role'});
+      await res.json(result)
+    }
+
+
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+};
+exports.removeTaskComment = async (req, res) => {
+  try {
+    const {projectId, taskId, taskIn, sprintId, commentId} = req.body;
+
+    if (taskIn === 'Backlog') {
+      const result = await Projects.findOneAndUpdate({
+        "_id": projectId,
+        "details.backlog._id": mongoose.Types.ObjectId(taskId)
+      }, {
+        $pull: {
+          "details.backlog.$.discussion": {
+            "_id":mongoose.Types.ObjectId(commentId)
+          }
+        }
+      }, {new: true})
+        .select('details.backlog')
+        .populate({
+          path: 'details.backlog.assignee',
+          model: 'Users',
+          select: 'name department student_details email profileImage'
+        })
+        .populate({path: 'details.backlog.discussion.author', model: 'Users', select: 'name profileImage'})
+        .populate({path: 'details.backlog.createdBy', model: 'Users', select: 'name role'})
+        .sort({"details.backlog.priority": 1});
+
+      await res.json(result)
+    } else if (taskIn === 'ScrumBoard') {
+      const result = await Projects.findOneAndUpdate({"_id": projectId}, {
+        $pull: {
+          "details.sprint.$[spr].tasks.$[tsk].discussion": {
+            "_id": mongoose.Types.ObjectId(commentId)
+          }
+        }
+      }, {
+        arrayFilters: [{"spr._id": mongoose.Types.ObjectId(sprintId)}, {"tsk._id": mongoose.Types.ObjectId(taskId)}],
+        new: true
+      })
+        .select('details.sprint')
+        .populate({path: 'details.sprint.tasks.discussion.author', model: 'Users', select: 'name profileImage'})
+        .populate({
+          path: 'details.sprint.tasks.assignee',
+          model: 'Users',
+          select: 'name department student_details email profileImage'
+        })
+        .populate({path: 'details.sprint.tasks.createdBy', model: 'Users', select: 'name role'});
+      await res.json(result)
+    }
+
+
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+};

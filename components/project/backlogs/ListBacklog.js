@@ -70,6 +70,7 @@ const useStyles = makeStyles(theme => ({
     minHeight: 150,
     maxHeight: 650,
     overflowY: 'auto',
+    overflowX: 'hidden',
     marginTop: theme.spacing(2)
   },
 
