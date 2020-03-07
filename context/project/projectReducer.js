@@ -78,6 +78,53 @@ export const projectReducer = (state, action) => {
         project: modState
       };
     }
+    case Actions.EDIT_COMMENT: {
+      const newState = state.project.documentation.visionDocument.map(vDoc => {
+        if (vDoc._id === action.payload.documentId) {
+          return {
+            ...vDoc,
+            comments: vDoc.comments.map(comment => {
+              if (comment._id === action.payload.commentId) {
+                return {
+                  ...comment,
+                  text: action.payload.text
+                }
+              } else return comment
+            })
+          }
+        } else return vDoc
+      })
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          documentation: {
+            ...state.project.documentation,
+            visionDocument: newState
+          }
+        }
+      }
+    }
+    case Actions.DELETE_COMMENT: {
+      const newState = state.project.documentation.visionDocument.map(vDoc => {
+        if (vDoc._id === action.payload.documentId) {
+          return {
+            ...vDoc,
+            comments: vDoc.comments.filter(comment => comment._id !== action.payload.commentId)
+          }
+        } else return vDoc
+      });
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          documentation: {
+            ...state.project.documentation,
+            visionDocument: newState
+          }
+        }
+      }
+    }
     default:
       return state;
   }

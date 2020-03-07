@@ -191,6 +191,7 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
             text: commentText,
             createdAt: Date.now(),
             author: {
+              _id: userContext.user.user._id,
               name: userContext.user.user.name,
               role: userContext.user.user.role,
               profileImage: userContext.user.user.profileImage
@@ -240,7 +241,6 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
           supervisorId: selectedSupervisorId,
           filename: currentDocument.documentation.visionDocument.documents[0].filename
         }
-        console.log('data', data)
         visionDocsContext.assignSupervisorManual(data)
           .then(result => {
             if (result.error) {
@@ -250,7 +250,6 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
               });
               return;
             }
-            console.log('resultRes', result)
             visionDocsContext.changeStatus(statusDetails)
               .then(res => {
                 setCurrentDocument({
@@ -389,7 +388,6 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
       setLoading({...loading, supervisors: true});
       fetchSupervisorsAPI()
         .then(result => {
-          console.log('result', result)
           setLoading({...loading, supervisors: false});
           setSupervisors(result);
         })
@@ -436,7 +434,38 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
           });
         })
     }
-  }
+  };
+  const editComment = (commentId, commentText, documentId) => {
+    setCurrentDocument({
+      ...currentDocument,
+      documentation: {
+        ...currentDocument.documentation,
+        visionDocument: {
+          ...currentDocument.documentation.visionDocument,
+          comments: currentDocument.documentation.visionDocument.comments.map(comment => {
+            if (comment._id === commentId) {
+              return {
+                ...comment,
+                text: commentText
+              }
+            } else return comment
+          })
+        }
+      }
+    })
+  };
+  const deleteComment = (commentId, documentId) => {
+    setCurrentDocument({
+      ...currentDocument,
+      documentation: {
+        ...currentDocument.documentation,
+        visionDocument: {
+          ...currentDocument.documentation.visionDocument,
+          comments: currentDocument.documentation.visionDocument.comments.filter(comment => comment._id !== commentId)
+        }
+      }
+    })
+  };
   return (
     <div>
       <SuccessSnackBar open={successSnackbar} message={'Success'} handleClose={closeSnackbar}/>
@@ -576,7 +605,12 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
                 />
               </div>
               <div className={classes.detailsContent}>
-                <RenderComments comments={currentDocument.documentation.visionDocument.comments}/>
+                <RenderComments
+                    editComment={editComment}
+                    deleteComment={deleteComment}
+                    comments={currentDocument.documentation.visionDocument.comments}
+                    projectId={currentDocument._id} documentId={currentDocument.documentation.visionDocument._id}
+                />
               </div>
             </Grid>
           </Grid>

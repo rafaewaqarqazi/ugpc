@@ -99,6 +99,35 @@ exports.commentOnVision = (req, res) => {
   })
     .catch(err => res.json(err))
 }
+exports.editCommentOnVision = (req, res) => {
+  const {text, projectId, documentId, commentId} = req.body;
+  Projects.update({"_id": mongoose.Types.ObjectId(projectId)}, {
+        $set: {
+          "documentation.visionDocument.$[vd].comments.$[com].text": text
+        }
+      }, {
+        arrayFilters: [{"vd._id": mongoose.Types.ObjectId(documentId)}, {"com._id": mongoose.Types.ObjectId(commentId)}]
+      }
+  ).then(result => {
+    res.json(result)
+  })
+    .catch(err => res.json(err))
+}
+exports.deleteCommentOnVision = (req, res) => {
+  const {projectId, documentId, commentId} = req.body;
+  Projects.update(
+      {"_id": mongoose.Types.ObjectId(projectId), "documentation.visionDocument._id": mongoose.Types.ObjectId(documentId)}, {
+        $pull: {
+          "documentation.visionDocument.$.comments": {
+            "_id": mongoose.Types.ObjectId(commentId)
+          }
+        }
+      }
+  ).then(result => {
+    res.json(result)
+  })
+    .catch(err => res.json(err))
+}
 
 exports.changeStatus = async (req, res) => {
   try {

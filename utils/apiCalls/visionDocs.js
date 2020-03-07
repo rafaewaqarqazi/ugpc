@@ -36,6 +36,30 @@ export const commentOnVisionAPI = async comment => {
   });
   return await res.json();
 }
+export const editCommentOnVisionAPI = async comment => {
+  const res = await fetch(`${serverUrl}/visionDocument/comment/edit`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(comment)
+  });
+  return await res.json();
+}
+export const deleteCommentOnVisionAPI = async comment => {
+  const res = await fetch(`${serverUrl}/visionDocument/comment/delete`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(comment)
+  });
+  return await res.json();
+}
 
 export const changeStatusAPI = async status => {
   const res = await fetch(`${serverUrl}/visionDocument/changeStatus`, {

@@ -30,4 +30,13 @@ export const addFinalDocumentationAction = (finalDocumentation) => ({
 export const addSupervisorMeetingAction = meetings => ({
   type: Actions.ADD_SUPERVISOR_MEETINGS,
   payload: meetings
-})
+});
+
+export const editCommentAction = data => ({
+  type: Actions.EDIT_COMMENT,
+  payload: data
+});
+export const deleteCommentAction = data => ({
+  type: Actions.DELETE_COMMENT,
+  payload: data
+});

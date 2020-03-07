@@ -27,6 +27,7 @@ import ErrorSnackBar from "../../snakbars/ErrorSnackBar";
 import {PDFDownloadLink, PDFViewer} from '@react-pdf/renderer';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
+import ProjectContext from "../../../context/project/project-context";
 
 const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentDocument, project}) => {
   const classes = useDocDetailsDialogStyles();
@@ -43,6 +44,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
   const [letterViewer, setLetterViewer] = useState(false);
   const [chairmanName, setChairmanName] = useState('Not Available Yet');
   const [successSnackbar, setSuccessSnackbar] = useState(false);
+  const projectContext = useContext(ProjectContext);
   const [resError, setResError] = useState({
     show: false,
     message: ''
@@ -66,10 +68,12 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
       };
       visionDocsContext.comment(commentDetails)
         .then(res => {
+          setComment('')
           const a = currentDocument.comments.push({
             text: comment,
             createdAt: Date.now(),
             author: {
+              _id: userContext.user.user._id,
               name: userContext.user.user.name,
               role: userContext.user.user.role,
               profileImage: userContext.user.user.profileImage
@@ -87,7 +91,27 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
     setFileError(false);
     setFile(files[0])
   };
-
+  const editComment = (commentId, commentText, documentId) => {
+    setCurrentDocument({
+      ...currentDocument,
+      comments: currentDocument.comments.map(comment => {
+        if (comment._id === commentId) {
+          return {
+            ...comment,
+            text: commentText
+          }
+        } else return comment
+      })
+    });
+    projectContext.editComment({commentId, text: commentText, documentId})
+  };
+  const deleteComment = (commentId, documentId) => {
+    setCurrentDocument({
+      ...currentDocument,
+      comments: currentDocument.comments.filter(comment => comment._id !== commentId)
+    })
+    projectContext.deleteComment({commentId, documentId})
+  }
   const handleOnCloseDocDialog = () => {
     setOpenDocUploadDialog(false);
   };
@@ -128,7 +152,6 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
 
       visionDocsContext.submitAdditionFilesVisionDoc(formData, type)
         .then(res => {
-          console.log(res)
           setSuccessSnackbar(true);
           setCurrentDocument({
             ...currentDocument,
@@ -243,7 +266,10 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
                   />
                 </div>
                 <div className={classes.detailsContent}>
-                  <RenderComments comments={currentDocument.comments}/>
+                  <RenderComments
+                      editComment={editComment}
+                      deleteComment={deleteComment}
+                      comments={currentDocument.comments} documentId={currentDocument._id} projectId={project._id}/>
                 </div>
 
               </Grid>

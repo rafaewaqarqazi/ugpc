@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect} from 'react';
+import React, {useReducer} from 'react';
 import ProjectContext from './project-context';
 import {projectReducer} from "./projectReducer";
 import {
@@ -7,7 +7,9 @@ import {
   addBacklogAction,
   addSprintAction,
   addFinalDocumentationAction,
-  addSupervisorMeetingAction
+  addSupervisorMeetingAction,
+  editCommentAction,
+  deleteCommentAction
 } from "./ActionCreators";
 import {
   addTaskToBacklogAPI,
@@ -127,7 +129,13 @@ const ProjectState = (props) => {
     const result = await markSupervisorMeetingAsAttendedAPI(data);
     await dispatch(addSupervisorMeetingAction(result));
     return await result;
-  }
+  };
+  const editComment = (data) => {
+    dispatch(editCommentAction(data))
+  };
+  const deleteComment = (data) => {
+    dispatch(deleteCommentAction(data))
+  };
   return (
     <ProjectContext.Provider value={{
       project: state,
@@ -147,7 +155,9 @@ const ProjectState = (props) => {
       addCommentToTask,
       scheduleSupervisorMeeting,
       requestSupervisorMeeting,
-      markSupervisorMeetingAsAttended
+      markSupervisorMeetingAsAttended,
+      editComment,
+      deleteComment
     }}>
       {props.children}
     </ProjectContext.Provider>

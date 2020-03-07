@@ -39,5 +39,7 @@ export default React.createContext({
   scheduleSupervisorMeeting: meetingData => {
   },
   markSupervisorMeetingAsAttended: data => {
-  }
+  },
+  editComment: data => {},
+  deleteComment: data => {}
 })
