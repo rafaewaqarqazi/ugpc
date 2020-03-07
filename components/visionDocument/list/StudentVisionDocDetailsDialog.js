@@ -28,6 +28,7 @@ import {PDFDownloadLink, PDFViewer} from '@react-pdf/renderer';
 import SuccessSnackBar from "../../snakbars/SuccessSnackBar";
 import {useDialogStyles} from "../../../src/material-styles/dialogStyles";
 import ProjectContext from "../../../context/project/project-context";
+import {deleteCommentOnVisionAPI, editCommentOnVisionAPI} from "../../../utils/apiCalls/visionDocs";
 
 const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentDocument, project}) => {
   const classes = useDocDetailsDialogStyles();
@@ -91,26 +92,45 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
     setFileError(false);
     setFile(files[0])
   };
-  const editComment = (commentId, commentText, documentId) => {
-    setCurrentDocument({
-      ...currentDocument,
-      comments: currentDocument.comments.map(comment => {
-        if (comment._id === commentId) {
-          return {
-            ...comment,
-            text: commentText
-          }
-        } else return comment
-      })
-    });
-    projectContext.editComment({commentId, text: commentText, documentId})
+  const editComment = (commentId, commentText) => {
+    const editData = {
+      commentId,
+      text: commentText,
+      projectId: project._id,
+      documentId: currentDocument._id,
+    };
+    editCommentOnVisionAPI(editData)
+        .then(res => {
+          setCurrentDocument({
+            ...currentDocument,
+            comments: currentDocument.comments.map(comment => {
+              if (comment._id === commentId) {
+                return {
+                  ...comment,
+                  text: commentText
+                }
+              } else return comment
+            })
+          });
+          projectContext.editComment({commentId, text: commentText, documentId: currentDocument._id})
+        })
+        .catch(error => console.log(error.message))
   };
-  const deleteComment = (commentId, documentId) => {
-    setCurrentDocument({
-      ...currentDocument,
-      comments: currentDocument.comments.filter(comment => comment._id !== commentId)
-    })
-    projectContext.deleteComment({commentId, documentId})
+  const deleteComment = (commentId) => {
+    const deleteData = {
+      commentId,
+      projectId: project._id,
+      documentId: currentDocument._id
+    };
+    deleteCommentOnVisionAPI(deleteData)
+        .then(res => {
+          setCurrentDocument({
+            ...currentDocument,
+            comments: currentDocument.comments.filter(comment => comment._id !== commentId)
+          });
+          projectContext.deleteComment({commentId, documentId: currentDocument._id})
+        })
+        .catch(error => console.log(error.message))
   }
   const handleOnCloseDocDialog = () => {
     setOpenDocUploadDialog(false);
@@ -269,7 +289,8 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
                   <RenderComments
                       editComment={editComment}
                       deleteComment={deleteComment}
-                      comments={currentDocument.comments} documentId={currentDocument._id} projectId={project._id}/>
+                      comments={currentDocument.comments}
+                  />
                 </div>
 
               </Grid>

@@ -100,6 +100,7 @@ const RenderTaskDetails = ({details, setDetails, taskIn, sprintId}) => {
                 text: comment,
                 createdAt: Date.now(),
                 author: {
+                  _id: userContext.user.user._id,
                   name: userContext.user.user.name,
                   profileImage: userContext.user.user.profileImage
                 }

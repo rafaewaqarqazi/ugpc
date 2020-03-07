@@ -24,7 +24,6 @@ import UserAvatarComponent from "../../UserAvatarComponent";
 import moment from "moment";
 import {useDocDetailsDialogStyles} from "../../../src/material-styles/docDetailsDialogStyles";
 import UserContext from '../../../context/user/user-context'
-import {deleteCommentOnVisionAPI, editCommentOnVisionAPI} from "../../../utils/apiCalls/visionDocs";
 import DialogTitleComponent from "../../DialogTitleComponent";
 const useStyles = makeStyles(theme => ({
   commentList: {
@@ -33,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: 300,
   }
 }));
-export const RenderComments = ({comments, projectId, documentId, editComment, deleteComment}) => {
+export const RenderComments = ({comments, editComment, deleteComment}) => {
   const classes = useStyles();
   const classes1 = useDocDetailsDialogStyles();
   const [showComments, setShowComments] = useState(true);
@@ -52,34 +51,15 @@ export const RenderComments = ({comments, projectId, documentId, editComment, de
     setCommentId(cId)
   };
   const handleEditComment = () => {
-    const editData = {
-      commentId,
-      text: commentText,
-      projectId,
-      documentId,
-    };
-    editCommentOnVisionAPI(editData)
-        .then(res => {
-          setAnchorEl(null);
-          setCommentText('');
-          setOpenEditDialog(false);
-          editComment(commentId, commentText, documentId);
-        })
-        .catch(error => console.log(error.message))
+    setAnchorEl(null);
+    setCommentText('');
+    setOpenEditDialog(false);
+    editComment(commentId, commentText);
   };
   const handleDeleteComment = () => {
-    const deleteData = {
-      commentId,
-      projectId,
-      documentId,
-    }
-    deleteCommentOnVisionAPI(deleteData)
-        .then(res => {
-          setAnchorEl(null)
-          setOpenConfirmDialog(false);
-          deleteComment(commentId, documentId);
-        })
-        .catch(error => console.log(error.message))
+    setAnchorEl(null);
+    setOpenConfirmDialog(false);
+    deleteComment(commentId);
   };
   return (
     <>

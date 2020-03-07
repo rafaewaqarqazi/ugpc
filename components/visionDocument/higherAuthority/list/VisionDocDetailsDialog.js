@@ -55,6 +55,7 @@ import {
 import {PDFDownloadLink, PDFViewer} from '@react-pdf/renderer';
 import CircularLoading from "../../../loading/CircularLoading";
 import {useDialogStyles} from "../../../../src/material-styles/dialogStyles";
+import {deleteCommentOnVisionAPI, editCommentOnVisionAPI} from "../../../../utils/apiCalls/visionDocs";
 
 
 const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentDocument}) => {
@@ -435,36 +436,55 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
         })
     }
   };
-  const editComment = (commentId, commentText, documentId) => {
-    setCurrentDocument({
-      ...currentDocument,
-      documentation: {
-        ...currentDocument.documentation,
-        visionDocument: {
-          ...currentDocument.documentation.visionDocument,
-          comments: currentDocument.documentation.visionDocument.comments.map(comment => {
-            if (comment._id === commentId) {
-              return {
-                ...comment,
-                text: commentText
+  const editComment = (commentId, commentText) => {
+    const editData = {
+      commentId,
+      text: commentText,
+      projectId: currentDocument._id,
+      documentId: currentDocument.documentation.visionDocument._id,
+    };
+    editCommentOnVisionAPI(editData)
+        .then(res => {
+          setCurrentDocument({
+            ...currentDocument,
+            documentation: {
+              ...currentDocument.documentation,
+              visionDocument: {
+                ...currentDocument.documentation.visionDocument,
+                comments: currentDocument.documentation.visionDocument.comments.map(comment => {
+                  if (comment._id === commentId) {
+                    return {
+                      ...comment,
+                      text: commentText
+                    }
+                  } else return comment
+                })
               }
-            } else return comment
+            }
           })
-        }
-      }
-    })
+        })
+        .catch(error => console.log(error.message))
   };
-  const deleteComment = (commentId, documentId) => {
-    setCurrentDocument({
-      ...currentDocument,
-      documentation: {
-        ...currentDocument.documentation,
-        visionDocument: {
-          ...currentDocument.documentation.visionDocument,
-          comments: currentDocument.documentation.visionDocument.comments.filter(comment => comment._id !== commentId)
-        }
-      }
-    })
+  const deleteComment = (commentId) => {
+    const deleteData = {
+      commentId,
+      projectId: currentDocument._id,
+      documentId: currentDocument.documentation.visionDocument._id,
+    };
+    deleteCommentOnVisionAPI(deleteData)
+        .then(res => {
+          setCurrentDocument({
+            ...currentDocument,
+            documentation: {
+              ...currentDocument.documentation,
+              visionDocument: {
+                ...currentDocument.documentation.visionDocument,
+                comments: currentDocument.documentation.visionDocument.comments.filter(comment => comment._id !== commentId)
+              }
+            }
+          })
+        })
+        .catch(error => console.log(error.message))
   };
   return (
     <div>
@@ -609,7 +629,6 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
                     editComment={editComment}
                     deleteComment={deleteComment}
                     comments={currentDocument.documentation.visionDocument.comments}
-                    projectId={currentDocument._id} documentId={currentDocument.documentation.visionDocument._id}
                 />
               </div>
             </Grid>
