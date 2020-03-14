@@ -43,15 +43,20 @@ const VisionDocListItem = ({filter, fetchData, userType}) => {
               </Typography>
             </div>
           </div>
-          : filter.map((doc, index) => (
-            <div key={index} onClick={() => openDetails(doc)}>
-              <RenderListItemContent
-                project={doc}
-                doc={doc.documentation.visionDocument}
-              />
-              <Divider/>
+          : <div style={{height: 450, overflowX: 'hidden', overflowY: 'auto'}}>
+              {
+                filter.sort((a, b) => new Date(a.documentation.visionDocument.uploadedAt) - new Date(b.documentation.visionDocument.uploadedAt)).map((doc, index) => (
+                    <div key={index} onClick={() => openDetails(doc)}>
+                      <RenderListItemContent
+                          project={doc}
+                          doc={doc.documentation.visionDocument}
+                      />
+                      <Divider/>
+                    </div>
+                ))
+              }
             </div>
-          ))}
+      }
       {
         open && (
           <VisionDocDetailsDialog

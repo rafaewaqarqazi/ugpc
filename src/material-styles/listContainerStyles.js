@@ -9,7 +9,7 @@ export const useListContainerStyles = makeStyles(theme=>({
     },
     listContainer:{
         padding:theme.spacing(2,2,10,2),
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(6),
         boxShadow: theme.shadows[1],
         marginBottom: theme.spacing(5),
         borderRadius:5,
@@ -22,12 +22,12 @@ export const useListContainerStyles = makeStyles(theme=>({
         justifyContent:'center',
         alignItems:'center',
 
-        marginBottom:theme.spacing(5),
+        marginBottom:theme.spacing(2),
         [theme.breakpoints.up('sm')]: {
             display: 'flex',
             flexDirection:'row',
             justifyContent:'flex-start',
-            marginBottom:theme.spacing(5),
+            marginBottom:theme.spacing(2),
         }
     },
     topIconBox:{

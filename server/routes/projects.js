@@ -26,7 +26,8 @@ const {
   fetchSupervisors,
   assignSupervisorManual,
   fetchInternalExaminers,
-  scheduleInternalManual
+  scheduleInternalManual,
+  markMeetingSupervisorAsNotAttended
 } = require('../controllers/projects');
 const {requireSignin, isUGPCAuth, isChairmanOfficeAuth} = require('../controllers/auth');
 const upload = require('../upload');
@@ -67,6 +68,7 @@ router.put('/marks/supervisor', requireSignin, addMarksSupervisor);
 router.put('/meetings/supervisor/schedule', requireSignin, scheduleMeetingSupervisor);
 router.put('/meetings/supervisor/request', requireSignin, requestMeetingSupervisor);
 router.put('/meetings/supervisor/attended', requireSignin, markMeetingSupervisorAsAttended);
+router.put('/meetings/supervisor/notAttended', requireSignin, markMeetingSupervisorAsNotAttended);
 router.param('byStudentId', findByStudentId);
 router.param('projectId', findByProjectId);
 module.exports = router;

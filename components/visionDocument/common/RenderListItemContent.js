@@ -6,6 +6,7 @@ import {useListItemStyles} from "../../../src/material-styles/listItemStyles";
 import UserAvatarComponent from "../../UserAvatarComponent";
 
 export const RenderListItemContent = ({doc, project}) => {
+  console.log(doc)
   const classes = useListItemStyles();
   return (
     <Grid container spacing={1} className={classes.listItem}>
@@ -18,19 +19,23 @@ export const RenderListItemContent = ({doc, project}) => {
               ))
             }
           </div>
-          <Tooltip title='Updated On' placement="top" TransitionComponent={Zoom}>
+          <Tooltip title='Created On' placement="top" TransitionComponent={Zoom}>
             <Typography variant="body2"
-                        style={{textAlign: 'center'}}>{moment(doc.updatedAt).format('MMM D, YYYY')}</Typography>
+                        style={{textAlign: 'center'}}>{moment(doc.uploadedAt).format('MMM D, YYYY')}</Typography>
           </Tooltip>
         </div>
       </Grid>
-      <Grid item xs={12} sm={8} className={classes.gridTransition}>
-        <Typography variant='h6' noWrap>{doc.title}</Typography>
-        <Chip style={getVisionDocsStatusChipColor(doc.status)} label={doc.status} size="small"/>
-        <Tooltip title='Abstract' placement="top" TransitionComponent={Zoom}>
-          <Typography className={classes.wrapText} variant="body2" color="textSecondary"
-                      component="p">{doc.abstract}</Typography>
-        </Tooltip>
+      <Grid item xs={12} sm={8} className={classes.gridTransition} style={{display: 'flex'}}>
+        <div style={{textAlign: 'center'}}>
+          <Typography variant='h6' noWrap>{doc.title}</Typography>
+          <Chip style={getVisionDocsStatusChipColor(doc.status)} label={doc.status} size="small"/>
+        </div>
+        <div style={{paddingLeft: '20px'}}>
+          <Tooltip title='Abstract' placement="top" TransitionComponent={Zoom}>
+            <Typography className={classes.wrapText} variant="body2" color="textSecondary"
+                        component="p">{doc.abstract}</Typography>
+          </Tooltip>
+        </div>
       </Grid>
       <Grid item xs={12} sm={2} className={classes.gridTransition}>
         <div className={classes.lastGrid}>

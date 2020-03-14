@@ -62,7 +62,10 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 5,
     minHeight: 150,
     flexGrow: 1,
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
+    maxHeight: 450,
+    overflowY: 'auto',
+    overflowX: 'hidden'
   },
   listItem: {
     backgroundColor: 'rgba(255,255,255,0.5)',
@@ -275,7 +278,9 @@ const ListVisionDocsForPresentation = ({docs}) => {
                                 ref={provided.innerRef}
                                 className={presentationClasses.listContainer}
                               >
-                                {projects.map((project, index) =>
+                                {projects
+                                    .sort((a, b) => new Date(a.documentation.visionDocument.uploadedAt) - new Date(b.documentation.visionDocument.uploadedAt))
+                                    .map((project, index) =>
                                   <div key={project._id}>
                                     <Draggable draggableId={project._id} index={index}>
                                       {

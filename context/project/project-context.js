@@ -43,5 +43,6 @@ export default React.createContext({
   editComment: data => {},
   deleteComment: data => {},
   editCommentFromTask: commentDetails => {},
-  deleteCommentFromTask: commentDetails => {}
+  deleteCommentFromTask: commentDetails => {},
+  markSupervisorMeetingAsNotAttended: data => {}
 })

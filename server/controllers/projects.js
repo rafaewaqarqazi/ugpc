@@ -1150,6 +1150,20 @@ exports.markMeetingSupervisorAsAttended = async (req, res) => {
     await res.json({error: e.message})
   }
 };
+exports.markMeetingSupervisorAsNotAttended = async (req, res) => {
+  try {
+    const {meetingId, projectId} = req.body;
+    const result = await Projects.findOneAndUpdate({"_id": projectId, "details.meetings._id": meetingId}, {
+      $set: {
+        "details.meetings.$.isAttended": false
+      }
+    }, {new: true})
+      .select('details.meetings');
+    await res.json(result.details.meetings)
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+};
 
 exports.uploadPlagiarismReport = async (req, res) => {
   try {

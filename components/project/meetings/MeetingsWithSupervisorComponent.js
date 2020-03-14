@@ -1,6 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {
   CheckCircleOutline,
+    CancelOutlined
 } from "@material-ui/icons";
 import {
   Button, Dialog, DialogActions, DialogContent,
@@ -92,6 +93,17 @@ const MeetingsWithSupervisorComponent = ({meetings, role}) => {
       })
       .catch(err => console.error(err.message));
   };
+  const handleMarksAsNotAttended = meetingId => {
+    const data = {
+      projectId: projectContext.project.project._id,
+      meetingId
+    };
+    projectContext.markSupervisorMeetingAsNotAttended(data)
+      .then(result => {
+        setSuccess({show: true, message: 'Success'})
+      })
+      .catch(err => console.error(err.message));
+  };
   return (
     <div>
       <SuccessSnackBar open={success.show} message={success.message}
@@ -151,14 +163,26 @@ const MeetingsWithSupervisorComponent = ({meetings, role}) => {
                     {
                       role === 'Supervisor' &&
                       <TableCell>
-                        <Tooltip title='Mark As Attended' placement='top'>
-                          <div>
-                            <IconButton size='small' disabled={meeting.isAttended}
-                                        onClick={() => handleMarksAsAttended(meeting._id)}>
-                              <CheckCircleOutline/>
-                            </IconButton>
-                          </div>
-                        </Tooltip>
+                        {
+                          !meeting.isAttended ?
+                              <Tooltip title='Mark As Attended' placement='top'>
+                                <div>
+                                  <IconButton size='small' disabled={moment(Date.now()).isBefore(meeting.date)}
+                                              onClick={() => handleMarksAsAttended(meeting._id)}>
+                                    <CheckCircleOutline/>
+                                  </IconButton>
+                                </div>
+                              </Tooltip>
+                              :
+                              <Tooltip title='Mark As Not Attended' placement='top'>
+                                <div>
+                                  <IconButton size='small' onClick={() => handleMarksAsNotAttended(meeting._id)}>
+                                    <CancelOutlined/>
+                                  </IconButton>
+                                </div>
+                              </Tooltip>
+                        }
+
                       </TableCell>
                     }
 

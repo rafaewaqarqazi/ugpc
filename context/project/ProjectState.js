@@ -33,7 +33,8 @@ import {
   requestSupervisorMeetingAPI,
   markSupervisorMeetingAsAttendedAPI,
   editCommentFromTaskAPI,
-  deleteCommentFromTaskAPI
+  deleteCommentFromTaskAPI,
+  markSupervisorMeetingAsNotAttendedAPI
 } from "../../utils/apiCalls/projects";
 
 const ProjectState = (props) => {
@@ -150,6 +151,11 @@ const ProjectState = (props) => {
     await dispatch(addSupervisorMeetingAction(result));
     return await result;
   };
+  const markSupervisorMeetingAsNotAttended = async data => {
+    const result = await markSupervisorMeetingAsNotAttendedAPI(data);
+    await dispatch(addSupervisorMeetingAction(result));
+    return await result;
+  };
   const editComment = (data) => {
     dispatch(editCommentAction(data))
   };
@@ -179,7 +185,8 @@ const ProjectState = (props) => {
       editComment,
       deleteComment,
       editCommentFromTask,
-      deleteCommentFromTask
+      deleteCommentFromTask,
+      markSupervisorMeetingAsNotAttended
     }}>
       {props.children}
     </ProjectContext.Provider>

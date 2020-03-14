@@ -355,3 +355,15 @@ export const markSupervisorMeetingAsAttendedAPI = async data => {
   });
   return await res.json();
 };
+export const markSupervisorMeetingAsNotAttendedAPI = async data => {
+  const res = await fetch(`${serverUrl}/projects/meetings/supervisor/notAttended`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(data)
+  });
+  return await res.json();
+};
