@@ -4,11 +4,11 @@ export const isValid = (state, setTitleError, setAbstractError, setScopeError, s
     setTitleError();
 
     return true;
-  } else if ((abstract.trim().length < 50 || abstract.trim().length > 500) && activeStep === 0) {
+  } else if ((abstract.trim().length < 50 || abstract.trim().length > 1000) && activeStep === 0) {
     setAbstractError();
 
     return true;
-  } else if ((scope.trim().length < 50 || scope.trim().length > 500) && activeStep === 0) {
+  } else if ((scope.trim().length < 50 || scope.trim().length > 1000) && activeStep === 0) {
     setScopeError();
 
     return true;

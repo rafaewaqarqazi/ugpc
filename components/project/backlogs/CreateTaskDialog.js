@@ -213,7 +213,7 @@ const CreateTaskDialog = ({openCreateTask, handleCreateTaskClose}) => {
                 value={state.description}
                 onChange={handleChange}
                 error={error.description.show}
-                helperText={error.description.show ? error.description.message : `${state.description.length}/1000`}
+                helperText={error.description.show ? error.description.message : `${state.description.length}/2000`}
               />
 
             </div>
@@ -320,7 +320,7 @@ const CreateTaskDialog = ({openCreateTask, handleCreateTaskClose}) => {
                     value={subTask.description}
                     onChange={handleSubTaskChange}
                     error={error.subTask.description.show}
-                    helperText={error.subTask.description.show ? error.subTask.description.message : `${subTask.description.length}/500`}
+                    helperText={error.subTask.description.show ? error.subTask.description.message : `${subTask.description.length}/1000`}
                   />
                 </DialogContent>
                 <DialogActions>

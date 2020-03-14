@@ -28,7 +28,7 @@ const OverviewComponent = ({titleError, title, handleChange, abstract, abstractE
           placeholder='Project Abstract here'
           required
           error={abstractError.show}
-          helperText={abstractError.show ? abstractError.message : `${abstract.length}/500`}
+          helperText={abstractError.show ? abstractError.message : `${abstract.length}/1000`}
           value={abstract}
           onChange={handleChange}
           multiline
@@ -44,7 +44,7 @@ const OverviewComponent = ({titleError, title, handleChange, abstract, abstractE
           placeholder='Project Scope here'
           required
           error={scopeError.show}
-          helperText={scopeError.show ? scopeError.message : `${scope.length}/500`}
+          helperText={scopeError.show ? scopeError.message : `${scope.length}/1000`}
           value={scope}
           onChange={handleChange}
           multiline

@@ -1,10 +1,10 @@
 export const isTaskValid = (state, error, setError) => {
-  if (state.description.trim().length < 20 || state.description.trim().length > 1000) {
+  if (state.description.trim().length < 20 || state.description.trim().length > 2000) {
     setError({
       ...error,
       description: {
         show: true,
-        message: 'Description should be between 20-1000 characters'
+        message: 'Description should be between 20-2000 characters'
       }
     })
     return false;
@@ -44,14 +44,14 @@ export const isSubTaskValid = (subTask, error, setError) => {
       }
     });
     return false;
-  } else if (subTask.description.trim().length < 10 || subTask.description.trim().length > 500) {
+  } else if (subTask.description.trim().length < 10 || subTask.description.trim().length > 1000) {
     setError({
       ...error,
       subTask: {
         ...error.subTask,
         description: {
           show: true,
-          message: 'Description must be between 10-500 characters'
+          message: 'Description must be between 10-1000 characters'
         }
       }
     });

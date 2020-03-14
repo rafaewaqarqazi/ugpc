@@ -84,7 +84,7 @@ class VisionDocumentUploadComponent extends Component {
     this.setState({
       abstractError: {
         show: true,
-        message: 'Abstract Must Be between 50-500 Characters'
+        message: 'Abstract Must Be between 50-1000 Characters'
       }
     })
   };
@@ -92,7 +92,7 @@ class VisionDocumentUploadComponent extends Component {
     this.setState({
       scopeError: {
         show: true,
-        message: 'Scope Must Be between 50-500 Characters'
+        message: 'Scope Must Be between 50-1000 Characters'
       }
     })
   };
