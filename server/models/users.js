@@ -72,7 +72,9 @@ const userSchema = new mongoose.Schema({
         internal: String,
         external: String,
       },
-      batches: []
+      batches: [],
+      chairmanName: String,
+      committeeHeadName: String
     }
   }
 });

@@ -44,6 +44,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
   const [fileError, setFileError] = useState(false);
   const [letterViewer, setLetterViewer] = useState(false);
   const [chairmanName, setChairmanName] = useState('Not Available Yet');
+  const [committeeHeadName, setCommitteeHeadName] = useState('Not Available Yet');
   const [successSnackbar, setSuccessSnackbar] = useState(false);
   const projectContext = useContext(ProjectContext);
   const [resError, setResError] = useState({
@@ -145,7 +146,8 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
     getChairmanName()
       .then(result => {
         if (result.name) {
-          setChairmanName(result.name);
+          setChairmanName(result?.chairman_details?.settings?.chairmanName || result.name);
+          setCommitteeHeadName(result?.chairman_details?.settings?.committeeHeadName || 'Not Available Yet!');
         }
         setLetterViewer(true);
       })
@@ -310,6 +312,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
                           supervisor={project.details.supervisor}
                           date={project.details.acceptanceLetter.issueDate}
                           chairmanName={chairmanName}
+                          committeeHeadName={committeeHeadName}
                         />
                       }
                       fileName={project.details.acceptanceLetter.name}
@@ -409,6 +412,7 @@ const StudentVisionDocDetailsDialog = ({currentDocument, open, handleClose, setC
                   supervisor={project.details.supervisor}
                   date={project.details.acceptanceLetter.issueDate}
                   chairmanName={chairmanName}
+                  committeeHeadName={committeeHeadName}
                 />
               </PDFViewer>
             )

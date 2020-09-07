@@ -313,7 +313,7 @@ exports.getUser = (req, res) => {
 exports.getChairmanName = async (req, res) => {
   try {
     const chairman = await User.findOne({role: 'Chairman DCSSE'})
-      .select('-_id name');
+      .select('-_id name chairman_details');
     await res.json(chairman)
   } catch (e) {
     await res.json({error: e.message})

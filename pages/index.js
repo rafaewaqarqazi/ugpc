@@ -7,6 +7,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import {useEffect} from "react";
 import Link from 'next/link';
+import {Facebook, LinkedIn, GitHub} from '@material-ui/icons'
 import {serverUrl} from "../utils/config";
 
 const useStyles = makeStyles(theme => ({
@@ -59,7 +60,19 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     marginBottom: theme.spacing(5)
   },
+  socialLinks: {
+    textDecoration: 'none',
+    color: "inherit",
+    '&:hover': {
+      color: theme.palette.primary.dark,
+      'transition': 'all 0.2s ease',
+      '& svg': {
+        'transform': 'scale(1.1)',
+        'transition': 'all 0.3s ease',
+      }
 
+    }
+  }
 }));
 const Index = () => {
   const landingClasses = useStyles();
@@ -88,7 +101,7 @@ const Index = () => {
             </div>
           </Grid>
           <Grid item xs={12} sm={7} className={landingClasses.textContainer}>
-            <img src='/static/avatar/frontImage1.png' alt='UGPC Software' className={landingClasses.image}/>
+            <img src='/static/avatar/data-points.png' alt='UGPC Software' className={landingClasses.image}/>
           </Grid>
           <Grid item xs={12} sm={7} className={landingClasses.textContainer}>
             <img src='/static/avatar/frontImage2.png' alt='UGPC Software' className={landingClasses.image}/>
@@ -136,7 +149,16 @@ const Index = () => {
                 <Typography variant='h6'>Rafae Waqar Qazi</Typography>
                 <Typography variant='subtitle2' color='textSecondary'>Full Stack Lead</Typography>
                 <Typography variant='body2' color='textSecondary'>Rafae is a Software Engineer and Lead Full Stack
-                  Developer in this project. With expertise in Node.js, express, React, Next.js, Mongodb, MySql, ElasticSearch, Neo4j and many more </Typography>
+                  Developer in this project. With expertise in Node.js, express, React, Next.js, React-native, Mongodb, MySql, ElasticSearch, Neo4j and many more </Typography>
+                <div style={{marginTop: 10}}>
+                  <a href="https://www.facebook.com/rafaewaqar" target='_blank' className={landingClasses.socialLinks}>
+                    <Facebook fontSize='large'/>
+                  </a>
+                  <a href="https://www.linkedin.com/in/rafaewaqarqazi" target='_blank' className={landingClasses.socialLinks} style={{marginRight: 5}}>  <LinkedIn fontSize='large'/></a>
+                  <a href="https://github.com/rafaewaqarqazi" target='_blank' className={landingClasses.socialLinks}>
+                    <GitHub fontSize='large'/>
+                  </a>
+                </div>
               </div>
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -147,6 +169,12 @@ const Index = () => {
                 <Typography variant='body2' color='textSecondary'>Dr. Jamal Abdul Nasir is an Assistant Professor in
                   International Islamic University Islamabad. With Expertise in Data Science, Artificial Intelligence &
                   NLP </Typography>
+                <div style={{marginTop: 10}}>
+                  <a href="https://www.facebook.com/profile.php?id=100013910269336" target='_blank' className={landingClasses.socialLinks}>
+                    <Facebook fontSize='large'/>
+                  </a>
+                  <a href="https://www.linkedin.com/in/jamal-nasir-44153ba/" target='_blank' className={landingClasses.socialLinks} style={{marginRight: 5}}>  <LinkedIn fontSize='large'/></a>
+                </div>
               </div>
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -156,6 +184,17 @@ const Index = () => {
                 <Typography variant='subtitle2' color='textSecondary'>Frontend Developer / Designer</Typography>
                 <Typography variant='body2' color='textSecondary'>Sohail is a Software Engineer and a Frontend Developer
                   / Designer with expertise in PS/ID/Ai along with React.js</Typography>
+                <div style={{marginTop: 10}}>
+                  <a href="https://www.facebook.com/sohailahmad8975" target='_blank' className={landingClasses.socialLinks}>
+                    <Facebook fontSize='large'/>
+                  </a>
+                  <a href="https://www.linkedin.com/in/sohail-75" className={landingClasses.socialLinks} target='_blank' style={{marginRight: 5}}>  <LinkedIn fontSize='large'/></a>
+                  <a href="https://github.com/sohailahmad75" className={landingClasses.socialLinks} target='_blank'>
+                    <GitHub fontSize='large'/>
+                  </a>
+
+
+                </div>
               </div>
             </Grid>
           </Grid>

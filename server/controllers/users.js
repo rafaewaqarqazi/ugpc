@@ -127,6 +127,19 @@ exports.addNewBatch = async (req, res) => {
     await res.json({error: e.message})
   }
 };
+exports.updateApprovalLetterSettings = async (req, res) => {
+  try {
+    const {chairmanName, committeeHeadName, userId} = req.body;
+    const result = await User.findByIdAndUpdate(userId, {
+      "chairman_details.settings.chairmanName": chairmanName,
+      "chairman_details.settings.committeeHeadName": committeeHeadName
+    }, {new: true})
+      .select('chairman_details.settings.committeeHeadName chairman_details.settings.chairmanName');
+    await res.json(result)
+  } catch (e) {
+    await res.json({error: e.message})
+  }
+};
 exports.removeBatch = async (req, res) => {
   try {
     const {batch, userId} = req.body;

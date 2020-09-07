@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   chairman: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     padding: '40 40 10 0'
   },
   listArrow: {
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const ApprovalLetter = ({title, date, students, supervisor, chairmanName}) => (
+const ApprovalLetter = ({title, date, students, supervisor, chairmanName, committeeHeadName}) => (
   <Document>
     <Page size="A4" style={styles.body}>
       <View style={styles.header}>
@@ -172,6 +172,10 @@ const ApprovalLetter = ({title, date, students, supervisor, chairmanName}) => (
         </Text>
       </View>
       <View style={styles.chairman}>
+        <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontFamily: 'Times-Bold'}}>{`(${committeeHeadName})`}</Text>
+          <Text>Chairman, Committee</Text>
+        </View>
         <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{fontFamily: 'Times-Bold'}}>{`(${chairmanName})`}</Text>
           <Text>Chairman, DCS&SE, FBAS, IIUI</Text>

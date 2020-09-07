@@ -132,6 +132,18 @@ export const addNewBatchAPI = async data => {
   });
   return await res.json();
 };
+export const changeApprovalLetterSettingsAPI = async data => {
+  const res = await fetch(`${serverUrl}/users/chairman/settings/approvalLetter`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+      Authorization: `Bearer ${isAuthenticated().token}`
+    },
+    body: JSON.stringify(data)
+  });
+  return await res.json();
+};
 
 export const removeBatchAPI = async batch => {
   const res = await fetch(`${serverUrl}/users/chairman/settings/batch/remove`, {

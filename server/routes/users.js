@@ -17,13 +17,15 @@ const {
   fetchStudentsBarData,
   fetchAllSupervisors,
   fetchBatches,
-  fetchMarksDistribution
+  fetchMarksDistribution,
+  updateApprovalLetterSettings
 } = require('../controllers/users');
 const upload = require('../upload');
 const {requireSignin, isChairman} = require('../controllers/auth');
 
 router.put('/chairman/settings/marksDistribution', requireSignin, marksDistribution);
 router.put('/chairman/settings/batch/add', requireSignin, isChairman, addNewBatch);
+router.put('/chairman/settings/approvalLetter', requireSignin, isChairman, updateApprovalLetterSettings);
 router.put('/chairman/settings/batch/remove', requireSignin, isChairman, removeBatch);
 router.get('/chairman/settings/fetch/batches', fetchBatches);
 router.get('/chairman/settings/fetch/marksDistribution', fetchMarksDistribution);

@@ -73,6 +73,7 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
   const [successSnackbar, setSuccessSnackbar] = useState(false);
   const [letterViewer, setLetterViewer] = useState(false);
   const [chairmanName, setChairmanName] = useState('Not Available Yet');
+  const [committeeHeadName, setCommitteeHeadName] = useState('Not Available Yet');
   const [marks, setMarks] = useState('');
   const [saveButton, setSaveButton] = useState(true);
   const userContext = useContext(UserContext);
@@ -124,7 +125,8 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
     getChairmanName()
       .then(result => {
         if (result.name) {
-          setChairmanName(result.name);
+          setChairmanName(result?.chairman_details?.settings?.chairmanName || result.name);
+          setCommitteeHeadName(result?.chairman_details?.settings?.committeeHeadName || 'Not Available Yet!');
         }
         setLetterViewer(true);
       })
@@ -650,6 +652,7 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
                         supervisor={currentDocument.details.supervisor}
                         date={currentDocument.details.acceptanceLetter.issueDate}
                         chairmanName={chairmanName}
+                        committeeHeadName={committeeHeadName}
                       />
                     }
                     fileName={currentDocument.details.acceptanceLetter.name}
@@ -728,6 +731,7 @@ const VisionDocDetailsDialog = ({currentDocument, open, handleClose, setCurrentD
                   supervisor={currentDocument.details.supervisor}
                   date={currentDocument.details.acceptanceLetter.issueDate}
                   chairmanName={chairmanName}
+                  committeeHeadName={committeeHeadName}
                 />
               </PDFViewer>
             )

@@ -56,6 +56,21 @@ export const userReducer = (state, action) => {
           }
         }
       };
+    case Actions.APPROVAL_LETTER_SETTING:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          chairman_details: {
+            ...state.user.chairman_details,
+            settings: {
+              ...state.user.chairman_details.settings,
+              chairmanName: action.payload.chairmanName,
+              committeeHeadName: action.payload.committeeHeadName,
+            }
+          }
+        }
+      };
     case Actions.ADD_MARKS:
       return {
         ...state,

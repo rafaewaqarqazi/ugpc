@@ -17,7 +17,7 @@ import {
 import {SettingsOutlined, ExpandMore, Edit, Delete, Add, Close} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/styles";
 import {useListContainerStyles} from "../../src/material-styles/listContainerStyles";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import HorizontalStepper from "../../components/stepper/HorizontalStepper";
 import {useListItemStyles} from "../../src/material-styles/listItemStyles";
 import UserContext from '../../context/user/user-context';
@@ -84,17 +84,45 @@ const Settings = () => {
     show: false,
     message: ''
   });
+  const [chairmanNameError, setChairmanNameError] = useState({
+    show: false,
+    message: ''
+  });
+  const [committeeHeadNameError, setCommitteeHeadNameError] = useState({
+    show: false,
+    message: ''
+  });
   const [newBatch, setNewBatch] = useState('');
+  const [chairmanName, setChairmanName] = useState('');
+  const [committeeHeadName, setCommitteeHeadName] = useState('');
   const [editMarks, setEditMarks] = useState(false);
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+  useEffect(() => {
+    setCommitteeHeadName(userContext?.user?.user?.chairman_details?.settings?.committeeHeadName || '')
+    setChairmanName(userContext?.user?.user?.chairman_details?.settings?.chairmanName || '')
+  }, [userContext?.user])
   const handleChangeBatch = event => {
     setNewBatchError({
       show: false,
       message: ''
     });
     setNewBatch(event.target.value);
+  };
+  const handleChangeChairmanName = event => {
+    setChairmanNameError({
+      show: false,
+      message: ''
+    });
+    setChairmanName(event.target.value);
+  };
+  const handleChangeCommitteeHeadName = event => {
+    setCommitteeHeadNameError({
+      show: false,
+      message: ''
+    });
+    setCommitteeHeadName(event.target.value);
   };
   const handleNext = () => {
     setRemaining(100 - (proposal + supervisor + internal + external));
@@ -272,7 +300,49 @@ const Settings = () => {
         return 'Unknown step';
     }
   };
-
+ const handleSaveLetterSettings = () => {
+   if (isLetterSettingsValid()) {
+     userContext.changeApprovalLetterSettings({chairmanName, committeeHeadName, userId: userContext.user.user._id})
+       .then(result => {
+         console.log(result)
+         if (result.error) {
+           setErrorMess({
+             open: true,
+             message: "Couldn't Update Names!"
+           });
+           return;
+         }
+         setSuccess({
+           open: true,
+           message: 'Names Updated!'
+         })
+       })
+       .catch(() => {
+         setErrorMess({
+           open: true,
+           message: "Couldn't Update Names!"
+         });
+       })
+   }
+ }
+ const isLetterSettingsValid = () => {
+   let bool = true
+   if (chairmanName.trim() === '') {
+     setChairmanNameError({
+       show: true,
+       message: 'Required!'
+     });
+     bool = false
+   }
+   if (committeeHeadName.trim() === '') {
+     setCommitteeHeadNameError({
+       show: true,
+       message: 'Required!'
+     });
+     bool = false
+   }
+   return bool;
+ }
   return (
     <ChairmanPanelLayout>
       <SuccessSnackBar message={success.message} open={success.open}
@@ -397,6 +467,58 @@ const Settings = () => {
                             </List>
 
                         }
+                      </div>
+                  }
+                </div>
+
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel expanded={expanded === 'letter'} className={settingsClasses.expansionPanel}
+                            onChange={handleChange('letter')}>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMore/>}
+                aria-controls="letterbh-content"
+                id="letterbh-header"
+              >
+                <Typography className={settingsClasses.heading}>Letter</Typography>
+                <Typography className={settingsClasses.secondaryHeading}>Approval Letter Settings</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <div className={settingsClasses.root}>
+                  {
+                    userContext.user.isLoading ? <CircularLoading/> :
+                      <div>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
+                          <Button color='primary' disabled={chairmanName.trim() === '' && committeeHeadName.trim() === ''} onClick={handleSaveLetterSettings}>
+                            Save
+                          </Button>
+                        </div>
+                        {/*{*/}
+                        {/*  !userContext.user.user.chairman_details.settings.batches ||*/}
+                        {/*  userContext.user.user.chairman_details.settings.batches.length === 0 ?*/}
+                        {/*}*/}
+                        <Container maxWidth='sm'>
+                          <TextField
+                            label='Chairman name'
+                            fullWidth
+                            variant='outlined'
+                            value={chairmanName}
+                            onChange={handleChangeChairmanName}
+                            error={chairmanNameError.show}
+                            helperText={chairmanNameError.message}
+                            style={{marginBottom: 10}}
+                          />
+                          <TextField
+                            label='Committee Head Name'
+                            fullWidth
+                            variant='outlined'
+                            value={committeeHeadName}
+                            onChange={handleChangeCommitteeHeadName}
+                            error={committeeHeadNameError.show}
+                            helperText={committeeHeadNameError.message}
+                          />
+                        </Container>
+
                       </div>
                   }
                 </div>

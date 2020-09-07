@@ -32,6 +32,10 @@ export const addNewBatchAction = batches => ({
   type: Actions.ADD_NEW_BATCH,
   payload: batches
 });
+export const approvalLetterSettingsAction = newSettings => ({
+  type: Actions.APPROVAL_LETTER_SETTING,
+  payload: newSettings
+});
 export const marksDistributionAction = marks => ({
   type: Actions.ADD_MARKS,
   payload: marks

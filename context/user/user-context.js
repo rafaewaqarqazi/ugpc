@@ -28,5 +28,7 @@ export default React.createContext({
   fetchCommittees: () => {
   },
   removeUserState: () => {
+  },
+  changeApprovalLetterSettings: (newSettings) => {
   }
 })

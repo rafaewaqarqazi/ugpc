@@ -11,7 +11,7 @@ import {
   addAllUsersAction,
   allUsersLoadingAction,
   removeUserAction,
-  addCommitteesAction, committeesLoadingAction, userLoading,
+  addCommitteesAction, committeesLoadingAction, userLoading, approvalLetterSettingsAction,
 } from "./ActionCreators";
 import {
   marksDistributionAPI,
@@ -22,7 +22,7 @@ import {
   removeBatchAPI,
   fetchAllUsersAPI,
   removeUserAPI,
-  fetchCommitteesAPI
+  fetchCommitteesAPI, changeApprovalLetterSettingsAPI
 } from '../../utils/apiCalls/users';
 
 const UserState = (props) => {
@@ -68,6 +68,11 @@ const UserState = (props) => {
     await dispatch(addNewBatchAction(result.chairman_details.settings.batches));
     return await result;
   };
+  const changeApprovalLetterSettings = async newSettings => {
+    const result = await changeApprovalLetterSettingsAPI(newSettings);
+    await dispatch(approvalLetterSettingsAction(newSettings));
+    return await result;
+  };
   const removeBatch = async batch => {
     const result = await removeBatchAPI(batch);
     await dispatch(addNewBatchAction(result.chairman_details.settings.batches));
@@ -105,7 +110,8 @@ const UserState = (props) => {
       fetchAllUsers,
       removeUser,
       fetchCommittees,
-      removeUserState
+      removeUserState,
+      changeApprovalLetterSettings
     }}>
       {props.children}
     </UserContext.Provider>
