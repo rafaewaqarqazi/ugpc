@@ -106,7 +106,7 @@ const ApprovalLetter = ({title, date, students, supervisor, chairmanName, commit
       <View style={styles.subject}>
         <Text>Subject: </Text>
         <View style={{flexGrow: 1, marginLeft: 10}}>
-          <Text style={styles.subjectText}>Allocation of Provisional Supervision letter for bsse project,</Text>
+          <Text style={styles.subjectText}>Allocation of Provisional Supervision letter for {students.map((student, i) => i === 0 && student.department)} project,</Text>
           <Text>{`"${title}"`}</Text>
         </View>
       </View>
@@ -114,7 +114,7 @@ const ApprovalLetter = ({title, date, students, supervisor, chairmanName, commit
         <Text style={{textIndent: 50}}> The Department has allocated project titled above to
           <Text
             style={{fontFamily: 'Times-Bold'}}> {students.map((student, index) => `${index === 1 ? ' and' : ''} Mr. ${student.name} Registration No: ${student.student_details.regNo}`)}.
-            {` ${supervisor.name}, ${supervisor.supervisor_details ? supervisor.supervisor_details.position : 'Not Provided'},`}
+            {` ${supervisor.name}, ${supervisor.supervisor_details ? supervisor.supervisor_details.position : ''},`}
           </Text>
           <Text> Department of Computer Science & Software Engineering, Faculty of Basic & Applied Sciences,
             International Islamic University, Islamabad,
