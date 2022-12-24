@@ -2,7 +2,7 @@
 
 An Agile Software development tool for Final Year of BSCS/SE/IT students and Project committee to make their life easier in whole process, from **proposal submission to project Tracking, evaluation and much more**.
 
-###Features
+### Features
 
 * Proposal Submission.
 * Scheduling Presentations by dragging and dropping into schedule container.
@@ -21,7 +21,7 @@ An Agile Software development tool for Final Year of BSCS/SE/IT students and Pro
 * Handling views of around 10 different types of users.
 * Alerting users with email on every status.
 
-####Tools & Technologies
+#### Tools & Technologies
 * Node.js
 * Express.js
 * React.js
