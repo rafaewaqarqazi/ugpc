@@ -28,7 +28,7 @@
     "@react-pdf/renderer": "1.6.4",
     "@zeit/next-css": "1.0.1",
     "aos": "3.0.0-beta.6",
-    "chart.js": "2.8.0",
+    "chart.js": "2.9.4",
     "chartjs-plugin-colorschemes": "0.4.0",
     "clsx": "1.0.4",
     "compression": "1.7.4",
