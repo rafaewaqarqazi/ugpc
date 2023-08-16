@@ -112,12 +112,12 @@ const SignUpComponent = () => {
         }
       });
       return false;
-    } else if (!values.email.match(/.+\@iiu\.edu\.pk/)) {
+    } else if (!values.email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)) {
       setFormErrors({
         ...formErrors,
         email: {
           show: true,
-          message: 'Please use Email Provided by University'
+          message: 'Please provide valid email'
         }
       });
       return false;

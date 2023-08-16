@@ -7,7 +7,7 @@ exports.sendEmail = emailData => {
     secure: true,
     auth: {
       user: "rafaewaqar@gmail.com",
-      pass: "gqikrscbwhfwuzxm"
+      pass: process.env.EMAIL_PASSWORD
     }
   });
   return (
