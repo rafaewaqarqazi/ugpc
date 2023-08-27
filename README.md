@@ -1,6 +1,6 @@
 ## UGPC - Automation System
 
-An Agile Software development tool for Final Year of BSCS/SE/IT students and Project committee to make their life easier in whole process, from **proposal submission to project Tracking, evaluation and much more**.
+An Agile Software project management tool for Final Year of bachelors in software students and Project committee to make their life easier in whole process, from **proposal submission to project Tracking, evaluation and much more**.
 
 ### Features
 
@@ -35,5 +35,5 @@ An Agile Software development tool for Final Year of BSCS/SE/IT students and Pro
 * Postman
 * MongoDB Atlas Cloud
 
-**Check out the production version on Heroku by [clicking here](https://ugpc-software.herokuapp.com)**
+**Check out the production version on Vercel by [clicking here](https://ugpc.vercel.app/)**
 

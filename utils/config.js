@@ -1,2 +1,1 @@
-export const serverUrl = 'https://ugpc-software.herokuapp.com/api';
-// export const serverUrl = 'http://localhost:3000/api';
+export const serverUrl = process.env.SERVER_URL || 'http://localhost:5000/api';
