@@ -1,1 +1,2 @@
-export const serverUrl = process.env.SERVER_URL || 'http://localhost:5000/api';
+require("dotenv").config();
+export const serverUrl = process.env.SERVER_URL || "http://localhost:5000/api";
