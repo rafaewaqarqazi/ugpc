@@ -2,6 +2,9 @@
 
 An Agile Software project management tool for Final Year of bachelors in software students and Project committee to make their life easier in whole process, from **proposal submission to project Tracking, evaluation and much more**.
 
+## Demo
+[![Watch the video](https://img.youtube.com/vi/KG9FsweeHak/0.jpg)](https://youtu.be/KG9FsweeHak)
+
 ### Features
 
 * Proposal Submission.
