@@ -2,6 +2,21 @@
 
 An Agile Software project management tool for Final Year of bachelors in software students and Project committee to make their life easier in whole process, from **proposal submission to project Tracking, evaluation and much more**.
 
+## Setup
+1. Clone the repository
+```bash
+git clone https://github.com/rafaewaqarqazi/ugpc
+```
+2. Install dependencies
+```bash
+yarn install
+```
+3. Copy `.env.template` to `.env` and fill in the required details
+4. Run the server
+```bash
+yarn dev
+```
+
 ## Demo
 [![Watch the video](https://img.youtube.com/vi/KG9FsweeHak/0.jpg)](https://youtu.be/KG9FsweeHak)
 
